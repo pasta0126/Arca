@@ -1,6 +1,6 @@
 ## Purpose
 
-Definir el curso escolar como un año académico con fechas, del que solo uno está activo, y conservar los anteriores como histórico de consulta.
+Definir el curso escolar como un año académico con fechas, del que solo uno está activo, y conservar los anteriores como histórico de consulta; el ciclo de cierre de un curso se define en `cursos-i-historial`.
 
 ## ADDED Requirements
 
@@ -39,18 +39,18 @@ El sistema SHALL mantener como máximo un curso activo a la vez, y SHALL exigir 
 - **THEN** el sistema lo rechaza con un error que indica que hay que crear o activar un curso
 
 ### Requirement: Activación de un curso
-El sistema SHALL permitir activar un curso solo cuando no hay otro activo. El cierre del curso activo se define en otro cambio.
+El sistema SHALL permitir activar un curso solo cuando no hay otro activo. El cierre del curso activo, que lo deja en cierre y libera la activación, se define en `cursos-i-historial`.
 
 #### Scenario: Activar con otro activo
 - **WHEN** el usuario intenta activar un curso mientras otro está activo
-- **THEN** el sistema lo rechaza con un error que indica que primero hay que cerrar el curso activo
+- **THEN** el sistema lo rechaza con un error que indica que primero hay que iniciar el cierre del curso activo
 
 #### Scenario: Activar sin curso activo
 - **WHEN** no hay ningún curso activo y el usuario activa uno existente
 - **THEN** el curso pasa a ser el activo
 
 ### Requirement: Histórico de solo lectura
-El sistema SHALL permitir consultar los cursos no activos y SHALL impedir modificar sus matrículas y asignaciones.
+El sistema SHALL permitir consultar los cursos no activos y SHALL impedir modificar sus matrículas y asignaciones, salvo las operaciones de cierre que un curso en cierre o cerrado admite según `cursos-i-historial`.
 
 #### Scenario: Consulta de un curso anterior
 - **WHEN** el usuario consulta un curso no activo

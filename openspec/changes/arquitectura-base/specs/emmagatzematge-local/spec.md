@@ -94,7 +94,7 @@ El sistema SHALL detectar un fichero de base de datos ilegible o no descifrable 
 
 #### Scenario: Fichero dañado
 - **WHEN** el fichero de base de datos está dañado o no es una base de datos de ARCA
-- **THEN** el sistema muestra un mensaje claro, no lo sobrescribe y ofrece elegir otra ruta
+- **THEN** el sistema muestra un mensaje claro, no lo sobrescribe y ofrece elegir otra ruta o restaurar una copia de seguridad (`copies-de-seguretat`)
 
 ### Requirement: Instancia única sobre una base de datos
 El sistema SHALL impedir que dos instancias de la aplicación abran a la vez la misma base de datos.

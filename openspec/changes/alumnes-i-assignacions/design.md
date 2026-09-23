@@ -81,7 +81,7 @@ Correo e identificador se almacenan en columnas propias, dentro de la base de da
 El identificador es opcional y su activación como clave es configurable, lo que permite decidir la política de RGPD tras ver la muestra.
 
 ### D12. Histórico de solo lectura
-Las matrículas y asignaciones de un curso no activo se rechazan en dominio (comprobación en el punto único de escritura), no solo en la interfaz.
+Las matrículas y asignaciones de un curso no activo se rechazan en dominio (comprobación en el punto único de escritura), no solo en la interfaz. `cursos-i-historial` refina esa comprobación con el estado del curso (en cierre y cerrado admiten solo las operaciones de cierre): aquí se implementa como una función de curso y tipo de operación que ese cambio amplía, no como un simple "es activo".
 
 ### D13. Consulta de alumnos
 Como con las taquillas, con este volumen se filtra en memoria sobre datos cargados explícitamente (sin carga perezosa), con orden estable y recuento total para poder virtualizar la lista. El detalle e historial se piden al abrir la ficha.

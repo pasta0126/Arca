@@ -4,7 +4,7 @@ Con el inventario de taquillas ya especificado, falta lo que le da sentido: qui�
 
 ## What Changes
 
-- Curso escolar como año académico con fechas, con un solo curso activo y el resto como histórico de solo lectura.
+- Curso escolar como año académico con fechas, con un solo curso activo y el resto como histórico de solo lectura (salvo las operaciones de cierre que define `cursos-i-historial`).
 - Alumno como persona que persiste entre cursos (misma ficha), con una matrícula por curso (nivel y grupo) y con estado activo o de baja reversible.
 - Catálogo de niveles y grupos que se alimenta de los ficheros importados; la revisión solo muestra los valores nuevos.
 - Alta y edición manual de alumnos, baja y reactivación, y búsqueda por nombre, nivel, grupo y taquilla.
