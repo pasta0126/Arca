@@ -122,6 +122,10 @@ El sistema SHALL mostrar en el paso de licencia el estado actual y los días de 
 - **WHEN** el usuario introduce una clave válida
 - **THEN** la licencia queda activa y el paso figura como hecho
 
+#### Scenario: Prueba agotada
+- **WHEN** la prueba ha terminado y la licencia está en solo lectura al abrir el asistente
+- **THEN** el paso de licencia figura como el primero pendiente, explica que los pasos que guardan datos no están disponibles hasta activar una clave y ofrece introducirla
+
 ### Requirement: Reanudación
 El sistema SHALL abrir el asistente en el primer paso pendiente en cada arranque mientras haya pasos obligatorios pendientes, y SHALL no reabrirlo automáticamente cuando lo obligatorio esté hecho y el usuario lo haya descartado o terminado.
 

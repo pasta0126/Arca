@@ -35,10 +35,13 @@ La transición vive en el dominio como método del curso, no en la interfaz. *Al
 ### D2. Operaciones permitidas según el estado
 Un único punto de comprobación de escritura (el que ya usa `alumnes-i-assignacions` para el histórico) recibe el tipo de operación y decide según el estado del curso:
 - activo: todas.
-- en cierre: solo cierre de asignaciones por liberación, resolución de llaves y gestión de cobros.
+- en cierre: solo cierre de asignaciones (liberación, baja del alumno, baja por importación y decisión de liberar por avería; la reasignación por avería crea una asignación nueva y se rechaza), resolución de llaves y gestión de cobros.
 - cerrado: solo resolución de llaves y gestión de cobros (una llave o un cobro pueden aparecer tarde).
 - sin activar: nada, salvo activarlo.
 Los cobros de `pagaments` y las llaves de `claus` no dependen del estado del curso, así que este cambio solo los deja de bloquear en el punto único de escritura de matrículas y asignaciones.
+
+### D2b. El curso nuevo convive con asignaciones sin liberar
+La unicidad de asignación vigente por alumno y por taquilla es global, no por curso (D7 de `alumnes-i-assignacions`), porque la taquilla es un objeto físico. Por eso, mientras el curso anterior conserva asignaciones vigentes, un alumno que continúa no puede recibir taquilla en el curso nuevo y esas taquillas siguen ocupadas: se rechaza con un error que guía a liberar y enlaza con el asistente. *Alternativa descartada*: cerrar automáticamente la asignación anterior al asignar en el curso nuevo; sería una renovación implícita que el producto ha descartado y podría dejar llaves sin registrar.
 
 ### D3. Estado de los pasos derivado, salvo la omisión
 Los pasos del asistente no se almacenan: liberar taquillas está hecho si no hay asignaciones vigentes del curso; llaves está hecho si no hay llaves entregadas ni perdidas sin resolver de sus asignaciones; la deuda es solo un recuento informativo. Lo único que se guarda es el marcador "omitido" por paso y curso, para que el asistente recuerde lo que el usuario decidió no hacer. Así retomar en otra sesión muestra siempre el estado real, sin estados que se desincronicen. Los mismos recuentos sirven para el resumen de pendientes del cierre definitivo.

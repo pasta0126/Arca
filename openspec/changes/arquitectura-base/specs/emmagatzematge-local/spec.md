@@ -9,7 +9,7 @@ El sistema SHALL guardar todos sus datos en un único fichero de base de datos l
 
 #### Scenario: Primer arranque sin datos
 - **WHEN** la aplicación arranca y no existe fichero de base de datos en la ubicación configurada
-- **THEN** el sistema crea el fichero con el esquema de la versión actual y queda listo para usarse sin pedir nada al usuario
+- **THEN** el sistema no crea nada en silencio: muestra la pantalla de primera ejecución de `configuracio-inicial`, y al elegir empezar de cero crea el fichero con el esquema de la versión actual
 
 #### Scenario: Arranque sin red
 - **WHEN** el equipo no tiene conexión de red
@@ -106,8 +106,8 @@ El sistema SHALL impedir que dos instancias de la aplicación abran a la vez la 
 ### Requirement: Importes exactos
 El sistema SHALL almacenar y calcular los importes monetarios sin pérdida de precisión.
 
-#### Scenario: Suma de pagos parciales
-- **WHEN** se suman varios pagos parciales con céntimos
+#### Scenario: Suma de importes con céntimos
+- **WHEN** se suman los importes de varios cargos con céntimos
 - **THEN** el total es exacto y coincide con la suma decimal de los importes
 
 ### Requirement: Fechas sin ambigüedad de zona horaria

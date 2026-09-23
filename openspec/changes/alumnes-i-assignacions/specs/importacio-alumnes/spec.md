@@ -9,7 +9,7 @@ El sistema SHALL concluir de cada fila del fichero si el alumno ya existe, es nu
 
 #### Scenario: Alumno existente
 - **WHEN** una fila corresponde a un alumno activo ya registrado
-- **THEN** se actualizan su nivel y su grupo del curso activo si han cambiado, conservando su ficha y sus datos
+- **THEN** se crea su matrícula del curso activo si aún no la tiene, o se actualizan su nivel y su grupo si han cambiado, conservando su ficha y sus datos
 
 #### Scenario: Alumno sin cambios
 - **WHEN** una fila corresponde a un alumno activo cuyo nivel y grupo ya coinciden

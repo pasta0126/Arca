@@ -16,11 +16,11 @@ El sistema SHALL generar los ficheros CSV en UTF-8 con marca de orden de bytes, 
 - **THEN** se escribe entre comillas dobles con las comillas duplicadas
 
 ### Requirement: Cabeceras y valores según la cultura activa
-El sistema SHALL escribir las cabeceras a partir de claves de recurso del idioma activo, y las fechas y los importes con el formato de la cultura catalana, sin símbolo de moneda.
+El sistema SHALL escribir las cabeceras a partir de claves de recurso del idioma activo, y las fechas y los importes con el formato de la cultura catalana, sin símbolo de moneda ni separador de millares.
 
 #### Scenario: Importe y fecha
 - **WHEN** un informe incluye un importe de 12,5 euros y una fecha de pago
-- **THEN** el importe se escribe como "12,50" y la fecha con el formato catalán de fecha corta
+- **THEN** el importe se escribe como "12,50" (y uno de 1234,5 como "1234,50") y la fecha con el formato catalán de fecha corta
 
 ### Requirement: Protección contra fórmulas
 El sistema SHALL neutralizar los valores de texto que empiecen por `=`, `+`, `-`, `@`, tabulador o retorno de carro anteponiendo una comilla simple, para que una hoja de cálculo no los interprete como fórmula.

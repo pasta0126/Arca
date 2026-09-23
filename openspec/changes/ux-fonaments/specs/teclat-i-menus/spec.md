@@ -65,3 +65,7 @@ El sistema SHALL mantener el mismo nombre, orden y atajo para una misma acción 
 #### Scenario: Acción no disponible
 - **WHEN** una acción no procede porque la taquilla está averiada
 - **THEN** aparece deshabilitada y una descripción emergente indica el motivo
+
+#### Scenario: Licencia en solo lectura
+- **WHEN** la licencia está en solo lectura
+- **THEN** las acciones que modifican datos aparecen deshabilitadas con el motivo de licencia y cómo activarla, sin depender de que el usuario las ejecute para descubrirlo

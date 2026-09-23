@@ -263,7 +263,7 @@ El sistema SHALL listar las taquillas con filtros por zona, estado y número, or
 
 #### Scenario: Contadores
 - **WHEN** el usuario consulta los contadores
-- **THEN** ve el total de taquillas activas y cuántas hay libres, ocupadas, averiadas y reservadas, en total y por zona
+- **THEN** ve el total de taquillas activas y cuántas hay libres, ocupadas, averiadas, en mantenimiento y reservadas, en total y por zona
 
 #### Scenario: Sin resultados
 - **WHEN** ningún registro cumple los filtros

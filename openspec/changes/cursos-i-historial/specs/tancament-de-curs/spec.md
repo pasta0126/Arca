@@ -56,6 +56,40 @@ El sistema SHALL permitir en un curso en cierre únicamente las operaciones de c
 - **WHEN** el usuario intenta modificar la matrícula de un curso en cierre
 - **THEN** el sistema lo rechaza con un error de curso no activo
 
+### Requirement: Cierres de asignaciones de un curso en cierre por otras operaciones
+El sistema SHALL permitir que la baja de un alumno, la baja de una importación y la decisión de liberar al alumno al poner una taquilla fuera de servicio cierren una asignación vigente de un curso en cierre, y SHALL rechazar la opción de reasignar por avería cuando la asignación es de un curso en cierre.
+
+#### Scenario: Baja de un alumno con taquilla del curso en cierre
+- **WHEN** una importación del curso activo da de baja a un alumno que aún tiene una asignación vigente de un curso en cierre
+- **THEN** la asignación se cierra, la taquilla queda libre y la llave queda pendiente de devolución
+
+#### Scenario: Avería decidiendo liberar
+- **WHEN** el usuario marca como averiada una taquilla con una asignación vigente de un curso en cierre y decide liberar al alumno
+- **THEN** la asignación se cierra y la taquilla queda averiada
+
+#### Scenario: Avería decidiendo mantener
+- **WHEN** el usuario decide mantener al alumno en una taquilla averiada de un curso en cierre
+- **THEN** la asignación sigue vigente y la taquilla queda averiada
+
+#### Scenario: Avería decidiendo reasignar
+- **WHEN** el usuario decide reasignar al alumno de una asignación de un curso en cierre
+- **THEN** el sistema lo rechaza con un error de curso no activo e indica que puede mantener o liberar
+
+### Requirement: Asignar en el curso activo con taquilla vigente del curso en cierre
+El sistema SHALL rechazar asignar una taquilla en el curso activo a un alumno que aún tiene una asignación vigente de un curso en cierre, y a una taquilla que sigue ocupada por una asignación de un curso en cierre, con un error que indica qué asignación hay que liberar y ofrece abrir el asistente de cierre.
+
+#### Scenario: Alumno con taquilla del curso anterior
+- **WHEN** el usuario asigna una taquilla a un alumno que sigue con la taquilla 15 del curso en cierre
+- **THEN** el sistema lo rechaza indicando que hay que liberar primero la taquilla 15 del curso en cierre y ofrece abrir el asistente
+
+#### Scenario: Taquilla ocupada por el curso en cierre
+- **WHEN** el usuario intenta asignar una taquilla que sigue ocupada por una asignación del curso en cierre
+- **THEN** el sistema la trata como ocupada e indica que su asignación pertenece al curso en cierre
+
+#### Scenario: Sin renovación automática
+- **WHEN** el usuario libera las taquillas del curso en cierre y luego asigna en el curso activo
+- **THEN** cada alumno puede recibir cualquier taquilla asignable, incluida la que tenía, sin que el sistema la renueve por sí solo
+
 ### Requirement: Volver a activar un curso en cierre
 El sistema SHALL permitir volver a activar un curso en cierre cuando no hay otro curso activo, sin perder lo ya hecho en el cierre.
 

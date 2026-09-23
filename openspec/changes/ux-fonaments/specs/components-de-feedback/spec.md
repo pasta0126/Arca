@@ -25,7 +25,18 @@ El sistema SHALL ofrecer un servicio de notificaciones que muestre el resultado 
 
 #### Scenario: Error inesperado
 - **WHEN** ocurre un error no previsto
-- **THEN** se muestra un mensaje genérico comprensible con la referencia del registro técnico, sin detalles técnicos ni datos de alumnos
+- **THEN** se muestra un mensaje genérico comprensible con la referencia del registro técnico, sin datos de alumnos, y se ofrece ver los detalles técnicos bajo demanda
+
+### Requirement: Historial de notificaciones de la sesión
+El sistema SHALL permitir consultar las notificaciones de la sesión actual ordenadas de más reciente a más antigua, incluidas las ya desaparecidas.
+
+#### Scenario: Consultar el historial
+- **WHEN** el usuario abre el historial de notificaciones
+- **THEN** ve las de la sesión, también las de éxito que ya desaparecieron, de más reciente a más antigua
+
+#### Scenario: Nueva sesión
+- **WHEN** el usuario reabre la aplicación
+- **THEN** el historial empieza vacío y no conserva datos de la sesión anterior
 
 ### Requirement: Diálogo de confirmación con consecuencia
 El sistema SHALL ofrecer un diálogo de confirmación que indique la acción, su consecuencia y, si procede, los recuentos afectados, con botones de confirmar y cancelar rotulados con la acción, y con el foco inicial en cancelar cuando la acción es irreversible.

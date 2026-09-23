@@ -43,7 +43,7 @@ Reconocimiento por prioridad:
 1. Cada fila busca candidatos por cada clave activa (identificador, correo, nombre).
 2. Si dos claves apuntan a alumnos distintos: dudoso.
 3. Si solo hay una vía de reconocimiento con un único candidato: reconocido.
-4. Si el nombre da varios candidatos: se desempata por nivel y grupo de su matrícula del curso activo; si sigue habiendo más de uno o ninguno coincide: dudoso.
+4. Si el nombre da varios candidatos: se desempata por nivel y grupo de su matrícula del curso activo, solo entre los candidatos que la tienen (a mitad de curso); en la importación de inicio de curso los candidatos aún no tienen matrícula del curso nuevo y su nivel cambia cada año, así que no hay desempate y el caso es dudoso; si sigue habiendo más de uno o ninguno coincide: dudoso.
 5. Sin candidatos: nuevo.
 Dos filas que se reconocen como el mismo alumno existente son un error; dos filas idénticas sin alumno existente son dudosas (¿persona repetida o dos personas distintas?).
 Al confirmar se **revalida** contra el estado actual y se aplica en una transacción (patrón D6 de `taquilles-i-zones`). Vista previa y confirmación usan el mismo código.

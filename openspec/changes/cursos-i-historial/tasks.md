@@ -3,8 +3,9 @@
 - [ ] 1.1 Añadir el estado (sin activar, activo, en cierre, cerrado) a `SchoolYear` con la tabla de transiciones permitidas y rechazo del resto con un error de estado no válido (D1)
 - [ ] 1.2 Comprobación única de escritura por estado del curso y tipo de operación (D2), sustituyendo la del histórico de `alumnes-i-assignacions`
 - [ ] 1.3 Casos de uso: iniciar el cierre, reactivar un curso en cierre y activar el siguiente con otro en cierre
+- [ ] 1.3b Permitir cerrar asignaciones de un curso en cierre por baja, baja por importación y decisión de liberar, y rechazar reasignar; error guiado al asignar en el curso activo con taquilla o alumno del curso en cierre (D2, D2b)
 - [ ] 1.4 Códigos de error y claves de recurso en catalán del estado del curso
-- [ ] 1.5 Pruebas de la tabla completa de transiciones, un solo curso activo con varios en cierre, operaciones permitidas por estado y curso cerrado que no se reabre
+- [ ] 1.5 Pruebas de la tabla completa de transiciones, un solo curso activo con varios en cierre, operaciones permitidas por estado, curso cerrado que no se reabre, baja con taquilla del curso en cierre, avería con cada decisión y asignación bloqueada por el curso en cierre
 
 ## 2. Asistente de cierre
 
