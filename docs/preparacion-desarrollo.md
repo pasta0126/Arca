@@ -11,9 +11,9 @@ Estado de cada punto: `por valorar` · `aceptado` · `descartado` · `hecho`.
 | 1 | Spike técnico | Implementar (código desechable) | Antes de `arquitectura-base` | por valorar |
 | 2 | Stack concreto | Definir | Ahora | hecho (`docs/stack.md`) |
 | 3 | Esqueleto de solución y CI | Implementar | Primer paso de `arquitectura-base` | por valorar |
-| 4 | Convenciones de código | Definir | Ahora | por valorar |
-| 5 | Glosario castellano, catalán e inglés | Definir | Ahora | por valorar |
-| 6 | Catálogo de códigos de error y claves | Definir (convención) e implementar (contenido) | Convención ahora | por valorar |
+| 4 | Convenciones de código | Definir | Ahora | hecho (`docs/convenciones.md`) |
+| 5 | Glosario castellano, catalán e inglés | Definir | Ahora | hecho (`docs/glosario.md`); términos por validar con los conserjes |
+| 6 | Catálogo de códigos de error y claves | Definir (convención) e implementar (contenido) | Convención ahora | convención hecha (`docs/convenciones.md`, sección 3); contenido al implementar |
 | 7 | Mapa de dependencias y primer hito vertical | Definir | Ahora | por valorar |
 | 8 | Reglas de trabajo con `/opsx:apply` | Definir | Ahora | por valorar |
 | 9 | Definición de terminado | Definir | Ahora | por valorar |
