@@ -28,7 +28,7 @@ Proyecto nuevo, sin código. Motivación y alcance en `proposal.md`; requisitos 
 ```
 src/Arca.Domain          entidades, valores, reglas, errores con código (sin dependencias)
 src/Arca.Application     casos de uso, puertos (interfaces de repositorio, IClock, ILocalizer...)
-src/Arca.Infrastructure  SQLite/SQLCipher, migraciones, ajustes, implementación de puertos
+src/Arca.Infrastructure  SQLite cifrado (formato SQLCipher 4), migraciones, ajustes, implementación de puertos
 src/Arca.Desktop         Avalonia (MVVM), composición e inyección de dependencias
 tests/*                  un proyecto de pruebas por capa
 ```
@@ -39,8 +39,8 @@ Reglas: `Domain` no referencia nada; `Application` solo `Domain`; `Infrastructur
 Un único código C# para Windows, Linux y macOS. Avalonia permite estilos y temas ricos (encaja con la identidad configurable del centro). Las capas Domain, Application e Infrastructure apuntan a una versión LTS de .NET y no usan APIs específicas de Windows.
 *Alternativas descartadas*: WPF (solo Windows), MAUI (sin soporte de escritorio Linux), Tauri/Electron (sacan el proyecto de .NET, sin ventaja aquí).
 
-### D3. SQLite con SQLCipher mediante Entity Framework Core
-Fichero único, sin servidor, con binarios nativos disponibles para los tres sistemas. El acceso a datos usa EF Core con el proveedor SQLite y SQLCipher (`Microsoft.EntityFrameworkCore.Sqlite.Core` más el paquete de SQLitePCLRaw con SQLCipher). El `DbContext`, las configuraciones y las migraciones viven solo en `Infrastructure`; `Domain` y `Application` no referencian EF Core. `Application` define interfaces de repositorio y `Infrastructure` las implementa, de modo que una futura web pueda usar otro almacén.
+### D3. SQLite cifrado en formato SQLCipher mediante Entity Framework Core
+Fichero único, sin servidor, con binarios nativos disponibles para los tres sistemas. El acceso a datos usa EF Core con `Microsoft.EntityFrameworkCore.Sqlite.Core` y el cifrado de SQLite3 Multiple Ciphers (`SQLite3MC.PCLRaw.bundle`, licencia MIT) en modo compatible con SQLCipher 4. Se descartan `SQLitePCLRaw.bundle_e_sqlcipher` (obsoleto) y el SQLCipher oficial para .NET (licencia comercial); ver `docs/stack.md`. El `DbContext`, las configuraciones y las migraciones viven solo en `Infrastructure`; `Domain` y `Application` no referencian EF Core. `Application` define interfaces de repositorio y `Infrastructure` las implementa, de modo que una futura web pueda usar otro almacén.
 *Alternativa descartada*: SQL explícito con Microsoft.Data.Sqlite. Da más control fino, pero EF Core aporta modelo, migraciones y consultas tipadas con menos código a mantener. El control necesario sobre la copia previa y el rechazo de versiones nuevas se obtiene envolviendo el migrador (ver D5).
 
 ### D4. Clave de cifrado interna, igual en todas las instalaciones
@@ -78,7 +78,7 @@ Ordenación y búsqueda con comparaciones sensibles a la cultura catalana e inse
 Integración continua con matriz Windows, Linux y macOS que compila y ejecuta las pruebas. Esto cubre la limitación de probar en Windows solo de forma puntual. Las pruebas de persistencia usan ficheros temporales reales, no simulaciones.
 
 ### D11. Distribución
-- **Windows**: instalador creado con Inno Setup, la herramienta estándar y gratuita. Admite instalación por usuario (sin administrador) y por equipo, y permite que la desinstalación conserve los datos por defecto.
+- **Windows**: instalador creado con Inno Setup, la herramienta estándar y gratuita, sin firma de código en v1 (el certificado es de pago y el proyecto es de coste cero; el instalador mostrará el aviso de SmartScreen, que se documenta). Admite instalación por usuario (sin administrador) y por equipo, y permite que la desinstalación conserve los datos por defecto.
   *Alternativas descartadas*: WiX/MSI (más potente para despliegue corporativo, pero más complejo de mantener) y MSIX (exige firma y no encaja bien con el modo portable).
 - **Linux**: archivo `tar.gz` portable con el fichero marcador en v1. AppImage o paquetes nativos, más adelante si hay demanda.
 - **macOS**: paquete `.app` comprimido en `.zip` en v1, sin firmar ni notarizar (el usuario tendrá que autorizarlo la primera vez). Firma y notarización, más adelante si se distribuye fuera del desarrollo.
@@ -109,11 +109,11 @@ Registro en fichero con rotación y tamaño máximo, en la carpeta de datos (o j
 - **Umbral de 300 ms con indicador tardío puede dar sensación de congelación en equipos lentos** → el umbral es configurable en un único lugar y se valida con equipos reales.
 - **Filtrar datos personales del registro es fácil de romper con un mensaje de excepción** → los tipos de error propios no incluyen valores de datos y una prueba comprueba que un error provocado con datos de alumno no deja rastro.
 - **La clave interna es ofuscación fuerte, no seguridad frente a un atacante con el programa** → documentarlo con claridad; mantener la opción de ampliarlo a una clave por centro en el futuro sin cambiar el resto.
-- **SQLCipher y binarios nativos en tres sistemas** → validar el arranque en los tres desde el primer hito y cubrirlo en la matriz de CI.
+- **Cifrado y binarios nativos en tres sistemas** → validar el arranque en los tres desde el primer hito y cubrirlo en la matriz de CI.
 - **Rechazar bases de versión más nueva bloquea al usuario** → el mensaje debe indicar exactamente qué hacer (actualizar la aplicación); nunca degradar ni abrir en modo parcial.
 - **Bloqueo de instancia única sobre carpetas de red o sincronizadas (OneDrive)** → documentar que la base de datos debe estar en disco local; el bloqueo fallido se trata como "ya en uso".
 - **Copia previa a la migración ocupa espacio** → la base es pequeña; se conservan las 3 últimas copias previas y no se acumulan indefinidamente.
-- **EF Core y SQLCipher requieren configuración específica del proveedor** → validar el arranque cifrado en los tres sistemas desde el primer hito y cubrirlo en la matriz de CI.
+- **EF Core y el paquete de cifrado requieren configuración específica del proveedor** → validar el arranque cifrado en los tres sistemas desde el primer hito y cubrirlo en la matriz de CI.
 - **Las migraciones generadas de EF Core pueden ocultar cambios de esquema no deseados** → revisarlas en cada cambio y probar que el modelo no tiene cambios pendientes.
 - **Un `.app` de macOS sin firmar muestra avisos del sistema** → aceptable en v1 (uso de desarrollo y pruebas); documentar el paso de autorización.
 - **`.resx` menos cómodo de editar para traductores** → aceptable en v1 con un solo idioma; el localizador permite cambiar el formato después.

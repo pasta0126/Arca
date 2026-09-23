@@ -31,6 +31,7 @@ Cualquier herramienta puede seguir los mismos pasos con la CLI `openspec`.
 - Los pagos no se editan ni se borran: se anulan con motivo.
 - Exportar y hacer copia de seguridad deben estar siempre disponibles, incluso sin licencia.
 - Debe funcionar en Windows, Linux y macOS.
+- Coste cero, ahora y en el futuro: solo librerías, herramientas y servicios gratuitos y con licencia permisiva; nada que haya que pagar ni que pueda pasar a serlo. Detalle en `docs/stack.md`.
 - Toda acción del usuario da feedback claro (resultado, progreso, errores comprensibles); los principios
   de UX obligatorios están en `openspec/config.yaml`, sección "UX transversal".
 

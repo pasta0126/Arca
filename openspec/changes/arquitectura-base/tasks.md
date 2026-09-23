@@ -15,7 +15,7 @@
 
 ## 3. Almacenamiento local cifrado
 
-- [ ] 3.1 Integrar EF Core con SQLite y SQLCipher en `Infrastructure` y comprobar que carga en Windows, Linux y macOS
+- [ ] 3.1 Integrar EF Core con SQLite cifrado (SQLite3 Multiple Ciphers en formato SQLCipher 4) en `Infrastructure` y comprobar que carga en Windows, Linux y macOS
 - [ ] 3.2 Implementar la apertura con clave interna derivada de un secreto embebido (D4)
 - [ ] 3.3 Implementar la creación de la base de datos en el primer arranque aplicando todas las migraciones desde cero
 - [ ] 3.4 Prueba: el fichero no se puede leer con una herramienta SQLite estándar sin la clave
@@ -73,6 +73,7 @@
 ## 9. Verificación y distribución
 
 - [ ] 9.1 Configurar la integración continua con matriz Windows, Linux y macOS que compile y ejecute todas las pruebas
+- [ ] 9.1b Añadir a la integración continua un control de licencias que liste las de todos los paquetes NuGet y falle si alguna no está en la lista permitida (MIT, Apache 2.0, BSD, ISC, MS-PL), y crear `THIRD-PARTY-NOTICES.md` (coste cero, `docs/stack.md`)
 - [ ] 9.2 Generar el paquete portable con fichero marcador: `zip` en Windows, `tar.gz` en Linux y `.app` comprimido en `.zip` en macOS (D11)
 - [ ] 9.3 Generar el instalador de Windows con Inno Setup, sin requerir conexión, con instalación por usuario o por equipo
 - [ ] 9.4 Comprobar que desinstalar conserva la base de datos y que instalar sobre una versión anterior conserva los datos y migra en el siguiente arranque

@@ -42,5 +42,5 @@ ARCA no tiene todavía ninguna base técnica. Antes de especificar taquillas, al
 
 - **Código**: crea la estructura inicial de la solución; no existe código previo.
 - **Datos personales (RGPD)**: la base de datos contendrá datos de menores en cambios posteriores. Este cambio fija el cifrado en reposo. La clave interna protege frente a la copia del fichero, no frente a quien tenga acceso al programa; esto debe constar en la documentación para la dirección del centro.
-- **Dependencias**: .NET LTS, Avalonia, SQLite con cifrado (SQLCipher) y una herramienta de empaquetado para el instalador de Windows.
+- **Dependencias**: .NET LTS, Avalonia, SQLite con cifrado compatible con SQLCipher (SQLite3 Multiple Ciphers, MIT) y una herramienta de empaquetado para el instalador de Windows.
 - **Decisión heredada**: la clave de cifrado no puede depender del servidor de licencias, para que un corte de licencia nunca deje los datos inaccesibles.

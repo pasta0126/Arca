@@ -1,6 +1,6 @@
 ## 1. Clave firmada
 
-- [ ] 1.1 Modelo de la clave (versión de formato, licencia, centro, emisión, vencimiento, equipos) y verificación de la firma Ed25519 con clave pública embebida (D1)
+- [ ] 1.1 Modelo de la clave (versión de formato, licencia, centro, emisión, vencimiento, equipos) y verificación de la firma Ed25519 (NSec.Cryptography) con clave pública embebida (D1)
 - [ ] 1.2 Lectura del texto pegado o de fichero, ignorando espacios y saltos de línea sobrantes
 - [ ] 1.3 Reglas de sustitución: vencimiento posterior, rechazo de igual o anterior, confirmación al cambiar de centro
 - [ ] 1.4 Códigos de error y claves de recurso en catalán de la clave

@@ -16,7 +16,7 @@ context: |
   - Capes ben separades; la lògica de negoci és l'única font de veritat:
     * Domini/aplicació: class library .NET sense cap dependència d'UI (reutilitzable
       en una futura web/API).
-    * Persistència: Entity Framework Core amb SQLite xifrat (SQLCipher), només a
+    * Persistència: Entity Framework Core amb SQLite xifrat (compatible amb SQLCipher 4, via SQLite3 Multiple Ciphers), només a
       Infrastructure, darrere d'interfícies de repositori definides a Application.
     * UI d'escriptori: Avalonia UI, MVVM.
   - BBDD local, un sol PC, sense concurrència.
@@ -187,6 +187,8 @@ context: |
   ## Convencions
   - Specs i documentació de projecte en castellà; textos de la UI en català.
   - Els noms de codi (classes, tests) en anglès.
+  - Cost zero, ara i en el futur: només llibreries, eines i serveis gratuïts amb llicència permissiva
+    (MIT, Apache 2.0, BSD); res que s'hagi de pagar ni que pugui passar a ser de pagament.
 
 rules:
   proposal:
