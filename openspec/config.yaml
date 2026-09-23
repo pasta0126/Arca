@@ -1,0 +1,192 @@
+schema: spec-driven
+
+context: |
+  # ARCA — gestió de taquilles (armariets) d'un centre educatiu
+
+  ## Producte
+  Aplicació d'escriptori per als conserges d'un centre educatiu. Gestiona taquilles,
+  l'alumne assignat a cadascuna i si està al corrent de pagament.
+  Usuari final: conserges (perfil no tècnic). L'eina ha de ser extremadament simple,
+  atractiva i, en tasques de risc, guiada pas a pas.
+  Idioma de treball de l'equip: castellà. Idioma de la UI: català.
+
+  ## Stack i arquitectura
+  - .NET (LTS) multiplataforma: Windows (principal), Linux i macOS. Es desenvolupa a macOS
+    i es prova a Windows de manera puntual, per tant tot ha de funcionar als tres SO.
+  - Capes ben separades; la lògica de negoci és l'única font de veritat:
+    * Domini/aplicació: class library .NET sense cap dependència d'UI (reutilitzable
+      en una futura web/API).
+    * Persistència: Entity Framework Core amb SQLite xifrat (SQLCipher), només a
+      Infrastructure, darrere d'interfícies de repositori definides a Application.
+    * UI d'escriptori: Avalonia UI, MVVM.
+  - BBDD local, un sol PC, sense concurrència.
+  - Instal·lador (principal) i versió portable (per a PCs sense permisos d'administrador).
+    La ruta de la BBDD ha de ser configurable.
+  - Versionat i migracions d'esquema de BBDD entre versions.
+
+  ## Idioma (i18n)
+  - v1: només català. L'arquitectura ha de ser multiidioma des del principi:
+    cap text literal al codi ni a les vistes, tot per claus en fitxers de recursos.
+  - Dates, nombres i imports segons la cultura activa.
+  - Futur: castellà i anglès amb selector; només caldrà traduir.
+
+  ## Domini (decisions preses)
+  - Taquilles: 300+, nombre correlatiu (únic entre les actives), agrupades en zones/passadissos (fixes).
+    Estats: lliure, ocupada, avariada, reservada (amb o sense alumne, nota lliure opcional).
+    Si s'avaria una taquilla ocupada, l'app demana: reassignar, mantenir o alliberar.
+    Alta inicial per rangs i per importació CSV.
+    Zones: es poden crear, reanomenar i desactivar des de configuració; no s'esborren si
+    han tingut taquilles.
+  - Alumnes: 1 alumne = 1 taquilla per curs. Dades: nom, cognoms, nivell, grup i les mínimes per reconèixer-los.
+    Alta manual i importació CSV amb pantalla de revisió prèvia
+    (duplicats, homònims, canvis de grup) abans de confirmar.
+    L'alumne és una persona que persisteix entre cursos (mateixa fitxa); cada curs té la
+    seva matrícula (nivell i grup) i historial.
+  - Curs escolar: any acadèmic (p. ex. 2026-2027) amb dates d'inici i fi; un de sol actiu,
+    els altres queden com a històric.
+  - Nivells i grups: el nivell (1r a 4t d'ESO, 1r i 2n de Batxillerat en v1; FP i altres
+    en versions posteriors) i el grup arriben al fitxer d'importació. El catàleg
+    s'alimenta dels fitxers i la revisió només mostra els valors nous.
+  - Conciliació d'alumnes (importació anual i durant el curs): el fitxer de secretaria és
+    la font de veritat. Els alumnes NO es promocionen amb un assistent:
+    * coincideix amb un alumne existent: s'actualitzen nivell i grup (mateixa fitxa i dades);
+    * no existeix: es crea, al nivell on arriba (pot arribar a mig curs);
+    * existeix però no és al fitxer: es dona de baixa (finalistes de 2n de Batxillerat,
+      alumnes que se'n van...). Si un alumne de baixa reapareix (p. ex. un repetidor),
+      es reactiva.
+    Tot es mostra en una revisió prèvia amb recomptes (nous, actualitzats, baixes,
+    reactivats, dubtosos) abans de confirmar. Salvaguarda: si les baixes superen un
+    percentatge alt dels alumnes actius, la revisió avisa que potser el fitxer no és el correcte.
+  - Reconeixement d'alumnes per prioritat de clau: identificador (si el fitxer en porta),
+    correu, nom i cognoms. Els casos dubtosos o homònims els decideix el conserge a la revisió.
+    Dades disponibles al fitxer: nom, cognoms, correu i possible DNI o altre identificador
+    La clau de reconeixement és configurable fins a veure el fitxer d'exemple (decisió sobre
+    identificador/DNI pendent, tema RGPD). El correu només serveix per reconèixer l'alumne
+    (distingir homònims); l'app no envia mai correus.
+  - Format del fitxer d'alumnes de secretaria: PENDENT de rebre un fitxer d'exemple;
+    la importació ha de tenir un assistent de correspondència de columnes que recordi
+    l'elecció.
+  - Pagaments (REVISAT, pendent de tancar detalls): no hi ha mètodes de pagament.
+    Import de la quota i de la fiança fixos per a tots els alumnes però definits per curs
+    (a qui ja ha pagat no l'afecta un canvi posterior). Estats d'un concepte per alumne:
+    pendent, pagat (amb data), exempt (amb motiu) i condonat (amb motiu).
+    La quota és anual (per alumne i curs). La fiança és ÚNICA durant tota l'estada de
+    l'alumne al centre, no per curs.
+    Exempcions des de v1: un alumne pot estar exempt de pagament (beques, situacions
+    especials) en quota i/o fiança, amb nota/motiu. Cas particular de fiança: alumne sense
+    dipòsit real encara que consti com a tal, amb nota.
+    Deute: es pot CONDONAR (amb motiu) o ARROSSEGAR (queda pendent i s'avisa en assignar).
+    Els pagaments no s'editen ni s'esborren: només s'anul·len amb motiu, i queda historial.
+    Reposició de clau: concepte puntual de cobrament (el conserge decideix si es cobra).
+    La fiança només es marca com a retornada (sense moviment comptable).
+  - El deute és de l'alumne per curs, no de la taquilla. En canviar de taquilla el
+    pagament el segueix (no es torna a pagar).
+  - Baixa d'alumne a mig curs: la taquilla s'allibera, la fiança es marca com a retornada
+    amb una anotació (motiu i nota sobre el reemborsament).
+  - Assignació: es pot fer des de l'alumne, des de la taquilla o arrossegant l'alumne sobre
+    una taquilla lliure (amb alternativa de teclat/menú); tots els camins apliquen les
+    mateixes validacions. Suggeriment: la taquilla lliure de número més baix de la zona.
+    Sempre n'hi ha per a tothom: sense llista d'espera.
+  - Alumne amb deute de cursos anteriors: l'app avisa i exigeix confirmació explícita
+    del conserge abans d'assignar.
+  - Abast v1: inclou control de claus, incidències i manteniment (el README ho esmenta).
+  - Claus: llave del centre, una per taquilla, sense identificar. Es registra l'estat
+    de la clau dins l'assignació (lliurada, retornada, perduda) amb dates.
+    Si es perd, el conserge decideix si cobra la reposició (pot haver-hi excepcions).
+    La clau es lliura i retorna cada curs sense afectar la fiança: la fiança és única per
+    estada i només es retorna quan l'alumne causa baixa.
+  - Manteniment (v1): historial per taquilla de tot el que li ha anat passant (incidències
+    i manteniments) i operacions en bloc: posar un grup de taquilles (per zona, rang o
+    llista) en manteniment o avariades d'un sol cop, amb motiu i nota opcional, i reparar-les
+    també en bloc. Les tasques programades, recurrents o anuals, els recordatoris i la
+    revisió general de final de curs són organització pròpia dels conserges: queden
+    fora de v1 (v2 o mai). Sense adjunts ni costos.
+    Compres i substitucions: alta i baixa simples amb historial (sense traspàs de número).
+    El número de taquilla només és únic entre les actives: un número donat de baixa
+    es pot reutilitzar i poden coexistir una baixa i una activa amb el mateix número.
+    La identitat real és un id intern; l'historial va lligat a l'id, no al número.
+  - Estat de servei d'una taquilla: operativa, avariada o en manteniment (tipus excloents;
+    tots dos la deixen fora de servei i no assignable). Es marca per una incidència amb
+    motiu (d'una llista editable) i nota opcional; en marcar-la reparada torna a operativa.
+    Una sola incidència oberta per taquilla; només el conserge la registra. Sense estats
+    intermedis (obert/en curs), adjunts ni costos. Si estava ocupada, s'aplica el flux
+    "reassignar, mantenir o alliberar". La baixa de la taquilla tanca la incidència oberta.
+  - Final de curs: alliberament massiu de taquilles amb historial guardat; sense renovació automàtica. Els alumnes s'actualitzen després amb la importació anual (conciliació).
+  - Morosos: marca visual i llistat exportable; sense cartes ni alliberament automàtic.
+  - Conservació: es pot esborrar o anonimitzar dades anteriors a N cursos (configurable).
+  - Sense login ni rols; els moviments no registren qui els ha fet.
+
+  ## Fitxers d'intercanvi
+  Només CSV, per sempre (importació i exportació). Mai Excel (.xlsx).
+
+  ## Informes
+  Llistats: morosos, taquilles lliures/avariades, assignacions per zona o grup,
+  resum de cobraments. Només exportació CSV (UTF-8 amb BOM, separador ';').
+  Capçaleres a l'idioma actiu. Sense PDF, impressió ni rebuts.
+
+  ## Còpies de seguretat i seguretat
+  - Còpies estrictament manuals (botons Fer còpia / Restaurar). Cap còpia ni recordatori
+    automàtic. Verificar/fer còpia abans de migrar l'esquema.
+  - BBDD xifrada amb clau interna (transparent, sense contrasenya).
+  - RGPD: dades de menors; recollir el mínim imprescindible.
+
+  ## Llicències
+  - Model híbrid: clau signada (criptografia asimètrica, l'app només porta la clau pública)
+    amb caducitat, més comprovació online oportunista que pot revocar-la abans.
+  - Associada al centre i a un nombre limitat d'equips (activació per empremta d'equip).
+  - En caducar o revocar-se: període de gràcia amb avisos i després només lectura.
+    Exportar i fer còpia han d'estar SEMPRE disponibles.
+  - La clau de xifrat de la BBDD no pot dependre del servidor de llicències.
+  - L'app només envia al servidor: identificador de centre, empremta d'equip, versió i data.
+    Mai dades d'alumnes. Sense connexió, funciona amb la clau signada fins que caduqui.
+  - El servidor de llicències és un ALTRE projecte, fora d'aquest repo. Aquí només hi ha
+    el client de llicències i el document de requisits per al servidor (docs/).
+
+  ## Decisions obertes
+  - Pantalla principal (dashboard, cercador o treball en detall): validar amb conserges.
+    Segur: cerca global sempre visible (alumne/taquilla/grup) amb estat de pagament.
+  - Fitxer d'exemple de secretaria (columnes, contingut: tot el centre o només nous).
+  - Quines dades d'identificació es desen (identificador, correu, DNI) segons RGPD.
+  - Detalls del backend de llicències i límit d'equips per clau.
+
+  ## UI
+  Només ratolí i teclat (dreceres i focus ben cuidats), sense disseny tàctil.
+  Tema clar i fosc, amb identitat del centre configurable (logo i color).
+
+  ## UX transversal (principis obligatoris per a tots els canvis)
+  - Feedback constant: tota acció de l'usuari té resultat visible (èxit, avís o error)
+    amb text clar a l'idioma actiu i, si cal, què fer després. Mai errors tècnics crus.
+  - Pantalla d'arrencada (splash) amb les etapes reals (obrir BBDD, migrar...).
+  - Indicadors de treball (loaders) en operacions que triguen; la UI no es bloqueja mai;
+    progrés amb recomptes (p. ex. "120 de 300") en operacions llargues; cancel·lació
+    només quan no deixa dades a mitges.
+  - Protecció contra doble execució (doble clic) i confirmació explícita, amb la
+    conseqüència indicada, en accions irreversibles.
+  - Notificacions no bloquejants: l'èxit desapareix sol; els errors romanen fins a tancar-los.
+  - Estats buits i de càrrega amb guia (què fer a continuació).
+  - Càrrega sota demanda: llistes llargues virtualitzades o paginades i detall carregat en
+    obrir-lo; càrrega explícita a la persistència (sense lazy-loading implícit d'EF Core).
+  - Interfície clara i útil, menús senzills, ordre coherent d'accions i drecers de teclat.
+  - Interfície adaptable a mida de finestra i DPI; seccions col·lapsables i zones
+    compactables per estalviar espai; drag and drop només on aporta valor i sempre amb
+    alternativa de teclat i de menú.
+  - Configuració guiada: assistents (wizard) per a la configuració inicial i tasques de risc.
+  - Registre tècnic local d'errors inesperats, sense dades personals.
+
+  ## Convencions
+  - Specs i documentació de projecte en castellà; textos de la UI en català.
+  - Els noms de codi (classes, tests) en anglès.
+
+rules:
+  proposal:
+    - Incluir una sección de "Fuera de alcance" (non-goals)
+    - Indicar el impacto en RGPD si se tocan datos de alumnos
+  specs:
+    - Escenarios con las palabras clave WHEN / THEN / AND (las exige el validador), redactados en castellano e incluyendo casos límite
+    - Ningún requisito puede asumir texto de UI fijo; referirse a claves i18n
+    - Toda operación de usuario debe indicar su feedback (éxito, aviso, error) y, si tarda o es masiva, su progreso; ver "UX transversal"
+    - Las operaciones irreversibles o masivas deben exigir confirmación explícita con la consecuencia indicada
+  design:
+    - Comprobar los principios de "UX transversal" y justificar cualquier excepción
+  tasks:
+    - Incluir tareas de feedback, estados vacíos y de carga cuando el cambio tenga interacción de usuario

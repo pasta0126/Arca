@@ -1,0 +1,106 @@
+# --- .NET build output ---
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+publish/
+*.dll
+*.exe
+*.pdb
+*.nupkg
+*.snupkg
+!**/[Tt]ools/**/*.dll
+
+# --- Tests and coverage ---
+TestResults/
+[Tt]est[Rr]esult*/
+coverage/
+*.coverage
+*.coveragexml
+*.trx
+.coverlet/
+BenchmarkDotNet.Artifacts/
+
+# --- NuGet ---
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+packages/
+.nuget/
+
+# --- Visual Studio / Rider / VS Code ---
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.DotSettings.user
+_ReSharper*/
+*.swp
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# --- Avalonia / packaging ---
+*.app/
+*.dmg
+*.msi
+*.msix
+*.AppImage
+*.zip
+*.tar.gz
+Output/
+installer-output/
+
+# --- Local data: never commit databases, backups or logs of a real center ---
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.arcabak
+*.bak
+arca.portable
+appsettings.Local.json
+appsettings.*.local.json
+*.local.json
+
+# --- Secrets and signing keys ---
+*.pfx
+*.snk
+*.key
+*.pem
+*.p12
+.env
+.env.*
+!.env.example
+secrets.json
+
+# --- Sample data with personal information ---
+/samples-private/
+/private/
+*.private.csv
+
+# --- OS files ---
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*~
+
+# --- AI tools: local state only (shared skills and AGENTS.md ARE versioned) ---
+.claude/settings.local.json
+.claude/*.local.*
+.claude/worktrees/
+.claude/scheduled_tasks.lock
+.agents/*.local.*
