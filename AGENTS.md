@@ -18,7 +18,7 @@ de un centro educativo gestionen taquillas, alumnos asignados y pagos.
 1. Explorar o discutir la idea sin escribir código.
 2. Proponer un cambio: `openspec new change <nombre>` y completar sus artefactos.
 3. Validar: `openspec validate <nombre>`.
-4. Implementar solo cuando las specs del cambio estén aprobadas por la persona responsable.
+4. Implementar solo cuando las specs del cambio estén aprobadas por la persona responsable, siguiendo `docs/flujo-de-trabajo.md` (rama por cambio, un commit por grupo de tareas, parar a revisar y actualizar la spec si choca con la realidad).
 5. Archivar el cambio al terminar: `openspec archive <nombre>`.
 
 Los skills de flujo están en `.agents/skills/` (compartidos) y `.claude/` (Claude Code).

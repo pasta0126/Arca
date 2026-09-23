@@ -15,8 +15,8 @@ Estado de cada punto: `por valorar` · `aceptado` · `descartado` · `hecho`.
 | 5 | Glosario castellano, catalán e inglés | Definir | Ahora | hecho (`docs/glosario.md`); términos por validar con los conserjes |
 | 6 | Catálogo de códigos de error y claves | Definir (convención) e implementar (contenido) | Convención ahora | convención hecha (`docs/convenciones.md`, sección 3); contenido al implementar |
 | 7 | Mapa de dependencias y primer hito vertical | Definir | Ahora | por valorar |
-| 8 | Reglas de trabajo con `/opsx:apply` | Definir | Ahora | por valorar |
-| 9 | Definición de terminado | Definir | Ahora | por valorar |
+| 8 | Reglas de trabajo con `/opsx:apply` | Definir | Ahora | hecho (`docs/flujo-de-trabajo.md`) |
+| 9 | Definición de terminado | Definir | Ahora | hecho (`docs/flujo-de-trabajo.md`, sección 7) |
 | 10 | Datos de ejemplo | Definir (contenido) e implementar (generador) | Contenido ahora | por valorar |
 | 11 | Maquetas de pantallas clave | Definir | Ahora, con los conserjes | por valorar |
 | 12 | Registro de riesgos y pendientes externos | Definir | Ahora | por valorar |
