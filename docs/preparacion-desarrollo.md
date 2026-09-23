@@ -14,12 +14,12 @@ Estado de cada punto: `por valorar` · `aceptado` · `descartado` · `hecho`.
 | 4 | Convenciones de código | Definir | Ahora | hecho (`docs/convenciones.md`) |
 | 5 | Glosario castellano, catalán e inglés | Definir | Ahora | hecho (`docs/glosario.md`); términos por validar con los conserjes |
 | 6 | Catálogo de códigos de error y claves | Definir (convención) e implementar (contenido) | Convención ahora | convención hecha (`docs/convenciones.md`, sección 3); contenido al implementar |
-| 7 | Mapa de dependencias y primer hito vertical | Definir | Ahora | por valorar |
+| 7 | Mapa de dependencias y primer hito vertical | Definir | Ahora | hecho (`docs/hito-1.md`); abre la decisión sobre las pantallas de dominio |
 | 8 | Reglas de trabajo con `/opsx:apply` | Definir | Ahora | hecho (`docs/flujo-de-trabajo.md`) |
 | 9 | Definición de terminado | Definir | Ahora | hecho (`docs/flujo-de-trabajo.md`, sección 7) |
-| 10 | Datos de ejemplo | Definir (contenido) e implementar (generador) | Contenido ahora | por valorar |
+| 10 | Datos de ejemplo | Definir (contenido) e implementar (generador) | Contenido ahora | contenido hecho (`docs/datos-de-ejemplo.md`); generador al implementar |
 | 11 | Maquetas de pantallas clave | Definir | Ahora, con los conserjes | por valorar |
-| 12 | Registro de riesgos y pendientes externos | Definir | Ahora | por valorar |
+| 12 | Registro de riesgos y pendientes externos | Definir | Ahora | hecho (`docs/riesgos.md`) |
 
 Orden recomendado: 2 → 4 → 5 → 6 (convención) → 9 → 8 → 7 → 12 → 10 (contenido) → 11, y después el spike (1) y el esqueleto (3) al arrancar la implementación.
 

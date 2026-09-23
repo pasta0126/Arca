@@ -19,6 +19,7 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 | 12 | `configuracio-inicial` | Asistente guiado de primera configuración | redactado |
 | 13 | `ux-fonaments` | Sistema de diseño: adaptabilidad, colapsables, arrastrar y soltar, menús, componentes de feedback | redactado |
 | 14 | `ui-shell` | Navegación, búsqueda global, pantalla principal, tema e identidad del centro | redactado (pantalla principal provisional: mapa de taquillas por zona) |
+| 15 | `pantalles-de-domini` | Pantallas de dominio (curso e importes, zonas, taquillas, alumnos, cargos, y después el resto), a redactar tras las maquetas | por definir (hallazgo del hito 1) |
 
 ## Fuera de este repositorio
 - Servidor de licencias: otro proyecto. Aquí solo se prepara el documento de requisitos en `docs/` cuando se disponga de los datos.

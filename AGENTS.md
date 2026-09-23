@@ -31,6 +31,7 @@ Cualquier herramienta puede seguir los mismos pasos con la CLI `openspec`.
 - Los pagos no se editan ni se borran: se anulan con motivo.
 - Exportar y hacer copia de seguridad deben estar siempre disponibles, incluso sin licencia.
 - Debe funcionar en Windows, Linux y macOS.
+- Alcance del primer hito: `docs/hito-1.md`. Riesgos y pendientes: `docs/riesgos.md`. Datos ficticios: `docs/datos-de-ejemplo.md`.
 - Convenciones de código, resultado estructurado, errores y pruebas: `docs/convenciones.md`. Términos y traducciones (castellano, catalán, inglés): `docs/glosario.md`.
 - Coste cero, ahora y en el futuro: solo librerías, herramientas y servicios gratuitos y con licencia permisiva; nada que haya que pagar ni que pueda pasar a serlo. Detalle en `docs/stack.md`.
 - Toda acción del usuario da feedback claro (resultado, progreso, errores comprensibles); los principios
