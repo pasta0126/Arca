@@ -33,6 +33,14 @@ dotnet_sort_system_directives_first = true
 file_header_template = SPDX-License-Identifier: GPL-3.0-or-later\nCopyright (c) 2026 Guillermo Garcia Carballo
 dotnet_diagnostic.IDE0073.severity = warning
 
+# ARCA is an application, not a public library: these API-design rules would force names the conventions reject
+# (Error, Result<T>.Success) without helping any consumer.
+dotnet_diagnostic.CA1716.severity = none
+dotnet_diagnostic.CA1000.severity = none
+
 [tests/**.cs]
 # Test names describe the scenario with underscores (docs/convenciones.md)
 dotnet_diagnostic.CA1707.severity = none
+# Test data arrays are throwaway, and some tests call ToString() on purpose to prove it ignores the current culture
+dotnet_diagnostic.CA1861.severity = none
+dotnet_diagnostic.CA1305.severity = none

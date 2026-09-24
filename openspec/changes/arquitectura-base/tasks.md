@@ -7,11 +7,11 @@
 
 ## 2. Puertos y utilidades transversales
 
-- [ ] 2.1 Definir `IClock` y su implementación real y de pruebas (fecha de calendario e instante UTC)
-- [ ] 2.2 Definir el tipo de importe con precisión exacta y su conversión a céntimos
-- [ ] 2.3 Definir el tipo de error de negocio con código estable independiente del idioma
-- [ ] 2.4 Centralizar la comparación y búsqueda de texto según la cultura catalana, insensible a mayúsculas y acentos
-- [ ] 2.5 Pruebas: suma exacta de pagos parciales, fechas estables entre zonas horarias, búsqueda "garcia" ↔ "García", nombres con "ç" y "l·l"
+- [x] 2.1 Definir `IClock` y su implementación real y de pruebas (fecha de calendario e instante UTC)
+- [x] 2.2 Definir el tipo de importe con precisión exacta y su conversión a céntimos
+- [x] 2.3 Definir el tipo de error de negocio con código estable independiente del idioma
+- [x] 2.4 Centralizar la comparación y búsqueda de texto según la cultura catalana, insensible a mayúsculas y acentos
+- [x] 2.5 Pruebas: suma exacta de pagos parciales, fechas estables entre zonas horarias, búsqueda "garcia" ↔ "García", nombres con "ç" y "l·l"
 
 ## 3. Almacenamiento local cifrado
 

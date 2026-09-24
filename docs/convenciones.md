@@ -84,12 +84,13 @@ public sealed record Result<T>(T? Value, IReadOnlyList<Notice> Notices, Error? E
 {
     public bool IsSuccess => Error is null;
     public static Result<T> Success(T value, params Notice[] notices) => new(value, notices, null);
+    // Result<T>, Error, Notice, Money, TextComparer and Cultures live in Arca.Domain/Common; IClock in Arca.Application/Common.
     public static Result<T> Failure(Error error) => new(default, [], error);
 }
 
 // Un aviso o un error lleva un código estable y parámetros, nunca texto traducido.
-public sealed record Error(string Code, Severity Severity = Severity.Error, params object[] Args);
-public sealed record Notice(string Code, params object[] Args);
+public sealed record Error(string Code, Severity Severity = Severity.Error, IReadOnlyList<object>? Args = null);
+public sealed record Notice(string Code, IReadOnlyList<object>? Args = null);
 ```
 
 El código de error de una capacidad se declara una sola vez:

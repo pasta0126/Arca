@@ -7,5 +7,6 @@
   <ItemGroup>
     <PackageReference Include="xunit.v3" />
     <ProjectReference Include="..\..\src\Arca.Infrastructure\Arca.Infrastructure.csproj" />
+    <ProjectReference Include="..\Arca.Testing\Arca.Testing.csproj" />
   </ItemGroup>
 </Project>
