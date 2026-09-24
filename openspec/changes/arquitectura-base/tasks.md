@@ -43,12 +43,12 @@
 
 ## 6. Internacionalización
 
-- [ ] 6.1 Crear `ILocalizer` en Application y su implementación con recursos `.resx`, idioma base catalán
-- [ ] 6.2 Fijar la cultura de formato en catalán de España, ignorando la del sistema operativo
-- [ ] 6.3 Resolver el mensaje visible de cada código de error desde recursos
-- [ ] 6.4 Retroceso al catalán por clave en idiomas adicionales; en ejecución, una clave inexistente muestra la propia clave
-- [ ] 6.5 Prueba automática que recorre las claves usadas y falla si alguna no está en el idioma base
-- [ ] 6.6 Pruebas: formato de importe y de fecha en catalán con el sistema en otra cultura; idioma adicional incompleto
+- [x] 6.1 Crear `ILocalizer` en Application y su implementación con recursos `.resx`, idioma base catalán
+- [x] 6.2 Fijar la cultura de formato en catalán de España, ignorando la del sistema operativo
+- [x] 6.3 Resolver el mensaje visible de cada código de error desde recursos
+- [x] 6.4 Retroceso al catalán por clave en idiomas adicionales; en ejecución, una clave inexistente muestra la propia clave
+- [x] 6.5 Prueba automática que recorre las claves usadas y falla si alguna no está en el idioma base
+- [x] 6.6 Pruebas: formato de importe y de fecha en catalán con el sistema en otra cultura; idioma adicional incompleto
 
 ## 7. Aplicación de escritorio mínima
 

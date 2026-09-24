@@ -127,6 +127,7 @@ public static class LockerErrors
 - Los recursos viven en `src/Arca.Application/Resources/`, un fichero `.resx` por capacidad (`Lockers.resx`). El neutro es el **catalán**; los idiomas nuevos se añaden como `Lockers.es.resx`, `Lockers.en.resx`.
 - **Prueba automática obligatoria**: recorre por reflexión todos los códigos declarados y comprueba que cada uno tiene su clave en catalán, y que ninguna clave usada en el código o en las vistas falta (`arquitectura-base`, spec de i18n).
 - Plantilla: al implementar un cambio se añade su `XxxErrors.cs` y su `.resx` con los códigos que citan sus specs.
+- **Implementación** (`arquitectura-base`, grupo 6): `ILocalizer` y `ResxLocalizer` en `Arca.Application/Localization`. La capacidad (primer segmento de la clave) elige el fichero, y dentro se usa la clave completa como nombre de la entrada (`Storage.Error.Unreadable` en `Storage.resx`). Una clave que no existe muestra la propia clave. La prueba `ResourceCoverageTests` falla si un código declarado en un `XxxErrors` no tiene texto en catalán o si una clave escrita literalmente en `.Get("...")` o `new Notice("...")` no existe.
 
 ## 4. Casos de uso
 

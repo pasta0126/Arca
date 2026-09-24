@@ -9,6 +9,8 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <Deterministic>true</Deterministic>
+    <!-- Catalan is the neutral (base) language of every resource file (arquitectura-base, D8) -->
+    <NeutralLanguage>ca</NeutralLanguage>
     <Authors>Guillermo Garcia Carballo</Authors>
     <Copyright>Copyright (c) 2026 Guillermo Garcia Carballo</Copyright>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
