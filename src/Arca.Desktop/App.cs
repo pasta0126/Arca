@@ -6,17 +6,23 @@ using Arca.Application.Localization;
 using Arca.Application.Startup;
 using Arca.Desktop.Composition;
 using Arca.UI.Startup;
+using Arca.UI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Themes.Fluent;
 using Avalonia.Threading;
 
 namespace Arca.Desktop;
 
 public sealed class App : Avalonia.Application
 {
-    public override void Initialize() => Styles.Add(new FluentTheme());
+    public override void Initialize()
+    {
+        // One theme in v1: light, pastel and neutral, whatever the operating system's own setting is.
+        RequestedThemeVariant = ArcaTheme.Variant;
+        Styles.Add(ArcaTheme.CreateFluent());
+        Resources.MergedDictionaries.Add(ArcaTheme.CreateResources());
+    }
 
     public override void OnFrameworkInitializationCompleted()
     {

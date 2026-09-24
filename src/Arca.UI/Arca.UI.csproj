@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
     <ProjectReference Include="..\Arca.Application\Arca.Application.csproj" />
   </ItemGroup>
 </Project>
