@@ -28,4 +28,10 @@ public static class StorageErrors
 
     /// <summary>A migration failed; the database was left exactly as it was before.</summary>
     public static readonly Error MigrationFailed = new("Storage.MigrationFailed");
+
+    /// <summary>The chosen location does not exist, is not a file path, or cannot be written. Args: {0} path.</summary>
+    public static Error PathNotAccessible(string path) => new("Storage.PathNotAccessible", Args: [path]);
+
+    /// <summary>Another instance already has this database open.</summary>
+    public static readonly Error AlreadyRunning = new("Storage.AlreadyRunning");
 }

@@ -34,12 +34,12 @@
 
 ## 5. Ubicación, modo portable e instancia única
 
-- [ ] 5.1 Resolver la ruta por defecto por sistema operativo sin requerir administrador
-- [ ] 5.2 Implementar el modo portable por fichero marcador junto al ejecutable (D6)
-- [ ] 5.3 Guardar y leer la ruta configurada en un fichero de configuración local
-- [ ] 5.4 Validar la ruta (existencia, permisos de escritura) con mensaje claro y sin crear ni modificar ficheros si falla
-- [ ] 5.5 Implementar el bloqueo de instancia única asociado al fichero de base de datos
-- [ ] 5.6 Pruebas: ruta por defecto, ruta configurada, ruta inaccesible, modo portable con y sin marcador, segunda instancia
+- [x] 5.1 Resolver la ruta por defecto por sistema operativo sin requerir administrador
+- [x] 5.2 Implementar el modo portable por fichero marcador junto al ejecutable (D6)
+- [x] 5.3 Guardar y leer la ruta configurada en un fichero de configuración local
+- [x] 5.4 Validar la ruta (existencia, permisos de escritura) con mensaje claro y sin crear ni modificar ficheros si falla
+- [x] 5.5 Implementar el bloqueo de instancia única asociado al fichero de base de datos
+- [x] 5.6 Pruebas: ruta por defecto, ruta configurada, ruta inaccesible, modo portable con y sin marcador, segunda instancia
 
 ## 6. Internacionalización
 
