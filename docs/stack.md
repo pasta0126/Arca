@@ -45,7 +45,7 @@ Decisión del proyecto: **por ahora no hay CI remota**. La lógica de comprobaci
 Notas:
 - Un **paquete portable de Windows se genera desde macOS** (`dotnet publish -r win-x64`); los binarios nativos de SQLite3 Multiple Ciphers y de libsodium ya incluyen `win-x64`. El **instalador de Inno Setup sí exige Windows**, y queda diferido al hito 2.
 - El riesgo de esta decisión es que un fallo que solo ocurre en Windows se detecta cuando alguien lo prueba, no en cada commit (riesgo T7 en `docs/riesgos.md`). Se acota con la cadencia anterior y con scripts idénticos en las tres máquinas.
-- **Servidor propio** (`void-server`, Raspberry Pi arm64 con Docker, compartido con otros proyectos): no puede ejecutar Windows ni macOS y ya tiene carga de producción, así que **no se usa como CI**. Sí puede servir, si se quisiera, para alojar los paquetes de prueba o para una verificación adicional de Linux arm64 con límites de recursos. Se valora cuando haga falta.
+- **Servidor propio** (un equipo Linux arm64 con Docker, compartido con otros proyectos): no puede ejecutar Windows ni macOS y ya tiene carga de producción, así que **no se usa como CI**. Sí puede servir, si se quisiera, para alojar los paquetes de prueba o para una verificación adicional de Linux arm64 con límites de recursos. Se valora cuando haga falta.
 - **Sin secretos de cifrado en el código**: la llave de la base sale de la contraseña del centro y de una clave de recuperación (`acces-i-xifrat`). No hay ninguna llave que inyectar al compilar y cualquier compilación abre una base con la contraseña correcta.
 - Si se quisiera una CI remota, se crea un flujo que solo llame a los scripts, sin lógica propia.
 
