@@ -36,6 +36,25 @@ public sealed class CrossPlatformFixtureTests
     }
 
     [Fact]
+    [Trait("spec", "arquitectura-base/emmagatzematge-local: Migraciones de esquema seguras (copia verificada antes de migrar)")]
+    public async Task The_old_sample_file_is_migrated_on_open_after_a_verified_copy()
+    {
+        // The sample predates the first migration, so opening it exercises the real upgrade path.
+        using var dir = new TempDirectory();
+        var copy = dir.File("copy.db");
+        File.Copy(Path.Combine(AppContext.BaseDirectory, "Fixtures", FixtureName), copy);
+        using var key = TestKeys.Fixture();
+
+        var opened = await ArcaDatabase.OpenAsync(copy, key);
+
+        Assert.True(opened.IsSuccess, opened.Error?.Code);
+        await using var context = opened.Value!;
+        var history = await context.Database.SqlQueryRaw<string>("SELECT MigrationId AS Value FROM __EFMigrationsHistory").ToListAsync();
+        Assert.Contains(history, id => id.EndsWith("_InitialCreate", StringComparison.Ordinal));
+        Assert.Single(Arca.Infrastructure.Storage.SchemaMigrator.CopiesOf(copy));
+    }
+
+    [Fact]
     public async Task Regenerate_the_sample_file_when_asked()
     {
         Assert.SkipUnless(

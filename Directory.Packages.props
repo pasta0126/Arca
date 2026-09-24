@@ -11,6 +11,7 @@
     <!-- Storage: encrypted SQLite (SQLCipher 4 format) via EF Core; never Microsoft.EntityFrameworkCore.Sqlite -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="10.0.12" />
     <PackageVersion Include="SQLite3MC.PCLRaw.bundle" Version="2.4.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12" />
     <!-- Tests: xunit.v3 is pinned to 3.2.2 because Avalonia.Headless.XUnit 12.1.3 fails with 4.x -->
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
   </ItemGroup>

@@ -10,7 +10,7 @@ namespace Arca.Infrastructure.Storage;
 /// The EF Core context over the encrypted file. Lazy loading is off (arquitectura-base, D15):
 /// relations are loaded explicitly in each query. Entities arrive with each domain capability.
 /// </summary>
-public sealed class ArcaDbContext(string path, DatabaseKey key, bool create = false) : DbContext
+public class ArcaDbContext(string path, DatabaseKey key, bool create = false) : DbContext
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

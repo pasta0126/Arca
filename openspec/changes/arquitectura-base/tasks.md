@@ -24,13 +24,13 @@
 
 ## 4. Migraciones de esquema
 
-- [ ] 4.1 Crear la migración inicial de EF Core y el servicio migrador propio que sustituye al `Migrate()` directo (D5)
-- [ ] 4.2 Rechazar sin tocar el fichero una base de datos cuyo historial contiene migraciones desconocidas (versión más nueva)
-- [ ] 4.3 Crear la copia previa junto al original y verificar su integridad antes de migrar
-- [ ] 4.4 Ejecutar las migraciones en una transacción con reversión completa ante fallos
-- [ ] 4.5 Conservar solo las 3 últimas copias previas a migración tras migrar con éxito
-- [ ] 4.6 Prueba que falla si el modelo de EF Core tiene cambios sin migración
-- [ ] 4.7 Pruebas: esquema ya actualizado (sin copia), migración correcta, fallo a mitad de camino, copia corrupta, versión más nueva, retención de copias
+- [x] 4.1 Crear la migración inicial de EF Core y el servicio migrador propio que sustituye al `Migrate()` directo (D5)
+- [x] 4.2 Rechazar sin tocar el fichero una base de datos cuyo historial contiene migraciones desconocidas (versión más nueva)
+- [x] 4.3 Crear la copia previa junto al original y verificar su integridad antes de migrar
+- [x] 4.4 Ejecutar las migraciones en una transacción con reversión completa ante fallos
+- [x] 4.5 Conservar solo las 3 últimas copias previas a migración tras migrar con éxito
+- [x] 4.6 Prueba que falla si el modelo de EF Core tiene cambios sin migración
+- [x] 4.7 Pruebas: esquema ya actualizado (sin copia), migración correcta, fallo a mitad de camino, copia corrupta, versión más nueva, retención de copias
 
 ## 5. Ubicación, modo portable e instancia única
 

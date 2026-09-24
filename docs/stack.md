@@ -101,6 +101,7 @@ SQLite3 Multiple Ciphers escribe en formato compatible con SQLCipher, es gratuit
 
 | Elemento | Decisión | Notas |
 |----------|----------|-------|
+| Migraciones de EF Core | Herramienta local `dotnet-ef` 10.0.12 (`dotnet-tools.json`, MIT) y el paquete `Microsoft.EntityFrameworkCore.Design` solo en tiempo de diseño | Crear una migración: `dotnet dotnet-ef migrations add <Nombre> --project src/Arca.Infrastructure --output-dir Storage/Migrations`. El código generado se marca como tal en `.editorconfig`. `MigrateAsync` funciona dentro de una transacción de usuario en EF Core 10 (comprobado). |
 | Gestión de paquetes | Central Package Management (`Directory.Packages.props`) | Una sola versión por paquete en toda la solución. |
 | SDK | `global.json` con la versión fijada | |
 | Calidad de código | Nullable activado, analizadores de .NET y `.editorconfig`, advertencias como errores en CI | |

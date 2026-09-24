@@ -37,8 +37,7 @@ public static class ArcaDatabase
         var context = new ArcaDbContext(path, key, create: true);
         try
         {
-            // Migrations replace this with the wrapped migrator in group 4 of arquitectura-base.
-            await context.Database.MigrateAsync(ct);
+            await new SchemaMigrator(() => new ArcaDbContext(path, key, create: true)).ApplyToNewDatabaseAsync(ct);
             await context.Database.ExecuteSqlRawAsync($"PRAGMA application_id = {ApplicationId}", ct);
             return Result<ArcaDbContext>.Success(context);
         }
@@ -68,7 +67,10 @@ public static class ArcaDatabase
             return Result<ArcaDbContext>.Failure(probe);
         }
 
-        return Result<ArcaDbContext>.Success(new ArcaDbContext(path, key));
+        var migrated = await new SchemaMigrator(() => new ArcaDbContext(path, key)).MigrateAsync(path, key, ct);
+        return migrated.IsSuccess
+            ? Result<ArcaDbContext>.Success(new ArcaDbContext(path, key))
+            : Result<ArcaDbContext>.Failure(migrated.Error!);
     }
 
     static async Task<Error?> ProbeAsync(string path, DatabaseKey key, CancellationToken ct)
