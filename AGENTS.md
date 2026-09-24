@@ -29,10 +29,11 @@ Cualquier herramienta puede seguir los mismos pasos con la CLI `openspec`.
 - La lógica de negocio vive en una biblioteca sin dependencias de UI.
 - Nunca enviar datos de alumnos fuera del equipo.
 - Los pagos no se editan ni se borran: se anulan con motivo.
-- Exportar y hacer copia de seguridad deben estar siempre disponibles, incluso sin licencia.
+- Exportar y hacer copia de seguridad deben estar siempre disponibles.
 - Debe funcionar en Windows, Linux y macOS.
 - Alcance del primer hito: `docs/hito-1.md`. Riesgos y pendientes: `docs/riesgos.md`. Datos ficticios: `docs/datos-de-ejemplo.md`.
 - Convenciones de código, resultado estructurado, errores y pruebas: `docs/convenciones.md`. Términos y traducciones (castellano, catalán, inglés): `docs/glosario.md`.
+- Software libre y gratuito bajo GPL-3.0 (`LICENSE`), con la marca «ARCA» reservada (`TRADEMARK.md`). No hay licencias ni claves de activación: la aplicación nunca se bloquea. Los secretos y claves privadas (por ejemplo la de firma de avisos de versión) nunca van en el repositorio ni en su historial, y no hay ningún secreto de cifrado en el código: la llave de la base sale de la contraseña del centro (`acces-i-xifrat`).
 - Coste cero, ahora y en el futuro: solo librerías, herramientas y servicios gratuitos y con licencia permisiva; nada que haya que pagar ni que pueda pasar a serlo. Detalle en `docs/stack.md`.
 - Toda acción del usuario da feedback claro (resultado, progreso, errores comprensibles); los principios
   de UX obligatorios están en `openspec/config.yaml`, sección "UX transversal".
@@ -43,5 +44,5 @@ Cualquier herramienta puede seguir los mismos pasos con la CLI `openspec`.
 - Código (identificadores, tests, commits): inglés.
 
 ## Fuera de este repositorio
-El servidor de licencias es otro proyecto. Aquí solo vive el cliente de licencias y el
-documento de requisitos para ese servidor (`docs/`).
+El servidor de registro y avisos de versión es otro proyecto. Aquí solo vive el cliente
+(`registre-i-actualitzacions`) y su contrato público (`docs/registro-de-instalaciones.md`).

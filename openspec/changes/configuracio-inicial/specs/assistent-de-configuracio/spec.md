@@ -5,18 +5,18 @@ Guiar la puesta en marcha de ARCA, y el arranque de cada curso nuevo, con una li
 ## ADDED Requirements
 
 ### Requirement: Pasos del asistente
-El sistema SHALL presentar la configuración como una lista guiada de pasos en este orden: curso escolar, importes del curso, zonas, taquillas, alumnos y licencia, cada uno con su explicación y el estado en que está.
+El sistema SHALL presentar la configuración como una lista guiada de pasos en este orden: curso escolar, importes del curso, zonas, taquillas y alumnos, cada uno con su explicación y el estado en que está.
 
 #### Scenario: Lista de pasos
 - **WHEN** el usuario abre el asistente
-- **THEN** ve los seis pasos en orden con su estado y una breve explicación de para qué sirve cada uno
+- **THEN** ve los cinco pasos en orden con su estado y una breve explicación de para qué sirve cada uno
 
 ### Requirement: Estado de los pasos derivado de los datos
 El sistema SHALL deducir el estado de cada paso de los datos existentes y SHALL guardar únicamente las omisiones y el descarte del asistente.
 
 #### Scenario: Estados derivados
 - **WHEN** hay un curso activo con importes, dos zonas y ninguna taquilla
-- **THEN** los pasos de curso, importes y zonas figuran como hechos y los de taquillas, alumnos y licencia como pendientes
+- **THEN** los pasos de curso, importes y zonas figuran como hechos y los de taquillas y alumnos como pendientes
 
 #### Scenario: Cambio fuera del asistente
 - **WHEN** el usuario crea una zona desde su pantalla habitual
@@ -111,21 +111,6 @@ El sistema SHALL permitir en el paso de alumnos importar alumnos desde el ficher
 - **WHEN** no hay curso activo
 - **THEN** el paso de alumnos indica que primero hay que completar el de curso escolar
 
-### Requirement: Paso de licencia
-El sistema SHALL mostrar en el paso de licencia el estado actual y los días de prueba restantes, SHALL permitir introducir la clave y SHALL permitir continuar con la prueba, considerándolo hecho cuando hay una licencia activa.
-
-#### Scenario: Continuar con la prueba
-- **WHEN** el usuario elige continuar con la prueba
-- **THEN** el paso queda omitido y se muestran los días restantes
-
-#### Scenario: Introducir la clave
-- **WHEN** el usuario introduce una clave válida
-- **THEN** la licencia queda activa y el paso figura como hecho
-
-#### Scenario: Prueba agotada
-- **WHEN** la prueba ha terminado y la licencia está en solo lectura al abrir el asistente
-- **THEN** el paso de licencia figura como el primero pendiente, explica que los pasos que guardan datos no están disponibles hasta activar una clave y ofrece introducirla
-
 ### Requirement: Reanudación
 El sistema SHALL abrir el asistente en el primer paso pendiente en cada arranque mientras haya pasos obligatorios pendientes, y SHALL no reabrirlo automáticamente cuando lo obligatorio esté hecho y el usuario lo haya descartado o terminado.
 
@@ -146,7 +131,7 @@ El sistema SHALL permitir abrir la configuración guiada en cualquier momento de
 
 #### Scenario: Volver a abrir
 - **WHEN** el usuario abre la configuración guiada desde ajustes
-- **THEN** ve el estado actual de los seis pasos y puede abrir cualquiera
+- **THEN** ve el estado actual de los cinco pasos y puede abrir cualquiera
 
 #### Scenario: Volver a abrir un paso omitido
 - **WHEN** el usuario abre un paso omitido
@@ -156,8 +141,8 @@ El sistema SHALL permitir abrir la configuración guiada en cualquier momento de
 El sistema SHALL permitir avanzar, retroceder y saltar entre pasos, mostrar el progreso como recuento de pasos hechos sobre el total y sugerir siempre el siguiente paso.
 
 #### Scenario: Progreso
-- **WHEN** hay tres pasos hechos de seis
-- **THEN** el asistente muestra "3 de 6" y sugiere el siguiente pendiente
+- **WHEN** hay tres pasos hechos de cinco
+- **THEN** el asistente muestra "3 de 5" y sugiere el siguiente pendiente
 
 #### Scenario: Terminado
 - **WHEN** todos los pasos están hechos

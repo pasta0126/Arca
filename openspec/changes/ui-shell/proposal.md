@@ -5,12 +5,12 @@ Con las capacidades de dominio y los componentes comunes definidos, falta el mar
 ## What Changes
 
 - Navegación con una barra lateral fija de secciones (Inicio, Taquillas, Alumnos, Cobros, Llaves e incidencias, Informes, Curso y Ajustes), colapsable a solo iconos, con indicadores de aviso.
-- Cabecera con el nombre y el logo del centro, el curso activo (o en cierre) y el indicador de licencia con sus días restantes.
+- Cabecera con el nombre y el logo del centro, el curso activo (o en cierre).
 - Búsqueda global siempre visible que encuentra alumnos, taquillas y grupos con su estado de pago y de taquilla, navegable con teclado y con atajo.
 - Identidad del centro configurable (nombre, logo y color de acento) y tema claro, oscuro o del sistema, con contraste garantizado sobre el color elegido.
 - Pantalla principal provisional: mapa de taquillas por zona con su estado, filtros, panel de detalle y lista de alumnos sin taquilla para asignar arrastrando. Se registra como pantalla de inicio sustituible.
 - Mapa de secciones que reparte las pantallas de cada capacidad y define el patrón común de lista, detalle y acciones.
-- Avisos globales del estado de la aplicación: sin curso activo, curso en cierre, licencia en prueba o gracia y asistente de configuración pendiente.
+- Avisos globales del estado de la aplicación: sin curso activo, curso en cierre, versión nueva disponible y asistente de configuración pendiente.
 
 ## Capabilities
 
@@ -35,4 +35,4 @@ Con las capacidades de dominio y los componentes comunes definidos, falta el mar
 
 - **Código**: proyecto de UI con ventana principal, navegación, modelos de vista de secciones, servicio de búsqueda global en Application y de identidad en Application e Infrastructure; almacenamiento del nombre, el logo y el acento en la base de datos y de la preferencia de tema en los ajustes locales.
 - **Datos personales (RGPD)**: la búsqueda y el mapa muestran nombres de menores en pantalla y su estado de pago; no se exportan ni se registran. El logo y el nombre del centro no son datos personales. Las notificaciones y el registro técnico no incluyen nombres.
-- **Depende de**: todos los cambios anteriores; en especial `ux-fonaments`, `alumnes-i-assignacions`, `taquilles-i-zones`, `pagaments`, `llicencies-client` y `configuracio-inicial`.
+- **Depende de**: todos los cambios anteriores; en especial `ux-fonaments`, `alumnes-i-assignacions`, `taquilles-i-zones`, `pagaments`, `registre-i-actualitzacions` y `configuracio-inicial`.

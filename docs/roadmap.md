@@ -15,18 +15,19 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 | 8 | `cursos-i-historial` | Cierre de curso guiado con liberación masiva de taquillas y devolución masiva de llaves, apertura del curso siguiente, conservación y anonimización. La actualización de alumnos (niveles, grupos, bajas de finalistas, repetidores) se hace con la conciliación de la importación anual, definida en `alumnes-i-assignacions` | redactado |
 | 9 | `informes-csv` | Morosos, taquillas libres y averiadas, asignaciones, resumen de cobros (solo CSV) | redactado |
 | 10 | `copies-de-seguretat` | Copia y restauración manuales | redactado |
-| 11 | `llicencies-client` | Clave firmada, gracia y solo lectura, comprobación online opcional | redactado |
+| 11 | `registre-i-actualitzacions` | Registro opcional de la instalación y aviso de versión nueva (software libre y gratuito, sin licencias) | redactado |
 | 12 | `configuracio-inicial` | Asistente guiado de primera configuración | redactado |
 | 13 | `ux-fonaments` | Sistema de diseño: adaptabilidad, colapsables, arrastrar y soltar, menús, componentes de feedback | redactado |
 | 14 | `ui-shell` | Navegación, búsqueda global, pantalla principal, tema e identidad del centro | redactado (pantalla principal provisional: mapa de taquillas por zona) |
 | 15 | `pantalles-de-domini` | Pantallas de dominio (curso e importes, zonas, taquillas, alumnos, cargos, y después el resto), a redactar tras las maquetas | por definir (hallazgo del hito 1) |
+| 16 | `acces-i-xifrat` | Contraseña compartida del centro, clave de recuperación obligatoria, fichero de claves y copias (sustituye la clave interna de `arquitectura-base`) | redactado; va con `arquitectura-base` |
 
 ## Fuera de este repositorio
-- Servidor de licencias: otro proyecto. Aquí solo se prepara el documento de requisitos en `docs/` cuando se disponga de los datos.
+- Servidor de registro y avisos de versión: otro proyecto. Aquí solo el cliente y su contrato público (`docs/registro-de-instalaciones.md`).
 
 ## Decisiones abiertas
 - Pantalla principal: el mapa de taquillas por zona es una propuesta provisional y sustituible; validar con los conserjes.
-- Detalles del backend de licencias y límite de equipos por clave.
+- Alojamiento, dominio y correos del servidor de registro.
 
 ## Backlog v2 o posterior (fuera de v1)
 - Tareas de mantenimiento programadas, recurrentes o anuales, recordatorios y avisos al abrir la aplicación.
@@ -37,7 +38,7 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 
 ## Próxima sesión
 Los 14 cambios de la fase de especificación están redactados. Pendiente:
-1. Repaso de coherencia entre los 14 cambios (ganchos, nombres, cifras repetidas, clasificación de casos de uso para la puerta de licencia).
+1. Repaso de coherencia entre los 14 cambios (ganchos, nombres, cifras repetidas).
 2. Commit y decidir cuándo pasar a implementar (con `/opsx:apply`, cambio a cambio y en el orden de esta tabla).
 
 ## Por consultar con los conserjes
@@ -47,6 +48,6 @@ Los 14 cambios de la fase de especificación están redactados. Pendiente:
 
 ## Pendiente de recibir
 - Fichero de muestra de secretaría (columnas, si trae todo el centro o solo nuevos, identificador). Bloquea cerrar la importación de alumnos.
-- Datos del proyecto de licencias, para preparar el documento de requisitos en `docs/`.
+- Decidir dónde se aloja el servidor de registro y desde qué dominio se envían los correos.
 - Valoración RGPD con la dirección del centro (identificador, correo).
 - Validación de la pantalla principal con los conserjes.

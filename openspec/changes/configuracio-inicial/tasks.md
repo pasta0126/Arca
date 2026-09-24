@@ -1,7 +1,7 @@
 ## 1. Modelo de pasos
 
 - [ ] 1.1 Definir `SetupStep` con obligatoriedad, requisitos previos y función pura de estado sobre un resumen de datos, y el catálogo ordenado de seis pasos (D1)
-- [ ] 1.2 Consulta única de resumen: curso activo, importes, zonas, taquillas, alumnos y estado de la licencia, sin carga perezosa
+- [ ] 1.2 Consulta única de resumen: curso activo, importes, zonas, taquillas, alumnos, sin carga perezosa
 - [ ] 1.3 Reglas de dependencia entre pasos (D6)
 - [ ] 1.4 Pruebas de las funciones de estado: cada combinación de datos, curso en cierre sin activo, importes incompletos y taquillas sin zonas
 
@@ -17,9 +17,9 @@
 
 - [ ] 3.1 Detección de ausencia de base de datos en la ruta configurada, distinguiéndola de un fichero ilegible (D5)
 - [ ] 3.2 Elección de carpeta con comprobación de escritura y detección de una base existente en ella
-- [ ] 3.3 Empezar de cero mediante el migrador con base vacía, sin dejar ficheros a medias ante un fallo
-- [ ] 3.4 Restaurar una copia desde la primera ejecución con el asistente de `copies-de-seguretat`
-- [ ] 3.5 Inicio del período de prueba en la primera ejecución sin clave
+- [ ] 3.3 Empezar de cero: crear la contraseña del centro y confirmar la clave de recuperación (`acces-i-xifrat`) y después crear la base con el migrador, sin dejar ficheros a medias ante un fallo
+- [ ] 3.4 Restaurar una copia desde la primera ejecución con el asistente de `copies-de-seguretat`, pidiendo la contraseña de la copia
+- [ ] 3.5 Paso de registro opcional en la primera ejecución, con las casillas de `registre-i-actualitzacions` desactivadas por defecto
 - [ ] 3.6 Pruebas de integración: instalación nueva, carpeta sin permisos, carpeta con base existente, fichero dañado, fallo al crear y restauración en equipo nuevo
 
 ## 4. Pasos del asistente
@@ -29,8 +29,7 @@
 - [ ] 4.3 Zonas: alta reutilizando los casos de uso de zonas
 - [ ] 4.4 Taquillas: alta por rangos o importación con revisión previa, exigiendo una zona
 - [ ] 4.5 Alumnos: importación con revisión previa y omisión sin fichero
-- [ ] 4.6 Licencia: estado y días de prueba, introducir clave o continuar con la prueba
-- [ ] 4.7 Pruebas de cada paso reutilizando los errores de sus casos de uso, y de guardado inmediato con cancelación a mitad
+- [ ] 4.6 Pruebas de cada paso reutilizando los errores de sus casos de uso, y de guardado inmediato con cancelación a mitad
 
 ## 5. Reapertura y navegación
 
@@ -52,5 +51,5 @@
 - [ ] 7.2 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core ni el sistema de ficheros
 - [ ] 7.3 Prueba de privacidad: un fallo durante la importación de alumnos en el asistente no deja datos de alumnos en el registro técnico
 - [ ] 7.4 Prueba automática de que todas las claves de recurso nuevas existen en catalán
-- [ ] 7.5 Prueba de extremo a extremo: primera ejecución, empezar de cero, curso, importes, zonas, taquillas, salir, reanudar, alumnos y licencia
+- [ ] 7.5 Prueba de extremo a extremo: primera ejecución, empezar de cero, curso, importes, zonas, taquillas, salir, reanudar y alumnos
 - [ ] 7.6 Documentar los puntos de enganche con `ui-shell` (dónde se ofrece el asistente y la entrada de ajustes)

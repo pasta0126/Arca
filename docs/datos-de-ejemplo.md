@@ -11,6 +11,8 @@ Punto 10 de `docs/preparacion-desarrollo.md`. Define **qué datos ficticios** ne
 
 ## Principios
 
+- **Contraseña de prueba conocida.** Las bases generadas usan una contraseña de desarrollo pública (por ejemplo `demo-demo-demo`) y su clave de recuperación se escribe junto al fichero; nunca se reutiliza en producción.
+
 - **Totalmente ficticios.** Ningún nombre, correo o identificador procede de personas reales. Los correos usan el dominio reservado `exemple.invalid` y los identificadores tienen la forma `TEST-000123`.
 - **Reproducibles.** La misma **semilla** produce siempre los mismos datos. Así una prueba que falla se puede repetir y la demostración es igual cada vez.
 - **Generados con la lógica real.** La herramienta crea los datos llamando a los casos de uso de `Application` (asignar, cobrar, dar de baja...), no con SQL directo, para respetar las reglas, los índices y los historiales.

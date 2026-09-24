@@ -9,7 +9,6 @@ Los conserjes necesitan llevarse listados fuera de la aplicación (reclamar pago
 - Cada informe se exporta con los filtros que el usuario ha elegido, con nombre y apellidos y sin correo, identificador ni notas o motivos libres.
 - Consulta nueva de resumen de cobros por curso y concepto, sin datos personales.
 - Catálogo ampliable: añadir un informe es declarar sus columnas y su consulta, sin tocar el mecanismo de exportación.
-- Exportar está siempre disponible, incluso sin licencia.
 
 ## Capabilities
 

@@ -47,7 +47,7 @@
 - [ ] 6.3 Migración de EF Core y verificación de que el modelo no tiene cambios sin migrar
 - [ ] 6.4 Implementación de repositorios y operaciones transaccionales, incluidos los manejadores dentro de la transacción de la asignación
 - [ ] 6.5 Pruebas de integración sobre SQLite cifrado temporal: asignar con entrega, liberar con cada decisión, pérdida con reversión completa, devolución masiva atómica
-- [ ] 6.6 Comprobar que las pruebas pasan en Windows, Linux y macOS mediante la integración continua
+- [ ] 6.6 Comprobar que las pruebas pasan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
 
 ## 7. Feedback y guía al usuario
 

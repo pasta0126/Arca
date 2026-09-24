@@ -131,7 +131,6 @@ public static class LockerErrors
 Un manejador por caso de uso, con una sola operación pública:
 
 ```csharp
-[RequiresWriteLicense]                     // o [AlwaysAvailable]; obligatorio (llicencies-client)
 public sealed class ReleaseLockerHandler(ILockerRepository lockers, IClock clock)
 {
     public async Task<Result<ReleaseLockerResult>> HandleAsync(
@@ -144,7 +143,6 @@ public sealed class ReleaseLockerHandler(ILockerRepository lockers, IClock clock
 }
 ```
 
-- **Atributo de licencia obligatorio** en cada manejador: `[RequiresWriteLicense]` o `[AlwaysAvailable]`. Una prueba de arquitectura falla si falta.
 - **Transacción**: una por caso de uso, abierta en la capa de aplicación mediante un puerto de unidad de trabajo. Los ganchos de otras capacidades (`IAssignmentOpenedHandler`...) se ejecutan **dentro** de esa transacción y solo pueden fallar revirtiéndolo todo.
 - **Progreso y cancelación**: las operaciones largas reciben `IProgress<Progress>` (actual, total, cancelable) y el `CancellationToken`, y solo atienden la cancelación **antes** de la fase de guardado indivisible.
 - **Sin lógica de interfaz**: los manejadores no saben nada de ventanas, notificaciones ni diálogos. Devuelven datos; la interfaz los traduce.
@@ -189,7 +187,7 @@ public sealed record HistoryEvent(
 
 ## 7. Estado derivado como función pura
 
-Cuando un estado se puede deducir de hechos (estado visible de una taquilla, disponibilidad de una llave, estado al corriente de pago, estado de los pasos de un asistente, estado de la licencia), **no se almacena**: se calcula.
+Cuando un estado se puede deducir de hechos (estado visible de una taquilla, disponibilidad de una llave, estado al corriente de pago, estado de los pasos de un asistente), **no se almacena**: se calcula.
 
 ```csharp
 public static class LockerStatusCalculator
@@ -214,7 +212,7 @@ Los datos de alumnos son datos de menores. Reglas de obligado cumplimiento:
 1. **Objetos de transferencia sin correo ni identificador.** Los listados, búsquedas, informes y exportaciones usan DTO que no tienen esos campos. Solo el DTO de la revisión de dudosos de la importación puede llevarlos. Una prueba de arquitectura busca propiedades llamadas `Email` o `Identifier` en los DTO.
 2. **Nada de datos de alumnos en el registro técnico**: ni nombres, ni valores de campos, ni consultas con parámetros. Se registran tipos de error, códigos y referencias. Las excepciones propias no incluyen valores de datos en su mensaje.
 3. **Los textos libres del usuario** (motivos, notas) no aparecen en listados generales, exportaciones ni registro técnico. Solo en la ficha del elemento.
-4. **Ningún dato de alumnos sale del equipo.** La única comunicación de red es la comprobación de licencia, con solo centro, huella de equipo, versión y fecha.
+4. **Ningún dato de alumnos sale del equipo.** La única comunicación de red posible es el registro opcional y el aviso de versión de `registre-i-actualitzacions`, desactivados por defecto y con un contenido cerrado y documentado (`docs/registro-de-instalaciones.md`).
 5. Una **prueba de privacidad por cambio**: provoca un error con datos de un alumno y comprueba que el registro no deja rastro.
 
 ## 9. Pruebas
@@ -235,12 +233,11 @@ Los datos de alumnos son datos de menores. Reglas de obligado cumplimiento:
 - **Interfaz**: se prueba el comportamiento en los **modelos de vista**; la batería de vistas sin ventana se limita a enlaces y foco.
 - **Pruebas de arquitectura** obligatorias (proyecto `Arca.Architecture.Tests`):
   - referencias entre capas;
-  - todo manejador lleva `[RequiresWriteLicense]` o `[AlwaysAvailable]`;
   - los comandos de escritura de la interfaz usan el comando de ejecución única;
   - los DTO no llevan correo ni identificador;
   - `Domain` y `Application` no referencian EF Core ni el sistema de ficheros.
 - **Pruebas transversales**: todas las claves de recurso existen en catalán; cada cambio tiene su prueba de privacidad.
-- Se ejecutan en **Windows, Linux y macOS** en la integración continua.
+- Se ejecutan en **Windows, Linux y macOS** con los scripts de `build/` (ver `docs/stack.md`).
 
 ## 10. Commits, ramas y trabajo con OpenSpec
 
@@ -249,7 +246,6 @@ Se definen en el punto 8 de `docs/preparacion-desarrollo.md` (reglas de trabajo 
 ## Lista de comprobación rápida para revisar código
 
 - [ ] ¿La carpeta y el nombre siguen la capacidad?
-- [ ] ¿El manejador tiene el atributo de licencia?
 - [ ] ¿Devuelve `Result<T>` sin lanzar excepciones para reglas de negocio?
 - [ ] ¿Los códigos de error tienen clave en catalán?
 - [ ] ¿Hay algún texto, fecha, dinero o comparación de texto que se salte los componentes centrales?

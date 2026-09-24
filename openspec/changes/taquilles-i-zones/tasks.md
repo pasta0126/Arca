@@ -47,7 +47,7 @@
 - [ ] 5.4 Implementación de repositorios y de las operaciones transaccionales de alta masiva e importación
 - [ ] 5.5 Implementación de `ICsvReader` con UTF-8 estricto, BOM, detección de separador, comillas y número de línea (D8)
 - [ ] 5.6 Pruebas de integración sobre un fichero SQLite cifrado temporal: índices, coexistencia de baja y activa con el mismo número, atomicidad y rechazo de duplicados
-- [ ] 5.7 Comprobar que las pruebas se ejecutan en Windows, Linux y macOS mediante la integración continua
+- [ ] 5.7 Comprobar que las pruebas se ejecutan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
 
 ## 6. Feedback y guía al usuario
 

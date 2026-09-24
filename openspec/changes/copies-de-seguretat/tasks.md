@@ -15,6 +15,7 @@
 ## 3. Restauración
 
 - [ ] 3.1 Caso de uso de análisis que verifica el fichero y devuelve la vista previa con la comparación de recuentos (D3, D4)
+- [ ] 3.1b Pedir la contraseña o la clave de recuperación de la copia antes de la vista previa y adoptar su llave al restaurar (`acces-i-xifrat`)
 - [ ] 3.2 Secuencia de restauración: cerrar, copia previa verificada, temporal, migración, sustitución atómica y reapertura (D5)
 - [ ] 3.3 Recuperación automática desde la copia previa ante fallo en cualquier punto, e información de rutas si también fallara
 - [ ] 3.4 Copia previa de una base dañada sin verificar, y ofrecer la restauración desde el error de fichero dañado
@@ -35,8 +36,8 @@
 ## 5. Verificación transversal
 
 - [ ] 5.1 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core ni el sistema de ficheros
-- [ ] 5.2 Prueba de que copiar y restaurar funcionan con la licencia en solo lectura (D8)
-- [ ] 5.3 Prueba de transportabilidad: copia hecha en un sistema operativo y restaurada en otro mediante la integración continua en Windows, Linux y macOS
+- [ ] 5.2 Prueba de que copiar y restaurar funcionan sin conexión a la red (D8)
+- [ ] 5.3 Prueba de transportabilidad: copia hecha en un sistema operativo y restaurada en otro con los scripts de verificación (`docs/stack.md`) en Windows, Linux y macOS
 - [ ] 5.4 Prueba automática de que todas las claves de recurso nuevas existen en catalán
 - [ ] 5.5 Prueba de extremo a extremo: datos, copia, cambios posteriores, restauración y comprobación de que se pierden los cambios y se conserva la copia previa
-- [ ] 5.6 Documentar los puntos de enganche con `llicencies-client` (copia y restauración siempre permitidas) y con `cursos-i-historial` (oferta de copia antes de borrar o anonimizar)
+- [ ] 5.6 Documentar el punto de enganche con `cursos-i-historial` (oferta de copia antes de borrar o anonimizar)

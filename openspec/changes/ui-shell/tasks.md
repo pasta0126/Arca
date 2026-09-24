@@ -8,11 +8,11 @@
 
 ## 2. Estado global y avisos
 
-- [ ] 2.1 Servicio de estado global con curso activo o en cierre, licencia, asistente y recuentos de atención, y su publicación de cambios (D3)
-- [ ] 2.2 Cabecera con nombre, logo, curso e indicador de licencia solo en prueba, gracia o solo lectura
+- [ ] 2.1 Servicio de estado global con curso activo o en cierre, versión nueva disponible, asistente y recuentos de atención, y su publicación de cambios (D3)
+- [ ] 2.2 Cabecera con nombre, logo y curso
 - [ ] 2.3 Avisos globales no bloqueantes con acción directa, descartables hasta el siguiente arranque salvo los que bloquean acciones
 - [ ] 2.4 Indicadores de sección con recuentos que se refrescan tras cada operación de escritura
-- [ ] 2.5 Pruebas: curso activo, en cierre, sin curso, licencia en cada estado y recuentos con datos de ejemplo
+- [ ] 2.5 Pruebas: curso activo, en cierre, sin curso, aviso de versión nueva y recuentos con datos de ejemplo
 
 ## 3. Búsqueda global
 

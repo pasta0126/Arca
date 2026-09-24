@@ -12,7 +12,7 @@ El sistema SHALL ofrecer la restauración como un asistente de pasos: elegir el 
 - **THEN** los datos de la aplicación pasan a ser los de la copia y el sistema informa del resultado
 
 ### Requirement: Verificación previa de la copia
-El sistema SHALL comprobar antes de restaurar que el fichero es una base de datos de ARCA, que se abre con la clave de la aplicación, que supera la comprobación de integridad y que su versión de esquema es conocida, sin modificar nada hasta la confirmación.
+El sistema SHALL comprobar antes de restaurar que el fichero es una base de datos de ARCA, que se puede abrir con la contraseña o la clave de recuperación de la copia, que supera la comprobación de integridad y que su versión de esquema es conocida, sin modificar nada hasta la confirmación.
 
 #### Scenario: Fichero que no es una copia
 - **WHEN** el usuario elige un fichero que no es una copia de ARCA
@@ -29,6 +29,21 @@ El sistema SHALL comprobar antes de restaurar que el fichero es una base de dato
 #### Scenario: Copia de una versión anterior
 - **WHEN** la copia procede de una versión anterior
 - **THEN** el sistema la acepta e informa de que se actualizará al restaurar
+
+### Requirement: Contraseña de la copia
+El sistema SHALL pedir la contraseña o la clave de recuperación de la copia antes de mostrar su contenido, y SHALL avisar antes de confirmar de que, tras restaurar, la contraseña del centro será la de la copia.
+
+#### Scenario: Contraseña de la copia
+- **WHEN** el usuario elige una copia protegida
+- **THEN** el sistema le pide su contraseña o su clave de recuperación antes de mostrar nada
+
+#### Scenario: Contraseña incorrecta
+- **WHEN** el usuario escribe una contraseña que no abre la copia
+- **THEN** el sistema lo indica y permite reintentar sin modificar nada
+
+#### Scenario: Aviso del cambio de contraseña
+- **WHEN** el usuario llega a la confirmación
+- **THEN** el sistema avisa de que la contraseña del centro pasará a ser la de la copia
 
 ### Requirement: Vista previa del contenido
 El sistema SHALL mostrar antes de confirmar qué contiene la copia: la fecha de creación del fichero, la versión y los recuentos de cursos, alumnos, taquillas y asignaciones, sin datos personales, y compararlos con los datos actuales.
@@ -88,16 +103,16 @@ El sistema SHALL dejar la aplicación en un estado coherente con los datos resta
 - **WHEN** termina la restauración
 - **THEN** la aplicación muestra los datos restaurados, incluido el curso que estaba activo en la copia, e indica dónde está la copia previa
 
-### Requirement: Restauración siempre disponible
-El sistema SHALL permitir restaurar en cualquier estado de la licencia y sin conexión, y SHALL ofrecer la restauración también cuando la base de datos actual está dañada o no se puede abrir.
+### Requirement: Restauración sin conexión y con la base dañada
+El sistema SHALL permitir restaurar sin conexión, y SHALL ofrecer la restauración también cuando la base de datos actual está dañada o no se puede abrir.
 
 #### Scenario: Base de datos dañada
 - **WHEN** la aplicación no puede abrir la base de datos por fichero corrupto
 - **THEN** el sistema ofrece restaurar una copia, y conserva el fichero dañado sin modificar como copia previa
 
-#### Scenario: Licencia caducada
-- **WHEN** la licencia está en modo de solo lectura
-- **THEN** el usuario puede restaurar una copia
+#### Scenario: Sin red
+- **WHEN** el equipo no tiene conexión y el usuario restaura una copia
+- **THEN** la restauración se hace con normalidad
 
 ### Requirement: Restauración en otro equipo
 El sistema SHALL permitir restaurar en un equipo distinto o con otro sistema operativo, o en una instalación nueva sin datos, una copia hecha en otro equipo.

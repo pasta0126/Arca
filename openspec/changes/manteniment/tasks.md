@@ -35,7 +35,7 @@
 ## 5. Persistencia y verificación
 
 - [ ] 5.1 Pruebas de integración sobre SQLite cifrado temporal con el máximo de 1000 taquillas: atomicidad al poner fuera de servicio y al reparar, y tiempo de respuesta fluido
-- [ ] 5.2 Comprobar que las pruebas pasan en Windows, Linux y macOS mediante la integración continua
+- [ ] 5.2 Comprobar que las pruebas pasan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
 - [ ] 5.3 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core, y ninguna operación en bloque usa un camino distinto de los casos de uso de `incidencies`
 - [ ] 5.4 Prueba del invariante de `incidencies` tras cualquier secuencia de operaciones en bloque e individuales
 - [ ] 5.5 Prueba de privacidad: un error provocado con una nota no deja rastro en el registro técnico

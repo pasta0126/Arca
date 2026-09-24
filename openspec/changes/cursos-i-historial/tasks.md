@@ -52,7 +52,7 @@
 - [ ] 7.3 Migración de EF Core con el estado inicial de los cursos existentes y verificación de que el modelo no tiene cambios sin migrar
 - [ ] 7.4 Repositorios y operaciones transaccionales de cierre, anonimizado y borrado
 - [ ] 7.5 Pruebas de integración sobre SQLite cifrado temporal: liberación masiva de 300 asignaciones, cierre completo, anonimizado y borrado con reversión completa ante fallos
-- [ ] 7.6 Comprobar que las pruebas pasan en Windows, Linux y macOS mediante la integración continua
+- [ ] 7.6 Comprobar que las pruebas pasan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
 
 ## 8. Feedback y guía al usuario
 

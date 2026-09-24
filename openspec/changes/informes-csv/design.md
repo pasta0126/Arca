@@ -2,7 +2,7 @@
 
 Noveno cambio. Motivación y alcance en `proposal.md`; comportamiento en `specs/`. Reutiliza las consultas ya definidas: morosos y fianzas por devolver (`pagaments`), llaves pendientes (`claus`), taquillas y su estado (`taquilles-i-zones`, `incidencies`) y asignaciones (`alumnes-i-assignacions`). Este cambio añade solo el resumen de cobros, que ninguno definía.
 
-Restricciones: solo CSV para siempre; cabeceras por clave de recurso; datos de menores; exportar disponible sin licencia; un solo PC.
+Restricciones: solo CSV para siempre; cabeceras por clave de recurso; datos de menores; un solo PC.
 
 ## Goals / Non-Goals
 
@@ -39,9 +39,6 @@ Sin filas no se crea el fichero. Todas las consultas terminan en un orden total 
 
 ### D8. Progreso y cancelación
 Las filas se generan y escriben en flujo por bloques, con recuento de filas para el progreso y comprobación de cancelación entre bloques; el volumen (cientos de filas) hace que en la práctica sea rápido, pero se respetan los principios de UX transversal.
-
-### D9. Disponible sin licencia
-La exportación no consulta el estado de la licencia. `llicencies-client` la declara siempre permitida y aquí hay una prueba que lo verifica con la licencia en solo lectura.
 
 ### D10. Feedback
 Resultado estructurado con número de filas y ruta, confirmación de sobrescritura, aviso de menores y estados vacíos con guía.

@@ -23,7 +23,7 @@ El sistema SHALL generar la copia como una instantánea coherente de la base de 
 - **THEN** la copia incluye esa asignación
 
 ### Requirement: Verificación de la copia
-El sistema SHALL comprobar la integridad de la copia y que se puede abrir con la clave de la aplicación antes de darla por buena.
+El sistema SHALL comprobar la integridad de la copia y que se puede abrir con su llave antes de darla por buena.
 
 #### Scenario: Copia verificada
 - **WHEN** termina la copia
@@ -74,12 +74,12 @@ El sistema SHALL escribir la copia en un fichero temporal en el destino y moverl
 - **WHEN** el usuario cancela una copia en curso
 - **THEN** no se crea ni se modifica ningún fichero y la base de datos no cambia
 
-### Requirement: Copia siempre disponible
-El sistema SHALL permitir hacer una copia en cualquier estado de la licencia, incluidos el período de gracia y el modo de solo lectura, y sin conexión a la red.
+### Requirement: Copia sin conexión
+El sistema SHALL permitir hacer una copia sin conexión a la red.
 
-#### Scenario: Licencia caducada
-- **WHEN** la licencia está en modo de solo lectura
-- **THEN** el usuario puede hacer una copia
+#### Scenario: Sin red
+- **WHEN** el equipo no tiene conexión y el usuario hace una copia
+- **THEN** la copia se hace con normalidad
 
 ### Requirement: Solo manual y sin datos de última copia
 El sistema SHALL hacer copias únicamente cuando el usuario lo pide, SHALL no programarlas ni recordarlas y SHALL no registrar ni mostrar la fecha de la última copia.

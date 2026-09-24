@@ -81,13 +81,6 @@ El sistema SHALL incluir en los informes con alumnos solo nombre y apellidos com
 - **WHEN** falla una exportación
 - **THEN** el registro técnico no contiene nombres ni valores del informe
 
-### Requirement: Disponible sin licencia
-El sistema SHALL permitir exportar en cualquier estado de la licencia, incluidos el período de gracia y el modo de solo lectura.
-
-#### Scenario: Licencia caducada
-- **WHEN** la licencia está en modo de solo lectura
-- **THEN** el usuario puede exportar cualquier informe
-
 ### Requirement: Feedback y progreso
 El sistema SHALL informar del resultado de cada exportación con el número de filas y la ubicación del fichero, mostrar el avance con recuentos en las exportaciones largas, no bloquear la interfaz y evitar exportar dos veces por un doble clic.
 

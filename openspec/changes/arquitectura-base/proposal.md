@@ -5,7 +5,7 @@ ARCA no tiene todavía ninguna base técnica. Antes de especificar taquillas, al
 ## What Changes
 
 - Estructura de solución .NET multiplataforma (Windows, Linux y macOS) en capas: dominio y aplicación sin dependencias de UI, persistencia detrás de interfaces de repositorio y UI de escritorio con Avalonia (MVVM).
-- Base de datos local SQLite cifrada con clave interna transparente, en un único fichero, sin concurrencia (un solo PC).
+- Base de datos local SQLite cifrada con una llave protegida por la contraseña del centro (`acces-i-xifrat`), en un único fichero, sin concurrencia (un solo PC).
 - Ruta de la base de datos configurable, para cubrir instalación clásica y versión portable.
 - Migraciones de esquema versionadas, con copia de seguridad verificada antes de migrar y rechazo de bases creadas por una versión más nueva.
 - Internacionalización por claves en ficheros de recursos: v1 solo catalán, sin textos literales en código ni vistas, y formato de fechas, números e importes según la cultura activa.
@@ -32,7 +32,7 @@ ARCA no tiene todavía ninguna base técnica. Antes de especificar taquillas, al
 
 - Cualquier funcionalidad de dominio (taquillas, alumnos, pagos, llaves, incidencias, mantenimiento).
 - Copias de seguridad y restauración manuales para el usuario (cambio `copies-de-seguretat`); aquí solo se define la copia previa a una migración.
-- Licenciamiento (cambio `llicencies-client`) y servidor de licencias (otro proyecto).
+- Registro opcional de instalaciones y avisos de versión (cambio `registre-i-actualitzacions`).
 - Pantallas, navegación y branding (cambio `ui-shell`), y el sistema de componentes visuales, adaptabilidad, colapsables y arrastrar y soltar (cambio `ux-fonaments`). Aquí solo se fija el contrato de feedback y la pantalla de arranque.
 - Asistente de configuración inicial (cambio `configuracio-inicial`).
 - Selector de idioma y traducciones a castellano o inglés (versiones posteriores).
@@ -41,6 +41,6 @@ ARCA no tiene todavía ninguna base técnica. Antes de especificar taquillas, al
 ## Impacto
 
 - **Código**: crea la estructura inicial de la solución; no existe código previo.
-- **Datos personales (RGPD)**: la base de datos contendrá datos de menores en cambios posteriores. Este cambio fija el cifrado en reposo. La clave interna protege frente a la copia del fichero, no frente a quien tenga acceso al programa; esto debe constar en la documentación para la dirección del centro.
+- **Datos personales (RGPD)**: la base de datos contendrá datos de menores en cambios posteriores. Este cambio fija el cifrado en reposo, cuya llave sale de la contraseña del centro (`acces-i-xifrat`). Protege el fichero y sus copias si se pierden, no frente a quien conozca la contraseña ni frente a quien use el equipo con la sesión abierta; esto debe constar en la documentación para la dirección del centro.
 - **Dependencias**: .NET LTS, Avalonia, SQLite con cifrado compatible con SQLCipher (SQLite3 Multiple Ciphers, MIT) y una herramienta de empaquetado para el instalador de Windows.
-- **Decisión heredada**: la clave de cifrado no puede depender del servidor de licencias, para que un corte de licencia nunca deje los datos inaccesibles.
+- **Decisión heredada**: la clave de cifrado no puede depender de ningún servidor, para que un corte de red nunca deje los datos inaccesibles.

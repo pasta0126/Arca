@@ -15,19 +15,19 @@ El sistema SHALL guardar todos sus datos en un único fichero de base de datos l
 - **WHEN** el equipo no tiene conexión de red
 - **THEN** el sistema abre la base de datos y permite trabajar con normalidad
 
-### Requirement: Cifrado en reposo con clave interna
-El sistema SHALL cifrar el fichero de base de datos en disco con una clave interna, sin solicitar contraseña al usuario.
+### Requirement: Cifrado en reposo con la contraseña del centro
+El sistema SHALL cifrar el fichero de base de datos en disco con una llave que solo se obtiene con la contraseña del centro o con la clave de recuperación, según `acces-i-xifrat`.
 
-#### Scenario: Fichero ilegible sin la clave
-- **WHEN** una persona abre el fichero de base de datos con una herramienta SQLite estándar sin la clave
+#### Scenario: Fichero ilegible sin la llave
+- **WHEN** una persona abre el fichero de base de datos con una herramienta SQLite estándar sin la llave
 - **THEN** no puede leer ningún dato ni el esquema
 
-#### Scenario: Apertura transparente
+#### Scenario: Apertura con la contraseña
 - **WHEN** el conserje abre la aplicación
-- **THEN** la base de datos se abre sin pedir contraseña ni ninguna otra credencial
+- **THEN** se le pide la contraseña del centro antes de abrir la base de datos
 
-#### Scenario: Clave independiente de la licencia y de la red
-- **WHEN** la licencia caduca, se revoca o no hay conexión con ningún servidor
+#### Scenario: Clave independiente de la red
+- **WHEN** no hay conexión con ningún servidor
 - **THEN** el sistema sigue pudiendo abrir y leer la base de datos
 
 ### Requirement: Fichero transportable entre equipos y sistemas operativos

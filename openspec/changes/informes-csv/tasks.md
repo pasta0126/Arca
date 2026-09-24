@@ -41,7 +41,6 @@
 
 - [ ] 6.1 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core ni el sistema de ficheros
 - [ ] 6.2 Prueba de privacidad: un error provocado durante la exportación no deja nombres ni valores en el registro técnico
-- [ ] 6.3 Prueba de que exportar funciona con la licencia en solo lectura (D9)
-- [ ] 6.4 Prueba automática de que todas las claves de recurso nuevas existen en catalán
-- [ ] 6.5 Prueba de extremo a extremo: exportar cada informe con datos de ejemplo y comprobar el fichero
-- [ ] 6.6 Documentar el punto de enganche con `llicencies-client` (exportar siempre permitido) y cómo añadir un informe nuevo
+- [ ] 6.3 Prueba automática de que todas las claves de recurso nuevas existen en catalán
+- [ ] 6.4 Prueba de extremo a extremo: exportar cada informe con datos de ejemplo y comprobar el fichero
+- [ ] 6.5 Documentar cómo añadir un informe nuevo

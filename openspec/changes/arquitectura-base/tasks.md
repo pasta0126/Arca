@@ -16,7 +16,7 @@
 ## 3. Almacenamiento local cifrado
 
 - [ ] 3.1 Integrar EF Core con SQLite cifrado (SQLite3 Multiple Ciphers en formato SQLCipher 4) en `Infrastructure` y comprobar que carga en Windows, Linux y macOS
-- [ ] 3.2 Implementar la apertura con clave interna derivada de un secreto embebido (D4)
+- [ ] 3.2 Integrar la apertura de la base con la llave que entrega `acces-i-xifrat` (contraseña del centro y fichero de claves), sin ningún secreto en el código, y con una contraseña de prueba solo en los proyectos de pruebas
 - [ ] 3.3 Implementar la creación de la base de datos en el primer arranque aplicando todas las migraciones desde cero
 - [ ] 3.4 Prueba: el fichero no se puede leer con una herramienta SQLite estándar sin la clave
 - [ ] 3.5 Prueba: un fichero creado en un sistema se abre en otro (fichero de ejemplo versionado en el repositorio de pruebas)
@@ -72,9 +72,9 @@
 
 ## 9. Verificación y distribución
 
-- [ ] 9.1 Configurar la integración continua con matriz Windows, Linux y macOS que compile y ejecute todas las pruebas
-- [ ] 9.1b Añadir a la integración continua un control de licencias que liste las de todos los paquetes NuGet y falle si alguna no está en la lista permitida (MIT, Apache 2.0, BSD, ISC, MS-PL), y crear `THIRD-PARTY-NOTICES.md` (coste cero, `docs/stack.md`)
+- [ ] 9.1 Crear los scripts de verificación `build/test.sh`, `build/test.ps1` y `build/test-linux.sh` (contenedor) que compilen con advertencias como errores y ejecuten todas las pruebas, y `build/publish.sh` para generar paquetes por sistema, incluido `win-x64` desde macOS
+- [ ] 9.1b Añadir a los scripts de verificación un control de licencias que liste las de todos los paquetes NuGet y falle si alguna no está en la lista permitida (MIT, Apache 2.0, BSD, ISC), compatibles con la GPL-3.0, y crear `THIRD-PARTY-NOTICES.md` (coste cero, `docs/stack.md`)
 - [ ] 9.2 Generar el paquete portable con fichero marcador: `zip` en Windows, `tar.gz` en Linux y `.app` comprimido en `.zip` en macOS (D11)
 - [ ] 9.3 Generar el instalador de Windows con Inno Setup, sin requerir conexión, con instalación por usuario o por equipo
 - [ ] 9.4 Comprobar que desinstalar conserva la base de datos y que instalar sobre una versión anterior conserva los datos y migra en el siguiente arranque
-- [ ] 9.5 Documentar para la dirección del centro el alcance real del cifrado con clave interna
+- [ ] 9.5 Documentar para la dirección del centro el alcance real del cifrado, cómo guardar la clave de recuperación y qué ocurre si se pierden la contraseña y la clave

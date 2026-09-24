@@ -114,11 +114,11 @@ context: |
   - Final de curs: procés guiat amb passos opcionals i represa (alliberar taquilles, tornar claus, revisar deute, tancar). El curs passa d'actiu a "en tancament" i després a tancat; es pot activar el curs següent mentre l'anterior és en tancament. Sense renovació automàtica. Els alumnes s'actualitzen després amb la importació anual (conciliació).
   - Morosos: marca visual i llistat exportable; sense cartes ni alliberament automàtic.
   - Conservació: decisió per curs tancat (conservar, anonimitzar o esborrar), que es pregunta en tancar-lo i es pot ajornar. Res és automàtic ni hi ha nombre de cursos per defecte fins a consultar-ho amb els conserges. Anonimitzar conserva imports i recomptes sense identificar ningú.
-  - Configuració inicial: assistent guiat (curs, imports, zones, taquilles, alumnes, llicència) amb passos
+  - Configuració inicial: assistent guiat (curs, imports, zones, taquilles, alumnes) amb passos
     opcionals excepte curs actiu i imports. Estat deduït de les dades, es reprèn a cada arrencada mentre
     falti alguna cosa obligatòria i es pot reobrir des d'ajustos. Primera execució sense BBDD: començar de zero
     o restaurar una còpia, amb la carpeta de dades visible.
-  - Sense login ni rols; els moviments no registren qui els ha fet.
+  - Sense usuaris ni rols: una contrasenya compartida del centre desbloqueja la BBDD; els moviments no registren qui els ha fet.
 
   ## Fitxers d'intercanvi
   Només CSV, per sempre (importació i exportació). Mai Excel (.xlsx).
@@ -131,23 +131,21 @@ context: |
   ## Còpies de seguretat i seguretat
   - Còpies estrictament manuals (botons Fer còpia / Restaurar). Cap còpia ni recordatori
     automàtic. Verificar/fer còpia abans de migrar l'esquema.
-  - BBDD xifrada amb clau interna (transparent, sense contrasenya).
+  - BBDD xifrada amb una clau aleatòria protegida per la contrasenya compartida del centre (mínim 12 caràcters de qualsevol tipus, sense regles de composició, i llista de contrasenyes habituals rebutjades; es defineix a la primera execució i es demana en obrir) i una clau de recuperació obligatòria que es mostra una vegada (canvi `acces-i-xifrat`). Sense secrets al codi. Sense contrasenya ni clau de recuperació, les dades són irrecuperables: el mantenedor no custodia cap clau ni pot recuperar dades dels centres.
   - RGPD: dades de menors; recollir el mínim imprescindible.
 
-  ## Llicències
-  - Model híbrid: clau signada (criptografia asimètrica, l'app només porta la clau pública)
-    amb caducitat, més comprovació online oportunista que pot revocar-la abans.
-  - Associada al centre i a un nombre limitat d'equips (activació per empremta d'equip).
-  - En caducar o revocar-se: període de gràcia (30 dies) amb avisos i després només lectura.
-    Sense clau: període de prova de 30 dies des de la primera execució i després només lectura.
-    Ambdues durades són constants configurables. L'estat de la llicència viu fora de la BBDD i de
-    les còpies. En només lectura, exportar, fer còpia i restaurar segueixen disponibles.
-    Exportar i fer còpia han d'estar SEMPRE disponibles.
-  - La clau de xifrat de la BBDD no pot dependre del servidor de llicències.
-  - L'app només envia al servidor: identificador de centre, empremta d'equip, versió i data.
-    Mai dades d'alumnes. Sense connexió, funciona amb la clau signada fins que caduqui.
-  - El servidor de llicències és un ALTRE projecte, fora d'aquest repo. Aquí només hi ha
-    el client de llicències i el document de requisits per al servidor (docs/).
+  ## Llicència, registre i actualitzacions
+  - Programari lliure i gratuït (GPL-3.0), amb la marca «ARCA» reservada. Sense llicències, claus ni
+    caducitat: l'aplicació no es bloqueja mai. Exportar, fer còpia i restaurar sempre funcionen.
+  - Registre opcional de la instal·lació i avisos de versió nova (canvi `registre-i-actualitzacions`):
+    desactivats per defecte, amb casella a la primera execució i a ajustos. Dades enviades tancades:
+    identificador aleatori d'instal·lació, versió, sistema i arquitectura, idioma i, només si l'usuari
+    els escriu, nom i codi del centre i un correu. Mai dades d'alumnes. Una crida com a màxim cada 24 h,
+    sense reintents ni bloqueig. La resposta va signada (Ed25519); l'app no descarrega ni instal·la res:
+    només avisa i obre l'enllaç oficial. Actualitzar és substituir l'executable; la BBDD es conserva i es migra.
+  - La clau de xifrat de la BBDD no pot dependre de cap servidor.
+  - El servidor de registre és un ALTRE projecte, fora d'aquest repo. Aquí només hi ha el client i
+    el contracte públic (docs/registro-de-instalaciones.md).
 
   ## Decisions obertes
   - Pantalla principal: proposta provisional = mapa de taquilles per zona (substituïble); validar amb conserges.
@@ -155,7 +153,7 @@ context: |
   Navegació: barra lateral fixa amb 8 seccions; identitat del centre = nom, logo i color d'accent (a la BBDD); tema clar/fosc/sistema (ajust local).
   - Fitxer d'exemple de secretaria (columnes, contingut: tot el centre o només nous).
   - Quines dades d'identificació es desen (identificador, correu, DNI) segons RGPD.
-  - Detalls del backend de llicències i límit d'equips per clau.
+  - Servidor de registre: allotjament, domini i enviament de correus (projecte apart).
 
   ## UI
   Només ratolí i teclat (dreceres i focus ben cuidats), sense disseny tàctil.

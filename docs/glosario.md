@@ -97,7 +97,7 @@ Estado de cada término: **fijado** (decidido) o **validar** (propuesta a confir
 
 | Castellano | Catalán | Inglés | Estado | Notas |
 |------------|---------|--------|--------|-------|
-| llave (de la taquilla) | clau | `Key` | fijado | **Ojo**: no confundir con clave de licencia (`LicenseKey`) ni de cifrado (`EncryptionKey`) |
+| llave (de la taquilla) | clau | `Key` | fijado | **Ojo**: no confundir con la clave de cifrado (`EncryptionKey`) |
 | pendiente de entrega | pendent de lliurament | `PendingDelivery` | fijado | |
 | entregada | lliurada | `Delivered` | fijado | |
 | devuelta (llave) | retornada | `Returned` | fijado | |
@@ -142,20 +142,28 @@ Estado de cada término: **fijado** (decidido) o **validar** (propuesta a confir
 | conservar / anonimizar / borrar | conservar / anonimitzar / esborrar | `Keep` / `Anonymize` / `Delete` | fijado | Por curso cerrado |
 | decidir más tarde | decidir més tard | `Undecided` | fijado | |
 
-## Copias y licencias
+## Copias, registro y actualizaciones
 
 | Castellano | Catalán | Inglés | Estado | Notas |
 |------------|---------|--------|--------|-------|
 | copia de seguridad | còpia de seguretat | `Backup` | fijado | Manual |
 | restaurar | restaurar | `Restore` | fijado | |
-| licencia | llicència | `License` | fijado | |
-| clave de licencia | clau de llicència | `LicenseKey` | fijado | Distinta de *llave* (`Key`) |
-| prueba | prova | `Trial` | fijado | 30 días |
-| gracia | gràcia | `Grace` | fijado | 30 días tras caducar |
-| solo lectura | només lectura | `ReadOnly` | fijado | Estado de la licencia; distinto de curso cerrado |
-| revocada | revocada | `Revoked` | fijado | |
-| activación | activació | `Activation` | fijado | |
-| huella de equipo | empremta de l'equip | `MachineFingerprint` | fijado | |
+| registro de la instalación | registre de la instal·lació | `Registration` | fijado | Opcional, desactivado por defecto |
+| identificador de instalación | identificador d'instal·lació | `InstallationId` | fijado | Aleatorio, no derivado del equipo |
+| versión nueva | versió nova | `NewVersion` | fijado | |
+| aviso de versión | avís de versió | `UpdateNotice` | fijado | No bloquea nunca |
+| versión crítica | versió crítica | `CriticalUpdate` | fijado | Aviso persistente, sin bloqueo |
+| comprobar ahora | comprovar ara | `CheckNow` | fijado | Comprobación a petición |
+| actualizar | actualitzar | `Update` | fijado | Sustituir el ejecutable; la base de datos se conserva |
+
+## Acceso y cifrado
+
+| Castellano | Catalán | Inglés | Estado | Notas |
+|------------|---------|--------|--------|-------|
+| contraseña del centro | contrasenya del centre | `CenterPassword` | fijado | Compartida, sin usuarios ni roles |
+| clave de recuperación | clau de recuperació | `RecoveryKey` | fijado | 26 caracteres, se muestra una vez |
+| fichero de claves | fitxer de claus | `KeyFile` | fijado | Llave de la base envuelta; sin datos personales |
+| desbloquear | desbloquejar | `Unlock` | fijado | Pedir la contraseña al abrir |
 
 ## Interfaz y configuración
 
@@ -187,11 +195,10 @@ Estado de cada término: **fijado** (decidido) o **validar** (propuesta a confir
 
 | Palabra | Sentido 1 | Sentido 2 | Cómo se distingue |
 |---------|-----------|-----------|-------------------|
-| clave | llave de la taquilla | clave de licencia o de cifrado | `Key` / `LicenseKey` / `EncryptionKey`; en catalán *clau* con complemento |
+| clave | llave de la taquilla | clave de cifrado | `Key` / `EncryptionKey`; en catalán *clau* con complemento |
 | devuelta | llave devuelta | dipòsit devuelto | `Returned` (llave) / `Refunded` (dipòsit) |
 | baja | alumno de baja | taquilla de baja | `Withdrawn` / `Retired` |
 | copia | copia de llave | copia de seguridad | `Copy` / `Backup` |
-| solo lectura | licencia sin escritura | curso cerrado | `ReadOnly` (licencia) / `Closed` (curso) |
 | pendiente | cargo pendiente | paso pendiente | Mismo nombre en el código, distinto tipo (`ChargeStatus.Pending`, `StepStatus.Pending`) |
 | cierre | cierre de curso | cierre de incidencia | `Closing` / `Repaired` |
 | reposición | cobro de reposición de llave | llave repuesta | `KeyReplacementFee` / `Replaced` |

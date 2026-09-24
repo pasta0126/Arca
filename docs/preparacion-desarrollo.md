@@ -10,7 +10,7 @@ Estado de cada punto: `por valorar` · `aceptado` · `descartado` · `hecho`.
 |---|-------|------|--------|--------|
 | 1 | Spike técnico | Implementar (código desechable) | Antes de `arquitectura-base` | por valorar |
 | 2 | Stack concreto | Definir | Ahora | hecho (`docs/stack.md`) |
-| 3 | Esqueleto de solución y CI | Implementar | Primer paso de `arquitectura-base` | por valorar |
+| 3 | Esqueleto de solución y scripts de verificación | Implementar | Primer paso de `arquitectura-base` | por valorar |
 | 4 | Convenciones de código | Definir | Ahora | hecho (`docs/convenciones.md`) |
 | 5 | Glosario castellano, catalán e inglés | Definir | Ahora | hecho (`docs/glosario.md`); términos por validar con los conserjes |
 | 6 | Catálogo de códigos de error y claves | Definir (convención) e implementar (contenido) | Convención ahora | convención hecha (`docs/convenciones.md`, sección 3); contenido al implementar |
@@ -37,8 +37,7 @@ Orden recomendado: 2 → 4 → 5 → 6 (convención) → 9 → 8 → 7 → 12 �
 | EF Core con SQLite3 Multiple Ciphers en formato SQLCipher 4, migraciones envueltas y `PRAGMA integrity_check` | `arquitectura-base` | Crear, migrar y reabrir una base cifrada en los tres sistemas |
 | Copia en línea de la base cifrada con la misma clave | `copies-de-seguretat` | Copia consistente mientras la aplicación escribe, verificada y abrible |
 | Bloqueo de instancia única asociado al fichero | `arquitectura-base` | La segunda instancia no abre la base en los tres sistemas |
-| Firma y verificación Ed25519 con NSec en .NET | `llicencies-client` | Verificar una clave generada fuera |
-| Huella de equipo estable | `llicencies-client` | Mismo valor en reinicios, distinto entre equipos, en los tres sistemas |
+| Verificación de una respuesta firmada Ed25519 con NSec en .NET | `registre-i-actualitzacions` | Verificar una firma generada fuera y rechazar una alterada |
 | Arrastrar y soltar en Avalonia | `ux-fonaments` | Arrastrar un elemento a otro con resalte del destino y cancelación con Escape en los tres sistemas |
 | Lista virtualizada y mapa de 300 taquillas | `ui-shell` | Desplazamiento fluido y actualización de una sola taquilla |
 | Renderizado sin ventana para pruebas de vista | `ux-fonaments` | Una prueba de enlace y foco ejecutable en CI |
@@ -61,12 +60,12 @@ Orden recomendado: 2 → 4 → 5 → 6 (convención) → 9 → 8 → 7 → 12 �
 | Versión de Avalonia | Última estable compatible con el renderizado sin ventana |
 | SQLite cifrado | SQLite3 Multiple Ciphers en formato SQLCipher 4 (decidido; ver `docs/stack.md`) |
 | Lectura de CSV | Biblioteca consolidada tras `ICsvReader` (`taquilles-i-zones`) |
-| Firma de licencias | Ed25519 con la biblioteca criptográfica de .NET o una externa |
+| Firma de avisos de versión | Ed25519 con NSec.Cryptography (verificación) |
 | Pruebas | Marco de pruebas, biblioteca de aserciones, dobles y pruebas de arquitectura |
 | Inyección de dependencias y MVVM | Microsoft.Extensions.* y biblioteca MVVM |
 | Registro técnico | Biblioteca de registro con rotación |
 | Instalador | Inno Setup (ya decidido en `arquitectura-base`) |
-| CI | Servicio con matriz Windows, Linux y macOS |
+| Verificación multiplataforma | Scripts en `build/` (macOS, Linux en contenedor, Windows); sin CI remota (decisión, ver `docs/stack.md`) |
 
 Cada fila con versión, motivo y alternativa descartada.
 
@@ -80,7 +79,7 @@ Cada fila con versión, motivo y alternativa descartada.
 **Contenido:**
 - Proyectos: `Arca.Domain`, `Arca.Application`, `Arca.Infrastructure`, `Arca.Desktop` y un proyecto de pruebas por capa, más `Arca.UI` para los componentes de `ux-fonaments`.
 - Pruebas de arquitectura de referencias entre capas.
-- Canalización de CI con la matriz de tres sistemas, que compila y ejecuta las pruebas.
+- Scripts de verificación en `build/` (`test.sh`, `test.ps1`, `test-linux.sh`, `publish.sh`) que compilan, ejecutan las pruebas y el control de licencias en los tres sistemas.
 - "Hola mundo" de Avalonia que arranca en los tres sistemas.
 
 **A decidir:** nombre exacto de los proyectos y carpetas (ligado al punto 4).
@@ -98,7 +97,7 @@ Cada fila con versión, motivo y alternativa descartada.
 2. Forma del **resultado estructurado**: éxito con datos y recuentos, avisos y error con código estable.
 3. Convención de **códigos de error** (por ejemplo `LOCKER_NUMBER_IN_USE`).
 4. Convención de **claves de recurso** (por ejemplo `Lockers.Errors.NumberInUse`).
-5. Patrón de **caso de uso**: entrada, resultado, atributo de licencia (`RequiresWriteLicense` o `AlwaysAvailable`).
+5. Patrón de **caso de uso**: entrada y resultado.
 6. Patrón de **operación en dos fases** (análisis, plan inmutable, confirmación con revalidación, transacción única).
 7. Patrón de **historial de solo añadir**: evento con código de tipo y valores estructurados, sin texto traducido.
 8. Patrón de **estado derivado** como función pura.
@@ -124,13 +123,11 @@ Cada fila con versión, motivo y alternativa descartada.
 | cuota | quota | `Fee` | Anual |
 | cargo | càrrec | `Charge` | |
 | condonado / exento | condonat / exempt | `Waived` / `Exempt` | Distinguir de anulado |
-| llave | clau | `Key` | No confundir con clave de licencia ni de cifrado |
-| clave de licencia | clau de llicència | `LicenseKey` | |
+| llave | clau | `Key` | No confundir con la clave de cifrado |
 | avería / en mantenimiento | avaria / en manteniment | `Broken` / `UnderMaintenance` | Tipos de fuera de servicio |
 | asignación | assignació | `Assignment` | |
 | matrícula | matrícula | `Enrollment` | Por alumno y curso |
 | baja / de baja | baixa / de baixa | `Retired` / `Withdrawn` | Taquilla frente a alumno |
-| gracia / solo lectura | gràcia / només lectura | `Grace` / `ReadOnly` | Licencia frente a curso |
 | revisión previa / plan | revisió prèvia / pla | `Preview` / `Plan` | Operaciones en dos fases |
 
 **A decidir:** el término catalán definitivo de "cierre de curso", "de baja" y "condonado", que deberían validar los conserjes.
@@ -197,7 +194,7 @@ Cada fila con versión, motivo y alternativa descartada.
 **Propuesta de lista, por cambio:**
 1. Todas las tareas del `tasks.md` marcadas.
 2. Pruebas en verde en Windows, Linux y macOS.
-3. Pruebas de arquitectura en verde (capas, comando de ejecución única, clasificación de licencia).
+3. Pruebas de arquitectura en verde (capas, comando de ejecución única).
 4. Todas las claves de recurso nuevas existen en catalán.
 5. Ningún dato de alumnos en el registro técnico (prueba de privacidad).
 6. `openspec validate` pasa y las specs reflejan lo implementado.
@@ -244,7 +241,7 @@ Cada fila con versión, motivo y alternativa descartada.
 |--------------------|---------|-------------|----------------|--------|
 | Fichero de muestra de secretaría | Cierre de la importación de alumnos (`alumnes-i-assignacions`) | por definir | por definir | pendiente |
 | Valoración RGPD con la dirección (identificador, correo, conservación) | Política de datos de `alumnes-i-assignacions` y `cursos-i-historial` | por definir | por definir | pendiente |
-| Datos del proyecto de licencias | Documento de requisitos del servidor, contrato de `llicencies-client` | por definir | por definir | pendiente |
+| Servidor de registro y correos (alojamiento, dominio) | Puesta en marcha del registro y avisos de `registre-i-actualitzacions` | por definir | por definir | pendiente |
 | Validar la pantalla principal con los conserjes | Implementación definitiva de Inicio (`ui-shell`) | por definir | por definir | pendiente |
 | Política de conservación de datos con los conserjes | Automatización futura de `cursos-i-historial` | por definir | por definir | pendiente |
 | Supuestos técnicos sin probar | Fiabilidad de `arquitectura-base`, `copies-de-seguretat`, `ux-fonaments` | por definir | tras el spike (punto 1) | pendiente |

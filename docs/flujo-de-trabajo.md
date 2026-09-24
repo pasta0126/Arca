@@ -25,14 +25,14 @@ specs aprobadas → rama → implementar grupo a grupo → PR → revisión → 
 | PR | Se abre el Pull Request con la lista de comprobación de la sección 6 | Quien implementa |
 | Revisión | Autorrevisión con `/code-review` y visto bueno de la persona responsable | Ambos |
 | Archivar | `openspec archive <nombre>` como **último commit de la rama** | Quien implementa |
-| Fusionar | Con la CI en verde en los tres sistemas | Persona responsable |
+| Fusionar | Con los scripts en verde en macOS y Linux y la verificación de Windows hecha | Persona responsable |
 
 **Orden de los cambios**: el del roadmap (`docs/roadmap.md`). Un cambio empieza cuando sus dependencias están fusionadas. La única excepción es el hito 1 (punto 7 de `docs/preparacion-desarrollo.md`), que reparte tareas de varios cambios y se definirá aparte.
 
 ## 2. Ramas y Pull Requests
 
 - Nombre de rama: `change/<nombre-del-cambio>` (por ejemplo `change/arquitectura-base`).
-- `main` siempre compila y pasa las pruebas. Nada se fusiona con la CI en rojo.
+- `main` siempre compila y pasa las pruebas. Nada se fusiona con los scripts en rojo. No hay CI remota por ahora (ver `docs/stack.md`, «Verificación multiplataforma»): la comprobación la hacen los scripts de `build/`.
 - El Pull Request se fusiona con **commit de fusión** (no *squash*), para conservar un commit por grupo de tareas en el historial.
 - Un Pull Request corresponde a **un cambio de OpenSpec**. Si un cambio es muy grande, se puede dividir en varias ramas por grupos, avisándolo en el PR.
 - Los cambios de documentación (`docs/`, `openspec/config.yaml`) que no forman parte de un cambio pueden ir directamente a `main`.
@@ -43,7 +43,7 @@ Una sesión implementa **un grupo de tareas** (una sección numerada de `tasks.m
 
 **Antes de empezar**
 1. Leer `AGENTS.md`, `docs/convenciones.md`, `docs/glosario.md`, `docs/stack.md` y los artefactos del cambio (propuesta, diseño, specs y tareas).
-2. Comprobar que la rama está al día con `main` y que la CI de `main` está en verde.
+2. Comprobar que la rama está al día con `main` y que `build/test.sh` pasa sobre `main`.
 3. Elegir el siguiente grupo de tareas sin marcar y confirmar que sus dependencias (grupos anteriores) están hechas.
 
 **Durante**
@@ -87,7 +87,7 @@ spec: allow releasing assignments of a closing course (cursos-i-historial)
 docs: update glossary with validated terms
 ```
 
-Prefijos: nombre del cambio para implementación, `spec:` para cambios de especificación, `docs:` para documentación y `ci:` para integración continua.
+Prefijos: nombre del cambio para implementación, `spec:` para cambios de especificación, `docs:` para documentación y `build:` para los scripts de verificación y empaquetado.
 
 ## 6. Revisión antes de fusionar
 
@@ -95,13 +95,13 @@ Prefijos: nombre del cambio para implementación, `spec:` para cambios de especi
 
 **Lista de comprobación del PR** (la de `docs/convenciones.md` más esta):
 - [ ] Todas las tareas del cambio están marcadas y ninguna queda a medias.
-- [ ] La CI está en verde en Windows, Linux y macOS.
+- [ ] `build/test.sh` pasa en macOS y en Linux (contenedor), y `build/test.ps1` pasa en Windows.
 - [ ] No hay funcionalidad fuera de las specs.
 - [ ] Las desviaciones están anotadas en `design.md` y las specs están actualizadas.
 - [ ] No se ha añadido ninguna dependencia sin pasar el control de licencias (coste cero).
 - [ ] El PR indica qué se probó manualmente y en qué sistema.
 
-**Visto bueno** de la persona responsable, que puede pedir cambios. Con la CI en verde y el visto bueno, se fusiona.
+**Visto bueno** de la persona responsable, que puede pedir cambios. Con los scripts en verde y el visto bueno, se fusiona.
 
 ## 7. Definición de terminado
 
@@ -114,29 +114,29 @@ Prefijos: nombre del cambio para implementación, `spec:` para cambios de especi
 
 ### Por cambio (antes de fusionar)
 1. **Todas las tareas** de `tasks.md` están marcadas.
-2. **La CI pasa en Windows, Linux y macOS**, con las pruebas de dominio, aplicación, persistencia, interfaz y arquitectura.
+2. **Los scripts de verificación pasan**: `build/test.sh` en macOS y Linux (contenedor) y `build/test.ps1` en Windows, con las pruebas de dominio, aplicación, persistencia, interfaz y arquitectura. La verificación de Windows se hace **al terminar el cambio**, no en cada commit.
 3. **Cada escenario de los specs del cambio tiene su prueba** con la etiqueta `spec` (cuando exista el script de cobertura, lo comprueba solo; hasta entonces, se revisa a mano).
-4. **Pruebas de arquitectura en verde**: capas, atributo de licencia en cada manejador, comando de ejecución única, DTO sin correo ni identificador y sin EF Core en `Domain` ni `Application`.
+4. **Pruebas de arquitectura en verde**: capas, comando de ejecución única, DTO sin correo ni identificador y sin EF Core en `Domain` ni `Application`.
 5. **Todas las claves de recurso** usadas existen en catalán y no queda ningún texto literal en el código ni en las vistas.
 6. **Prueba de privacidad**: un error con datos de un alumno no deja rastro en el registro técnico.
 7. **Control de licencias de dependencias** en verde (coste cero).
 8. **Specs y documentación sincronizadas**: `openspec validate --all --strict` pasa y `docs/convenciones.md` o `docs/glosario.md` reflejan cualquier convención o término nuevo.
-9. **Prueba manual** del flujo principal del cambio en el sistema de desarrollo (macOS) y, en los hitos con interfaz visible, una comprobación puntual en Windows.
+9. **Prueba manual** del flujo principal del cambio en macOS y, con interfaz visible, también en Windows con el paquete portable `win-x64`.
 10. **Cambio archivado** con `openspec archive <nombre>` y specs sincronizadas con `openspec/specs/`.
 11. **Pull Request fusionado** y rama borrada.
 
 ### Por hito (cuando exista interfaz que enseñar)
 Además: instalador y versión portable generados, demostración con los datos de ejemplo y revisión con los conserjes de lo que sea visible.
 
-## 8. Cuando la CI falla en un solo sistema
+## 8. Cuando la verificación falla en un solo sistema
 
 - No se fusiona. Un fallo en un solo sistema es un fallo real (rutas, mayúsculas de ficheros, fin de línea, cultura, binarios nativos).
-- Se reproduce en ese sistema o con la salida de la CI, se corrige y se añade una prueba que lo cubra.
+- Se reproduce en ese sistema con el script, se corrige y se añade una prueba que lo cubra.
 - Si el fallo revela un supuesto erróneo de las specs, se sigue la sección 4.
 
 ## 9. Pendientes externos durante la implementación
 
-Los pendientes de `docs/roadmap.md` (fichero de secretaría, valoración RGPD, datos del servidor de licencias, validación de la pantalla principal) **no bloquean empezar** los cambios que no dependen de ellos.
+Los pendientes de `docs/roadmap.md` (fichero de secretaría, valoración RGPD, datos del servidor de registro, validación de la pantalla principal) **no bloquean empezar** los cambios que no dependen de ellos.
 
 - Cada tarea que dependa de un pendiente se marca en `tasks.md` con `(bloqueada: <motivo>)` y se salta sin dejar código a medias.
 - Cuando llega el dato, se actualiza la spec afectada (sección 4) y se desbloquea la tarea.

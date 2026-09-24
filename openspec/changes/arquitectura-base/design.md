@@ -5,8 +5,8 @@ Proyecto nuevo, sin código. Motivación y alcance en `proposal.md`; requisitos 
 - Desarrollo en macOS; destino principal Windows; Linux y macOS deben funcionar. Las pruebas en Windows serán puntuales, así que casi todo debe poder verificarse fuera de Windows.
 - Un solo PC, sin concurrencia. Usuarios finales no técnicos: los fallos deben ser comprensibles y nunca dejar datos a medias.
 - La lógica de negocio debe poder reutilizarse en una futura web, por lo que no puede depender de la UI ni de la base de datos concreta.
-- Datos de menores: el cifrado en reposo es requisito, pero sin contraseña (decisión de producto: sin login).
-- La clave de cifrado no puede depender del servidor de licencias.
+- Datos de menores: el cifrado en reposo es requisito, con la contraseña del centro como llave (`acces-i-xifrat`) y sin ningún secreto en el código, porque el repositorio es abierto.
+- La clave de cifrado no puede depender de ningún servidor.
 
 ## Goals / Non-Goals
 
@@ -19,7 +19,7 @@ Proyecto nuevo, sin código. Motivación y alcance en `proposal.md`; requisitos 
 **Non-Goals:**
 - Modelo de datos de taquillas, alumnos, pagos, llaves, incidencias y mantenimiento (cambios posteriores; aquí solo el mecanismo de migraciones).
 - Diseño visual, navegación y branding (`ui-shell`).
-- Copia y restauración manuales para el usuario, licencias, informes.
+- Copia y restauración manuales para el usuario, registro y avisos de versión, informes.
 - Empaquetado de Linux y macOS más allá de un archivo portable.
 
 ## Decisions
@@ -43,12 +43,8 @@ Un único código C# para Windows, Linux y macOS. Avalonia permite estilos y tem
 Fichero único, sin servidor, con binarios nativos disponibles para los tres sistemas. El acceso a datos usa EF Core con `Microsoft.EntityFrameworkCore.Sqlite.Core` y el cifrado de SQLite3 Multiple Ciphers (`SQLite3MC.PCLRaw.bundle`, licencia MIT) en modo compatible con SQLCipher 4. Se descartan `SQLitePCLRaw.bundle_e_sqlcipher` (obsoleto) y el SQLCipher oficial para .NET (licencia comercial); ver `docs/stack.md`. El `DbContext`, las configuraciones y las migraciones viven solo en `Infrastructure`; `Domain` y `Application` no referencian EF Core. `Application` define interfaces de repositorio y `Infrastructure` las implementa, de modo que una futura web pueda usar otro almacén.
 *Alternativa descartada*: SQL explícito con Microsoft.Data.Sqlite. Da más control fino, pero EF Core aporta modelo, migraciones y consultas tipadas con menos código a mantener. El control necesario sobre la copia previa y el rechazo de versiones nuevas se obtiene envolviendo el migrador (ver D5).
 
-### D4. Clave de cifrado interna, igual en todas las instalaciones
-La clave se deriva de un secreto incluido en la aplicación, idéntico en todas las instalaciones.
-- **Por qué no una clave por equipo** (almacén del sistema: DPAPI, Keychain, libsecret): un fichero de datos o una copia de seguridad no podría abrirse en otro PC, y sustituir el ordenador de conserjería perdería los datos. El spec exige transportabilidad.
-- **Por qué no una clave junto a la base de datos**: no aportaría protección alguna.
-- **Límite asumido**: protege frente a la copia casual del fichero (por ejemplo, un USB perdido), no frente a quien examine el programa. Debe constar así en la documentación para la dirección del centro.
-- Independiente de la licencia y de la red, por requisito.
+### D4. La llave sale de la contraseña del centro
+La base se cifra con una llave aleatoria protegida por la contraseña compartida del centro y por una clave de recuperación, según `acces-i-xifrat`. No hay ningún secreto en el código ni en las compilaciones, funciona igual en los tres sistemas y las bases se abren con cualquier compilación de ARCA con la contraseña correcta. *Alternativas descartadas*: un secreto incrustado en el programa (con el código abierto es público), una llave por instalación en el almacén del sistema (tres implementaciones y riesgo de perder los datos al reinstalar) y una llave fija pública (no protege de verdad). La llave no depende de la licencia, de la red ni de ningún servidor.
 
 ### D5. Migraciones de EF Core envueltas en un migrador propio
 Se usan las migraciones de EF Core, pero nunca `Migrate()` directo al arrancar: un servicio propio de `Infrastructure` controla el proceso. Al arrancar:
@@ -75,7 +71,7 @@ La cultura de formato se fija en catalán de España en v1, ignorando la del sis
 Ordenación y búsqueda con comparaciones sensibles a la cultura catalana e insensibles a mayúsculas y acentos. Se centraliza en un único componente para que todos los listados se comporten igual.
 
 ### D10. Verificación multiplataforma
-Integración continua con matriz Windows, Linux y macOS que compila y ejecuta las pruebas. Esto cubre la limitación de probar en Windows solo de forma puntual. Las pruebas de persistencia usan ficheros temporales reales, no simulaciones.
+Verificación en los tres sistemas con **scripts del repositorio** (`build/test.sh`, `build/test.ps1`) y sin CI remota por ahora (`docs/stack.md`): macOS y Linux (contenedor) antes de cada commit de grupo y Windows al terminar cada cambio, con el paquete portable `win-x64` generado desde macOS. Los scripts son la única definición de qué se comprueba, de modo que una CI remota futura solo tendría que llamarlos. Las pruebas de persistencia usan ficheros temporales reales, no simulaciones.
 
 ### D11. Distribución
 - **Windows**: instalador creado con Inno Setup, la herramienta estándar y gratuita, sin firma de código en v1 (el certificado es de pago y el proyecto es de coste cero; el instalador mostrará el aviso de SmartScreen, que se documenta). Admite instalación por usuario (sin administrador) y por equipo, y permite que la desinstalación conserve los datos por defecto.
@@ -108,7 +104,7 @@ Registro en fichero con rotación y tamaño máximo, en la carpeta de datos (o j
 - **Resultado estructurado en lugar de excepciones exige disciplina** → una prueba de arquitectura verifica que los casos de uso públicos devuelven el tipo de resultado y una revisión de código lo comprueba en cada cambio.
 - **Umbral de 300 ms con indicador tardío puede dar sensación de congelación en equipos lentos** → el umbral es configurable en un único lugar y se valida con equipos reales.
 - **Filtrar datos personales del registro es fácil de romper con un mensaje de excepción** → los tipos de error propios no incluyen valores de datos y una prueba comprueba que un error provocado con datos de alumno no deja rastro.
-- **La clave interna es ofuscación fuerte, no seguridad frente a un atacante con el programa** → documentarlo con claridad; mantener la opción de ampliarlo a una clave por centro en el futuro sin cambiar el resto.
+- **Perder la contraseña y la clave de recuperación hace irrecuperables los datos** → clave de recuperación obligatoria y confirmada, avisos claros y guía para la dirección del centro (`acces-i-xifrat`).
 - **Cifrado y binarios nativos en tres sistemas** → validar el arranque en los tres desde el primer hito y cubrirlo en la matriz de CI.
 - **Rechazar bases de versión más nueva bloquea al usuario** → el mensaje debe indicar exactamente qué hacer (actualizar la aplicación); nunca degradar ni abrir en modo parcial.
 - **Bloqueo de instancia única sobre carpetas de red o sincronizadas (OneDrive)** → documentar que la base de datos debe estar en disco local; el bloqueo fallido se trata como "ya en uso".

@@ -39,11 +39,15 @@ El sistema SHALL mostrar en la primera ejecución la carpeta de datos propuesta,
 - **THEN** el sistema pregunta si usarla y, si la elige, arranca con ella sin crear otra
 
 ### Requirement: Empezar de cero
-El sistema SHALL crear una base de datos nueva aplicando todas las migraciones cuando el usuario elige empezar de cero, y SHALL continuar con el asistente de configuración.
+El sistema SHALL, cuando el usuario elige empezar de cero, pedirle la contraseña del centro y mostrarle la clave de recuperación según `acces-i-xifrat`, crear después la base de datos aplicando todas las migraciones y continuar con el asistente de configuración.
 
 #### Scenario: Base de datos nueva
-- **WHEN** el usuario elige empezar de cero
-- **THEN** se crea la base de datos y se abre el asistente de configuración en su primer paso pendiente
+- **WHEN** el usuario elige empezar de cero, crea la contraseña y confirma la clave de recuperación
+- **THEN** se crea la base de datos cifrada y se abre el asistente de configuración en su primer paso pendiente
+
+#### Scenario: Sin contraseña o sin confirmar la clave
+- **WHEN** el usuario no completa la contraseña o no confirma la clave de recuperación
+- **THEN** el sistema no crea la base de datos y explica qué falta
 
 #### Scenario: Fallo al crear
 - **WHEN** falla la creación de la base de datos
@@ -56,16 +60,24 @@ El sistema SHALL ofrecer en la primera ejecución restaurar una copia de segurid
 - **WHEN** el usuario elige restaurar y selecciona una copia válida
 - **THEN** la aplicación arranca con los datos de la copia y el asistente de configuración solo muestra los pasos que sigan pendientes
 
+#### Scenario: Contraseña de la copia
+- **WHEN** el usuario selecciona una copia protegida
+- **THEN** el sistema le pide la contraseña o la clave de recuperación de esa copia y avisa de que pasará a ser la contraseña del centro
+
 #### Scenario: Copia rechazada
 - **WHEN** la copia no supera la verificación
 - **THEN** el sistema lo indica y permite elegir otra copia o empezar de cero
 
-### Requirement: Licencia desde el primer arranque
-El sistema SHALL iniciar el período de prueba en la primera ejecución sin clave, SHALL permitir introducir una clave en cualquier momento del asistente y SHALL no exigir conexión.
+### Requirement: Registro opcional de la instalación
+El sistema SHALL ofrecer en la primera ejecución el paso de registro opcional de `registre-i-actualitzacions`, con todas sus casillas desactivadas por defecto, y SHALL permitir continuar sin activar nada y sin conexión.
 
-#### Scenario: Sin clave
-- **WHEN** el usuario empieza de cero sin introducir clave
-- **THEN** la prueba está en marcha con sus días restantes
+#### Scenario: Continuar sin registro
+- **WHEN** el usuario continúa sin marcar ninguna casilla
+- **THEN** la aplicación funciona igual y no se envía nada
+
+#### Scenario: Información visible
+- **WHEN** el usuario llega a ese paso
+- **THEN** ve la lista exacta de los datos que se enviarían si activara cada casilla
 
 ### Requirement: Feedback en la primera ejecución
 El sistema SHALL explicar cada opción con su consecuencia, informar del resultado y de la ubicación de los datos, y evitar la doble ejecución.

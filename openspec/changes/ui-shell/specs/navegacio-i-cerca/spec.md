@@ -20,7 +20,7 @@ El sistema SHALL mostrar una barra lateral fija con las secciones Inicio, Taquil
 - **THEN** se abre esa sección
 
 ### Requirement: Reparto de las pantallas por sección
-El sistema SHALL ubicar cada pantalla de dominio en una sola sección: Taquillas (taquillas, zonas y su historial), Alumnos (alumnos, importación y asignaciones), Cobros (cargos, morosos y fianzas), Llaves e incidencias (llaves, incidencias y mantenimiento en bloque), Informes (informes y exportación), Curso (curso actual, importes, cierre y conservación de datos) y Ajustes (identidad, tema, licencia, copia de seguridad y restauración, configuración guiada, motivos de incidencia y carpeta de datos).
+El sistema SHALL ubicar cada pantalla de dominio en una sola sección: Taquillas (taquillas, zonas y su historial), Alumnos (alumnos, importación y asignaciones), Cobros (cargos, morosos y fianzas), Llaves e incidencias (llaves, incidencias y mantenimiento en bloque), Informes (informes y exportación), Curso (curso actual, importes, cierre y conservación de datos) y Ajustes (identidad, tema, registro y avisos de versión, copia de seguridad y restauración, configuración guiada, motivos de incidencia y carpeta de datos).
 
 #### Scenario: Importes del curso
 - **WHEN** el usuario busca dónde definir los importes
@@ -46,7 +46,7 @@ El sistema SHALL presentar las pantallas de dominio con una estructura común: t
 - **THEN** muestra el estado vacío con la acción para crear el primero
 
 ### Requirement: Cabecera con el estado global
-El sistema SHALL mostrar en una cabecera fija el nombre y el logo del centro, el curso activo o el curso en cierre y el indicador de licencia con los días restantes cuando el estado es prueba o gracia.
+El sistema SHALL mostrar en una cabecera fija el nombre y el logo del centro, el curso activo o el curso en cierre.
 
 #### Scenario: Curso activo
 - **WHEN** hay un curso activo
@@ -56,24 +56,16 @@ El sistema SHALL mostrar en una cabecera fija el nombre y el logo del centro, el
 - **WHEN** no hay curso activo y hay uno en cierre
 - **THEN** la cabecera indica que no hay curso activo, muestra el curso en cierre y ofrece activar el siguiente
 
-#### Scenario: Licencia en gracia
-- **WHEN** la licencia está en gracia con 12 días restantes
-- **THEN** la cabecera muestra el indicador con 12 días
-
-#### Scenario: Licencia activa
-- **WHEN** la licencia está activa
-- **THEN** la cabecera no muestra ningún indicador de licencia
-
 ### Requirement: Avisos globales
-El sistema SHALL mostrar de forma no bloqueante los avisos de estado de la aplicación con su acción directa: sin curso activo, curso en cierre con pasos pendientes, configuración obligatoria pendiente y licencia en prueba, gracia o solo lectura.
+El sistema SHALL mostrar de forma no bloqueante los avisos de estado de la aplicación con su acción directa: sin curso activo, curso en cierre con pasos pendientes, configuración obligatoria pendiente y versión nueva disponible.
 
 #### Scenario: Sin curso activo
 - **WHEN** no hay curso activo
 - **THEN** se muestra un aviso con una acción para abrir la configuración guiada
 
-#### Scenario: Solo lectura
-- **WHEN** la licencia está en solo lectura
-- **THEN** se muestra un aviso que explica qué no se puede hacer y cómo activar la licencia
+#### Scenario: Versión nueva
+- **WHEN** `registre-i-actualitzacions` informa de una versión nueva
+- **THEN** se muestra un aviso con sus notas, un enlace a la descarga oficial y la oferta de hacer una copia de seguridad antes, sin bloquear el trabajo
 
 #### Scenario: Aviso descartable
 - **WHEN** el usuario cierra un aviso informativo
