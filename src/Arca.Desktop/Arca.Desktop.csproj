@@ -9,6 +9,7 @@
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Desktop" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <ProjectReference Include="..\Arca.Application\Arca.Application.csproj" />
     <ProjectReference Include="..\Arca.Infrastructure\Arca.Infrastructure.csproj" />
     <ProjectReference Include="..\Arca.UI\Arca.UI.csproj" />

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="App.Label.Title" xml:space="preserve">
+    <value>ARCA</value>
+  </data>
+  <data name="App.Label.InfoTitle" xml:space="preserve">
+    <value>Informació d'ARCA</value>
+  </data>
+  <data name="App.Label.ApplicationVersion" xml:space="preserve">
+    <value>Versió de l'aplicació</value>
+  </data>
+  <data name="App.Label.SchemaVersion" xml:space="preserve">
+    <value>Versió de l'esquema de les dades</value>
+  </data>
+  <data name="App.Label.Close" xml:space="preserve">
+    <value>Tanca</value>
+  </data>
+  <data name="App.Label.StartupErrorTitle" xml:space="preserve">
+    <value>No s'ha pogut obrir ARCA</value>
+  </data>
+</root>

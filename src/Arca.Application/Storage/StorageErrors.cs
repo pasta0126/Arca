@@ -34,4 +34,7 @@ public static class StorageErrors
 
     /// <summary>Another instance already has this database open.</summary>
     public static readonly Error AlreadyRunning = new("Storage.AlreadyRunning");
+
+    /// <summary>There is no way yet to obtain the database key (the access flow of acces-i-xifrat is not in this build).</summary>
+    public static readonly Error KeyNotAvailable = new("Storage.KeyNotAvailable");
 }

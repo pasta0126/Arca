@@ -52,10 +52,10 @@
 
 ## 7. Aplicación de escritorio mínima
 
-- [ ] 7.1 Crear el proyecto Avalonia con la raíz de composición (inyección de dependencias) y arranque que abre la base de datos
-- [ ] 7.2 Mostrar los errores de arranque (ruta inaccesible, fichero dañado, versión más nueva, segunda instancia) con mensajes localizados y salida limpia
-- [ ] 7.3 Crear una pantalla de información con versión de aplicación y versión de esquema
-- [ ] 7.4 Comprobar que la aplicación arranca en Windows, Linux y macOS
+- [x] 7.1 Crear el proyecto Avalonia con la raíz de composición (inyección de dependencias) y arranque que abre la base de datos (la llave viene de un proveedor de desarrollo hasta que llegue `acces-i-xifrat`, ver `docs/ejecutar-en-desarrollo.md`)
+- [x] 7.2 Mostrar los errores de arranque (ruta inaccesible, fichero dañado, versión más nueva, segunda instancia) con mensajes localizados y salida limpia
+- [x] 7.3 Crear una pantalla de información con versión de aplicación y versión de esquema
+- [x] 7.4 Comprobar que la aplicación arranca en Windows, Linux y macOS (hecho en macOS; Linux descartado por ahora y Windows antes de producción, `docs/stack.md`)
 
 ## 8. Feedback, arranque y registro
 

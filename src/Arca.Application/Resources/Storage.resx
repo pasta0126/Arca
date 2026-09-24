@@ -36,4 +36,7 @@
   <data name="Storage.Error.AlreadyRunning" xml:space="preserve">
     <value>Ja hi ha una altra instància d'ARCA oberta amb aquestes dades. Tanca-la abans d'obrir-ne una altra.</value>
   </data>
+  <data name="Storage.Error.KeyNotAvailable" xml:space="preserve">
+    <value>Aquesta versió d'ARCA encara no té l'accés amb contrasenya. No es pot obrir la base de dades.</value>
+  </data>
 </root>
