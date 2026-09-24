@@ -6,7 +6,12 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="xunit.v3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" />
+    <PackageReference Include="SQLite3MC.PCLRaw.bundle" />
     <ProjectReference Include="..\..\src\Arca.Infrastructure\Arca.Infrastructure.csproj" />
     <ProjectReference Include="..\Arca.Testing\Arca.Testing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fixtures\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

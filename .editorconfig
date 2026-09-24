@@ -44,3 +44,5 @@ dotnet_diagnostic.CA1707.severity = none
 # Test data arrays are throwaway, and some tests call ToString() on purpose to prove it ignores the current culture
 dotnet_diagnostic.CA1861.severity = none
 dotnet_diagnostic.CA1305.severity = none
+# Tests are short-lived: passing the runner cancellation token everywhere adds noise
+dotnet_diagnostic.xUnit1051.severity = none

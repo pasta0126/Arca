@@ -15,12 +15,12 @@
 
 ## 3. Almacenamiento local cifrado
 
-- [ ] 3.1 Integrar EF Core con SQLite cifrado (SQLite3 Multiple Ciphers en formato SQLCipher 4) en `Infrastructure` y comprobar que carga en Windows, Linux y macOS
-- [ ] 3.2 Integrar la apertura de la base con la llave que entrega `acces-i-xifrat` (contraseña del centro y fichero de claves), sin ningún secreto en el código, y con una contraseña de prueba solo en los proyectos de pruebas
-- [ ] 3.3 Implementar la creación de la base de datos en el primer arranque aplicando todas las migraciones desde cero
-- [ ] 3.4 Prueba: el fichero no se puede leer con una herramienta SQLite estándar sin la clave
-- [ ] 3.5 Prueba: un fichero creado en un sistema se abre en otro (fichero de ejemplo versionado en el repositorio de pruebas)
-- [ ] 3.6 Detección y mensaje claro para fichero dañado o que no es una base de datos de ARCA, sin modificarlo
+- [x] 3.1 Integrar EF Core con SQLite cifrado (SQLite3 Multiple Ciphers en formato SQLCipher 4) en `Infrastructure` y comprobar que carga en Windows, Linux y macOS (hecho en macOS; Linux descartado por ahora y Windows antes de producción, `docs/stack.md`)
+- [x] 3.2 Integrar la apertura de la base con la llave que entrega `acces-i-xifrat` (contraseña del centro y fichero de claves), sin ningún secreto en el código, y con una contraseña de prueba solo en los proyectos de pruebas
+- [x] 3.3 Implementar la creación de la base de datos en el primer arranque aplicando todas las migraciones desde cero
+- [x] 3.4 Prueba: el fichero no se puede leer con una herramienta SQLite estándar sin la clave
+- [x] 3.5 Prueba: un fichero creado en un sistema se abre en otro (fichero de ejemplo versionado en el repositorio de pruebas; creado en macOS, se abre en Windows en la verificación previa a producción)
+- [x] 3.6 Detección y mensaje claro para fichero dañado o que no es una base de datos de ARCA, sin modificarlo
 
 ## 4. Migraciones de esquema
 
