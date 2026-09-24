@@ -9,7 +9,7 @@ El sistema SHALL generar al crear la contraseña una clave de recuperación alea
 
 #### Scenario: Formato
 - **WHEN** se genera la clave de recuperación
-- **THEN** es un código de 26 caracteres en grupos de 5, por ejemplo `K7F2P-9XQ4M-...`
+- **THEN** es un código de 26 caracteres en cinco grupos (cuatro de 5 y el último de 6), por ejemplo `K7F2P-9XQ4M-ABCDE-FGHJK-MNPQRS`
 
 #### Scenario: Aleatoria
 - **WHEN** se generan dos claves

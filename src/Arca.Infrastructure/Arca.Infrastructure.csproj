@@ -5,6 +5,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" />
     <PackageReference Include="SQLite3MC.PCLRaw.bundle" />
+    <PackageReference Include="NSec.Cryptography" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="Serilog.Sinks.File" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" IncludeAssets="runtime;build;native;contentfiles;analyzers" />

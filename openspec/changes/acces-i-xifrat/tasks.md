@@ -1,9 +1,9 @@
 ## 1. Primitivas y formato
 
-- [ ] 1.1 Puerto de servicios de claves en Application y su implementación en Infrastructure con NSec: generación de la DEK, Argon2id, HKDF y XChaCha20-Poly1305 (D1, D2)
-- [ ] 1.2 Formato del fichero de claves con versión, parámetros, sales y las dos DEK envueltas, y su lectura y escritura atómicas con versión previa (D3)
-- [ ] 1.3 Generación, normalización y validación de la clave de recuperación en formato Crockford base32 (D4)
-- [ ] 1.4 Pruebas: envolver y desenvolver, fichero alterado, versión desconocida, parámetros guardados, clave de recuperación con distinto formato de escritura y ausencia de datos personales en el fichero
+- [x] 1.1 Puerto de servicios de claves en Application y su implementación en Infrastructure con NSec: generación de la DEK, Argon2id, HKDF y XChaCha20-Poly1305 (D1, D2)
+- [x] 1.2 Formato del fichero de claves con versión, parámetros, sales y las dos DEK envueltas, y su lectura y escritura atómicas con versión previa (D3)
+- [x] 1.3 Generación, normalización y validación de la clave de recuperación en formato Crockford base32 (D4)
+- [x] 1.4 Pruebas: envolver y desenvolver, fichero alterado, versión desconocida, parámetros guardados, clave de recuperación con distinto formato de escritura y ausencia de datos personales en el fichero
 
 ## 2. Contraseña del centro
 

@@ -7,7 +7,7 @@ ARCA usa los paquetes de código abierto que se listan aquí, cada uno con su li
 Solo se aceptan licencias compatibles con la GPL-3.0 (MIT, Apache 2.0, BSD, ISC). Las excepciones revisadas a mano
 están en `build/licenses-reviewed.json`, con su motivo.
 
-## Incluidos en la aplicación (47)
+## Incluidos en la aplicación (49)
 
 | Paquete | Versión | Licencia | Titular |
 |---------|---------|----------|---------|
@@ -29,6 +29,7 @@ están en `build/licenses-reviewed.json`, con su motivo.
 | HarfBuzzSharp.NativeAssets.macOS | 8.3.1.3 | MIT | © Microsoft Corporation. All rights reserved. |
 | HarfBuzzSharp.NativeAssets.WebAssembly | 8.3.1.3 | MIT | © Microsoft Corporation. All rights reserved. |
 | HarfBuzzSharp.NativeAssets.Win32 | 8.3.1.3 | MIT | © Microsoft Corporation. All rights reserved. |
+| libsodium | 1.0.22 | ISC | © 2026 Frank Denis |
 | MicroCom.Runtime | 0.11.6 | MIT | Copyright 2021 © Nikita Tsukanov |
 | Microsoft.Data.Sqlite.Core | 10.0.12 | MIT | © Microsoft Corporation. All rights reserved. |
 | Microsoft.EntityFrameworkCore | 10.0.12 | MIT | © Microsoft Corporation. All rights reserved. |
@@ -46,6 +47,7 @@ están en `build/licenses-reviewed.json`, con su motivo.
 | Microsoft.Extensions.Logging.Abstractions | 10.0.12 | MIT | © Microsoft Corporation. All rights reserved. |
 | Microsoft.Extensions.Options | 10.0.12 | MIT | © Microsoft Corporation. All rights reserved. |
 | Microsoft.Extensions.Primitives | 10.0.12 | MIT | © Microsoft Corporation. All rights reserved. |
+| NSec.Cryptography | 26.4.0 | MIT | © 2026 Klaus Hartke |
 | Serilog | 4.4.0 | Apache-2.0 | Copyright © Serilog Contributors |
 | Serilog.Sinks.File | 7.0.0 | Apache-2.0 | Serilog Contributors |
 | SkiaSharp | 3.119.4 | MIT | © Microsoft Corporation. All rights reserved. |
