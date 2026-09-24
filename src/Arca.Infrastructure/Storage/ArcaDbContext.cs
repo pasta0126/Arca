@@ -10,14 +10,26 @@ namespace Arca.Infrastructure.Storage;
 /// The EF Core context over the encrypted file. Lazy loading is off (arquitectura-base, D15):
 /// relations are loaded explicitly in each query. Entities arrive with each domain capability.
 /// </summary>
-public class ArcaDbContext(string path, DatabaseKey key, bool create = false) : DbContext
+public class ArcaDbContext : DbContext
 {
+    readonly string _path;
+    readonly DatabaseKey _key;
+    readonly bool _create;
+
+    public ArcaDbContext(string path, DatabaseKey key, bool create = false)
+    {
+        _path = path;
+        _key = key;
+        _create = create;
+        ChangeTracker.LazyLoadingEnabled = false; // explicit, so it stays off even if a proxy package were ever added
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         // ReadWrite never creates a file: only CreateAsync asks for it, so opening cannot make a new empty database.
-        var mode = create ? "ReadWriteCreate" : "ReadWrite";
+        var mode = _create ? "ReadWriteCreate" : "ReadWrite";
         optionsBuilder
-            .UseSqlite($"Data Source={path};Mode={mode};Pooling=False")
-            .AddInterceptors(new SqlCipherKeyInterceptor(key));
+            .UseSqlite($"Data Source={_path};Mode={mode};Pooling=False")
+            .AddInterceptors(new SqlCipherKeyInterceptor(_key));
     }
 }

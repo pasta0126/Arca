@@ -54,7 +54,8 @@ public static class ArcaDatabase
     /// Opens an existing database. The file is first probed read-only, so a damaged file, a file that is
     /// not a database or one that does not belong to ARCA is reported without being modified.
     /// </summary>
-    public static async Task<Result<ArcaDbContext>> OpenAsync(string path, DatabaseKey key, CancellationToken ct = default)
+    public static async Task<Result<ArcaDbContext>> OpenAsync(
+        string path, DatabaseKey key, IProgress<string>? steps = null, CancellationToken ct = default)
     {
         if (!File.Exists(path))
         {
@@ -67,7 +68,7 @@ public static class ArcaDatabase
             return Result<ArcaDbContext>.Failure(probe);
         }
 
-        var migrated = await new SchemaMigrator(() => new ArcaDbContext(path, key)).MigrateAsync(path, key, ct);
+        var migrated = await new SchemaMigrator(() => new ArcaDbContext(path, key)).MigrateAsync(path, key, steps, ct);
         return migrated.IsSuccess
             ? Result<ArcaDbContext>.Success(new ArcaDbContext(path, key))
             : Result<ArcaDbContext>.Failure(migrated.Error!);

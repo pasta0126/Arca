@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Startup.Stage.Location" xml:space="preserve">
+    <value>Cercant les dades…</value>
+  </data>
+  <data name="Startup.Stage.Instance" xml:space="preserve">
+    <value>Comprovant que ARCA no està obert en un altre lloc…</value>
+  </data>
+  <data name="Startup.Stage.Key" xml:space="preserve">
+    <value>Obtenint la clau de les dades…</value>
+  </data>
+  <data name="Startup.Stage.Database" xml:space="preserve">
+    <value>Obrint la base de dades…</value>
+  </data>
+  <data name="Startup.Stage.BackingUp" xml:space="preserve">
+    <value>Fent una còpia de seguretat abans d'actualitzar les dades…</value>
+  </data>
+  <data name="Startup.Stage.Migrating" xml:space="preserve">
+    <value>Actualitzant la base de dades…</value>
+  </data>
+  <data name="Startup.Stage.Ready" xml:space="preserve">
+    <value>Preparant la finestra principal…</value>
+  </data>
+  <data name="Startup.Label.ErrorReference" xml:space="preserve">
+    <value>Referència: {0}</value>
+    <comment>{0} error code or log reference</comment>
+  </data>
+  <data name="Startup.Label.Starting" xml:space="preserve">
+    <value>Iniciant ARCA…</value>
+  </data>
+</root>

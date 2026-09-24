@@ -6,6 +6,9 @@ namespace Arca.Infrastructure.Storage;
 /// <summary>Where ARCA keeps its files: the data folder, the local settings file and the default database path.</summary>
 public sealed record DataLocations(bool IsPortable, string DataFolder, string SettingsFile, string DefaultDatabasePath)
 {
+    /// <summary>The technical log lives with the data, so in portable mode it stays in the executable's folder too.</summary>
+    public string LogFolder => Path.Combine(DataFolder, "logs");
+
     /// <summary>A file with this name next to the executable turns on portable mode (arquitectura-base, D6).</summary>
     public const string PortableMarker = "arca.portable";
 

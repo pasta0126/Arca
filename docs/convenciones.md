@@ -213,7 +213,7 @@ public static class LockerStatusCalculator
 Los datos de alumnos son datos de menores. Reglas de obligado cumplimiento:
 
 1. **Objetos de transferencia sin correo ni identificador.** Los listados, búsquedas, informes y exportaciones usan DTO que no tienen esos campos. Solo el DTO de la revisión de dudosos de la importación puede llevarlos. Una prueba de arquitectura busca propiedades llamadas `Email` o `Identifier` en los DTO.
-2. **Nada de datos de alumnos en el registro técnico**: ni nombres, ni valores de campos, ni consultas con parámetros. Se registran tipos de error, códigos y referencias. Las excepciones propias no incluyen valores de datos en su mensaje.
+2. **Nada de datos de alumnos en el registro técnico** (implementado en `FileErrorLog`: solo se escribe el tipo de la excepción y de sus causas, el contexto y la pila, **nunca el mensaje ni `Data`**, porque el mensaje puede llevar el dato que se estaba procesando): ni nombres, ni valores de campos, ni consultas con parámetros. Se registran tipos de error, códigos y referencias. Las excepciones propias no incluyen valores de datos en su mensaje.
 3. **Los textos libres del usuario** (motivos, notas) no aparecen en listados generales, exportaciones ni registro técnico. Solo en la ficha del elemento.
 4. **Ningún dato de alumnos sale del equipo.** La única comunicación de red posible es el registro opcional y el aviso de versión de `registre-i-actualitzacions`, desactivados por defecto y con un contenido cerrado y documentado (`docs/registro-de-instalaciones.md`).
 5. Una **prueba de privacidad por cambio**: provoca un error con datos de un alumno y comprueba que el registro no deja rastro.

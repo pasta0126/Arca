@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.Application.Startup;
 using Arca.Application.Storage;
 using Arca.Domain.Common;
 using Arca.Infrastructure.Storage;
@@ -168,6 +169,68 @@ public sealed class StorageStartupTests
         await using var session = result.Value!;
         Assert.StartsWith(exe, session.DatabasePath, StringComparison.Ordinal);
         Assert.False(Directory.Exists(Path.Combine(home.Path, "xdg"))); // nothing outside the folder
+    }
+
+    sealed class Collect : IProgress<StartupProgress>
+    {
+        public List<StartupProgress> Reports { get; } = [];
+
+        public void Report(StartupProgress value) => Reports.Add(value);
+    }
+
+    [Fact]
+    [Trait("spec", "arquitectura-base/feedback-operacions: Pantalla de arranque con etapas reales (arranque normal)")]
+    public async Task Start_reports_the_real_stages_in_order()
+    {
+        using var home = new TempDirectory();
+        var progress = new Collect();
+
+        var result = await Startup(home, new FixedKey("stages"), create: true).OpenAsync(progress);
+
+        Assert.True(result.IsSuccess);
+        await result.Value!.DisposeAsync();
+        Assert.Equal(
+            ["Startup.Stage.Location", "Startup.Stage.Instance", "Startup.Stage.Key", "Startup.Stage.Database"],
+            progress.Reports.Select(r => r.TextKey));
+        Assert.Equal([1, 2, 3, 4], progress.Reports.Select(r => r.Index));
+    }
+
+    [Fact]
+    [Trait("spec", "arquitectura-base/feedback-operacions: Pantalla de arranque con etapas reales (arranque con migración)")]
+    public async Task A_migrating_start_says_it_is_updating_the_database()
+    {
+        using var home = new TempDirectory();
+        var folder = Path.Combine(home.Path, "xdg", "arca");
+        Directory.CreateDirectory(folder);
+        File.Copy(Path.Combine(AppContext.BaseDirectory, "Fixtures", "sample.arcafixture"), Path.Combine(folder, "arca.db"));
+        var progress = new Collect();
+
+        var result = await Startup(home, new FixedFixtureKey()).OpenAsync(progress);
+
+        Assert.True(result.IsSuccess, result.Error?.Code);
+        await result.Value!.DisposeAsync();
+        var keys = progress.Reports.Select(r => r.TextKey).ToList();
+        Assert.Equal(["Startup.Stage.BackingUp", "Startup.Stage.Migrating"], keys.Skip(4));
+    }
+
+    [Fact]
+    [Trait("spec", "arquitectura-base/feedback-operacions: Pantalla de arranque con etapas reales (fallo de arranque)")]
+    public async Task A_failing_stage_stops_the_later_ones()
+    {
+        using var home = new TempDirectory();
+        var progress = new Collect();
+
+        var result = await Startup(home, new NoKey(), create: true).OpenAsync(progress);
+
+        Assert.Equal("Storage.KeyNotAvailable", result.Error!.Code);
+        Assert.Equal(
+            ["Startup.Stage.Location", "Startup.Stage.Instance", "Startup.Stage.Key"], progress.Reports.Select(r => r.TextKey));
+    }
+
+    sealed class FixedFixtureKey : IDatabaseKeyProvider
+    {
+        public Task<Result<DatabaseKey>> GetKeyAsync(CancellationToken ct = default) =>
+            Task.FromResult(Result<DatabaseKey>.Success(TestKeys.Fixture()));
     }
 
     [Theory]

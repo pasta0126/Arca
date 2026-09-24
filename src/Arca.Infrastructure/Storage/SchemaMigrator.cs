@@ -38,7 +38,9 @@ public sealed class SchemaMigrator(
     readonly TimeProvider _time = timeProvider ?? TimeProvider.System;
 
     /// <summary>Migrates an existing database file to the current schema.</summary>
-    public async Task<Result<MigrationOutcome>> MigrateAsync(string path, DatabaseKey key, CancellationToken ct = default)
+    /// <param name="steps">Receives the resource key of each phase (copy, migrate) so the start-up screen can show it.</param>
+    public async Task<Result<MigrationOutcome>> MigrateAsync(
+        string path, DatabaseKey key, IProgress<string>? steps = null, CancellationToken ct = default)
     {
         string[] known;
         await using (var probe = createContext())
@@ -59,12 +61,14 @@ public sealed class SchemaMigrator(
         }
 
         var backup = BackupPathFor(path);
+        steps?.Report("Startup.Stage.BackingUp");
         if (!await TryMakeBackupAsync(path, backup, key, ct))
         {
             return Result<MigrationOutcome>.Failure(StorageErrors.BackupFailed);
         }
 
         var before = Hash(path);
+        steps?.Report("Startup.Stage.Migrating");
         try
         {
             await using var context = createContext();

@@ -9,5 +9,6 @@
     <PackageReference Include="Avalonia.Headless.XUnit" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <ProjectReference Include="..\..\src\Arca.UI\Arca.UI.csproj" />
+    <ProjectReference Include="..\Arca.Testing\Arca.Testing.csproj" />
   </ItemGroup>
 </Project>

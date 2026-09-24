@@ -59,16 +59,16 @@
 
 ## 8. Feedback, arranque y registro
 
-- [ ] 8.1 Definir el tipo de resultado estructurado (éxito con datos, avisos, error con código) y el informador de progreso con token de cancelación (D12)
-- [ ] 8.2 Prueba de arquitectura que exige que los casos de uso públicos devuelvan el tipo de resultado
-- [ ] 8.3 Implementar la secuencia de arranque por etapas con informe de avance y detención ante fallo (D13)
-- [ ] 8.4 Crear la pantalla de arranque ligera con identidad de la aplicación, texto de etapa y modo de error con referencia
-- [ ] 8.5 Implementar el ejecutor común de comandos: estado en curso, deshabilitado contra doble clic, indicador tras 300 ms y recogida del resultado (D14)
-- [ ] 8.6 Definir el servicio de notificaciones (éxito transitorio, error persistente, historial de sesión) y el servicio de confirmación de acciones irreversibles, como puertos con implementación en la UI
-- [ ] 8.7 Desactivar la carga perezosa de EF Core y fijar la carga explícita como norma; prueba que detecta proxies de carga perezosa (D15)
-- [ ] 8.8 Implementar el registro en fichero con rotación, tamaño máximo, referencia de error y política de privacidad (D16)
-- [ ] 8.9 Pruebas: éxito, error de negocio, aviso con éxito parcial, error inesperado con referencia, acción rápida sin indicador, doble ejecución, cancelación antes y durante el guardado, registro sin datos personales y registro acotado
-- [ ] 8.10 Claves de recurso en catalán para todos los mensajes de arranque, resultado, confirmación, progreso y estados vacíos genéricos
+- [x] 8.1 Definir el tipo de resultado estructurado (éxito con datos, avisos, error con código) y el informador de progreso con token de cancelación (D12)
+- [x] 8.2 Prueba de arquitectura que exige que los casos de uso públicos devuelvan el tipo de resultado
+- [x] 8.3 Implementar la secuencia de arranque por etapas con informe de avance y detención ante fallo (D13)
+- [x] 8.4 Crear la pantalla de arranque ligera con identidad de la aplicación, texto de etapa y modo de error con referencia
+- [x] 8.5 Implementar el ejecutor común de comandos: estado en curso, deshabilitado contra doble clic, indicador tras 300 ms y recogida del resultado (D14)
+- [x] 8.6 Definir el servicio de notificaciones (éxito transitorio, error persistente, historial de sesión) y el servicio de confirmación de acciones irreversibles, como puertos con implementación en la UI
+- [x] 8.7 Desactivar la carga perezosa de EF Core y fijar la carga explícita como norma; prueba que detecta proxies de carga perezosa (D15)
+- [x] 8.8 Implementar el registro en fichero con rotación, tamaño máximo, referencia de error y política de privacidad (D16)
+- [x] 8.9 Pruebas: éxito, error de negocio, aviso con éxito parcial, error inesperado con referencia, acción rápida sin indicador, doble ejecución, cancelación antes y durante el guardado, registro sin datos personales y registro acotado
+- [x] 8.10 Claves de recurso en catalán para todos los mensajes de arranque, resultado, confirmación, progreso y estados vacíos genéricos
 
 ## 9. Verificación y distribución
 

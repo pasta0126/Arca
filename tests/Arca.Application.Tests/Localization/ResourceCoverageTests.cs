@@ -26,6 +26,10 @@ public sealed partial class ResourceCoverageTests
     [GeneratedRegex(@"\.Get\(\s*""([^""]+)""")]
     private static partial Regex GetCall();
 
+    /// <summary>Any string literal shaped like a resource key: Capability.Label|Stage|Result|Empty|Loading.Name.</summary>
+    [GeneratedRegex(@"""([A-Z][A-Za-z]+\.(?:Label|Stage|Result|Empty|Loading)\.[A-Za-z]+)""")]
+    private static partial Regex KeyLiteral();
+
     [GeneratedRegex(@"new Notice\(\s*""([^""]+)""")]
     private static partial Regex NoticeCall();
 
@@ -111,6 +115,7 @@ public sealed partial class ResourceCoverageTests
         {
             var text = File.ReadAllText(file);
             used.AddRange(GetCall().Matches(text).Select(m => m.Groups[1].Value));
+            used.AddRange(KeyLiteral().Matches(text).Select(m => m.Groups[1].Value));
             used.AddRange(NoticeCall().Matches(text).Select(m => ResourceKeys.For(new Notice(m.Groups[1].Value))));
         }
 
@@ -122,10 +127,11 @@ public sealed partial class ResourceCoverageTests
     [Fact]
     public void The_scanner_finds_literal_keys()
     {
-        var sample = "x.Get(\"Lockers.Label.Number\"); new Notice(\"Assignments.PriorDebt\", [1]);";
+        var sample = "x.Get(\"Lockers.Label.Number\"); new Notice(\"Assignments.PriorDebt\", [1]); new StartupStage(\"Startup.Stage.Key\");";
 
         Assert.Equal("Lockers.Label.Number", GetCall().Match(sample).Groups[1].Value);
         Assert.Equal("Assignments.PriorDebt", NoticeCall().Match(sample).Groups[1].Value);
+        Assert.Contains("Startup.Stage.Key", KeyLiteral().Matches(sample).Select(m => m.Groups[1].Value));
     }
 
     [Fact]
