@@ -56,9 +56,10 @@ Notas:
 | Elemento | Decisión | Versión | Notas |
 |----------|----------|---------|-------|
 | Plataforma | .NET LTS | **.NET 10** (LTS, publicada en noviembre de 2025, soporte hasta noviembre de 2028) | Se actualizará a la siguiente LTS (noviembre de 2027) antes de que acabe el soporte. No se usa .NET 11 (ciclo corto). |
-| UI | Avalonia | **12.1.x** (12.0 estable desde abril de 2026; 12.1.2 publicada el 2 de septiembre de 2026) | Avalonia 12 es un salto mayor respecto a la 11: el spike comprueba en la 12 el renderizado sin ventana, arrastrar y soltar y la lista virtualizada. |
+| UI | Avalonia | **12.1.x** (12.0 estable desde abril de 2026; 12.1.2 publicada el 2 de septiembre de 2026) | Avalonia 12 es un salto mayor respecto a la 11: el spike comprobó en la 12 (12.1.3) el renderizado sin ventana, arrastrar y soltar (`DragDrop.DoDragDropAsync` con `DataTransferItem`) y la lista virtualizada. |
 | MVVM | CommunityToolkit.Mvvm | Última estable, *a confirmar* | Generadores de código para propiedades y comandos. |
-| Tablas | `Avalonia.Controls.DataGrid` (MIT) o lista virtualizada propia | *A confirmar* en Avalonia 12 | **No** TreeDataGrid, que es un componente de pago. El spike comprueba que la tabla con orden y selección múltiple se cubre con paquetes gratuitos. |
+| Tablas | `Avalonia.Controls.DataGrid` (MIT) | 12.1.2 (confirmado en el spike) | Orden con `DataGridCollectionView` y selección múltiple funcionan. **No** TreeDataGrid, que es de pago. |
+| Rejilla virtualizada (mapa de taquillas) | `Avalonia.Controls.ItemsRepeater` (MIT, paquete aparte) | 12.0.0 (confirmado en el spike) | Avalonia 12 no la incluye. Con 300 taquillas se crean solo las visibles (113 de 300). |
 | Inyección de dependencias | Microsoft.Extensions.DependencyInjection | Alineada con .NET 10 | Sin contenedor de terceros. |
 
 ## Datos y cifrado
@@ -67,7 +68,7 @@ Notas:
 |----------|----------|---------|-------|
 | Acceso a datos | Entity Framework Core con `Microsoft.EntityFrameworkCore.Sqlite.Core` | Alineada con .NET 10 | **Nunca** `Microsoft.EntityFrameworkCore.Sqlite` (trae su propio SQLite sin cifrado). Solo en `Infrastructure`. |
 | Cifrado de la base | **SQLite3 Multiple Ciphers**: `SQLite3MC.PCLRaw.bundle` | 2.4.0 (28 de julio de 2026, SQLite 3.53.4) | Licencia MIT. Un solo paquete de enlace SQLitePCLRaw en el proyecto. |
-| Formato de cifrado | **Compatible con SQLCipher 4** (`cipher=sqlcipher`, `legacy=4`) | — | Formato estándar y documentado: los datos se pueden recuperar con herramientas SQLCipher aunque ARCA dejara de existir. Los parámetros exactos y la derivación de la clave se confirman en el spike. |
+| Formato de cifrado | **Compatible con SQLCipher 4** (`cipher=sqlcipher`, `legacy=4`) | — | Formato estándar y documentado: los datos se pueden recuperar con herramientas SQLCipher aunque ARCA dejara de existir. Confirmado en el spike: en cada conexión, antes de cualquier otra sentencia, `PRAGMA cipher='sqlcipher'; PRAGMA legacy=4; PRAGMA key="x'<64 hex>'"` (llave de 256 bits directa) con un interceptor de conexión de EF Core y `Pooling=False`. Sin `cipher` se usaría ChaCha20, incompatible con SQLCipher. |
 | Ficheros de exportación | CSV con la biblioteca **CsvHelper** tras `ICsvReader` | *A confirmar* (licencia y versión; si es MS-PL o Apache 2.0, acogerse a Apache 2.0 por compatibilidad con la GPL) | Si no cumpliera los principios, se sustituye tras el puerto. |
 
 **Por qué no el SQLCipher que asumían las primeras specs**
@@ -88,18 +89,19 @@ SQLite3 Multiple Ciphers escribe en formato compatible con SQLCipher, es gratuit
 
 | Elemento | Decisión | Versión | Notas |
 |----------|----------|---------|-------|
-| Registro técnico | Serilog con salida a fichero con rotación | *A confirmar* | Sin datos de alumnos (ver convenciones). |
+| Registro técnico | Serilog 4.4.0 con `Serilog.Sinks.File` 7.0.0 (ambos Apache-2.0, compatibles con la GPL-3.0) | Fijadas | Ficheros de 1 MB, se conservan 5. Solo tipo de error, contexto y pila; nunca el mensaje de la excepción (ver convenciones, sección 8). |
 | Recursos e i18n | Ficheros `.resx` con `ILocalizer` | — | Ya decidido en `arquitectura-base`. |
-| Marco de pruebas | xUnit | Última estable, *a confirmar* si la v3 | |
+| Marco de pruebas | xUnit v3 | **3.2.2** (fijada: `Avalonia.Headless.XUnit` 12.1.3 no funciona con la 4.0.1) | Con el SDK de .NET 10 el proyecto de pruebas es un ejecutable (`OutputType` `Exe`) y `global.json` activa el ejecutor `Microsoft.Testing.Platform` (`"test": {"runner": "Microsoft.Testing.Platform"}`); las pruebas se lanzan con `dotnet test --solution Arca.slnx`. Comprobado al crear el esqueleto. |
 | Aserciones | Aserciones de xUnit o **AwesomeAssertions** | *A confirmar* | **No FluentAssertions**: desde su versión 8 tiene licencia comercial. |
 | Dobles de prueba | **NSubstitute** | *A confirmar* | |
 | Pruebas de arquitectura | NetArchTest o ArchUnitNET | *A confirmar* | Referencias entre capas, comando de ejecución única, clasificación de licencia. |
-| Pruebas de vista | Avalonia.Headless con xUnit | La de Avalonia 12 | Solo enlaces y foco; el comportamiento vive en modelos de vista. |
+| Pruebas de vista | `Avalonia.Headless.XUnit` | 12.1.3 | Solo enlaces y foco; el comportamiento vive en modelos de vista. Comprobado en el spike. |
 
 ## Herramientas de proyecto
 
 | Elemento | Decisión | Notas |
 |----------|----------|-------|
+| Migraciones de EF Core | Herramienta local `dotnet-ef` 10.0.12 (`dotnet-tools.json`, MIT) y el paquete `Microsoft.EntityFrameworkCore.Design` solo en tiempo de diseño | Crear una migración: `dotnet dotnet-ef migrations add <Nombre> --project src/Arca.Infrastructure --output-dir Storage/Migrations`. El código generado se marca como tal en `.editorconfig`. `MigrateAsync` funciona dentro de una transacción de usuario en EF Core 10 (comprobado). |
 | Gestión de paquetes | Central Package Management (`Directory.Packages.props`) | Una sola versión por paquete en toda la solución. |
 | SDK | `global.json` con la versión fijada | |
 | Calidad de código | Nullable activado, analizadores de .NET y `.editorconfig`, advertencias como errores en CI | |
@@ -108,6 +110,12 @@ SQLite3 Multiple Ciphers escribe en formato compatible con SQLCipher, es gratuit
 | Instalador de Windows | Inno Setup | Ya decidido en `arquitectura-base`. |
 | Paquetes de Linux y macOS | `tar.gz` y `.app` comprimido | Ya decidido en `arquitectura-base`. |
 | Avisos de terceros | `THIRD-PARTY-NOTICES.md` | Atribución exigida por MIT, Apache y BSD. |
+
+## Control de licencias, avisos de terceros y paquetes
+
+- **Control de licencias:** `dotnet run build/CheckLicenses.cs` (lo ejecutan `build/test.sh` y `build/test.ps1`) lista la licencia de los 85 paquetes NuGet (directos y transitivos) y falla si alguno no es MIT, Apache-2.0, BSD-2/3-Clause o ISC, salvo excepciones revisadas a mano con su motivo en `build/licenses-reviewed.json` (hoy solo `Avalonia.Angle.Windows.Natives`, BSD-3-Clause de ANGLE). También falla si `THIRD-PARTY-NOTICES.md` está desactualizado; se regenera con `dotnet run build/CheckLicenses.cs -- --write-notices`. Es un programa de un solo fichero, así que funciona igual en macOS, Linux y Windows.
+- **Paquetes:** `build/package.sh <win-x64|linux-x64|osx-arm64|...>` genera `artifacts/ARCA-<versión>-<sistema>.zip` o `.tar.gz` con `LICENSE`, `THIRD-PARTY-NOTICES.md` y `LEEME.txt` (dónde está el código fuente). Windows y Linux llevan el marcador `arca.portable`; el `.app` de macOS no y no está firmado. El de macOS se ejecutó de verdad; los de Windows y Linux se generan desde macOS y no se han ejecutado (ver la decisión de alcance).
+- **Telemetría de las herramientas de desarrollo (decidido el 2026-09-24):** dos paquetes recopilan datos anónimos en el equipo de desarrollo, **nunca en la aplicación distribuida** (no están en su carpeta de publicación): `Avalonia.BuildServices` (al compilar) y `Microsoft.Testing.Extensions.Telemetry` con la CLI de .NET. No afectan a datos de alumnos, pero el proyecto no envía nada fuera del equipo, así que **los scripts de `build/` los desactivan** (`AVALONIA_TELEMETRY_OPTOUT`, `TESTINGPLATFORM_TELEMETRY_OPTOUT` y `DOTNET_CLI_TELEMETRY_OPTOUT`). Solo afecta a esos scripts, no al resto de compilaciones de cada persona. El equipo de Avalonia pide, a cambio, apoyarles de otra forma (donación o código): se puede valorar más adelante.
 
 ## Alternativas descartadas
 
@@ -122,7 +130,9 @@ SQLite3 Multiple Ciphers escribe en formato compatible con SQLCipher, es gratuit
 | WPF, MAUI, Tauri, Electron | Ver `arquitectura-base` (D2) |
 | .NET 11 | Ciclo de soporte corto |
 
-## Pendiente de confirmar en el spike
+## Pendiente de confirmar
+
+El spike (`docs/spike-resultados.md`) confirmó en macOS los puntos 2, 4 y 6 y, en parte, el 1 y el 3. Lo que sigue abierto:
 
 1. Parámetros de `SQLite3MC.PCLRaw.bundle` para el formato SQLCipher 4 con una llave de 256 bits entregada directamente, y calibrar Argon2id (memoria y pasadas) y XChaCha20-Poly1305 de NSec en equipos de gama baja (menos de 2 segundos).
 2. Que la copia en línea funciona sobre una base cifrada con ese paquete.

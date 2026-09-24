@@ -55,7 +55,7 @@ Se usan las migraciones de EF Core, pero nunca `Migrate()` directo al arrancar: 
 Una base nueva se crea aplicando todas las migraciones desde cero, con el mismo camino que una actualización. Las migraciones generadas se revisan y se versionan en el repositorio; no se aplican cambios de modelo sin migración (una prueba comprueba que no hay cambios de modelo pendientes).
 
 ### D6. Ubicación de datos y modo portable
-Ruta por defecto según el sistema (carpeta de datos de aplicación del usuario). Modo portable si existe un fichero marcador junto al ejecutable: en ese caso datos y ajustes viven junto al ejecutable. La ruta puede cambiarse desde los ajustes y se guarda en un fichero de configuración local.
+Ruta por defecto según el sistema (carpeta de datos de aplicación del usuario). Modo portable si existe un fichero marcador junto al ejecutable: en ese caso datos y ajustes viven junto al ejecutable. Concretamente: el marcador es `arca.portable` y los datos van en la subcarpeta `data` junto al ejecutable; sin marcador, `%LOCALAPPDATA%\ARCA` en Windows, `~/Library/Application Support/ARCA` en macOS y `$XDG_DATA_HOME/arca` (por defecto `~/.local/share/arca`) en Linux. Una ruta elegida por el usuario se respeta en ambos modos. La ruta puede cambiarse desde los ajustes y se guarda en un fichero de configuración local.
 Instancia única mediante un bloqueo asociado al fichero de base de datos (no al proceso), para que también funcione entre versión instalada y portable apuntando al mismo fichero.
 
 ### D7. Tiempo y dinero

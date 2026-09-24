@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Arca.Testing</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Arca.Domain\Arca.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Arca.Application\Arca.Application.csproj" />
+  </ItemGroup>
+</Project>

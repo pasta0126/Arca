@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Arca.Application/Arca.Application.csproj" />
+    <Project Path="src/Arca.Desktop/Arca.Desktop.csproj" />
+    <Project Path="src/Arca.Domain/Arca.Domain.csproj" />
+    <Project Path="src/Arca.Infrastructure/Arca.Infrastructure.csproj" />
+    <Project Path="src/Arca.UI/Arca.UI.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Arca.Application.Tests/Arca.Application.Tests.csproj" />
+    <Project Path="tests/Arca.Architecture.Tests/Arca.Architecture.Tests.csproj" />
+    <Project Path="tests/Arca.Domain.Tests/Arca.Domain.Tests.csproj" />
+    <Project Path="tests/Arca.Infrastructure.Tests/Arca.Infrastructure.Tests.csproj" />
+    <Project Path="tests/Arca.Testing/Arca.Testing.csproj" />
+    <Project Path="tests/Arca.UI.Tests/Arca.UI.Tests.csproj" />
+  </Folder>
+</Solution>

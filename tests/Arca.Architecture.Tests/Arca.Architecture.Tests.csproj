@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Arca.Architecture.Tests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <ProjectReference Include="..\..\src\Arca.Domain\Arca.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Arca.Application\Arca.Application.csproj" />
+    <ProjectReference Include="..\..\src\Arca.Infrastructure\Arca.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Arca.UI\Arca.UI.csproj" />
+    <ProjectReference Include="..\..\src\Arca.Desktop\Arca.Desktop.csproj" />
+  </ItemGroup>
+</Project>

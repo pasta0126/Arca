@@ -1,0 +1,6 @@
+{
+  "Avalonia.Angle.Windows.Natives": {
+    "License": "BSD-3-Clause",
+    "Reason": "El paquete declara un fichero de licencia en lugar de una expresión. Se revisó a mano (2026-09-24, versión 2.1.27548): es el texto BSD de tres cláusulas del proyecto ANGLE (Google, TransGaming y 3DLabs). Solo se usa en Windows."
+  }
+}

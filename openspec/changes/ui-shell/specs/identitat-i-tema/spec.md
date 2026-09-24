@@ -72,10 +72,14 @@ El sistema SHALL guardar el nombre, el logo y el color en la base de datos, de m
 - **THEN** la aplicación muestra el nombre, el logo y el color del centro
 
 ### Requirement: Tema claro, oscuro o del sistema
-El sistema SHALL ofrecer los temas claro, oscuro y del sistema, con el del sistema por defecto, SHALL aplicar el cambio sin reiniciar y SHALL guardar la elección en los ajustes locales del equipo.
+El sistema SHALL usar por defecto un tema claro de colores neutros y pastel, sin seguir el modo oscuro del sistema operativo, SHALL ofrecer además los temas oscuro y del sistema como elección del usuario, SHALL aplicar el cambio sin reiniciar y SHALL guardar la elección en los ajustes locales del equipo.
 
-#### Scenario: Tema del sistema
-- **WHEN** el tema es el del sistema y el sistema cambia a oscuro
+#### Scenario: Tema por defecto
+- **WHEN** la aplicación se abre por primera vez en un equipo cuyo sistema está en modo oscuro
+- **THEN** se muestra el tema claro de colores neutros y pastel
+
+#### Scenario: Tema del sistema elegido
+- **WHEN** el usuario ha elegido el tema del sistema y el sistema cambia a oscuro
 - **THEN** la aplicación cambia a oscuro
 
 #### Scenario: Cambio manual
@@ -84,7 +88,18 @@ El sistema SHALL ofrecer los temas claro, oscuro y del sistema, con el del siste
 
 #### Scenario: Ajuste ilegible
 - **WHEN** no se puede leer la elección guardada
-- **THEN** se usa el tema del sistema
+- **THEN** se usa el tema claro por defecto
+
+### Requirement: Paleta neutra y pastel
+El sistema SHALL presentar por defecto una paleta de colores neutros y suaves, agradable a la vista en jornadas largas (fondos claros cálidos, texto gris oscuro suave y un acento pastel), y SHALL garantizar en todos los pares de texto y fondo de la paleta el contraste mínimo de 4,5 a 1.
+
+#### Scenario: Contraste del texto
+- **WHEN** se comprueban los pares de texto y fondo de la paleta
+- **THEN** todos alcanzan un contraste de al menos 4,5 a 1
+
+#### Scenario: Estados con color suave
+- **WHEN** se muestra un estado de éxito, aviso o error
+- **THEN** usa un color pastel con texto oscuro encima, y además icono o texto
 
 ### Requirement: Tema como recursos con nombre
 El sistema SHALL definir el tema como el conjunto de recursos con nombre que consumen los componentes de `ux-fonaments` (colores semánticos de éxito, aviso, error, foco, superficie y texto, tipografías y espaciados), con valores para claro y oscuro.

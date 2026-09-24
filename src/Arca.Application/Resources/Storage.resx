@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Storage.Error.FileNotFound" xml:space="preserve">
+    <value>No s'ha trobat la base de dades a {0}. Comprova que la carpeta o la unitat estiguin disponibles, o tria una altra ubicació.</value>
+    <comment>{0} path</comment>
+  </data>
+  <data name="Storage.Error.FileAlreadyExists" xml:space="preserve">
+    <value>Ja existeix un fitxer a {0} i no se sobreescriurà. Tria una altra ubicació.</value>
+    <comment>{0} path</comment>
+  </data>
+  <data name="Storage.Error.Unreadable" xml:space="preserve">
+    <value>No es pot llegir el fitxer {0}: està malmès, no és una base de dades d'ARCA o la clau no és la correcta. Tria una altra ubicació o restaura una còpia de seguretat.</value>
+    <comment>{0} path</comment>
+  </data>
+  <data name="Storage.Error.NotArcaDatabase" xml:space="preserve">
+    <value>El fitxer {0} no és una base de dades d'ARCA. Tria'n un altre.</value>
+    <comment>{0} path</comment>
+  </data>
+  <data name="Storage.Error.SchemaNewer" xml:space="preserve">
+    <value>Aquestes dades les ha creat una versió més nova d'ARCA. Actualitza l'aplicació per poder-les obrir.</value>
+  </data>
+  <data name="Storage.Error.BackupFailed" xml:space="preserve">
+    <value>No s'ha pogut fer una còpia de seguretat verificada abans d'actualitzar les dades, així que no s'ha canviat res. Comprova l'espai lliure al disc i torna-ho a provar.</value>
+  </data>
+  <data name="Storage.Error.MigrationFailed" xml:space="preserve">
+    <value>L'actualització de les dades ha fallat i les dades han quedat tal com estaven. Torna-ho a provar; si continua fallant, restaura l'última còpia de seguretat.</value>
+  </data>
+  <data name="Storage.Error.PathNotAccessible" xml:space="preserve">
+    <value>No es pot usar la ubicació {0}: no existeix o no s'hi pot escriure. Tria una altra carpeta.</value>
+    <comment>{0} path</comment>
+  </data>
+  <data name="Storage.Error.AlreadyRunning" xml:space="preserve">
+    <value>Ja hi ha una altra instància d'ARCA oberta amb aquestes dades. Tanca-la abans d'obrir-ne una altra.</value>
+  </data>
+  <data name="Storage.Error.KeyNotAvailable" xml:space="preserve">
+    <value>Aquesta versió d'ARCA encara no té l'accés amb contrasenya. No es pot obrir la base de dades.</value>
+  </data>
+</root>

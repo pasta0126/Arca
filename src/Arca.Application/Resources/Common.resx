@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Common.Error.Unexpected" xml:space="preserve">
+    <value>S'ha produït un error inesperat. Si continua passant, indica aquesta referència: {0}.</value>
+    <comment>{0} short reference of the technical log entry</comment>
+  </data>
+  <data name="Common.Label.ProgressOf" xml:space="preserve">
+    <value>{0} de {1}</value>
+    <comment>{0} done, {1} total</comment>
+  </data>
+  <data name="Common.Label.Working" xml:space="preserve">
+    <value>Treballant…</value>
+  </data>
+  <data name="Common.Label.Cancel" xml:space="preserve">
+    <value>Cancel·la</value>
+  </data>
+  <data name="Common.Label.Confirm" xml:space="preserve">
+    <value>Confirma</value>
+  </data>
+  <data name="Common.Label.Dismiss" xml:space="preserve">
+    <value>Tanca</value>
+  </data>
+  <data name="Common.Label.Details" xml:space="preserve">
+    <value>Mostra els detalls</value>
+  </data>
+  <data name="Common.Label.NotificationHistory" xml:space="preserve">
+    <value>Notificacions recents</value>
+  </data>
+  <data name="Common.Label.CannotUndo" xml:space="preserve">
+    <value>Aquesta acció no es pot desfer.</value>
+  </data>
+  <data name="Common.Label.CancelUnavailable" xml:space="preserve">
+    <value>Ja no es pot cancel·lar: s'estan desant les dades.</value>
+  </data>
+  <data name="Common.Result.Cancelled" xml:space="preserve">
+    <value>S'ha cancel·lat l'operació. No s'ha canviat cap dada.</value>
+  </data>
+  <data name="Common.Empty.Nothing" xml:space="preserve">
+    <value>Encara no hi ha res per mostrar.</value>
+  </data>
+  <data name="Common.Empty.NoResults" xml:space="preserve">
+    <value>Cap element coincideix amb els filtres. Prova de netejar-los.</value>
+  </data>
+  <data name="Common.Loading.Generic" xml:space="preserve">
+    <value>Carregant…</value>
+  </data>
+</root>

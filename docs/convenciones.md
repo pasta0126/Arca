@@ -84,12 +84,13 @@ public sealed record Result<T>(T? Value, IReadOnlyList<Notice> Notices, Error? E
 {
     public bool IsSuccess => Error is null;
     public static Result<T> Success(T value, params Notice[] notices) => new(value, notices, null);
+    // Result<T>, Error, Notice, Money, TextComparer and Cultures live in Arca.Domain/Common; IClock in Arca.Application/Common.
     public static Result<T> Failure(Error error) => new(default, [], error);
 }
 
 // Un aviso o un error lleva un código estable y parámetros, nunca texto traducido.
-public sealed record Error(string Code, Severity Severity = Severity.Error, params object[] Args);
-public sealed record Notice(string Code, params object[] Args);
+public sealed record Error(string Code, Severity Severity = Severity.Error, IReadOnlyList<object>? Args = null);
+public sealed record Notice(string Code, IReadOnlyList<object>? Args = null);
 ```
 
 El código de error de una capacidad se declara una sola vez:
@@ -126,6 +127,7 @@ public static class LockerErrors
 - Los recursos viven en `src/Arca.Application/Resources/`, un fichero `.resx` por capacidad (`Lockers.resx`). El neutro es el **catalán**; los idiomas nuevos se añaden como `Lockers.es.resx`, `Lockers.en.resx`.
 - **Prueba automática obligatoria**: recorre por reflexión todos los códigos declarados y comprueba que cada uno tiene su clave en catalán, y que ninguna clave usada en el código o en las vistas falta (`arquitectura-base`, spec de i18n).
 - Plantilla: al implementar un cambio se añade su `XxxErrors.cs` y su `.resx` con los códigos que citan sus specs.
+- **Implementación** (`arquitectura-base`, grupo 6): `ILocalizer` y `ResxLocalizer` en `Arca.Application/Localization`. La capacidad (primer segmento de la clave) elige el fichero, y dentro se usa la clave completa como nombre de la entrada (`Storage.Error.Unreadable` en `Storage.resx`). Una clave que no existe muestra la propia clave. La prueba `ResourceCoverageTests` falla si un código declarado en un `XxxErrors` no tiene texto en catalán o si una clave escrita literalmente en `.Get("...")` o `new Notice("...")` no existe.
 
 ## 4. Casos de uso
 
@@ -211,7 +213,7 @@ public static class LockerStatusCalculator
 Los datos de alumnos son datos de menores. Reglas de obligado cumplimiento:
 
 1. **Objetos de transferencia sin correo ni identificador.** Los listados, búsquedas, informes y exportaciones usan DTO que no tienen esos campos. Solo el DTO de la revisión de dudosos de la importación puede llevarlos. Una prueba de arquitectura busca propiedades llamadas `Email` o `Identifier` en los DTO.
-2. **Nada de datos de alumnos en el registro técnico**: ni nombres, ni valores de campos, ni consultas con parámetros. Se registran tipos de error, códigos y referencias. Las excepciones propias no incluyen valores de datos en su mensaje.
+2. **Nada de datos de alumnos en el registro técnico** (implementado en `FileErrorLog`: solo se escribe el tipo de la excepción y de sus causas, el contexto y la pila, **nunca el mensaje ni `Data`**, porque el mensaje puede llevar el dato que se estaba procesando): ni nombres, ni valores de campos, ni consultas con parámetros. Se registran tipos de error, códigos y referencias. Las excepciones propias no incluyen valores de datos en su mensaje.
 3. **Los textos libres del usuario** (motivos, notas) no aparecen en listados generales, exportaciones ni registro técnico. Solo en la ficha del elemento.
 4. **Ningún dato de alumnos sale del equipo.** La única comunicación de red posible es el registro opcional y el aviso de versión de `registre-i-actualitzacions`, desactivados por defecto y con un contenido cerrado y documentado (`docs/registro-de-instalaciones.md`).
 5. Una **prueba de privacidad por cambio**: provoca un error con datos de un alumno y comprueba que el registro no deja rastro.
