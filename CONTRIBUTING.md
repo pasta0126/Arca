@@ -2,7 +2,7 @@
 
 *(English summary at the end.)*
 
-Gracias por el interés. ARCA es software libre y gratuito bajo GPL-3.0-o-posterior (`LICENSE`), mantenido por una sola persona, y la especificación (`openspec/`) sigue en plena definición.
+Gracias por el interés. ARCA es software libre y gratuito bajo GPL-3.0-o-posterior (`LICENSE`), mantenido por una sola persona. Está en fase de definición: las especificaciones de la versión 1 (`openspec/`) están redactadas, pero todavía no hay código ni versiones publicadas.
 
 ## Qué se acepta hoy
 
