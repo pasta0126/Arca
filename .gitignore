@@ -105,5 +105,5 @@ $RECYCLE.BIN/
 .claude/scheduled_tasks.lock
 .agents/*.local.*
 
-# --- Internal cost inventory: kept local, not in the repo ---
-docs/costes.md
+# --- Internal cost inventory: kept local, not in the repo (root, so it is easy to find) ---
+/costes.md
