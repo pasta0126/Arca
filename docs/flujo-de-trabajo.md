@@ -25,7 +25,7 @@ specs aprobadas → rama → implementar grupo a grupo → PR → revisión → 
 | PR | Se abre el Pull Request con la lista de comprobación de la sección 6 | Quien implementa |
 | Revisión | Autorrevisión con `/code-review` y visto bueno de la persona responsable | Ambos |
 | Archivar | `openspec archive <nombre>` como **último commit de la rama** | Quien implementa |
-| Fusionar | Con los scripts en verde en macOS y Linux y la verificación de Windows hecha | Persona responsable |
+| Fusionar | Con los scripts en verde en macOS (Linux descartado por ahora; Windows solo antes de producción) | Persona responsable |
 
 **Orden de los cambios**: el del roadmap (`docs/roadmap.md`). Un cambio empieza cuando sus dependencias están fusionadas. La única excepción es el hito 1 (punto 7 de `docs/preparacion-desarrollo.md`), que reparte tareas de varios cambios y se definirá aparte.
 
@@ -95,7 +95,7 @@ Prefijos: nombre del cambio para implementación, `spec:` para cambios de especi
 
 **Lista de comprobación del PR** (la de `docs/convenciones.md` más esta):
 - [ ] Todas las tareas del cambio están marcadas y ninguna queda a medias.
-- [ ] `build/test.sh` pasa en macOS y en Linux (contenedor), y `build/test.ps1` pasa en Windows.
+- [ ] `build/test.sh` pasa en macOS (Linux y Windows: ver la decisión de alcance en `docs/stack.md`).
 - [ ] No hay funcionalidad fuera de las specs.
 - [ ] Las desviaciones están anotadas en `design.md` y las specs están actualizadas.
 - [ ] No se ha añadido ninguna dependencia sin pasar el control de licencias (coste cero).
@@ -114,14 +114,14 @@ Prefijos: nombre del cambio para implementación, `spec:` para cambios de especi
 
 ### Por cambio (antes de fusionar)
 1. **Todas las tareas** de `tasks.md` están marcadas.
-2. **Los scripts de verificación pasan**: `build/test.sh` en macOS y Linux (contenedor) y `build/test.ps1` en Windows, con las pruebas de dominio, aplicación, persistencia, interfaz y arquitectura. La verificación de Windows se hace **al terminar el cambio**, no en cada commit.
+2. **Los scripts de verificación pasan**: `build/test.sh` en macOS, con las pruebas de dominio, aplicación, persistencia, interfaz y arquitectura. Linux queda descartado por ahora y la verificación de Windows se hace solo antes de salir a producción (`docs/stack.md`).
 3. **Cada escenario de los specs del cambio tiene su prueba** con la etiqueta `spec` (cuando exista el script de cobertura, lo comprueba solo; hasta entonces, se revisa a mano).
 4. **Pruebas de arquitectura en verde**: capas, comando de ejecución única, DTO sin correo ni identificador y sin EF Core en `Domain` ni `Application`.
 5. **Todas las claves de recurso** usadas existen en catalán y no queda ningún texto literal en el código ni en las vistas.
 6. **Prueba de privacidad**: un error con datos de un alumno no deja rastro en el registro técnico.
 7. **Control de licencias de dependencias** en verde (coste cero).
 8. **Specs y documentación sincronizadas**: `openspec validate --all --strict` pasa y `docs/convenciones.md` o `docs/glosario.md` reflejan cualquier convención o término nuevo.
-9. **Prueba manual** del flujo principal del cambio en macOS y, con interfaz visible, también en Windows con el paquete portable `win-x64`.
+9. **Prueba manual** del flujo principal del cambio en macOS. La prueba en Windows con el paquete portable `win-x64` se hace antes de salir a producción.
 10. **Cambio archivado** con `openspec archive <nombre>` y specs sincronizadas con `openspec/specs/`.
 11. **Pull Request fusionado** y rama borrada.
 

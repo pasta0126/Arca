@@ -8,7 +8,7 @@ Que un conserje pueda, sobre datos de ejemplo, hacer **el trabajo de un día nor
 
 ## Guion de demostración (criterio de éxito)
 
-El hito está terminado cuando este guion se completa sin ayuda técnica, con el teclado y con el ratón, en macOS y en Windows:
+El hito está terminado cuando este guion se completa sin ayuda técnica, con el teclado y con el ratón, en macOS (Windows se comprueba antes de salir a producción):
 
 1. **Arrancar** la aplicación portable con la base de datos creada y cargada con el perfil `demo` de `docs/datos-de-ejemplo.md` (600 taquillas en 6 zonas, 900 alumnos, un curso activo con importes y deuda de un curso anterior).
 2. **Ver el mapa** de taquillas por zona con su estado (libre, ocupada, reservada, averiada, en mantenimiento), contadores y marca de deuda.
@@ -112,7 +112,7 @@ Ninguna bloquea el hito 1. El fichero de secretaría, el RGPD y el servidor de r
 
 - Validar con los conserjes los términos del glosario antes de que se vean textos (etapa 4).
 - Redactar `pantalles-de-domini` antes de la etapa 3 (sin maquetas).
-- Un equipo Windows para las comprobaciones puntuales.
+- Un equipo Windows, solo para la verificación previa a producción (fases avanzadas de la v1).
 
 ## Después del hito 1
 

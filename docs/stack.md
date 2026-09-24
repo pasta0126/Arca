@@ -36,6 +36,8 @@ Repaso de todo lo que puede costar dinero, ahora o más adelante.
 
 Decisión del proyecto: **por ahora no hay CI remota**. La lógica de comprobación vive en scripts del repositorio y se ejecuta donde haga falta.
 
+**Decisión de 2026-09-24 (alcance de la verificación):** el desarrollo y las pruebas diarias son solo en **macOS**. Las pruebas en **Linux quedan descartadas por ahora** (el producto sigue diseñándose para Linux, pero no se verifica hasta que haya motivo). Las pruebas en **Windows se hacen solo antes de salir a producción**, en las fases avanzadas de la v1, y no al terminar cada cambio. Las filas de la tabla siguiente describen el objetivo final; la cadencia vigente es esta. El riesgo de descubrir tarde un fallo propio de Windows o Linux se acepta de forma consciente (T7 en `docs/riesgos.md`).
+
 | Dónde | Cómo | Cuándo |
 |-------|------|--------|
 | **macOS** (equipo de desarrollo) | `build/test.sh`: restaura, compila con advertencias como errores, ejecuta todas las pruebas, las de arquitectura y el control de licencias de dependencias | Antes de cada commit de grupo de tareas |

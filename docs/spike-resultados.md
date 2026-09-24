@@ -4,7 +4,7 @@ Punto 1 de `docs/preparacion-desarrollo.md`. El código es desechable y vive en 
 
 ## Bloque 1: base de datos, copia, bloqueo, firma y texto (sin interfaz)
 
-Ejecutado el **24 de septiembre de 2026** en **macOS 27 arm64, .NET 10.0.10**. Comando: `dotnet run` en `spike/Db`. **Linux y Windows: pendiente** (no hay contenedor en el equipo de desarrollo ni equipo Windows; ver «Pendiente de verificar»).
+Ejecutado el **24 de septiembre de 2026** en **macOS 27 arm64, .NET 10.0.10**. Comando: `dotnet run` en `spike/Db`. **Linux: descartado por ahora. Windows: solo antes de salir a producción** (decisión de 2026-09-24, ver `docs/stack.md`).
 
 | Supuesto | Resultado en macOS arm64 | Detalle |
 |----------|--------------------------|---------|
@@ -40,8 +40,8 @@ Comprobado en el contenido de los paquetes NuGet (no ejecutado):
 
 ## Pendiente de verificar
 
-- **Linux** (contenedor o equipo): repetir el bloque 1.
-- **Windows**: repetir el bloque 1, en especial el bloqueo de instancia única y las rutas.
+- **Linux**: descartado por ahora.
+- **Windows**: repetir el bloque 1 antes de producción, en especial el bloqueo de instancia única y las rutas.
 - **Bloque 2 (interfaz, Avalonia 12)**: arrastrar y soltar con resalte y Escape, lista virtualizada con 300 taquillas y actualización de una sola, renderizado sin ventana con prueba de enlace y foco, y tabla con orden y selección múltiple sin componentes de pago (T2 y T4).
 - Verificar el formato con una **herramienta SQLCipher externa** (por ejemplo, abrir la base con el intérprete `sqlcipher`): aquí solo se comprueba con el propio SQLite3MC.
 - Calibrar Argon2id en un equipo de gama baja.

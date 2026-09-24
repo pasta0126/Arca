@@ -193,7 +193,7 @@ Cada fila con versión, motivo y alternativa descartada.
 
 **Propuesta de lista, por cambio:**
 1. Todas las tareas del `tasks.md` marcadas.
-2. Pruebas en verde en Windows, Linux y macOS.
+2. Pruebas en verde en macOS (Linux descartado por ahora; Windows antes de producción, ver `docs/stack.md`).
 3. Pruebas de arquitectura en verde (capas, comando de ejecución única).
 4. Todas las claves de recurso nuevas existen en catalán.
 5. Ningún dato de alumnos en el registro técnico (prueba de privacidad).
