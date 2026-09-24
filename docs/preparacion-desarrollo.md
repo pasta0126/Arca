@@ -239,8 +239,9 @@ Cada fila con versión, motivo y alternativa descartada.
 
 | Pendiente o riesgo | Bloquea | Responsable | Fecha objetivo | Estado |
 |--------------------|---------|-------------|----------------|--------|
-| Fichero de muestra de secretaría | Cierre de la importación de alumnos (`alumnes-i-assignacions`) | por definir | por definir | pendiente |
-| Valoración RGPD con la dirección (identificador, correo, conservación) | Política de datos de `alumnes-i-assignacions` y `cursos-i-historial` | por definir | por definir | pendiente |
+| Fichero de secretaría | Cierre de la importación de alumnos (`alumnes-i-assignacions`) | Persona responsable | por definir | formato fijado (ODS); falta confirmar con secretaría |
+| Zonas y taquillas reales del centro (carga inicial única) | Carga inicial de `taquilles-i-zones` y perfiles de datos de ejemplo | Persona responsable con los conserjes | por definir | pendiente |
+| Valoración RGPD con la dirección (correo, conservación) | Política de datos de `alumnes-i-assignacions` y `cursos-i-historial` | por definir | por definir | pendiente |
 | Servidor de registro y correos (alojamiento, dominio) | Puesta en marcha del registro y avisos de `registre-i-actualitzacions` | por definir | por definir | pendiente |
 | Validar la pantalla principal con los conserjes | Implementación definitiva de Inicio (`ui-shell`) | por definir | por definir | pendiente |
 | Política de conservación de datos con los conserjes | Automatización futura de `cursos-i-historial` | por definir | por definir | pendiente |

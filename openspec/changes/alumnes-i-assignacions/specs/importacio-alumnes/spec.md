@@ -1,144 +1,106 @@
 ## Purpose
 
-Mantener actualizados los alumnos a partir del fichero CSV de secretaría, tratado como fuente de verdad: concilia el fichero con los alumnos existentes, muestra una revisión previa completa y solo guarda tras la confirmación del usuario.
+Mantener actualizados los alumnos a partir de un fichero ODS de secretaría, tratado como fuente de verdad: concilia el fichero con los alumnos existentes usando el correo como identificador único, muestra una revisión previa completa y solo guarda tras la confirmación del usuario.
 
 ## ADDED Requirements
 
+### Requirement: Formato del fichero
+El sistema SHALL aceptar ficheros ODS con una hoja por grupo, en las que la fila 1 es la cabecera con las columnas `Nom complet` y `Correu` (sin distinguir mayúsculas ni acentos, en cualquier orden, ignorando otras columnas) y el resto de filas son alumnos, con un máximo de 5000 filas de datos entre todas las hojas.
+
+#### Scenario: Fichero válido
+- **WHEN** el usuario carga un ODS con hojas cuya primera fila contiene `Nom complet` y `Correu`
+- **THEN** el sistema lee las filas de datos de cada hoja
+
+#### Scenario: Fichero que no es ODS
+- **WHEN** el fichero no es un ODS válido (otro formato, dañado o cifrado)
+- **THEN** el sistema lo rechaza con un error de formato de fichero sin procesar ninguna fila
+
+#### Scenario: Hoja sin cabecera esperada
+- **WHEN** una hoja con filas no tiene las columnas `Nom complet` y `Correu` en su primera fila
+- **THEN** el sistema rechaza el fichero e indica qué hoja y qué columna falta
+
+#### Scenario: Hojas vacías y filas vacías
+- **WHEN** el fichero tiene hojas sin filas de datos o filas totalmente vacías
+- **THEN** el sistema las ignora sin error
+
+#### Scenario: Fichero vacío
+- **WHEN** ninguna hoja contiene filas de datos
+- **THEN** el sistema lo rechaza con un error de fichero vacío
+
+#### Scenario: Fichero demasiado grande
+- **WHEN** el total de filas de datos supera las 5000
+- **THEN** el sistema lo rechaza con un error de tamaño excesivo
+
+### Requirement: Nivel y grupo a partir del nombre de la hoja
+El sistema SHALL obtener el nivel y el grupo de cada alumno del nombre de su hoja, con el formato `<nivel> <grupo>`, donde el grupo es la última palabra y el nivel el resto.
+
+#### Scenario: Hoja con nivel y grupo
+- **WHEN** una hoja se llama `1r ESO A`
+- **THEN** sus alumnos quedan en el nivel `1r ESO` y el grupo `A`
+
+#### Scenario: Nivel con varias palabras
+- **WHEN** una hoja se llama `2n BATX B`
+- **THEN** sus alumnos quedan en el nivel `2n BATX` y el grupo `B`
+
+#### Scenario: Nombre de hoja no interpretable
+- **WHEN** el nombre de una hoja con filas tiene una sola palabra
+- **THEN** el sistema rechaza el fichero e indica esa hoja
+
 ### Requirement: Conciliación con el fichero de secretaría
-El sistema SHALL concluir de cada fila del fichero si el alumno ya existe, es nuevo o reaparece, y SHALL considerar de baja a los alumnos activos que no constan en el fichero.
+El sistema SHALL reconocer a cada alumno por su correo, sin distinguir mayúsculas ni espacios extremos, y SHALL considerar de baja a los alumnos activos cuyo correo no consta en el fichero.
 
 #### Scenario: Alumno existente
-- **WHEN** una fila corresponde a un alumno activo ya registrado
+- **WHEN** el correo de una fila corresponde a un alumno activo ya registrado
 - **THEN** se crea su matrícula del curso activo si aún no la tiene, o se actualizan su nivel y su grupo si han cambiado, conservando su ficha y sus datos
 
+#### Scenario: Nombre distinto con el mismo correo
+- **WHEN** el correo corresponde a un alumno registrado y el nombre del fichero difiere del guardado
+- **THEN** se actualizan el nombre y los apellidos del alumno, porque el correo es su identidad, y el cambio consta en su historial
+
 #### Scenario: Alumno sin cambios
-- **WHEN** una fila corresponde a un alumno activo cuyo nivel y grupo ya coinciden
+- **WHEN** una fila corresponde a un alumno activo cuyo nombre, nivel y grupo ya coinciden
 - **THEN** no se modifica nada y se cuenta como sin cambios
 
 #### Scenario: Alumno nuevo
-- **WHEN** una fila no corresponde a ningún alumno registrado
-- **THEN** se crea un alumno nuevo en el nivel y grupo indicados, sin necesidad de que sea el inicio de curso
+- **WHEN** el correo de una fila no corresponde a ningún alumno registrado
+- **THEN** se crea un alumno nuevo en el nivel y grupo de su hoja, sin necesidad de que sea el inicio de curso
 
 #### Scenario: Alumno que no consta
 - **WHEN** un alumno activo no corresponde a ninguna fila del fichero
 - **THEN** se propone su baja, incluidos los alumnos de fin de etapa
 
 #### Scenario: Alumno de baja que reaparece
-- **WHEN** una fila corresponde a un alumno que está de baja
+- **WHEN** el correo de una fila corresponde a un alumno que está de baja
 - **THEN** se propone reactivarlo con el nivel y grupo del fichero
 
-### Requirement: Reconocimiento del alumno por clave configurable
-El sistema SHALL reconocer a cada alumno aplicando, por orden, el identificador, el correo y el nombre con apellidos, y SHALL tratar como dudoso todo caso ambiguo o contradictorio.
-
-#### Scenario: Reconocimiento por identificador
-- **WHEN** el fichero aporta un identificador que coincide con el de un alumno registrado
-- **THEN** la fila se reconoce como ese alumno aunque el nombre difiera
-
-#### Scenario: Reconocimiento por correo
-- **WHEN** no hay identificador y el correo coincide, sin distinguir mayúsculas, con el de un alumno registrado
-- **THEN** la fila se reconoce como ese alumno
-
-#### Scenario: Reconocimiento por nombre y apellidos
-- **WHEN** no hay identificador ni correo coincidente y el nombre y apellidos coinciden, sin distinguir mayúsculas, acentos ni espacios repetidos, con un único alumno
-- **THEN** la fila se reconoce como ese alumno
-
-#### Scenario: Homónimos distinguidos por nivel y grupo
-- **WHEN** el nombre y apellidos coinciden con varios alumnos y solo uno tiene el mismo nivel y grupo que la fila
-- **THEN** la fila se reconoce como ese alumno
-
-#### Scenario: Homónimos sin desempate
-- **WHEN** el nombre y apellidos coinciden con varios alumnos y el nivel y grupo no permiten distinguirlos
-- **THEN** la fila se marca como dudosa para que el usuario decida
-
-#### Scenario: Claves contradictorias
-- **WHEN** el identificador de una fila coincide con un alumno y su nombre coincide con otro alumno distinto
-- **THEN** la fila se marca como dudosa
-
-#### Scenario: Desactivar una clave
-- **WHEN** el centro ha configurado no usar el identificador como clave
-- **THEN** el sistema no lo utiliza para reconocer y aplica solo las claves restantes
-
-### Requirement: Resolución de los casos dudosos
-El sistema SHALL exigir que el usuario resuelva cada caso dudoso antes de confirmar, eligiendo a qué alumno corresponde o indicando que es un alumno nuevo.
-
-#### Scenario: Elegir un alumno existente
-- **WHEN** el usuario resuelve una fila dudosa indicando un alumno existente
-- **THEN** la fila se trata como una actualización de ese alumno
-
-#### Scenario: Indicar alumno nuevo
-- **WHEN** el usuario indica que la fila dudosa es una persona distinta
-- **THEN** la fila se trata como un alumno nuevo
-
-#### Scenario: Confirmar con dudosos sin resolver
-- **WHEN** quedan casos dudosos sin resolver
-- **THEN** el sistema no permite confirmar
-
-#### Scenario: Homónimos dentro del mismo fichero
-- **WHEN** dos filas del fichero tienen el mismo nombre, apellidos, nivel y grupo
-- **THEN** ambas se marcan dudosas para que el usuario indique si son personas distintas o una fila repetida
-
 ### Requirement: Validación de cada fila
-El sistema SHALL marcar como errónea cada fila que incumpla las reglas de datos, indicando su línea y el motivo, y SHALL no importarla.
+El sistema SHALL marcar como errónea cada fila que incumpla las reglas de datos, indicando su hoja, su línea y el motivo, y SHALL no importarla.
 
-#### Scenario: Datos obligatorios
-- **WHEN** una fila carece de nombre, de apellidos o de nivel
-- **THEN** se marca errónea por dato obligatorio
+#### Scenario: Correo ausente o mal formado
+- **WHEN** una fila carece de correo o su correo no tiene un formato válido
+- **THEN** se marca errónea por correo inválido
+
+#### Scenario: Nombre ausente o sin separador
+- **WHEN** una fila carece de nombre completo o este no tiene el formato `Apellidos, Nombre` (una coma con apellidos y nombre no vacíos)
+- **THEN** se marca errónea por nombre inválido
 
 #### Scenario: Longitud excesiva
 - **WHEN** un valor supera la longitud máxima permitida
 - **THEN** se marca errónea por longitud máxima
 
-#### Scenario: Mismo alumno en varias filas
-- **WHEN** dos filas se reconocen como el mismo alumno existente
-- **THEN** ambas se marcan erróneas por alumno repetido en el fichero
+#### Scenario: Correo repetido en el fichero
+- **WHEN** dos o más filas, de la misma hoja o de hojas distintas, tienen el mismo correo
+- **THEN** todas ellas se marcan erróneas por correo repetido en el fichero
 
-#### Scenario: Grupo ausente
-- **WHEN** una fila tiene nivel y no tiene grupo
-- **THEN** la fila es válida
-
-### Requirement: Correspondencia de columnas guiada
-El sistema SHALL ofrecer un asistente que permita indicar qué columna del fichero corresponde a cada dato, SHALL proponer una correspondencia por similitud de cabeceras y SHALL recordarla para siguientes importaciones.
-
-#### Scenario: Primera importación
-- **WHEN** el usuario carga un fichero por primera vez
-- **THEN** el asistente propone una correspondencia según las cabeceras y permite corregirla antes de continuar
-
-#### Scenario: Cabeceras conocidas
-- **WHEN** el fichero tiene las mismas cabeceras que en una importación anterior
-- **THEN** el sistema reutiliza la correspondencia guardada sin pedirla de nuevo
-
-#### Scenario: Cabeceras distintas
-- **WHEN** las cabeceras del fichero no coinciden con la correspondencia guardada
-- **THEN** el asistente vuelve a pedir la correspondencia
-
-#### Scenario: Datos imprescindibles sin columna
-- **WHEN** el usuario no asigna columna a nombre, apellidos o nivel
-- **THEN** el sistema no permite continuar y señala el dato que falta
-
-#### Scenario: Datos opcionales
-- **WHEN** el usuario no asigna columna a correo, identificador o grupo
-- **THEN** el sistema continúa sin esos datos
-
-### Requirement: Formato del fichero
-El sistema SHALL aceptar ficheros CSV en UTF-8 con o sin marca BOM, con separador detectado automáticamente, con una fila de cabecera y un máximo de 5000 filas de datos.
-
-#### Scenario: Codificación no válida
-- **WHEN** el fichero no está en UTF-8 válido
-- **THEN** el sistema lo rechaza con un error de codificación sin procesar ninguna fila
-
-#### Scenario: Fichero vacío
-- **WHEN** el fichero no contiene filas de datos
-- **THEN** el sistema lo rechaza con un error de fichero vacío
-
-#### Scenario: Fichero demasiado grande
-- **WHEN** el fichero supera las 5000 filas de datos
-- **THEN** el sistema lo rechaza con un error de tamaño excesivo
+#### Scenario: Separación del nombre
+- **WHEN** el nombre completo es `Bosch Camps, Aina`
+- **THEN** los apellidos son `Bosch Camps` y el nombre es `Aina`, recortando espacios sobrantes
 
 ### Requirement: Revisión previa sin efectos
-El sistema SHALL mostrar antes de guardar un resumen con los recuentos de alumnos nuevos, actualizados, sin cambios, dados de baja, reactivados, dudosos y erróneos, con el detalle de cada grupo, sin modificar ningún dato hasta la confirmación.
+El sistema SHALL mostrar antes de guardar un resumen con los recuentos de alumnos nuevos, actualizados, sin cambios, dados de baja, reactivados y erróneos, con el detalle de cada grupo, sin modificar ningún dato hasta la confirmación.
 
 #### Scenario: Resumen de la revisión
-- **WHEN** el usuario carga y correlaciona un fichero
+- **WHEN** el usuario carga un fichero válido
 - **THEN** el sistema muestra los recuentos y permite consultar el detalle de cada categoría
 
 #### Scenario: Valores nuevos de nivel y grupo

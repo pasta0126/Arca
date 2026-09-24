@@ -5,7 +5,7 @@ Gestionar a los alumnos como personas que persisten entre cursos, con una matrí
 ## ADDED Requirements
 
 ### Requirement: Ficha de alumno persistente
-El sistema SHALL representar al alumno como una única ficha con identidad interna que persiste entre cursos, con nombre, apellidos y, de forma opcional, correo e identificador para reconocerlo.
+El sistema SHALL representar al alumno como una única ficha con identidad interna que persiste entre cursos, con nombre, apellidos y correo, que es su identificador único mientras pertenezca al centro.
 
 #### Scenario: Continuidad entre cursos
 - **WHEN** un alumno pasa a otro nivel en el curso siguiente
@@ -19,16 +19,28 @@ El sistema SHALL representar al alumno como una única ficha con identidad inter
 - **WHEN** el nombre o los apellidos superan los 100 caracteres
 - **THEN** el sistema lo rechaza con un error de longitud máxima
 
-### Requirement: Privacidad de los datos de reconocimiento
-El sistema SHALL usar el correo y el identificador únicamente para reconocer al alumno, y SHALL no mostrarlos en listados ni incluirlos en ninguna exportación.
+#### Scenario: Correo obligatorio
+- **WHEN** el usuario intenta crear un alumno sin correo o con un correo de formato inválido
+- **THEN** el sistema lo rechaza con un error de correo inválido
+
+#### Scenario: Correo único
+- **WHEN** el usuario intenta crear un alumno con un correo que ya tiene otro alumno, activo o de baja
+- **THEN** el sistema lo rechaza con un error de correo ya registrado, sin distinguir mayúsculas
+
+#### Scenario: Homónimos
+- **WHEN** dos alumnos tienen el mismo nombre y apellidos y correos distintos
+- **THEN** el sistema los acepta como personas distintas
+
+### Requirement: Privacidad del correo
+El sistema SHALL usar el correo únicamente para identificar al alumno, y SHALL no mostrarlo en listados ni incluirlo en ninguna exportación.
 
 #### Scenario: Listados y exportaciones
 - **WHEN** el usuario consulta un listado o exporta un fichero que incluye alumnos
-- **THEN** no aparecen el correo ni el identificador
+- **THEN** no aparece el correo
 
-#### Scenario: Decisión sobre homónimos
-- **WHEN** el usuario tiene que distinguir entre alumnos homónimos en la revisión de una importación
-- **THEN** el sistema puede mostrar el correo o el identificador solo en esa revisión, si existen
+#### Scenario: Consulta de la ficha
+- **WHEN** el usuario abre la ficha de un alumno para corregir sus datos, o revisa una importación
+- **THEN** el sistema puede mostrar el correo solo en esa ficha o en esa revisión
 
 ### Requirement: Matrícula por curso
 El sistema SHALL registrar para cada alumno y curso una matrícula con su nivel y su grupo, y SHALL admitir como máximo una matrícula por alumno y curso.
@@ -95,11 +107,19 @@ El sistema SHALL permitir reactivar a un alumno de baja, con su misma ficha, en 
 - **THEN** el sistema lo rechaza con un error de alumno ya activo
 
 ### Requirement: Edición de datos del alumno
-El sistema SHALL permitir corregir el nombre, los apellidos, el correo y el identificador de un alumno, registrando el cambio en su historial.
+El sistema SHALL permitir corregir el nombre, los apellidos y el correo de un alumno, registrando el cambio en su historial.
 
 #### Scenario: Corrección de un apellido
 - **WHEN** el usuario corrige un apellido
 - **THEN** el dato se actualiza y el historial conserva el valor anterior y el nuevo
+
+#### Scenario: Corrección del correo
+- **WHEN** el usuario corrige el correo de un alumno a otro no usado por nadie
+- **THEN** el dato se actualiza y el historial conserva el valor anterior y el nuevo
+
+#### Scenario: Correo ya registrado
+- **WHEN** el usuario corrige el correo de un alumno a uno que ya tiene otro alumno
+- **THEN** el sistema lo rechaza con un error de correo ya registrado
 
 ### Requirement: Búsqueda y consulta de alumnos
 El sistema SHALL permitir buscar alumnos por nombre, apellidos, nivel, grupo, número de taquilla y estado de asignación, sin distinguir mayúsculas ni acentos, y SHALL mostrar por defecto solo los alumnos activos del curso activo.
