@@ -171,6 +171,39 @@ public sealed class StorageStartupTests
         Assert.False(Directory.Exists(Path.Combine(home.Path, "xdg"))); // nothing outside the folder
     }
 
+    sealed class ThrowingKey : IDatabaseKeyProvider
+    {
+        public Task<Result<DatabaseKey>> GetKeyAsync(CancellationToken ct = default) =>
+            throw new InvalidOperationException("boom");
+    }
+
+    [Fact]
+    public async Task An_unexpected_failure_still_frees_the_instance_lock()
+    {
+        using var home = new TempDirectory();
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => Startup(home, new ThrowingKey(), create: true).OpenAsync());
+        var retry = await Startup(home, new FixedKey("retry"), create: true).OpenAsync();
+
+        Assert.True(retry.IsSuccess, retry.Error?.Code); // not AlreadyRunning
+        await retry.Value!.DisposeAsync();
+    }
+
+    [Fact]
+    public async Task A_cancelled_start_frees_the_instance_lock()
+    {
+        using var home = new TempDirectory();
+        using var cancelled = new CancellationTokenSource();
+        await cancelled.CancelAsync();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => Startup(home, new FixedKey("c1"), create: true).OpenAsync(ct: cancelled.Token));
+        var retry = await Startup(home, new FixedKey("c1"), create: true).OpenAsync();
+
+        Assert.True(retry.IsSuccess, retry.Error?.Code);
+        await retry.Value!.DisposeAsync();
+    }
+
     sealed class Collect : IProgress<StartupProgress>
     {
         public List<StartupProgress> Reports { get; } = [];

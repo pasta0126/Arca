@@ -35,7 +35,10 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand
     bool _canCancel;
     string _progressText = string.Empty;
 
-    /// <param name="operation">The work. It reports progress and honours the token only while it reports CanCancel.</param>
+    /// <param name="operation">
+    /// The work. It is cancellable only while it reports progress with CanCancel true, and it honours the token only then;
+    /// an operation that never reports cannot be cancelled, which is the safe default for a data write.
+    /// </param>
     /// <param name="successText">Message for a successful result, with its counts ("40 taquilles creades").</param>
     /// <param name="context">Name of the action, for the technical log.</param>
     public RunOnceCommand(
@@ -115,7 +118,7 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand
         using var indicator = new CancellationTokenSource();
         _running = cancellation;
         IsRunning = true;
-        CanCancel = true;
+        CanCancel = false; // an operation is cancellable only once it says so through its progress
         ProgressText = string.Empty;
         _ = ShowIndicatorLaterAsync(indicator.Token);
         try

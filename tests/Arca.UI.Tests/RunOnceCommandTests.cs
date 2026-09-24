@@ -235,6 +235,28 @@ public sealed class RunOnceCommandTests
     }
 
     [Fact]
+    [Trait("spec", Spec + ": Progreso y cancelación de operaciones largas (fase no cancelable)")]
+    public async Task An_operation_that_never_reports_cannot_be_cancelled()
+    {
+        var release = new TaskCompletionSource<Result<int>>();
+        var tokenSeen = default(CancellationToken);
+        var command = Command((token, _) =>
+        {
+            tokenSeen = token;
+            return release.Task;
+        });
+
+        var run = command.RunAsync();
+        Assert.False(command.CanCancel, "cancellable only once the operation says so");
+        command.Cancel();
+
+        Assert.False(tokenSeen.IsCancellationRequested);
+        release.SetResult(Result<int>.Success(1));
+        await run;
+        Assert.Equal(NotificationKind.Success, Assert.Single(_notifications.Published).Kind);
+    }
+
+    [Fact]
     public async Task The_command_can_run_again_after_finishing()
     {
         var calls = 0;

@@ -76,7 +76,19 @@ public sealed class StorageStartup(PlatformContext platform, IDatabaseKeyProvide
             }),
         ]);
 
-        var error = await sequence.RunAsync(progress, ct);
+        Error? error;
+        try
+        {
+            error = await sequence.RunAsync(progress, ct);
+        }
+        catch
+        {
+            // An unexpected failure or a cancellation must not leave the instance lock held or the key in memory.
+            key?.Dispose();
+            instance?.Dispose();
+            throw;
+        }
+
         if (error is null)
         {
             return Result<StorageSession>.Success(session!);

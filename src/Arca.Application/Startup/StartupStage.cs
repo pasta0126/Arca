@@ -12,6 +12,6 @@ public sealed record StartupStage(string TextKey, Func<CancellationToken, Task<E
 
 /// <summary>Progress shown on the start-up screen: which stage is running and how far along.</summary>
 /// <param name="TextKey">Resource key of the stage text.</param>
-/// <param name="Index">Position of the stage, from 1.</param>
+/// <param name="Index">Position of the stage, from 1. Sub-steps inside a stage (backing up, migrating) repeat the index of their stage.</param>
 /// <param name="Total">Number of stages.</param>
 public sealed record StartupProgress(string TextKey, int Index, int Total);
