@@ -176,7 +176,7 @@ arca-sampledata list-profiles
 
 ## Preguntas para los conserjes
 
-Para que los perfiles se parezcan a un centro real (E10 en `docs/riesgos.md`):
+Para que los perfiles se parezcan a un centro real (E10 y E12 en `docs/riesgos.md`):
 
 1. ¿Cuántas taquillas hay y cuántos alumnos en total? ¿Qué proporción de alumnos tiene taquilla?
 2. ¿Cómo están numeradas y agrupadas las taquillas (pasillos, plantas)?
@@ -184,3 +184,25 @@ Para que los perfiles se parezcan a un centro real (E10 en `docs/riesgos.md`):
 4. ¿Qué importes se cobran hoy y con qué frecuencia hay deuda de cursos anteriores?
 5. ¿Cuántas taquillas están averiadas o fuera de servicio a la vez, de media?
 6. ¿Hay nombres o apellidos de origen no catalán muy frecuentes que deban aparecer?
+
+### Zonas y taquillas (a preguntar en conserjería)
+
+Las zonas y las taquillas se crean **una sola vez** con los datos reales del centro y después se modifican a mano; por eso hace falta reunir la información antes de la carga inicial (E12 en `docs/riesgos.md`).
+
+**Zonas**
+1. ¿Cuántas zonas hay y cómo se llaman (pasillos, plantas, edificios)?
+2. ¿Dónde está cada una y en qué orden conviene mostrarlas? ¿Existe un plano o croquis?
+3. ¿Alguna zona está reservada a un nivel o grupo concreto?
+
+**Taquillas**
+4. ¿Cuántas taquillas tiene cada zona y cuál es el rango de números? ¿La numeración es continua en todo el centro o empieza de nuevo en cada zona?
+5. ¿Hay huecos, números saltados o números repetidos en distintas zonas?
+6. ¿Hay tipos o tamaños distintos (superior e inferior, grandes y pequeñas)? ¿Interesa distinguirlos?
+7. ¿Cuáles están hoy averiadas, fuera de servicio o reservadas, y para quién o por qué?
+8. ¿Tienen llave o candado propio, y cuántas copias? ¿Se identifican por el número de la taquilla?
+
+**Situación actual**
+9. ¿Quién tiene ya taquilla este curso, y se conserva la asignación al pasar de curso?
+10. ¿Qué pagos y fianzas hay ya cobrados o pendientes que haya que cargar al empezar?
+11. ¿En qué formato lo tienen hoy (papel, hoja de cálculo)? Si existe una hoja, pedirla; se cargará una vez y, si contiene datos personales, no entra en el repositorio (solo una versión anonimizada, como con `datos-de-ejemplo-anonimizado.ods`).
+12. ¿Quién modifica las taquillas durante el año, y con qué frecuencia se añaden o dan de baja?

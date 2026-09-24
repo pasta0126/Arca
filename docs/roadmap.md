@@ -43,11 +43,12 @@ Fase de especificación cerrada: 16 cambios redactados y validados (`openspec va
 3. Definir: carga inicial de asignaciones y pagos existentes, presupuestos de rendimiento, guía de sesión con los conserjes y ficha de datos personales.
 
 ## Por consultar con los conserjes
+- Zonas y taquillas reales (zonas, numeración, rangos, averiadas, reservas, llaves, asignaciones y pagos actuales, formato en que lo tienen). Se crean una vez y luego se modifican a mano; preguntas en `docs/datos-de-ejemplo.md`.
 - Política de conservación de datos de cursos cerrados (cuántos cursos, si se automatiza). Hasta entonces es manual y por curso (`cursos-i-historial`).
 - Informes adicionales y sus columnas (`informes-csv` solo incluye seis; el catálogo es ampliable).
 - Si echan en falta un recordatorio o la fecha de la última copia (`copies-de-seguretat` no los tiene).
 
 ## Pendiente de recibir
 - Decidir dónde se aloja el servidor de registro y desde qué dominio se envían los correos.
-- Valoración RGPD con la dirección del centro (identificador, correo).
+- Valoración RGPD con la dirección del centro (correo como identificador, conservación).
 - Validación de la pantalla principal con los conserjes.
