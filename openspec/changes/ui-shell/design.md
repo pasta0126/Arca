@@ -41,7 +41,7 @@ Nombre, logo (bytes, tipo y tamaño) y color de acento son una fila única de co
 El acento se convierte en un conjunto de recursos para cada tema: el tono se ajusta hasta cumplir el contraste con el texto que se muestra encima y con la superficie, con un umbral definido como constante (4,5:1 para texto). Una función pura lo calcula y se prueba con colores extremos. El tema (claro, oscuro, del sistema) es una preferencia local del equipo, porque depende del PC y no del centro, y por eso no viaja con la copia.
 
 ### D9. Tema como recursos con nombre
-Este cambio define los valores finales de los recursos que `ux-fonaments` declaró como contrato: superficie, texto, éxito, aviso, error, foco, acento, tipografías y espaciados, para claro y oscuro. Los componentes no cambian.
+Este cambio define los valores finales (por defecto, un tema claro de colores neutros y pastel, decidido por la persona responsable el 2026-09-24) de los recursos que `ux-fonaments` declaró como contrato: superficie, texto, éxito, aviso, error, foco, acento, tipografías y espaciados, para claro y oscuro. Los componentes no cambian.
 
 ### D10. Feedback
 Resultados estructurados y notificaciones de `ux-fonaments`, estados vacíos con guía en cada sección, vista previa de la identidad antes de aplicar y protección contra doble ejecución en guardados.
@@ -63,4 +63,4 @@ Una migración de EF Core añade la fila de configuración del centro (nombre, l
 ## Open Questions
 
 - Validación de la pantalla principal con los conserjes: el mapa es provisional y no altera los specs de navegación, búsqueda ni identidad; solo cambiaría la implementación registrada de Inicio.
-- Paleta concreta de acentos y valores exactos de los recursos de tema: detalle de diseño visual sin efecto en los specs.
+- Valores exactos de los recursos de tema para el modo oscuro: detalle de diseño visual sin efecto en los specs. El tema claro pastel por defecto ya está definido en `Arca.UI/Theme/ArcaPalette.cs`.

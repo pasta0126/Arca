@@ -27,7 +27,7 @@
 - [ ] 4.1 Configuración del centro con nombre, logo y color en la base de datos y su caso de uso de guardado (D7)
 - [ ] 4.2 Validación del logo por firma de fichero, tamaño de hasta 1 MB y decodificación, con rechazo sin cambiar el actual
 - [ ] 4.3 Función pura de contraste que ajusta el acento y el texto para claro y oscuro (D8)
-- [ ] 4.4 Tema claro, oscuro y del sistema como preferencia local aplicada sin reiniciar
+- [ ] 4.4 Tema claro (pastel, por defecto), oscuro y del sistema como preferencia local aplicada sin reiniciar (el claro pastel por defecto ya existe desde `arquitectura-base`)
 - [ ] 4.5 Valores finales de los recursos con nombre de `ux-fonaments` para ambos temas, con estado por icono o texto además del color (D9)
 - [ ] 4.6 Vista previa de la identidad antes de aplicar y pantalla de arranque con la identidad de ARCA
 - [ ] 4.7 Pruebas: logo válido, formato y tamaño rechazados, imagen dañada, acentos extremos con contraste, tema del sistema que cambia y restauración de la copia con la identidad

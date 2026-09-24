@@ -28,3 +28,13 @@ Guarda la llave que has generado (la misma variable) para volver a abrir esa bas
 | Linux | `$XDG_DATA_HOME/arca` (por defecto `~/.local/share/arca`) |
 
 Contiene `arca.db`, `settings.json` y, mientras la aplicación está abierta, `arca.db.lock`.
+
+## Ver las pantallas sin abrir la aplicación
+
+Las pruebas de vista pueden guardar capturas PNG de las pantallas (arranque, confirmación, información) para revisar el aspecto, sin datos ni ventana:
+
+```bash
+ARCA_SCREENSHOT=/tmp/arca-capturas dotnet test --solution Arca.slnx
+```
+
+Sin la variable, esas pruebas se omiten. La paleta está en `src/Arca.UI/Theme/ArcaPalette.cs`.

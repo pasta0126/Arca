@@ -88,7 +88,7 @@ El hito 1 no implementa todo lo que las specs dicen. Estas diferencias son **int
 | La primera ejecución solo pide la contraseña, muestra la clave de recuperación y crea la base en la carpeta por defecto | Primera ejecución completa: elegir carpeta, restaurar una copia y registro opcional | `configuracio-inicial` |
 | Sin registro ni avisos de versión | Registro opcional y aviso de versión nueva | `registre-i-actualitzacions` |
 | Cabecera con el nombre de la aplicación, sin identidad del centro | Nombre, logo y color del centro | `ui-shell` grupo 4 |
-| Tema por defecto del sistema, sin selector | Claro, oscuro o del sistema con acento | `ui-shell` grupo 4 |
+| Tema claro de colores neutros y pastel fijo, sin selector | Claro pastel por defecto, con opción de oscuro o del sistema y acento del centro | `ui-shell` grupo 4 |
 | Datos cargados por una herramienta de desarrollo | Importación desde el fichero de secretaría | `alumnes-i-assignacions` grupo 6 |
 | Los ganchos de llaves no tienen implementación (una taquilla siempre tiene "llave disponible") | Estado de la llave | `claus` |
 | Dipòsit sin devolución desde la interfaz | Lista y devolución individual y en bloque | `pagaments` grupos 4 y 5 |
