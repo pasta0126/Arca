@@ -42,7 +42,7 @@ Punto 12 de `docs/preparacion-desarrollo.md`. Reúne en un solo sitio lo que pue
 
 | # | Riesgo | Prob. | Impacto | Mitigación | Necesario antes de |
 |---|--------|-------|---------|------------|--------------------|
-| P1 | **Las pantallas de dominio no tenían dueño** (`docs/hito-1.md`). Decidido: cambio nuevo `pantalles-de-domini`, que se redacta sin maquetas (D3) | Cierta | Alto | Redactar el cambio 15 antes de la etapa 3; las etapas 1 y 2 avanzan sin él | Etapa 3 |
+| P1 | **Las pantallas de dominio no tenían dueño** (`docs/hito-1.md`). Decidido: cambio nuevo `pantalles-de-domini`, que se redacta sin maquetas (D3) | Cierta | Alto | Cambio 15 redactado (2026-09-24); falta implementarlo en la etapa 3; las etapas 1 y 2 avanzan sin él | Etapa 3 |
 | P2 | La **pantalla principal no gusta** a los conserjes | Media | Medio | Es una pieza sustituible (`IHomeScreen`); demostración temprana con la aplicación funcionando | Etapa 3 |
 | P3 | **Demasiada especificación** antes de tener nada delante: parte de lo escrito cambiará | Alta | Medio | Specs como documentos vivos; hito 1 pequeño; regla de actualizar la spec si choca | Continuo |
 | P4 | Los conserjes **no tienen tiempo** o disponibilidad para validar | Media | Alto | Sesiones cortas con la aplicación funcionando y el guion de demostración; validar términos en una hoja | Etapa 3 |

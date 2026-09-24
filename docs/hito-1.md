@@ -54,7 +54,7 @@ Cada cambio de OpenSpec **fusiona solo los grupos del hito 1** y **no se archiva
 | `pagaments` | Grupos 1 y 2, 3.1 a 3.3 y 3.5 a 3.7, 4.1 a 4.5, 6.1, 6.2, 6.5, 6.6, 7 y 8 y 9.1 a 9.4 (sin devolución) | 3.4 (reposición de llave), 4.6 a 4.8 (devolución), grupo 5 (bloque), 6.3 y 6.4 (listas) |
 | `ux-fonaments` | Grupos 1 y 2, 3.1, 3.2 y 3.4, grupos 4 y 5 y 7, y 6.1 | 3.3, 3.5 y 6.2 a 6.5 (selección múltiple, planes y pasos) |
 | `ui-shell` | Grupos 1, 2.1 a 2.4 (solo curso y cobros, sin asistente), 3 (alumno y taquilla), 5, 6 y 7 | Grupo 4 (identidad y tema), y búsqueda por grupo |
-| `pantalles-de-domini` (cambio 15, por redactar, sin maquetas) | Pantallas de curso e importes, zonas, taquillas, alumnos y cargos | Pantallas de llaves, incidencias, informes, cierre y copias |
+| `pantalles-de-domini` (cambio 15, redactado, sin maquetas) | Pantallas de curso e importes, zonas, taquillas, alumnos y cargos | Pantallas de llaves, incidencias, informes, cierre y copias |
 | No incluidos | `claus`, `incidencies`, `manteniment`, `cursos-i-historial`, `informes-csv`, `copies-de-seguretat`, `registre-i-actualitzacions`, `configuracio-inicial` | Todo su contenido |
 
 ## Orden de las etapas
