@@ -10,6 +10,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# ARCA sends nothing off the computer (AGENTS.md), and that includes the tools that build it: switch off the
+# anonymous telemetry of the .NET CLI, the test platform and Avalonia's build services for every script here.
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export TESTINGPLATFORM_TELEMETRY_OPTOUT=1
+export AVALONIA_TELEMETRY_OPTOUT=1
+
 rid="${1:?usage: build/package.sh <win-x64|linux-x64|linux-arm64|osx-arm64|osx-x64>}"
 version="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props | head -1)"
 name="ARCA-${version}-${rid}"

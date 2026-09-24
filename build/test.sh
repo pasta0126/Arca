@@ -8,6 +8,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# ARCA sends nothing off the computer (AGENTS.md), and that includes the tools that build it: switch off the
+# anonymous telemetry of the .NET CLI, the test platform and Avalonia's build services for every script here.
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export TESTINGPLATFORM_TELEMETRY_OPTOUT=1
+export AVALONIA_TELEMETRY_OPTOUT=1
+
 dotnet restore Arca.slnx
 dotnet build Arca.slnx --no-restore -c Release -warnaserror
 dotnet test --solution Arca.slnx --no-build -c Release
