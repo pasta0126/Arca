@@ -37,9 +37,11 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 - Firma y notarización en macOS; paquetes nativos de Linux y macOS.
 
 ## Próxima sesión
-Los 14 cambios de la fase de especificación están redactados. Pendiente:
-1. Repaso de coherencia entre los 14 cambios (ganchos, nombres, cifras repetidas).
-2. Commit y decidir cuándo pasar a implementar (con `/opsx:apply`, cambio a cambio y en el orden de esta tabla).
+Fase de especificación cerrada: 15 cambios redactados y validados (`openspec validate --all --strict`, 15 de 15); el repaso de coherencia está hecho. Pendiente, por este orden:
+1. Spike técnico (punto 1 de `docs/preparacion-desarrollo.md`) y decidir D2 (dónde) y D3 (herramienta de maquetas) de `docs/riesgos.md`.
+2. Maquetas de pantallas clave (punto 11) y redacción del cambio 15 `pantalles-de-domini`.
+3. Esqueleto de solución (punto 3) y empezar a implementar con `/opsx:apply`, cambio a cambio, siguiendo `docs/hito-1.md`.
+4. Definir: carga inicial de asignaciones y pagos existentes, presupuestos de rendimiento, guía de sesión con los conserjes y ficha de datos personales.
 
 ## Por consultar con los conserjes
 - Política de conservación de datos de cursos cerrados (cuántos cursos, si se automatiza). Hasta entonces es manual y por curso (`cursos-i-historial`).
