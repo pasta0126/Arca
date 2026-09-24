@@ -42,10 +42,10 @@ Punto 12 de `docs/preparacion-desarrollo.md`. Reúne en un solo sitio lo que pue
 
 | # | Riesgo | Prob. | Impacto | Mitigación | Necesario antes de |
 |---|--------|-------|---------|------------|--------------------|
-| P1 | **Las pantallas de dominio no tenían dueño** (`docs/hito-1.md`). Decidido: cambio nuevo `pantalles-de-domini`, que se redacta tras las maquetas | Cierta | Alto | Hacer las maquetas (punto 11) y redactar el cambio 15 antes de la etapa 3; las etapas 1 y 2 avanzan sin él | Etapa 3 |
-| P2 | La **pantalla principal no gusta** a los conserjes | Media | Medio | Es una pieza sustituible (`IHomeScreen`); maquetas y demostración temprana | Etapa 3 |
+| P1 | **Las pantallas de dominio no tenían dueño** (`docs/hito-1.md`). Decidido: cambio nuevo `pantalles-de-domini`, que se redacta sin maquetas (D3) | Cierta | Alto | Redactar el cambio 15 antes de la etapa 3; las etapas 1 y 2 avanzan sin él | Etapa 3 |
+| P2 | La **pantalla principal no gusta** a los conserjes | Media | Medio | Es una pieza sustituible (`IHomeScreen`); demostración temprana con la aplicación funcionando | Etapa 3 |
 | P3 | **Demasiada especificación** antes de tener nada delante: parte de lo escrito cambiará | Alta | Medio | Specs como documentos vivos; hito 1 pequeño; regla de actualizar la spec si choca | Continuo |
-| P4 | Los conserjes **no tienen tiempo** o disponibilidad para validar | Media | Alto | Sesiones cortas con maquetas y el guion de demostración; validar términos en una hoja | Etapa 3 |
+| P4 | Los conserjes **no tienen tiempo** o disponibilidad para validar | Media | Alto | Sesiones cortas con la aplicación funcionando y el guion de demostración; validar términos en una hoja | Etapa 3 |
 | P5 | **Una sola persona** lleva el proyecto: si falta, se para | Media | Alto | Todo está por escrito (`AGENTS.md`, specs, convenciones, flujo); formato agnóstico de herramientas | Continuo |
 | P6 | La **alta de datos de menores** sin una política RGPD cerrada | Media | Alto | Mínimo de datos, cifrado, nada sale del equipo; cerrar E2 antes de instalar en un centro | Antes de instalar en un centro |
 | P13 | **La sigla «ARCA» ya está en uso por otras entidades** (por ejemplo, una agencia tributaria de otro país) y podría haber marcas registradas o confusión al buscarlo | Media | Medio | Búsqueda de anterioridades y consulta legal (E11, pregunta 9) antes de invertir en el nombre; el nombre es fácil de cambiar mientras no haya distribución. Decisión actual: **se mantiene el nombre por ahora** | Antes del primer centro piloto |
@@ -60,10 +60,10 @@ Punto 12 de `docs/preparacion-desarrollo.md`. Reúne en un solo sitio lo que pue
 
 | # | Decisión | Opciones | Quién decide | Antes de |
 |---|----------|----------|--------------|----------|
-| D1 | ~~Quién es dueño de las pantallas de dominio~~ **Decidido**: cambio nuevo `pantalles-de-domini`, redactado tras las maquetas | — | — | — |
+| D1 | ~~Quién es dueño de las pantallas de dominio~~ **Decidido**: cambio nuevo `pantalles-de-domini`, redactado sin maquetas (D3) | — | — | — |
 | D5 | ~~Clave de cifrado con el repositorio abierto~~ **Decidido**: contraseña compartida del centro con clave de recuperación obligatoria (`acces-i-xifrat`) | — | — | — |
-| D2 | Dónde se hace el spike | Rama descartable o repositorio aparte | Persona responsable | Etapa 0 |
-| D3 | Herramienta y método para las maquetas | Papel, Penpot u otra herramienta gratuita | Persona responsable | Etapa 3 |
+| D2 | ~~Dónde se hace el spike~~ **Decidido (2026-09-24)**: rama descartable (`spike/tecnico`), que no se fusiona; lo aprendido se anota en `docs/` | — | — | — |
+| D3 | ~~Herramienta y método para las maquetas~~ **Decidido (2026-09-24)**: no habrá maquetas; las decisiones de interfaz las propone Claude directamente en las specs de `pantalles-de-domini` y se iteran con la aplicación funcionando | — | — | — |
 | D4 | Alcance del hito 2 | Propuesta en `docs/hito-1.md` | Persona responsable, tras la demostración | Fin del hito 1 |
 
 ## Revisión

@@ -18,7 +18,7 @@ Estado de cada punto: `por valorar` · `aceptado` · `descartado` · `hecho`.
 | 8 | Reglas de trabajo con `/opsx:apply` | Definir | Ahora | hecho (`docs/flujo-de-trabajo.md`) |
 | 9 | Definición de terminado | Definir | Ahora | hecho (`docs/flujo-de-trabajo.md`, sección 7) |
 | 10 | Datos de ejemplo | Definir (contenido) e implementar (generador) | Contenido ahora | contenido hecho (`docs/datos-de-ejemplo.md`); generador al implementar |
-| 11 | Maquetas de pantallas clave | Definir | Ahora, con los conserjes | por valorar |
+| 11 | Maquetas de pantallas clave | Definir | Ahora, con los conserjes | descartado (2026-09-24): sin maquetas; la interfaz se decide en las specs y se itera con la aplicación funcionando |
 | 12 | Registro de riesgos y pendientes externos | Definir | Ahora | hecho (`docs/riesgos.md`) |
 
 Orden recomendado: 2 → 4 → 5 → 6 (convención) → 9 → 8 → 7 → 12 → 10 (contenido) → 11, y después el spike (1) y el esqueleto (3) al arrancar la implementación.

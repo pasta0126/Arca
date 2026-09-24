@@ -54,7 +54,7 @@ Cada cambio de OpenSpec **fusiona solo los grupos del hito 1** y **no se archiva
 | `pagaments` | Grupos 1 y 2, 3.1 a 3.3 y 3.5 a 3.7, 4.1 a 4.5, 6.1, 6.2, 6.5, 6.6, 7 y 8 y 9.1 a 9.4 (sin devolución) | 3.4 (reposición de llave), 4.6 a 4.8 (devolución), grupo 5 (bloque), 6.3 y 6.4 (listas) |
 | `ux-fonaments` | Grupos 1 y 2, 3.1, 3.2 y 3.4, grupos 4 y 5 y 7, y 6.1 | 3.3, 3.5 y 6.2 a 6.5 (selección múltiple, planes y pasos) |
 | `ui-shell` | Grupos 1, 2.1 a 2.4 (solo curso y cobros, sin asistente), 3 (alumno y taquilla), 5, 6 y 7 | Grupo 4 (identidad y tema), y búsqueda por grupo |
-| `pantalles-de-domini` (cambio 15, por redactar tras las maquetas) | Pantallas de curso e importes, zonas, taquillas, alumnos y cargos | Pantallas de llaves, incidencias, informes, cierre y copias |
+| `pantalles-de-domini` (cambio 15, por redactar, sin maquetas) | Pantallas de curso e importes, zonas, taquillas, alumnos y cargos | Pantallas de llaves, incidencias, informes, cierre y copias |
 | No incluidos | `claus`, `incidencies`, `manteniment`, `cursos-i-historial`, `informes-csv`, `copies-de-seguretat`, `registre-i-actualitzacions`, `configuracio-inicial` | Todo su contenido |
 
 ## Orden de las etapas
@@ -68,7 +68,7 @@ Etapa 4   Demostración          datos de ejemplo + guion + prueba con conserjes
 ```
 
 - Las **etapas 1 y 2 no necesitan pantallas**: se prueban con pruebas automáticas, así que se pueden implementar mientras se decide lo de la interfaz.
-- La **etapa 3 necesita** que estén definidas las pantallas de dominio (ver más abajo) y, idealmente, las maquetas del punto 11.
+- La **etapa 3 necesita** que estén definidas las pantallas de dominio (ver más abajo) (sin maquetas: punto 11 descartado).
 - Dentro de cada etapa se sigue `docs/flujo-de-trabajo.md`: un grupo de tareas por sesión.
 
 ## Cómo se fusiona
@@ -100,18 +100,18 @@ Al repartir las tareas se ve que **nadie especifica ni implementa las pantallas 
 Consecuencia: **la etapa 3 no se puede implementar sin decidirlo antes.** Las etapas 1 y 2 no se ven afectadas.
 
 Opciones:
-1. **Crear un cambio nuevo** `pantalles-de-domini` (cambio 15) con specs, diseño y tareas de esas pantallas, apoyado en las maquetas del punto 11 y en los escenarios que ya existen en las specs de dominio.
+1. **Crear un cambio nuevo** `pantalles-de-domini` (cambio 15) con specs, diseño y tareas de esas pantallas, apoyado en los escenarios que ya existen en las specs de dominio.
 2. **Ampliar `ui-shell`** con esas pantallas en lugar de un cambio nuevo, lo que lo hace mucho mayor.
-3. **Especificarlas al implementar**, pantalla a pantalla, con las maquetas. Es lo que más riesgo de improvisación tiene.
+3. **Especificarlas al implementar**, pantalla a pantalla. Es lo que más riesgo de improvisación tiene.
 
-**Decidido:** opción 1. Se creará el cambio **`pantalles-de-domini`** (cambio 15), que se redacta **después de las maquetas** del punto 11 y antes de la etapa 3. Mientras tanto avanzan las etapas 1 y 2. Registrado en `docs/riesgos.md` (P1 y D1) y en `docs/roadmap.md`.
+**Decidido:** opción 1. Se creará el cambio **`pantalles-de-domini`** (cambio 15), que se redacta **sin maquetas** (punto 11 descartado) y antes de la etapa 3. Mientras tanto avanzan las etapas 1 y 2. Registrado en `docs/riesgos.md` (P1 y D1) y en `docs/roadmap.md`.
 
 ## Dependencias externas del hito 1
 
 Ninguna bloquea el hito 1. El fichero de secretaría, el RGPD y el servidor de registro afectan a cambios posteriores. **Sí** hace falta:
 
 - Validar con los conserjes los términos del glosario antes de que se vean textos (etapa 4).
-- Las maquetas del mapa y del asignar (punto 11) antes de la etapa 3.
+- Redactar `pantalles-de-domini` antes de la etapa 3 (sin maquetas).
 - Un equipo Windows para las comprobaciones puntuales.
 
 ## Después del hito 1

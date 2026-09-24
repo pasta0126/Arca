@@ -19,7 +19,7 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 | 12 | `configuracio-inicial` | Asistente guiado de primera configuración | redactado |
 | 13 | `ux-fonaments` | Sistema de diseño: adaptabilidad, colapsables, arrastrar y soltar, menús, componentes de feedback | redactado |
 | 14 | `ui-shell` | Navegación, búsqueda global, pantalla principal, tema e identidad del centro | redactado (pantalla principal provisional: mapa de taquillas por zona) |
-| 15 | `pantalles-de-domini` | Pantallas de dominio (curso e importes, zonas, taquillas, alumnos, cargos, y después el resto), a redactar tras las maquetas | por definir (hallazgo del hito 1) |
+| 15 | `pantalles-de-domini` | Pantallas de dominio (curso e importes, zonas, taquillas, alumnos, cargos, y después el resto), a redactar sin maquetas (interfaz decidida por Claude en las specs y a iterar) | por definir (hallazgo del hito 1) |
 | 16 | `acces-i-xifrat` | Contraseña compartida del centro, clave de recuperación obligatoria, fichero de claves y copias (sustituye la clave interna de `arquitectura-base`) | redactado; va con `arquitectura-base` |
 
 ## Fuera de este repositorio
@@ -38,8 +38,8 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 
 ## Próxima sesión
 Fase de especificación cerrada: 15 cambios redactados y validados (`openspec validate --all --strict`, 15 de 15); el repaso de coherencia está hecho. Pendiente, por este orden:
-1. Spike técnico (punto 1 de `docs/preparacion-desarrollo.md`) y decidir D2 (dónde) y D3 (herramienta de maquetas) de `docs/riesgos.md`.
-2. Maquetas de pantallas clave (punto 11) y redacción del cambio 15 `pantalles-de-domini`.
+1. Spike técnico (punto 1 de `docs/preparacion-desarrollo.md`) en rama descartable `spike/tecnico` (D2 decidido).
+2. Redactar el cambio 15 `pantalles-de-domini` (D3: sin maquetas).
 3. Esqueleto de solución (punto 3) y empezar a implementar con `/opsx:apply`, cambio a cambio, siguiendo `docs/hito-1.md`.
 4. Definir: carga inicial de asignaciones y pagos existentes, presupuestos de rendimiento, guía de sesión con los conserjes y ficha de datos personales.
 
