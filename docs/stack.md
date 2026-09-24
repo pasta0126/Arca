@@ -111,6 +111,12 @@ SQLite3 Multiple Ciphers escribe en formato compatible con SQLCipher, es gratuit
 | Paquetes de Linux y macOS | `tar.gz` y `.app` comprimido | Ya decidido en `arquitectura-base`. |
 | Avisos de terceros | `THIRD-PARTY-NOTICES.md` | Atribución exigida por MIT, Apache y BSD. |
 
+## Control de licencias, avisos de terceros y paquetes
+
+- **Control de licencias:** `dotnet run build/CheckLicenses.cs` (lo ejecutan `build/test.sh` y `build/test.ps1`) lista la licencia de los 85 paquetes NuGet (directos y transitivos) y falla si alguno no es MIT, Apache-2.0, BSD-2/3-Clause o ISC, salvo excepciones revisadas a mano con su motivo en `build/licenses-reviewed.json` (hoy solo `Avalonia.Angle.Windows.Natives`, BSD-3-Clause de ANGLE). También falla si `THIRD-PARTY-NOTICES.md` está desactualizado; se regenera con `dotnet run build/CheckLicenses.cs -- --write-notices`. Es un programa de un solo fichero, así que funciona igual en macOS, Linux y Windows.
+- **Paquetes:** `build/package.sh <win-x64|linux-x64|osx-arm64|...>` genera `artifacts/ARCA-<versión>-<sistema>.zip` o `.tar.gz` con `LICENSE`, `THIRD-PARTY-NOTICES.md` y `LEEME.txt` (dónde está el código fuente). Windows y Linux llevan el marcador `arca.portable`; el `.app` de macOS no y no está firmado. El de macOS se ejecutó de verdad; los de Windows y Linux se generan desde macOS y no se han ejecutado (ver la decisión de alcance).
+- **Telemetría de las herramientas de desarrollo (a decidir):** dos paquetes recopilan datos anónimos en el equipo de desarrollo, **nunca en la aplicación distribuida** (no están en su carpeta de publicación): `Avalonia.BuildServices` (al compilar; se desactiva con `AVALONIA_TELEMETRY_OPTOUT=1`) y `Microsoft.Testing.Extensions.Telemetry` con la CLI de .NET (se desactivan con `TESTINGPLATFORM_TELEMETRY_OPTOUT=1` y `DOTNET_CLI_TELEMETRY_OPTOUT=1`). No afectan a datos de alumnos, pero conviene decidir si el proyecto los desactiva en `build/` o los deja.
+
 ## Alternativas descartadas
 
 | Descartado | Motivo |

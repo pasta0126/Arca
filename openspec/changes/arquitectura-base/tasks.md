@@ -72,9 +72,9 @@
 
 ## 9. Verificación y distribución
 
-- [ ] 9.1 Crear los scripts de verificación `build/test.sh`, `build/test.ps1` y `build/test-linux.sh` (contenedor) que compilen con advertencias como errores y ejecuten todas las pruebas, y `build/publish.sh` para generar paquetes por sistema, incluido `win-x64` desde macOS
-- [ ] 9.1b Añadir a los scripts de verificación un control de licencias que liste las de todos los paquetes NuGet y falle si alguna no está en la lista permitida (MIT, Apache 2.0, BSD, ISC), compatibles con la GPL-3.0, y crear `THIRD-PARTY-NOTICES.md` (coste cero, `docs/stack.md`)
-- [ ] 9.2 Generar el paquete portable con fichero marcador: `zip` en Windows, `tar.gz` en Linux y `.app` comprimido en `.zip` en macOS (D11)
+- [x] 9.1 Crear los scripts de verificación `build/test.sh`, `build/test.ps1` y `build/test-linux.sh` (contenedor; descartado por ahora, `docs/stack.md`) que compilen con advertencias como errores y ejecuten todas las pruebas, y `build/publish.sh` para generar paquetes por sistema, incluido `win-x64` desde macOS
+- [x] 9.1b Añadir a los scripts de verificación un control de licencias que liste las de todos los paquetes NuGet y falle si alguna no está en la lista permitida (MIT, Apache 2.0, BSD, ISC), compatibles con la GPL-3.0, y crear `THIRD-PARTY-NOTICES.md` (coste cero, `docs/stack.md`)
+- [x] 9.2 Generar el paquete portable con fichero marcador: `zip` en Windows, `tar.gz` en Linux y `.app` comprimido en `.zip` en macOS (D11) (`build/package.sh <sistema>`; el `.app` de macOS no lleva marcador y guarda los datos en la carpeta del usuario)
 - [ ] 9.3 Generar el instalador de Windows con Inno Setup, sin requerir conexión, con instalación por usuario o por equipo
 - [ ] 9.4 Comprobar que desinstalar conserva la base de datos y que instalar sobre una versión anterior conserva los datos y migra en el siguiente arranque
 - [ ] 9.5 Documentar para la dirección del centro el alcance real del cifrado, cómo guardar la clave de recuperación y qué ocurre si se pierden la contraseña y la clave
