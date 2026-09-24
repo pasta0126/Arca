@@ -91,7 +91,7 @@ SQLite3 Multiple Ciphers escribe en formato compatible con SQLCipher, es gratuit
 |----------|----------|---------|-------|
 | Registro técnico | Serilog con salida a fichero con rotación | *A confirmar* | Sin datos de alumnos (ver convenciones). |
 | Recursos e i18n | Ficheros `.resx` con `ILocalizer` | — | Ya decidido en `arquitectura-base`. |
-| Marco de pruebas | xUnit v3 | **3.2.2** (fijada: `Avalonia.Headless.XUnit` 12.1.3 no funciona con la 4.0.1) | Con el SDK de .NET 10 el proyecto de pruebas es un ejecutable (`OutputType` `Exe`) y se lanza con `dotnet run`, no con `dotnet test` en modo VSTest. |
+| Marco de pruebas | xUnit v3 | **3.2.2** (fijada: `Avalonia.Headless.XUnit` 12.1.3 no funciona con la 4.0.1) | Con el SDK de .NET 10 el proyecto de pruebas es un ejecutable (`OutputType` `Exe`) y `global.json` activa el ejecutor `Microsoft.Testing.Platform` (`"test": {"runner": "Microsoft.Testing.Platform"}`); las pruebas se lanzan con `dotnet test --solution Arca.slnx`. Comprobado al crear el esqueleto. |
 | Aserciones | Aserciones de xUnit o **AwesomeAssertions** | *A confirmar* | **No FluentAssertions**: desde su versión 8 tiene licencia comercial. |
 | Dobles de prueba | **NSubstitute** | *A confirmar* | |
 | Pruebas de arquitectura | NetArchTest o ArchUnitNET | *A confirmar* | Referencias entre capas, comando de ejecución única, clasificación de licencia. |

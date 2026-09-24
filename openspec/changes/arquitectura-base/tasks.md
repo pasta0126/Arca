@@ -1,9 +1,9 @@
 ## 1. Solución y reglas de capas
 
-- [ ] 1.1 Crear la solución .NET con los proyectos `Arca.Domain`, `Arca.Application`, `Arca.Infrastructure` y `Arca.Desktop`, y un proyecto de pruebas por capa
-- [ ] 1.2 Fijar la versión LTS de .NET y la versión de Avalonia; centralizar versiones de paquetes
-- [ ] 1.3 Configurar las referencias según D1 y añadir una prueba de arquitectura que falle si se incumplen
-- [ ] 1.4 Añadir analizadores y `.editorconfig` con las convenciones del proyecto (identificadores y commits en inglés)
+- [x] 1.1 Crear la solución .NET con los proyectos `Arca.Domain`, `Arca.Application`, `Arca.Infrastructure` y `Arca.Desktop`, y un proyecto de pruebas por capa
+- [x] 1.2 Fijar la versión LTS de .NET y la versión de Avalonia; centralizar versiones de paquetes
+- [x] 1.3 Configurar las referencias según D1 y añadir una prueba de arquitectura que falle si se incumplen
+- [x] 1.4 Añadir analizadores y `.editorconfig` con las convenciones del proyecto (identificadores y commits en inglés)
 
 ## 2. Puertos y utilidades transversales
 
