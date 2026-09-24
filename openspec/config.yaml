@@ -38,8 +38,8 @@ context: |
     Zones: es poden crear, reanomenar i desactivar des de configuració; no s'esborren si
     han tingut taquilles.
   - Alumnes: 1 alumne = 1 taquilla per curs. Dades: nom, cognoms, nivell, grup i les mínimes per reconèixer-los.
-    Alta manual i importació CSV amb pantalla de revisió prèvia
-    (duplicats, homònims, canvis de grup) abans de confirmar.
+    Alta manual i importació ODS amb pantalla de revisió prèvia
+    (altes, baixes, canvis de grup i files errònies) abans de confirmar. El correu és l'identificador únic.
     L'alumne és una persona que persisteix entre cursos (mateixa fitxa); cada curs té la
     seva matrícula (nivell i grup) i historial.
   - Curs escolar: any acadèmic (p. ex. 2026-2027) amb dates d'inici i fi; un de sol actiu,
@@ -121,7 +121,9 @@ context: |
   - Sense usuaris ni rols: una contrasenya compartida del centre desbloqueja la BBDD; els moviments no registren qui els ha fet.
 
   ## Fitxers d'intercanvi
-  Només CSV, per sempre (importació i exportació). Mai Excel (.xlsx).
+  Importació d'alumnes: només ODS (un full per grup; columnes «Nom complet» i «Correu», amb el correu
+  com a identificador únic; nivell i grup surten del nom del full). Resta d'importacions i totes les
+  exportacions: només CSV. Mai Excel (.xlsx).
 
   ## Informes
   Llistats: morosos, taquilles lliures/avariades, assignacions per zona o grup,

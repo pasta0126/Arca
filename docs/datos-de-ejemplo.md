@@ -7,13 +7,13 @@ Punto 10 de `docs/preparacion-desarrollo.md`. Define **qué datos ficticios** ne
 1. **Demostración** del hito 1 con los conserjes (`docs/hito-1.md`), sin usar nunca datos reales de menores.
 2. **Pruebas de integración y de volumen**: que las consultas, el mapa y la conciliación respondan con fluidez con un centro completo.
 3. **Cubrir los casos raros** que las specs exigen: homónimos, deuda de cursos anteriores, taquillas averiadas con alumno, bajas con dipòsit, números de taquilla reutilizados...
-4. **Ficheros CSV** para probar las importaciones (hito 2) sin esperar al fichero real de secretaría.
+4. **Ficheros ODS y CSV** para probar las importaciones (hito 2). El de alumnos es un ODS con el formato de secretaría; no se usa ningún fichero real.
 
 ## Principios
 
 - **Contraseña de prueba conocida.** Las bases generadas usan una contraseña de desarrollo pública (por ejemplo `demo-demo-demo`) y su clave de recuperación se escribe junto al fichero; nunca se reutiliza en producción.
 
-- **Totalmente ficticios.** Ningún nombre, correo o identificador procede de personas reales. Los correos usan el dominio reservado `exemple.invalid` y los identificadores tienen la forma `TEST-000123`.
+- **Totalmente ficticios.** Ningún nombre ni correo procede de personas reales. Los correos usan el dominio `test.cat` (por ejemplo `aina.bosch@test.cat`) y son únicos, porque el correo identifica al alumno.
 - **Reproducibles.** La misma **semilla** produce siempre los mismos datos. Así una prueba que falla se puede repetir y la demostración es igual cada vez.
 - **Generados con la lógica real.** La herramienta crea los datos llamando a los casos de uso de `Application` (asignar, cobrar, dar de baja...), no con SQL directo, para respetar las reglas, los índices y los historiales.
 - **Fuera del producto.** Vive en `tools/`, no se incluye en el instalador ni en el paquete portable y ninguna capa del producto la referencia.
@@ -78,11 +78,9 @@ Además, una zona **desactivada** ("Antic magatzem") sin taquillas activas, para
 | Activos con taquilla | 520 | Caso normal |
 | Activos sin taquilla | 340 | Panel de alumnos sin taquilla, asignar y arrastrar |
 | De baja | 40 | Bajas con taquilla liberada, dipòsit por devolver |
-| **Homónimos en grupos distintos** | 6 parejas | Búsqueda y conciliación con desempate por nivel y grupo |
-| **Homónimos idénticos en el mismo grupo** | 2 parejas | Caso dudoso de la importación |
+| **Homónimos** (mismo nombre y apellidos, correos distintos) | 8 parejas, algunas en el mismo grupo | Búsqueda; el correo los distingue y no generan casos dudosos |
 | Nombres con `ç`, `l·l`, `ny`, apóstrofos, guiones y apellidos compuestos | 60 | Orden y búsqueda catalanes, exportación UTF-8 |
-| Con correo e identificador | 700 | Pruebas de que no salen en listados ni informes |
-| Sin correo ni identificador | 200 | Reconocimiento solo por nombre |
+| Todos con correo único | todos | Pruebas de que el correo no sale en listados ni informes |
 | Con matrícula en 2025-2026 y en 2026-2027 (nivel distinto) | 600 | Persistencia de la ficha entre cursos |
 
 Los nombres salen de listas de nombres y apellidos catalanes habituales, combinados de forma aleatoria con la semilla; se incluyen apellidos de cualquier origen presentes en un centro real.
@@ -121,27 +119,27 @@ Los nombres salen de listas de nombres y apellidos catalanes habituales, combina
 
 Cada dato generado lleva su **historial estructurado** (altas, asignaciones, cambios, pagos) con instantes repartidos a lo largo del curso, para que las consultas de historial tengan contenido realista.
 
-## Ficheros CSV de prueba
+## Ficheros de prueba
 
-Sirven para las importaciones y las exportaciones del hito 2 y quedan definidos ahora para no esperar al fichero real de secretaría (E1 en `docs/riesgos.md`).
+Sirven para las importaciones y las exportaciones del hito 2. Los de alumnos son ODS; los de taquillas siguen siendo CSV.
 
-### Alumnos (`alumnes-i-assignacions`, importación)
+### Alumnos (`alumnes-i-assignacions`, importación ODS)
+
+Formato: una hoja por grupo, con el nombre `<nivel> <grupo>` (`1r ESO A`, `2n BATX B`); fila 1 con `Nom complet` y `Correu`; nombre con el formato `Apellidos, Nombre`; correo único.
 
 | Fichero | Contenido | Escenarios que cubre |
 |---------|-----------|----------------------|
-| `secretaria-basic.csv` | Cabeceras catalanas, `;`, UTF-8 con BOM, todas las columnas | Importación normal |
-| `secretaria-cabeceres-castella.csv` | Cabeceras en castellano, separador coma | Detección de separador, asistente de columnas |
-| `secretaria-cabeceres-angles.csv` | Cabeceras en inglés | Sinónimos en tres idiomas |
-| `secretaria-sense-grup.csv` | Sin columna de grupo | Datos opcionales |
-| `secretaria-amb-id-i-correu.csv` | Con identificador y correo | Reconocimiento por clave |
-| `secretaria-nom-i-cognoms-junts.csv` | Nombre y apellidos en una sola columna | Correspondencia extensible |
-| `secretaria-nous-i-baixes.csv` | Nuevos alumnos y ausentes | Altas, bajas y reactivación de un repetidor |
-| `secretaria-homonims.csv` | Homónimos con y sin desempate | Casos dudosos |
-| `secretaria-parcial-60.csv` | Solo el 40 % del centro | Salvaguarda de bajas masivas |
-| `secretaria-duplicats.csv` | Alumno repetido y filas idénticas | Errores de conciliación |
-| `secretaria-errors.csv` | Sin nombre, sin nivel, valores largos | Validación por fila |
-| `secretaria-latin1.csv` | Codificación no UTF-8 | Rechazo por codificación |
-| `secretaria-buit.csv` y `secretaria-5001.csv` | Sin filas y con 5001 filas | Límites del fichero |
+| `datos-de-ejemplo-anonimizado.ods` (ya en `docs/`) | 16 hojas (1r ESO a 2n BATX, grupos A a C), 358 alumnos, correos `@test.cat` | Importación normal y prueba de volumen del formato |
+| `alumnes-nous-i-baixes.ods` | Alumnos nuevos, ausentes y uno de baja que reaparece | Altas, bajas y reactivación |
+| `alumnes-canvis.ods` | Mismo correo con otro nombre, otro nivel u otro grupo | Actualización de nombre y de matrícula |
+| `alumnes-parcial-60.ods` | Solo el 40 % del centro | Salvaguarda de bajas masivas |
+| `alumnes-correu-repetit.ods` | Mismo correo en dos filas de una hoja y en dos hojas | Filas erróneas por correo repetido |
+| `alumnes-errors.ods` | Sin correo, correo mal formado, nombre sin coma, valores largos | Validación por fila |
+| `alumnes-fulls-rars.ods` | Hoja vacía, hoja de una palabra, filas vacías | Hojas ignoradas y rechazo de nombre de hoja |
+| `alumnes-sense-capcalera.ods` | Falta la columna `Correu` | Rechazo por cabecera |
+| `alumnes-no-es-ods.ods` | Fichero que no es un ODS válido (texto o zip dañado) | Rechazo por formato |
+| `alumnes-repeticions.ods` | Hoja con una repetición de celdas enorme | Tope de repeticiones |
+| `alumnes-buit.ods` y `alumnes-5001.ods` | Sin filas y con 5001 filas | Límites del fichero |
 
 ### Taquillas (`taquilles-i-zones`, importación)
 

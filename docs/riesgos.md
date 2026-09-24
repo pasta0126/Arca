@@ -11,7 +11,7 @@ Punto 12 de `docs/preparacion-desarrollo.md`. Reúne en un solo sitio lo que pue
 
 | # | Pendiente | Bloquea | Necesario antes de | Responsable | Estado |
 |---|-----------|---------|--------------------|-------------|--------|
-| E1 | **Fichero de muestra de secretaría** (columnas, si trae todo el centro o solo nuevos, identificador) | Importación de alumnos (`alumnes-i-assignacions`, grupo 6) y su tarea 9.5 | Hito 2 | Persona responsable, pidiéndolo a secretaría | Pendiente |
+| E1 | **Fichero de secretaría**: formato ODS, hoja por grupo, `Nom complet` y `Correu` (identificador único) | Importación de alumnos (`alumnes-i-assignacions`, grupo 6 y su tarea 9.5) | Hito 2 | Persona responsable | Resuelto: formato fijado con un fichero de ejemplo anonimizado. Falta confirmar con secretaría que el fichero real lo respeta |
 | E2 | **Valoración RGPD** con la dirección: identificador, correo, conservación de datos, custodia de copias y exportaciones | Política del identificador; conservación de `cursos-i-historial`; aviso de las exportaciones | Hito 2 (identificador) y antes de instalar en un centro real | Persona responsable con la dirección del centro | Pendiente |
 | E3 | **Servidor de registro y avisos**: dónde se aloja, dominio de descargas y desde dónde se envían los correos | Puesta en marcha del registro y los avisos de `registre-i-actualitzacions` | Cuando se publique la primera versión | Persona responsable | Pendiente |
 | E4 | **Validar la pantalla principal** (mapa de taquillas) con los conserjes | Implementación definitiva de Inicio (`ui-shell`) | Etapa 3 del hito 1 | Persona responsable con los conserjes | Pendiente |
