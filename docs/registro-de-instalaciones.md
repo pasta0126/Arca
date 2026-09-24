@@ -65,7 +65,7 @@ Respuesta de versión (firmada con Ed25519, con la clave privada guardada fuera 
 
 ## Cómo pedir el borrado
 
-Desde ajustes, «Esborrar el meu registre». Si no hay conexión, queda pendiente y se envía en el siguiente arranque. También puede solicitarse escribiendo al contacto del proyecto.
+Desde ajustes, «Esborrar el meu registre». Si no hay conexión, queda pendiente y se envía en el siguiente arranque. También podrá solicitarse por el contacto que se publique junto con el servidor de registro. Hasta que exista el servidor no se recoge ningún dato, así que no hay nada que borrar.
 
 ## Para los centros públicos
 

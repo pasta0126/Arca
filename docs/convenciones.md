@@ -61,6 +61,7 @@ Reglas:
 
 ## 2. Estilo general
 
+- **Licencia en cada fichero**: todo fichero de código lleva al inicio `// SPDX-License-Identifier: GPL-3.0-or-later` y `// Copyright (c) 2026 Guillermo Garcia Carballo`, para que la licencia conste sin ambigüedad. Los ficheros de documentación y de especificación siguen cubiertos por el `LICENSE` del repositorio.
 - **Idioma**: identificadores, comentarios de código, pruebas y commits en inglés. Specs y documentación en castellano. Textos de interfaz en catalán, siempre por clave.
 - **Nombres**: `PascalCase` para tipos y miembros, `camelCase` para parámetros y variables locales, `_camelCase` para campos privados. Los métodos asíncronos terminan en `Async`. Las interfaces empiezan por `I`.
 - **Asincronía**: todo el acceso a datos y a ficheros es asíncrono, con `CancellationToken` como último parámetro. Nunca `.Result` ni `.Wait()`. Ningún acceso a datos en el hilo de la interfaz.

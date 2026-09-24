@@ -1,6 +1,6 @@
 # Política de marca
 
-**ARCA** y su logotipo son marcas de Guillermo Garcia Carballo. El código se distribuye bajo GPL-3.0 (`LICENSE`), pero **esa licencia no concede derechos sobre la marca**.
+**ARCA** (*Administració de Recursos, Claus i Armariets*) y su logotipo son marcas de Guillermo Garcia Carballo. El código se distribuye bajo GPL-3.0 (`LICENSE`), pero **esa licencia no concede derechos sobre la marca**.
 
 ## Qué se puede hacer
 

@@ -33,7 +33,7 @@ Cualquier herramienta puede seguir los mismos pasos con la CLI `openspec`.
 - Debe funcionar en Windows, Linux y macOS.
 - Alcance del primer hito: `docs/hito-1.md`. Riesgos y pendientes: `docs/riesgos.md`. Datos ficticios: `docs/datos-de-ejemplo.md`.
 - Convenciones de código, resultado estructurado, errores y pruebas: `docs/convenciones.md`. Términos y traducciones (castellano, catalán, inglés): `docs/glosario.md`.
-- Software libre y gratuito bajo GPL-3.0 (`LICENSE`), con la marca «ARCA» reservada (`TRADEMARK.md`). No hay licencias ni claves de activación: la aplicación nunca se bloquea. Los secretos y claves privadas (por ejemplo la de firma de avisos de versión) nunca van en el repositorio ni en su historial, y no hay ningún secreto de cifrado en el código: la llave de la base sale de la contraseña del centro (`acces-i-xifrat`).
+- Software libre y gratuito bajo GPL-3.0-o-posterior (`LICENSE`), sin aceptar código de terceros por ahora (`CONTRIBUTING.md`), seguridad en `SECURITY.md`, con la marca «ARCA» reservada (`TRADEMARK.md`). No hay licencias ni claves de activación: la aplicación nunca se bloquea. Los secretos y claves privadas (por ejemplo la de firma de avisos de versión) nunca van en el repositorio ni en su historial, y no hay ningún secreto de cifrado en el código: la llave de la base sale de la contraseña del centro (`acces-i-xifrat`).
 - Coste cero, ahora y en el futuro: solo librerías, herramientas y servicios gratuitos y con licencia permisiva; nada que haya que pagar ni que pueda pasar a serlo. Detalle en `docs/stack.md`.
 - Toda acción del usuario da feedback claro (resultado, progreso, errores comprensibles); los principios
   de UX obligatorios están en `openspec/config.yaml`, sección "UX transversal".
