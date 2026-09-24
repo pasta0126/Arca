@@ -38,6 +38,27 @@ Comprobado en el contenido de los paquetes NuGet (no ejecutado):
 | `SQLite3MC.PCLRaw.bundle` (`sqlite3mc`) | sí | sí | sí | sí | sí |
 | `NSec.Cryptography` (`libsodium`) | sí | sí | sí | sí | sí |
 
+## Bloque 2: interfaz con Avalonia 12.1.3
+
+Ejecutado el **24 de septiembre de 2026** en macOS 27 arm64. Código en `spike/Ui` y `spike/UiTests` (rama `spike/tecnico`). Pruebas sin ventana con `Avalonia.Headless.XUnit`; el arrastre real lo comprobó a mano la persona responsable.
+
+| Supuesto | Resultado | Detalle |
+|----------|-----------|---------|
+| Arrastrar y soltar con resalte del destino y cancelación con Escape | **Correcto** (prueba manual) | Alumno sobre taquilla libre la asigna; sobre una ocupada se rechaza y el destino lo indica; Escape cancela. La API de Avalonia 12 es `DragDrop.DoDragDropAsync(PointerPressedEventArgs, IDataTransfer, DragDropEffects)` con `DataTransferItem`; ya no existe `DataObject`. |
+| Mapa de 300 taquillas virtualizado y actualización de una sola | **Correcto** | Con `ItemsRepeater` (paquete aparte `Avalonia.Controls.ItemsRepeater` 12.0.0, MIT) se crean 113 de las 300 fichas. Cambiar el estado de una taquilla repinta solo su ficha. |
+| Renderizado sin ventana con prueba de enlace y foco | **Correcto** | 6 pruebas en verde: atajo que enfoca el cuadro de búsqueda, texto enlazado y Tab que mueve el foco. |
+| Tabla con orden y selección múltiple sin componentes de pago | **Correcto** | `Avalonia.Controls.DataGrid` 12.1.2 (MIT): orden con `DataGridCollectionView` y selección extendida. Sin TreeDataGrid. |
+
+### Hallazgos para el esqueleto
+
+- Avalonia 12 no incluye un control virtualizado de rejilla ajustable: hace falta `Avalonia.Controls.ItemsRepeater` (MIT, comprobado en el `.nuspec`).
+- `Avalonia.Headless.XUnit` 12.1.3 depende de **xunit v3 3.2.2**; con xunit.v3 4.0.1 falla el descubrimiento de pruebas (`MissingMethodException`). Hay que fijar esa versión.
+- Con el SDK de .NET 10, xunit v3 no funciona con `dotnet test` en modo VSTest: el proyecto de pruebas es un ejecutable (`OutputType` `Exe`) y se lanza con `dotnet run` (o se opta por el nuevo modo de `dotnet test` con Microsoft.Testing.Platform). `build/test.sh` debe tenerlo en cuenta.
+
+## Conclusión
+
+Los ocho supuestos del spike se cumplen en macOS arm64. **T1, T2, T3 y T4 quedan resueltos** para macOS; Linux y Windows siguen como se decidió (Linux descartado, Windows antes de producción). Falta solo calibrar Argon2id en un equipo de gama baja y contrastar el formato con una herramienta SQLCipher externa.
+
 ## Pendiente de verificar
 
 - **Linux**: descartado por ahora.

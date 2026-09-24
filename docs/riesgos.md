@@ -38,6 +38,8 @@ Punto 12 de `docs/preparacion-desarrollo.md`. Reúne en un solo sitio lo que pue
 | T10 | **Fallo de la verificación manual en Windows**: nadie la hace a tiempo y un error llega a `main` | Media | Medio | Desde 2026-09-24 la verificación en Windows es una sola, previa a producción: lista de comprobación y script único (`build/test.ps1`) preparados con antelación | Antes de producción |
 | T9 | **Solapamientos entre cambios** que las specs no detectan (ya se corrigieron varios en la lectura cruzada) | Media | Medio | Regla de parar y actualizar la spec; lectura cruzada tras cambios grandes | Continuo |
 
+**Estado (2026-09-24):** el spike (`docs/spike-resultados.md`) ha resuelto en macOS los riesgos **T1, T2, T3 y T4** (cifrado, arrastrar y soltar y listas virtualizadas, NSec y tabla con paquetes gratuitos). Queda por ver en Windows, antes de producción, y por calibrar Argon2id en un equipo de gama baja.
+
 ## 3. Riesgos de producto y de proyecto
 
 | # | Riesgo | Prob. | Impacto | Mitigación | Necesario antes de |
