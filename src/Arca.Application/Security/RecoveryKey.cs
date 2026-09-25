@@ -73,6 +73,23 @@ public static class RecoveryKey
             : Result<string>.Failure(KeyErrors.RecoveryKeyInvalid);
     }
 
+    /// <summary>A group as typed, read the same tolerant way as the whole key: case, spaces, hyphens and look-alikes.</summary>
+    public static string NormalizeGroup(string? typed)
+    {
+        var builder = new StringBuilder();
+        foreach (var raw in typed ?? string.Empty)
+        {
+            if (raw is '-' or ' ' or '\t' || char.IsWhiteSpace(raw))
+            {
+                continue;
+            }
+
+            builder.Append(char.ToUpperInvariant(raw) switch { 'O' => '0', 'I' or 'L' => '1', var c => c });
+        }
+
+        return builder.ToString();
+    }
+
     /// <summary>The groups of a canonical key, in order: five groups, the last with six characters.</summary>
     public static IReadOnlyList<string> Groups(string canonical)
     {

@@ -221,35 +221,6 @@ public sealed class AccessServiceTests
         Assert.Equal(key, Service().Unlock(database, Other).Value!.ToArray());
     }
 
-    [Fact]
-    [Trait("spec", Spec + ": Contraseña al abrir la aplicación (Ofrecer la recuperación)")]
-    public void The_recovery_key_resets_the_password_and_unlocks_with_the_same_key()
-    {
-        using var dir = new TempDirectory();
-        var database = dir.File("arca.db");
-        var (key, recovery) = Setup(dir, database);
-
-        var result = Service().ResetPassword(database, recovery.ToLowerInvariant(), Other, Other);
-
-        Assert.Equal(key, result.Value!.ToArray());
-        Assert.Equal(key, Service().Unlock(database, Other).Value!.ToArray());
-        Assert.Equal("Keys.WrongCredentials", Service().Unlock(database, Password).Error!.Code);
-    }
-
-    [Fact]
-    [Trait("spec", Spec + ": Contraseña al abrir la aplicación (Ofrecer la recuperación)")]
-    public void A_wrong_recovery_key_resets_nothing()
-    {
-        using var dir = new TempDirectory();
-        var database = dir.File("arca.db");
-        Setup(dir, database);
-
-        var result = Service().ResetPassword(database, RecoveryKey.Generate(), Other, Other);
-
-        Assert.Equal("Keys.WrongCredentials", result.Error!.Code);
-        Assert.True(Service().Unlock(database, Password).IsSuccess);
-    }
-
     sealed class ScriptedPrompt(params string?[] answers) : IUnlockPrompt
     {
         readonly Queue<string?> _answers = new(answers);

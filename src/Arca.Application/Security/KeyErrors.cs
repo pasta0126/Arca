@@ -40,4 +40,10 @@ public static class KeyErrors
 
     /// <summary>The person cancelled the password request; the application closes without opening the data.</summary>
     public static readonly Error UnlockCancelled = new("Keys.UnlockCancelled");
+
+    /// <summary>The groups typed to confirm the recovery key are missing.</summary>
+    public static readonly Error ConfirmationRequired = new("Keys.ConfirmationRequired");
+
+    /// <summary>The groups typed do not match the recovery key; nothing was changed.</summary>
+    public static readonly Error ConfirmationIncorrect = new("Keys.ConfirmationIncorrect");
 }

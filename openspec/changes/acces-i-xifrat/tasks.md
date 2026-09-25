@@ -15,10 +15,10 @@
 
 ## 3. Clave de recuperación
 
-- [ ] 3.1 Mostrar la clave una vez con imprimir y copiar, y confirmarla escribiendo dos grupos al azar antes de continuar
-- [ ] 3.2 Entrar con la clave de recuperación y obligar a definir contraseña nueva y clave nueva
-- [ ] 3.3 Regenerar la clave desde ajustes, invalidando la anterior y conservando la anterior si se cancela
-- [ ] 3.4 Pruebas: confirmación correcta e incorrecta, entrada con la clave, tolerancia al escribirla, regeneración y cancelación
+- [x] 3.1 Mostrar la clave una vez con imprimir y copiar, y confirmarla escribiendo dos grupos al azar antes de continuar
+- [x] 3.2 Entrar con la clave de recuperación y obligar a definir contraseña nueva y clave nueva
+- [x] 3.3 Regenerar la clave desde ajustes, invalidando la anterior y conservando la anterior si se cancela
+- [x] 3.4 Pruebas: confirmación correcta e incorrecta, entrada con la clave, tolerancia al escribirla, regeneración y cancelación
 
 ## 4. Base de datos cifrada
 

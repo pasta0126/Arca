@@ -14,5 +14,8 @@ namespace Arca.Application.Security;
 /// <param name="KeyFile">The key file with both wrappers.</param>
 public sealed record NewAccess(DatabaseKey DataKey, string RecoveryKey, KeyFile KeyFile) : IDisposable
 {
+    /// <summary>The confirmation to pass, by typing two groups of the recovery key, before creating the database.</summary>
+    public RecoveryKeyChallenge Challenge { get; } = new(RecoveryKey);
+
     public void Dispose() => DataKey.Dispose();
 }

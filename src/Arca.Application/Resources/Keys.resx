@@ -47,4 +47,10 @@
   <data name="Keys.Warning.BackupsKeepOldPassword" xml:space="preserve">
     <value>Les còpies de seguretat fetes abans d'aquest canvi s'obren amb la contrasenya anterior.</value>
   </data>
+  <data name="Keys.Error.ConfirmationRequired" xml:space="preserve">
+    <value>Abans de continuar has de confirmar que has desat la clau de recuperació escrivint els grups que es demanen.</value>
+  </data>
+  <data name="Keys.Error.ConfirmationIncorrect" xml:space="preserve">
+    <value>Els grups escrits no coincideixen amb la clau de recuperació. Torna a mirar la clau i prova-ho de nou.</value>
+  </data>
 </root>

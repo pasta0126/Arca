@@ -72,6 +72,28 @@ public static class KeyWrapping
         }
     }
 
+    /// <summary>
+    /// A key file with a new recovery wrapper (new key, new salt) and the password wrapper untouched. The previous
+    /// recovery key stops working; the database key does not change.
+    /// </summary>
+    public static KeyFile ReplaceRecovery(IKeyCrypto crypto, KeyFile current, DatabaseKey dataKey, string recoveryKey)
+    {
+        var dek = dataKey.ToArray();
+        var salt = crypto.RandomBytes(SaltLength);
+        var secret = RecoveryKey.SecretBytes(recoveryKey);
+        byte[]? wrappingKey = null;
+        try
+        {
+            wrappingKey = crypto.DeriveRecoveryKey(secret, salt);
+            var wrapped = crypto.Wrap(wrappingKey, dek, RecoveryAad(current.FormatVersion, salt));
+            return current with { Recovery = new RecoverySlot(RecoveryKdf, salt, wrapped) };
+        }
+        finally
+        {
+            Wipe(dek, wrappingKey, secret);
+        }
+    }
+
     /// <summary>Opens the wrapper of the password. Fails, with no detail, if the password is wrong or the header was altered.</summary>
     public static Result<DatabaseKey> UnwrapWithPassword(IKeyCrypto crypto, KeyFile file, ReadOnlySpan<byte> password)
     {

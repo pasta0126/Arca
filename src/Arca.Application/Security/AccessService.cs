@@ -90,38 +90,110 @@ public sealed class AccessService(IKeyCrypto crypto, IKeyFileStore store, Argon2
     }
 
     /// <summary>
-    /// Forgotten password: the recovery key opens the data and the person sets a new password. The application is then
-    /// unlocked, so the database key is returned for it to continue.
+    /// Forgotten password: the recovery key opens the data, and the person must set a new password and a new recovery
+    /// key (which replaces the old one). Nothing is saved until the new key is confirmed with <see cref="Commit"/>.
     /// </summary>
-    public Result<DatabaseKey> ResetPassword(string databasePath, string? typedRecoveryKey, string? newPassword, string? confirmation)
+    public Result<PendingKeyChange> PrepareReset(string databasePath, string? typedRecoveryKey, string? newPassword, string? confirmation)
     {
         var read = store.Read(databasePath);
         if (!read.IsSuccess)
         {
-            return Result<DatabaseKey>.Failure(read.Error!);
+            return Result<PendingKeyChange>.Failure(read.Error!);
         }
 
         var recovery = RecoveryKey.Normalize(typedRecoveryKey);
         if (!recovery.IsSuccess)
         {
-            return Result<DatabaseKey>.Failure(recovery.Error!);
+            return Result<PendingKeyChange>.Failure(recovery.Error!);
         }
 
         var opened = KeyWrapping.UnwrapWithRecoveryKey(crypto, read.Value!, recovery.Value!);
         if (!opened.IsSuccess)
         {
-            return opened;
+            return Result<PendingKeyChange>.Failure(opened.Error!);
         }
 
         var key = opened.Value!;
-        var rewritten = Rewrite(databasePath, read.Value!, key, newPassword, confirmation);
-        if (rewritten.IsSuccess)
+        var accepted = CheckNewPassword(newPassword, confirmation);
+        if (!accepted.IsSuccess)
         {
-            return Result<DatabaseKey>.Success(key, [.. rewritten.Notices]);
+            key.Dispose();
+            return Result<PendingKeyChange>.Failure(accepted.Error!);
         }
 
-        key.Dispose();
-        return Result<DatabaseKey>.Failure(rewritten.Error!);
+        var bytes = PasswordText.ToBytes(newPassword!);
+        try
+        {
+            var newRecovery = RecoveryKey.Generate();
+            var file = KeyWrapping.ReplacePassword(crypto, read.Value!, key, bytes, _cost);
+            file = KeyWrapping.ReplaceRecovery(crypto, file, key, newRecovery);
+            return Result<PendingKeyChange>.Success(new PendingKeyChange(key, newRecovery, file), [.. accepted.Notices]);
+        }
+        catch
+        {
+            key.Dispose();
+            throw;
+        }
+        finally
+        {
+            System.Security.Cryptography.CryptographicOperations.ZeroMemory(bytes);
+        }
+    }
+
+    /// <summary>
+    /// From settings: a new recovery key that will replace the current one. It asks for the current password so
+    /// that whoever finds the computer unlocked cannot take over the recovery. Nothing is saved until
+    /// <see cref="Commit"/>, so cancelling keeps the previous key valid.
+    /// </summary>
+    public Result<PendingKeyChange> PrepareRegeneration(string databasePath, string? password)
+    {
+        var read = store.Read(databasePath);
+        if (!read.IsSuccess)
+        {
+            return Result<PendingKeyChange>.Failure(read.Error!);
+        }
+
+        var opened = UnwrapWithPassword(read.Value!, password);
+        if (!opened.IsSuccess)
+        {
+            return Result<PendingKeyChange>.Failure(opened.Error!);
+        }
+
+        var key = opened.Value!;
+        try
+        {
+            var newRecovery = RecoveryKey.Generate();
+            var file = KeyWrapping.ReplaceRecovery(crypto, read.Value!, key, newRecovery);
+            return Result<PendingKeyChange>.Success(new PendingKeyChange(key, newRecovery, file));
+        }
+        catch
+        {
+            key.Dispose();
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Saves a prepared change once the person has typed the groups asked. A wrong or missing confirmation saves
+    /// nothing and the person can look at the key again.
+    /// </summary>
+    public Result<bool> Commit(string databasePath, PendingKeyChange pending, IReadOnlyList<string?>? typedGroups)
+    {
+        var mistake = pending.Challenge.Verify(typedGroups);
+        if (mistake is not null)
+        {
+            return Result<bool>.Failure(mistake);
+        }
+
+        try
+        {
+            store.Write(databasePath, pending.NewFile);
+            return Result<bool>.Success(true);
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            return Result<bool>.Failure(KeyErrors.ChangeFailed);
+        }
     }
 
     Result<bool> Rewrite(
