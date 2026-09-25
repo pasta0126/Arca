@@ -7,7 +7,7 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 |---|---|---|---|
 | 1 | `arquitectura-base` | Capas .NET, EF Core + SQLite cifrado (SQLCipher 4), migraciones, i18n, distribución, contrato de feedback, arranque y registro | redactado |
 | 2 | `taquilles-i-zones` | Zonas, taquillas, estados derivados, altas por rangos y CSV, historial | redactado |
-| 3 | `alumnes-i-assignacions` | Curso escolar (año académico), alumno persistente con matrícula por curso, catálogo de niveles y grupos, asignación 1 a 1, importación CSV con correspondencia de columnas y revisión, baja y cambio de taquilla, reasignar y liberar al averiarse | redactado (a la espera del fichero de muestra) |
+| 3 | `alumnes-i-assignacions` | Curso escolar (año académico), alumno persistente con matrícula por curso, catálogo de niveles y grupos, asignación 1 a 1, importación ODS (correo como identificador único) con revisión, baja y cambio de taquilla, reasignar y liberar al averiarse | redactado |
 | 4 | `pagaments` | Importes por curso, cargos con estados (pendiente, pagado, exento, condonado, anulado), fianza única por estancia y devolución, deuda arrastrada o condonada, morosos | redactado |
 | 5 | `claus` | Estado de la llave por asignación, entrega, devolución individual y masiva, pérdida con reposición y copia, disponibilidad de la llave de la taquilla | redactado |
 | 6 | `incidencies` | Taquilla fuera de servicio (averiada o en mantenimiento) con motivo de una lista y nota, una incidencia abierta por taquilla, reparar, historial y lista | redactado |
@@ -43,12 +43,12 @@ Fase de especificación cerrada: 16 cambios redactados y validados (`openspec va
 3. Definir: carga inicial de asignaciones y pagos existentes, presupuestos de rendimiento, guía de sesión con los conserjes y ficha de datos personales.
 
 ## Por consultar con los conserjes
+- Zonas y taquillas reales (zonas, numeración, rangos, averiadas, reservas, llaves, asignaciones y pagos actuales, formato en que lo tienen). Se crean una vez y luego se modifican a mano; preguntas en `docs/datos-de-ejemplo.md`.
 - Política de conservación de datos de cursos cerrados (cuántos cursos, si se automatiza). Hasta entonces es manual y por curso (`cursos-i-historial`).
 - Informes adicionales y sus columnas (`informes-csv` solo incluye seis; el catálogo es ampliable).
 - Si echan en falta un recordatorio o la fecha de la última copia (`copies-de-seguretat` no los tiene).
 
 ## Pendiente de recibir
-- Fichero de muestra de secretaría (columnas, si trae todo el centro o solo nuevos, identificador). Bloquea cerrar la importación de alumnos.
 - Decidir dónde se aloja el servidor de registro y desde qué dominio se envían los correos.
-- Valoración RGPD con la dirección del centro (identificador, correo).
+- Valoración RGPD con la dirección del centro (correo como identificador, conservación).
 - Validación de la pantalla principal con los conserjes.

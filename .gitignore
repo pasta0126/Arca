@@ -107,3 +107,7 @@ $RECYCLE.BIN/
 
 # --- Internal cost inventory: kept local, not in the repo (root, so it is easy to find) ---
 /costes.md
+
+# --- Datos reales de alumnos: nunca al repositorio ---
+docs/datos-de-ejemplo.ods
+datos-privados/

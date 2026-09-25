@@ -9,20 +9,20 @@
 
 ## 2. Dominio de alumnos
 
-- [ ] 2.1 Crear `Student` con nombre y apellidos obligatorios (máx. 100), correo e identificador opcionales y estado activo o de baja con motivo y fecha
-- [ ] 2.2 Calcular y guardar las claves normalizadas de nombre, correo e identificador con el componente de comparación central (D2)
+- [ ] 2.1 Crear `Student` con nombre y apellidos obligatorios (máx. 100), correo obligatorio y único, y estado activo o de baja con motivo y fecha
+- [ ] 2.2 Normalizar y guardar el correo (único, incluye bajas) y la clave de nombre y apellidos para búsquedas, con el componente de comparación central (D2)
 - [ ] 2.3 Crear `Enrollment` con nivel obligatorio, grupo opcional y una sola matrícula por alumno y curso
 - [ ] 2.4 Crear el catálogo `Level` y `Group` con claves normalizadas, grupo por nivel, creación de valores nuevos y ordenación natural (D6)
 - [ ] 2.5 Reglas de baja (con motivo y liberación de taquilla), reactivación y edición de datos, con evento estructurado en el historial del alumno
 - [ ] 2.6 Códigos de error y claves de recurso en catalán de alumnos
-- [ ] 2.7 Pruebas: datos obligatorios, longitud, equivalencia de grafías en grupos, mismo grupo en distinto nivel, baja ya registrada, reactivar activo, continuidad de ficha entre cursos
+- [ ] 2.7 Pruebas: datos obligatorios, longitud, equivalencia de grafías en grupos, mismo grupo en distinto nivel, correo obligatorio, inválido y repetido (con otras mayúsculas), homónimos con correos distintos, baja ya registrada, reactivar activo, continuidad de ficha entre cursos
 
 ## 3. Casos de uso de alumnos
 
 - [ ] 3.1 Casos de uso de alta manual con confirmación de valores nuevos de catálogo, edición, cambio de nivel o grupo, baja y reactivación
 - [ ] 3.2 Búsqueda por nombre, apellidos, nivel, grupo, número de taquilla y estado de asignación, sin mayúsculas ni acentos, mostrando por defecto activos del curso activo (D13)
 - [ ] 3.3 Consulta del historial del alumno con texto compuesto desde claves del idioma activo
-- [ ] 3.4 Objetos de transferencia de listados sin correo ni identificador; objeto de detalle específico para la revisión de dudosos (D11)
+- [ ] 3.4 Objetos de transferencia de listados sin correo; el detalle de la ficha y de la revisión de la importación sí lo llevan (D11)
 - [ ] 3.5 Pruebas con repositorios en memoria: búsquedas, filtro de sin taquilla, incluir bajas, lista vacía y privacidad de listados
 
 ## 4. Asignaciones
@@ -48,23 +48,23 @@
 
 ## 6. Importación de alumnos
 
-- [ ] 6.1 Definir el tipo de correspondencia de columnas extensible y el asistente que propone campos por sinónimos definidos en recursos en catalán, castellano e inglés (D5)
-- [ ] 6.2 Guardar y reutilizar la correspondencia por firma de cabeceras; volver a pedirla si cambian
-- [ ] 6.3 Reutilizar el lector de CSV de `taquilles-i-zones` y validar formato: UTF-8, separador, fichero vacío y máximo 5000 filas
-- [ ] 6.4 Implementar la función pura de conciliación con el reconocimiento por identificador, correo y nombre, y el desempate por nivel y grupo (D3)
-- [ ] 6.5 Categorías del plan: nuevo, actualizado, sin cambios, baja propuesta, reactivación propuesta, dudoso y error, con las validaciones por fila
-- [ ] 6.6 Resolución de dudosos por el usuario y bloqueo de la confirmación mientras queden sin resolver
-- [ ] 6.7 Exclusión de bajas propuestas y salvaguarda con segunda confirmación por encima del 30 % (D4)
-- [ ] 6.8 Recopilación de valores nuevos de nivel y grupo durante el análisis y creación solo al confirmar
-- [ ] 6.9 Aplicación indivisible con revalidación al confirmar, liberación de taquillas de las bajas y eventos en historiales
-- [ ] 6.10 Progreso con recuentos y cancelación antes del guardado; resultado final con recuentos
-- [ ] 6.11 Pruebas: cada escenario de reconocimiento, claves contradictorias, homónimos con y sin desempate, homónimos en el mismo fichero, alumno repetido, grupo ausente, claves desactivadas, importar dos veces, cancelar, fallo a mitad y datos cambiados desde la revisión
+- [ ] 6.1 Definir el puerto `IStudentSheetReader` y su resultado (hojas con nombre y filas de nombre completo y correo) y el intérprete de nombre de hoja a nivel y grupo
+- [ ] 6.2 Implementar el lector de ODS con `System.IO.Compression` y `System.Xml`: búsqueda de las cabeceras `Nom complet` y `Correu`, expansión de repeticiones con tope y topes de tamaño descomprimido (D5)
+- [ ] 6.3 Validar el formato del fichero: no ODS o dañado, cabecera ausente, nombre de hoja no interpretable, fichero vacío y máximo 5000 filas
+- [ ] 6.4 Implementar la función pura de conciliación con reconocimiento por correo y actualización de nombre, nivel y grupo (D3)
+- [ ] 6.5 Categorías del plan: nuevo, actualizado, sin cambios, baja propuesta, reactivación propuesta y error, con las validaciones por fila (correo inválido o repetido en el fichero, nombre sin coma, longitud)
+- [ ] 6.6 Exclusión de bajas propuestas y salvaguarda con segunda confirmación por encima del 30 % (D4)
+- [ ] 6.7 Recopilación de valores nuevos de nivel y grupo durante el análisis y creación solo al confirmar
+- [ ] 6.8 Aplicación indivisible con revalidación al confirmar, liberación de taquillas de las bajas y eventos en historiales
+- [ ] 6.9 Progreso con recuentos y cancelación antes del guardado; resultado final con recuentos
+- [ ] 6.10 Pruebas: alumno nuevo, existente, sin cambios, con nombre distinto, de baja que reaparece, baja por ausencia, correo con otras mayúsculas, correo repetido en una hoja y entre hojas, nombre sin coma, hoja vacía y de una palabra, cabecera ausente, fichero no ODS, importar dos veces, cancelar, fallo a mitad y datos cambiados desde la revisión; y lectura del fichero de ejemplo (16 hojas, 358 alumnos)
+- [ ] 6.11 Pruebas de seguridad del lector: ODS con repeticiones de celdas enormes y zip con expansión desproporcionada
 - [ ] 6.12 Prueba de volumen: 2000 alumnos existentes y 5000 filas conciliados en un tiempo fluido
 
 ## 7. Persistencia
 
 - [ ] 7.1 Entidades y configuraciones EF Core de cursos, alumnos, matrículas, niveles, grupos y asignaciones, sin filtrar EF Core a `Domain` ni `Application`
-- [ ] 7.2 Índices únicos parciales: una asignación vigente por taquilla y una por alumno; índices no únicos en las claves de reconocimiento
+- [ ] 7.2 Índices únicos parciales: una asignación vigente por taquilla y una por alumno; índice único en el correo normalizado e índice no único en la clave de nombre
 - [ ] 7.3 Migración de EF Core y verificación de que el modelo no tiene cambios sin migrar
 - [ ] 7.4 Implementación de repositorios y de las operaciones transaccionales de importación, cambio y reasignación
 - [ ] 7.5 Pruebas de integración sobre SQLite cifrado temporal: índices, atomicidad, migración con reservas existentes y cierre de asignación con manejadores
@@ -80,8 +80,8 @@
 
 ## 9. Verificación transversal
 
-- [ ] 9.1 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core ni la biblioteca de CSV
-- [ ] 9.2 Prueba de privacidad: un error provocado con datos de un alumno no deja rastro personal en el registro técnico y correo e identificador no salen en listados ni exportaciones
+- [ ] 9.1 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core ni el lector de ODS
+- [ ] 9.2 Prueba de privacidad: un error provocado con datos de un alumno no deja rastro personal en el registro técnico y el correo no sale en listados ni exportaciones
 - [ ] 9.3 Prueba automática de que todas las claves de recurso nuevas existen en catalán
 - [ ] 9.4 Documentar los puntos de enganche para `pagaments` (aviso de deuda, cargos al abrir una asignación, fianza en baja y reactivación) y `claus` (estado de la llave al cerrar una asignación)
-- [ ] 9.5 Cuando llegue el fichero de muestra: comprobar el formato, ajustar la correspondencia por defecto y decidir la política del identificador
+- [ ] 9.5 Verificar que el fichero de ejemplo anonimizado (`docs/datos-de-ejemplo-anonimizado.ods`) se importa entero y que la documentación del formato coincide con `importacio-alumnes`
