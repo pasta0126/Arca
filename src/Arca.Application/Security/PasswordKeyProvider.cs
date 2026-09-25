@@ -15,6 +15,13 @@ public sealed class PasswordKeyProvider(AccessService access, IUnlockPrompt prom
 {
     public async Task<Result<DatabaseKey>> GetKeyAsync(string databasePath, CancellationToken ct = default)
     {
+        // A missing, damaged or newer key file is reported before asking for anything: no password can fix it.
+        var check = access.CheckKeyFile(databasePath);
+        if (!check.IsSuccess)
+        {
+            return Result<DatabaseKey>.Failure(check.Error!);
+        }
+
         var failed = false;
         while (true)
         {

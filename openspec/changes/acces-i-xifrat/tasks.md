@@ -22,11 +22,11 @@
 
 ## 4. Base de datos cifrada
 
-- [ ] 4.1 Abrir la base con la DEK desenvuelta e integrarlo con la apertura de `arquitectura-base` (formato SQLCipher 4 con SQLite3 Multiple Ciphers)
-- [ ] 4.2 Crear la base con DEK aleatoria y fichero de claves en una sola operación atómica
-- [ ] 4.3 Detectar fichero de claves ausente, dañado o de versión desconocida sin modificar nada y con mensaje que ofrece restaurar una copia
-- [ ] 4.4 Migraciones y copias previas con la misma DEK, guardando cada copia previa junto con el fichero de claves
-- [ ] 4.5 Pruebas de integración con SQLite cifrado temporal: base ilegible sin la llave, apertura en otra compilación con la contraseña, migración con la misma contraseña, fichero de claves ausente y dañado
+- [x] 4.1 Abrir la base con la DEK desenvuelta e integrarlo con la apertura de `arquitectura-base` (formato SQLCipher 4 con SQLite3 Multiple Ciphers)
+- [x] 4.2 Crear la base con DEK aleatoria y fichero de claves en una sola operación atómica
+- [x] 4.3 Detectar fichero de claves ausente, dañado o de versión desconocida sin modificar nada y con mensaje que ofrece restaurar una copia
+- [x] 4.4 Migraciones y copias previas con la misma DEK, guardando cada copia previa junto con el fichero de claves
+- [x] 4.5 Pruebas de integración con SQLite cifrado temporal: base ilegible sin la llave, apertura en otra compilación con la contraseña, migración con la misma contraseña, fichero de claves ausente y dañado
 
 ## 5. Copias y restauración
 

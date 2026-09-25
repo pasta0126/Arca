@@ -46,6 +46,9 @@ public sealed class AccessService(IKeyCrypto crypto, IKeyFileStore store, Argon2
         }
     }
 
+    /// <summary>Whether the key file next to the database can be used. Reads only; nothing is modified.</summary>
+    public Result<KeyFile> CheckKeyFile(string databasePath) => store.Read(databasePath);
+
     /// <summary>
     /// Opens the database key with the password. A later successful unlock is what lets the previous key file go
     /// (D3). A wrong password says only that, so nothing is revealed.
