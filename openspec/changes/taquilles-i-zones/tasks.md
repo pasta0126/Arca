@@ -37,11 +37,11 @@
 
 ## 5. Persistencia
 
-- [ ] 5.1 Entidades EF Core y configuraciones de zonas, taquillas y eventos en `Infrastructure`, sin filtrar EF Core a `Domain` ni `Application`
-- [ ] 5.2 Índice único parcial del número entre taquillas sin baja (D4) e índice único de la clave normalizada de zona (D5)
-- [ ] 5.3 Migración de EF Core y verificación de que el modelo no tiene cambios sin migrar
-- [ ] 5.4 Implementación de repositorios y de las operaciones transaccionales de alta masiva e importación
-- [ ] 5.6 Pruebas de integración sobre un fichero SQLite cifrado temporal: índices, coexistencia de baja y activa con el mismo número, atomicidad y rechazo de duplicados
+- [x] 5.1 Entidades EF Core y configuraciones de zonas, taquillas y eventos en `Infrastructure`, sin filtrar EF Core a `Domain` ni `Application`
+- [x] 5.2 Índice único parcial del número entre taquillas sin baja (D4) e índice único de la clave normalizada de zona (D5)
+- [x] 5.3 Migración de EF Core y verificación de que el modelo no tiene cambios sin migrar
+- [x] 5.4 Implementación de repositorios y de las operaciones transaccionales de alta masiva
+- [x] 5.6 Pruebas de integración sobre un fichero SQLite cifrado temporal: índices, coexistencia de baja y activa con el mismo número, atomicidad y rechazo de duplicados
 - [ ] 5.7 Comprobar que las pruebas se ejecutan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
 
 ## 6. Feedback y guía al usuario
