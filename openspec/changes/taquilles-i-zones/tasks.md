@@ -42,7 +42,7 @@
 - [x] 5.3 Migración de EF Core y verificación de que el modelo no tiene cambios sin migrar
 - [x] 5.4 Implementación de repositorios y de las operaciones transaccionales de alta masiva
 - [x] 5.6 Pruebas de integración sobre un fichero SQLite cifrado temporal: índices, coexistencia de baja y activa con el mismo número, atomicidad y rechazo de duplicados
-- [ ] 5.7 Comprobar que las pruebas se ejecutan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
+- [x] 5.7 Comprobar que las pruebas se ejecutan en macOS con los scripts de verificación (`docs/stack.md`); Linux y Windows se comprueban según lo acordado en `docs/riesgos.md` (T7 y T10: Windows una sola vez antes de producción, Linux descartado por ahora)
 
 ## 6. Feedback y guía al usuario
 
