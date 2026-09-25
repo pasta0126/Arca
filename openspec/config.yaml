@@ -34,7 +34,7 @@ context: |
   - Taquilles: 300+, nombre correlatiu (únic entre les actives), agrupades en zones/passadissos (fixes).
     Estats: lliure, ocupada, avariada, reservada (amb o sense alumne, nota lliure opcional).
     Si s'avaria una taquilla ocupada, l'app demana: reassignar, mantenir o alliberar.
-    Alta inicial per rangs i per importació CSV.
+    Alta inicial per rangs i individual (sense importació de fitxers: la càrrega inicial es fa una vegada i després es manté a mà).
     Zones: es poden crear, reanomenar i desactivar des de configuració; no s'esborren si
     han tingut taquilles.
   - Alumnes: 1 alumne = 1 taquilla per curs. Dades: nom, cognoms, nivell, grup i les mínimes per reconèixer-los.

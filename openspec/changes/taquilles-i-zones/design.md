@@ -12,14 +12,13 @@ Restricciones propias:
 **Goals:**
 - Modelo de dominio de zonas y taquillas con las reglas de los specs, verificables con pruebas sin base de datos.
 - Estado visible derivado de hechos, no almacenado.
-- Operaciones masivas (rangos e importación) atómicas y con vista previa idéntica al resultado real.
+- Alta masiva por rangos atómica y con vista previa idéntica al resultado real.
 - Historial de eventos de solo añadir, independiente del idioma.
-- Lector de CSV genérico reutilizable por la importación de alumnos y otros cambios.
 
 **Non-Goals:**
 - Pantallas y navegación (`ui-shell`).
 - Ocupación real, alumnos, llaves, cobros e incidencias.
-- Cualquier formato de fichero distinto de CSV.
+- Importación de taquillas desde fichero (ver *Cambios durante la implementación*).
 
 ## Decisions
 
@@ -44,23 +43,21 @@ Interfaz `ILockerRetiredHandler`, invocada dentro de la misma transacción que l
 El nombre se normaliza con el mismo componente de comparación de `arquitectura-base` (sin mayúsculas ni acentos, con espacios recortados) y se guarda la clave normalizada con un índice único. El dominio valida antes; el índice es la red de seguridad. Al renombrar, la comparación excluye a la propia zona.
 
 ### D6. Operaciones masivas en dos fases con la misma validación
-Alta por rangos e importación siguen el mismo patrón: una fase de análisis que produce un plan inmutable en memoria (qué se crearía y qué falla) y una fase de confirmación que **revalida contra el estado actual** y aplica todo en una transacción. La vista previa y la confirmación usan el mismo código de validación, de modo que no pueden discrepar.
+El alta por rangos sigue este patrón (que reutilizarán otros cambios): una fase de análisis que produce un plan inmutable en memoria (qué se crearía y qué falla) y una fase de confirmación que **revalida contra el estado actual** y aplica todo en una transacción. La vista previa y la confirmación usan el mismo código de validación, de modo que no pueden discrepar.
 - Si al confirmar el plan ya no es válido, no se guarda nada y se devuelve el análisis actualizado.
-- Importación: solo se aplican las filas válidas; las erróneas se informan. Es una elección deliberada frente a "todo o nada": con cientos de filas, rechazar el fichero por una línea mala frustra al usuario, y la revisión previa impide que los errores pasen desapercibidos.
 
 ### D7. Historial de eventos de solo añadir
 Tabla de eventos ligada al identificador de la taquilla, con tipo (código estable), instante UTC y valores anterior y nuevo en forma estructurada. **Nunca se guarda texto ya traducido**: el texto se compone al mostrarlo con las claves del idioma activo. No hay operaciones de edición ni borrado en el modelo. Los eventos se escriben en la misma transacción que el cambio que los origina.
 Los demás cambios (asignaciones, llaves, incidencias, mantenimiento) añadirán sus propios tipos de evento a este historial; por eso el tipo es un código extensible y no una enumeración cerrada visible en la interfaz.
 
-### D8. Lector de CSV genérico en Application/Infrastructure
-Un puerto `ICsvReader` en `Application`, implementado en `Infrastructure` con una biblioteca de CSV consolidada, que se encarga de: detección de separador, comillas, BOM y UTF-8 estricto, y devuelve filas con su número de línea. La correspondencia de cabeceras (idioma activo, sin mayúsculas ni acentos) se hace fuera, en cada importación, para que este componente sirva también a alumnos.
-*Alternativa descartada*: analizador propio. Las comillas y los saltos de línea dentro de campos son fáciles de hacer mal.
+### D8. (Retirada) Importación de taquillas
+No hay lector de CSV ni importación de taquillas en este cambio. Se decidió el 2026-09-25 (ver *Cambios durante la implementación*).
 
 ### D9. Consulta y filtros
 Con este volumen, la consulta carga las taquillas activas con su zona y calcula el estado derivado en memoria, aplicando después los filtros. Se prefiere la claridad de una única función de estado a duplicarla en SQL. Si el rendimiento dejara de bastar, se optimiza entonces, protegido por las mismas pruebas.
 
 ### D9b. Feedback en las operaciones de este cambio
-Todos los casos de uso devuelven el resultado estructurado de `arquitectura-base` (D12) con recuentos: taquillas creadas, zonas creadas, filas omitidas. Análisis e importación informan progreso con recuentos y aceptan cancelación solo antes de la transacción de guardado. Baja, alta por rangos e importación requieren confirmación con su consecuencia. La vista de inventario se entrega a `ui-shell` y `ux-fonaments`, pero la consulta devuelve datos aptos para virtualizar (orden estable, recuento total y sin carga perezosa) y el detalle e historial de una taquilla se piden al abrirla.
+Todos los casos de uso devuelven el resultado estructurado de `arquitectura-base` (D12) con recuentos: taquillas creadas y zonas creadas. El análisis del alta por rangos informa progreso con recuentos y acepta cancelación solo antes de la transacción de guardado. Baja y alta por rangos requieren confirmación con su consecuencia. La vista de inventario se entrega a `ui-shell` y `ux-fonaments`, pero la consulta devuelve datos aptos para virtualizar (orden estable, recuento total y sin carga perezosa) y el detalle e historial de una taquilla se piden al abrirla.
 
 ### D10. Orden y comparación
 Orden por número entero. Orden de zonas y comparaciones de nombre con el componente central de cultura catalana.
@@ -69,11 +66,9 @@ Orden por número entero. Orden de zonas y comparaciones de nombre con el compon
 
 - **Estado derivado más difícil de razonar que un campo** → una única función pura, muy probada, con tabla de casos; ninguna otra parte del código calcula el estado.
 - **Baja irreversible** → el mensaje de confirmación debe ser explícito en la interfaz; el historial se conserva y dar de alta otra taquilla con el mismo número es siempre posible.
-- **Importación parcial puede dejar filas sin importar sin que el usuario lo note** → la revisión previa es obligatoria y el resultado final repite el recuento de importadas y omitidas.
 - **Dos taquillas con el mismo número (una de baja) pueden confundir en listados** → la baja se oculta por defecto y, cuando se muestra, se diferencia claramente y se ordena después de la activa.
 - **Opciones de reasignar y liberar diferidas** → mientras no exista el cambio de asignaciones, marcar avería en una taquilla ocupada solo permite mantener; se documenta como dependencia y se cubre con pruebas del error de opción no disponible.
 - **El sustituto de ocupación oculta fallos de integración** → el cambio de asignaciones debe reemplazarlo y añadir pruebas de integración de extremo a extremo.
-- **Una biblioteca de CSV más como dependencia** → acotada a `Infrastructure` tras un puerto, sustituible.
 
 ## Migration Plan
 
@@ -88,3 +83,5 @@ Ninguna pendiente.
 ### 2026-09-25. La tarea 3.1 se divide para el hito 1
 El hito 1 (`docs/hito-1.md`) deja fuera `ICsvReader`, que solo usan las importaciones. La tarea 3.1 pasa a ser los puertos sin `ICsvReader`, y el puerto se recoge en la tarea nueva 3.1b (hito 2), para no marcar como hecho lo que no lo está. Además, la unidad de trabajo (`IUnitOfWork`, `docs/convenciones.md`, sección 4) se añade a los puertos de 3.1 porque los casos de uso la necesitan para guardar cambios y evento en una sola transacción.
 
+### 2026-09-25. Se retira la importación de taquillas (y con ella el lector de CSV)
+Motivo: la persona responsable indica que el inventario de taquillas se cargará una vez y después lo mantendrán los conserjes a mano; una importación masiva sería, como mucho, una actuación de desarrollo o mantenimiento sobre la base de un centro, y se prevé un uso mínimo. La carga inicial ya la cubren el alta por rangos (con vista previa y sin efectos parciales) y el alta individual. Se elimina la capacidad `importacio-taquilles`, el puerto `ICsvReader` (D8), las tareas 3.1b, 4.4 a 4.9 y 5.5 y las referencias a la importación en las tareas 6.2, 6.3 y 7.2. *Alternativas descartadas*: importar taquillas desde ODS reutilizando el lector de alumnos (coste y pruebas para un uso casi nulo; se retomaría solo si la práctica lo pide) y mantener el CSV (segundo formato y una dependencia más). Se ajustan también `configuracio-inicial`, `pantalles-de-domini`, `docs/` y `openspec/config.yaml`. Los informes siguen exportándose en CSV (`informes-csv`); la importación de alumnos sigue siendo ODS.

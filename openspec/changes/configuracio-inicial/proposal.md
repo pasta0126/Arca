@@ -7,7 +7,7 @@ Una instalación nueva no sirve de nada hasta tener un curso, unos importes, una
 - Primera ejecución sin base de datos: elegir empezar de cero o restaurar una copia de seguridad de otro equipo, y ver o cambiar la carpeta de datos antes de crear nada.
 - Asistente de configuración guiada con estos pasos: curso escolar, importes del curso, zonas, taquillas y alumnos.
 - Obligatorios solo el curso activo y los importes; el resto es opcional y se puede hacer después.
-- Cada paso guarda lo suyo en el momento y reutiliza las pantallas y validaciones existentes: alta y activación del curso, importes, zonas, alta por rangos o importación de taquillas, importación de alumnos con su revisión previa.
+- Cada paso guarda lo suyo en el momento y reutiliza las pantallas y validaciones existentes: alta y activación del curso, importes, zonas, alta de taquillas por rangos, importación de alumnos con su revisión previa.
 - El estado de cada paso se deduce de los datos ya creados: pendiente, hecho u omitido. Solo se guardan las omisiones y el descarte del asistente.
 - El asistente se reabre en el siguiente paso pendiente en cada arranque mientras falten pasos obligatorios, y se puede volver a abrir desde ajustes en cualquier momento.
 

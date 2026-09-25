@@ -39,7 +39,7 @@ El hito está terminado cuando este guion se completa sin ayuda técnica, con el
 
 ### Fuera (hito 2 en adelante)
 
-Importación de alumnos y de taquillas (dependen del fichero de secretaría), llaves, devolución de dipòsit y operaciones en bloque, incidencias y mantenimiento en bloque, informes, cierre de curso y conservación, copias de seguridad, registro y avisos de versión, configuración guiada, identidad del centro y tema, instalador de Windows.
+Importación de alumnos (depende del fichero de secretaría), llaves, devolución de dipòsit y operaciones en bloque, incidencias y mantenimiento en bloque, informes, cierre de curso y conservación, copias de seguridad, registro y avisos de versión, configuración guiada, identidad del centro y tema, instalador de Windows.
 
 ## Reparto por cambio
 
@@ -49,7 +49,7 @@ Cada cambio de OpenSpec **fusiona solo los grupos del hito 1** y **no se archiva
 |--------|--------------------|------------|
 | `acces-i-xifrat` | **Entero**: contraseña del centro, clave de recuperación, fichero de claves, apertura, copias y restauración | Nada |
 | `arquitectura-base` | Grupos 1 a 8, más 9.1 (CI), 9.1b (control de licencias) y 9.2 (paquete portable) | 9.3 a 9.5 (instalador, actualización, documento del cifrado) |
-| `taquilles-i-zones` | Grupos 1 y 2, 3 (sin `ICsvReader`), 4.1 a 4.3 (alta por rangos), 5.1 a 5.4, 5.6 y 5.7, 6 (sin la parte de importación) y 7 | 4.4 a 4.9 (importación CSV), 5.5 (`ICsvReader`) y las partes de CSV de 3.1, 6.2, 6.3 y 6.6 |
+| `taquilles-i-zones` | Grupos 1 y 2, 3 (sin `ICsvReader`), 4.1 a 4.3 (alta por rangos), 5.1 a 5.4, 5.6 y 5.7, 6 (sin la parte de importación) y 7 Nada: la importación de taquillas se retiró (2026-09-25) |
 | `alumnes-i-assignacions` | Grupos 1 a 5 (curso, alumnos, asignaciones, ocupación real), 7, 8 y 9.1 a 9.4 | Grupo 6 (importación de alumnos) y 9.5 |
 | `pagaments` | Grupos 1 y 2, 3.1 a 3.3 y 3.5 a 3.7, 4.1 a 4.5, 6.1, 6.2, 6.5, 6.6, 7 y 8 y 9.1 a 9.4 (sin devolución) | 3.4 (reposición de llave), 4.6 a 4.8 (devolución), grupo 5 (bloque), 6.3 y 6.4 (listas) |
 | `ux-fonaments` | Grupos 1 y 2, 3.1, 3.2 y 3.4, grupos 4 y 5 y 7, y 6.1 | 3.3, 3.5 y 6.2 a 6.5 (selección múltiple, planes y pasos) |
@@ -116,4 +116,4 @@ Ninguna bloquea el hito 1. El fichero de secretaría, el RGPD y el servidor de r
 
 ## Después del hito 1
 
-Propuesta de hito 2 (a confirmar tras la demostración): importación de alumnos y de taquillas (con el fichero de secretaría), llaves, dipòsit completo, cierre de curso e informes. Después, copias de seguridad, registro y avisos de versión, configuración guiada, identidad e instalador.
+Propuesta de hito 2 (a confirmar tras la demostración): importación de alumnos (con el fichero de secretaría), llaves, dipòsit completo, cierre de curso e informes. Después, copias de seguridad, registro y avisos de versión, configuración guiada, identidad e instalador.

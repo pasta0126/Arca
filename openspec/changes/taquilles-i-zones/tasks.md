@@ -19,7 +19,6 @@
 ## 3. Casos de uso de aplicación
 
 - [x] 3.1 Definir `ILockerRetiredHandler` (D3b) y los puertos: repositorios de zonas, taquillas y eventos, consulta de ocupación (D2) y la unidad de trabajo
-- [ ] 3.1b Definir el puerto `ICsvReader` (D8) (hito 2: solo lo usan las importaciones)
 - [x] 3.2 Implementar el sustituto de ocupación "sin asignación" y un doble configurable para pruebas
 - [x] 3.3 Casos de uso de zonas: crear, renombrar, desactivar, reactivar, eliminar y listar con recuento de activas
 - [x] 3.4 Casos de uso de taquillas: alta individual, reservar, quitar reserva, marcar y resolver avería, cambiar número y zona, dar de baja
@@ -30,15 +29,11 @@
 
 ## 4. Altas masivas
 
+> Las tareas 4.4 a 4.9 (importación CSV) y la 3.1b y 5.5 se retiraron el 2026-09-25 (ver `design.md`).
+
 - [x] 4.1 Análisis y confirmación de alta por rangos en dos fases con revalidación al confirmar (D6)
 - [x] 4.2 Validaciones de rango: invertido, un solo número, máximo 1000, zona activa, conflictos con lista completa de números
 - [x] 4.3 Pruebas: rango correcto, con conflicto, invertido, de un número, excesivo y fallo a mitad de guardado (sin taquillas creadas)
-- [ ] 4.4 Análisis de importación: detección de columnas por cabecera del idioma activo, columnas obligatoria y opcional, columnas desconocidas ignoradas con aviso
-- [ ] 4.5 Validación por fila: número, repetición en el fichero, número en uso, número de una baja, zona vacía, desactivada, con otra grafía, inexistente y nota larga
-- [ ] 4.6 Opción de crear zonas que faltan, con deduplicación de grafías equivalentes y recuento de zonas nuevas
-- [ ] 4.7 Confirmación que importa solo las filas válidas en una transacción, revalida y devuelve el análisis actualizado si algo cambió
-- [ ] 4.8 Plantilla CSV descargable en UTF-8 con BOM y separador punto y coma
-- [ ] 4.9 Pruebas: fichero vacío, más de 5000 filas, codificación no válida, separadores punto y coma y coma, comillas con separador, importar dos veces, errores parciales, todas erróneas, cancelar sin efectos
 
 ## 5. Persistencia
 
@@ -46,15 +41,14 @@
 - [ ] 5.2 Índice único parcial del número entre taquillas sin baja (D4) e índice único de la clave normalizada de zona (D5)
 - [ ] 5.3 Migración de EF Core y verificación de que el modelo no tiene cambios sin migrar
 - [ ] 5.4 Implementación de repositorios y de las operaciones transaccionales de alta masiva e importación
-- [ ] 5.5 Implementación de `ICsvReader` con UTF-8 estricto, BOM, detección de separador, comillas y número de línea (D8)
 - [ ] 5.6 Pruebas de integración sobre un fichero SQLite cifrado temporal: índices, coexistencia de baja y activa con el mismo número, atomicidad y rechazo de duplicados
 - [ ] 5.7 Comprobar que las pruebas se ejecutan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
 
 ## 6. Feedback y guía al usuario
 
 - [ ] 6.1 Devolver el resultado estructurado con recuentos en todos los casos de uso de zonas, taquillas, rangos e importación (D9b)
-- [ ] 6.2 Informar progreso con recuentos y aceptar cancelación en el análisis y en la importación, solo antes de la transacción de guardado
-- [ ] 6.3 Preparar las solicitudes de confirmación de baja, alta por rangos e importación, con su consecuencia como datos localizados
+- [ ] 6.2 Informar progreso con recuentos y aceptar cancelación en el análisis del alta por rangos, solo antes de la transacción de guardado
+- [ ] 6.3 Preparar las solicitudes de confirmación de baja y alta por rangos, con su consecuencia como datos localizados
 - [ ] 6.4 Preparar los estados vacíos del inventario (sin zonas, sin taquillas, filtros sin resultados) con su acción sugerida
 - [ ] 6.5 Consulta de detalle e historial de una taquilla bajo demanda, sin carga perezosa implícita
 - [ ] 6.6 Pruebas: recuentos del resultado, cancelación durante el análisis sin datos creados, confirmación rechazada sin efectos
@@ -62,6 +56,6 @@
 ## 7. Verificación transversal
 
 - [ ] 7.1 Prueba automática de que todas las claves de recurso nuevas existen en catalán
-- [ ] 7.2 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core ni la biblioteca de CSV
+- [ ] 7.2 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core
 - [ ] 7.3 Prueba de volumen con 1000 taquillas para confirmar que la consulta con filtros responde con fluidez
 - [ ] 7.4 Documentar en la config del proyecto el punto de enganche con `alumnes-i-assignacions`: implementar la ocupación real, la reserva con alumno y las decisiones de reasignar y liberar

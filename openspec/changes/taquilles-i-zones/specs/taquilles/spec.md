@@ -221,7 +221,7 @@ El sistema SHALL guiar al usuario cuando no hay taquillas o zonas, indicando có
 
 #### Scenario: Sin taquillas
 - **WHEN** existen zonas pero ninguna taquilla activa
-- **THEN** el sistema ofrece el alta por rangos y la importación desde CSV
+- **THEN** el sistema ofrece el alta por rangos y el alta individual
 
 #### Scenario: Filtros sin resultados
 - **WHEN** los filtros no devuelven ninguna taquilla

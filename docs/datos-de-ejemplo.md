@@ -7,7 +7,7 @@ Punto 10 de `docs/preparacion-desarrollo.md`. Define **qué datos ficticios** ne
 1. **Demostración** del hito 1 con los conserjes (`docs/hito-1.md`), sin usar nunca datos reales de menores.
 2. **Pruebas de integración y de volumen**: que las consultas, el mapa y la conciliación respondan con fluidez con un centro completo.
 3. **Cubrir los casos raros** que las specs exigen: homónimos, deuda de cursos anteriores, taquillas averiadas con alumno, bajas con dipòsit, números de taquilla reutilizados...
-4. **Ficheros ODS y CSV** para probar las importaciones (hito 2). El de alumnos es un ODS con el formato de secretaría; no se usa ningún fichero real.
+4. **Ficheros ODS** para probar la importación de alumnos (hito 2). El de alumnos es un ODS con el formato de secretaría; no se usa ningún fichero real.
 
 ## Principios
 
@@ -121,7 +121,7 @@ Cada dato generado lleva su **historial estructurado** (altas, asignaciones, cam
 
 ## Ficheros de prueba
 
-Sirven para las importaciones y las exportaciones del hito 2. Los de alumnos son ODS; los de taquillas siguen siendo CSV.
+Sirven para la importación de alumnos (ODS) y las exportaciones del hito 2. Las taquillas no se importan.
 
 ### Alumnos (`alumnes-i-assignacions`, importación ODS)
 
@@ -141,23 +141,13 @@ Formato: una hoja por grupo, con el nombre `<nivel> <grupo>` (`1r ESO A`, `2n BA
 | `alumnes-repeticions.ods` | Hoja con una repetición de celdas enorme | Tope de repeticiones |
 | `alumnes-buit.ods` y `alumnes-5001.ods` | Sin filas y con 5001 filas | Límites del fichero |
 
-### Taquillas (`taquilles-i-zones`, importación)
-
-| Fichero | Contenido | Escenarios que cubre |
-|---------|-----------|----------------------|
-| `taquilles-basic.csv` | 300 filas correctas | Importación normal |
-| `taquilles-errors.csv` | Números repetidos, cero, negativos, mayores de 99999, zona vacía, nota larga | Validación por fila |
-| `taquilles-zones-noves.csv` | Zonas inexistentes con distinta grafía | Crear las zonas que faltan |
-| `taquilles-repetit.csv` | Las mismas filas que ya existen | Importar dos veces |
-| `taquilles-5001.csv` | 5001 filas | Límite del fichero |
-
 ## Herramienta (diseño, sin implementar)
 
 Aplicación de consola en `tools/Arca.SampleData`:
 
 ```
 arca-sampledata generate --profile demo --seed 42 --db ./demo.arca
-arca-sampledata csv --out ./fixtures
+arca-sampledata ods --out ./fixtures
 arca-sampledata list-profiles
 ```
 
@@ -172,7 +162,7 @@ arca-sampledata list-profiles
 - La herramienta y sus perfiles.
 - Las listas de nombres y apellidos.
 - El script que compara los recuentos generados con esta tabla.
-- Guardar en el repositorio la base `tiny` cifrada y los CSV pequeños que las pruebas necesiten.
+- Guardar en el repositorio la base `tiny` cifrada y los ficheros pequeños que las pruebas necesiten.
 
 ## Preguntas para los conserjes
 
