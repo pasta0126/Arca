@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Assignments.Error.StudentRetired" xml:space="preserve">
+    <value>L'alumne està de baixa i no es pot assignar taquilla. Cal reactivar-lo primer.</value>
+  </data>
+  <data name="Assignments.Error.StudentNotEnrolled" xml:space="preserve">
+    <value>L'alumne no té matrícula al curs actiu. Matricula'l abans d'assignar-li una taquilla.</value>
+  </data>
+  <data name="Assignments.Error.StudentHasLocker" xml:space="preserve">
+    <value>L'alumne ja té una taquilla. Si vols donar-li'n una altra, canvia-la.</value>
+  </data>
+  <data name="Assignments.Error.StudentHasReservation" xml:space="preserve">
+    <value>L'alumne ja té una taquilla reservada.</value>
+  </data>
+  <data name="Assignments.Error.LockerUnavailable" xml:space="preserve">
+    <value>La taquilla no està disponible: està de baixa o fora de servei.</value>
+  </data>
+  <data name="Assignments.Error.LockerOccupied" xml:space="preserve">
+    <value>La taquilla ja la té un altre alumne.</value>
+  </data>
+  <data name="Assignments.Error.LockerReserved" xml:space="preserve">
+    <value>La taquilla està reservada sense alumne. Treu-ne la reserva abans d'assignar-la.</value>
+  </data>
+  <data name="Assignments.Error.LockerReservedForOther" xml:space="preserve">
+    <value>La taquilla està reservada per a un altre alumne.</value>
+  </data>
+  <data name="Assignments.Error.NoAssignment" xml:space="preserve">
+    <value>L'alumne no té cap taquilla assignada.</value>
+  </data>
+  <data name="Assignments.Error.SameLocker" xml:space="preserve">
+    <value>Aquesta ja és la taquilla de l'alumne. Tria'n una altra.</value>
+  </data>
+  <data name="Assignments.Error.AlreadyClosed" xml:space="preserve">
+    <value>Aquesta assignació ja està tancada.</value>
+  </data>
+  <data name="Assignments.Error.NoFreeLockers" xml:space="preserve">
+    <value>No queda cap taquilla lliure al centre.</value>
+  </data>
+  <data name="Assignments.Error.NoteTooLong" xml:space="preserve">
+    <value>El motiu no pot tenir més de {0} caràcters.</value>
+    <comment>{0} maximum length</comment>
+  </data>
+  <data name="Assignments.Error.NotFound" xml:space="preserve">
+    <value>No s'ha trobat l'assignació.</value>
+  </data>
+</root>

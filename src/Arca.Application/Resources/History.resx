@@ -94,4 +94,57 @@
   <data name="History.Field.email" xml:space="preserve">
     <value>correu</value>
   </data>
+  <data name="History.Locker.ReservedForStudent" xml:space="preserve">
+    <value>Taquilla reservada per a {0}.</value>
+    <comment>{0} student</comment>
+  </data>
+  <data name="History.Locker.ReservedForStudentWithNote" xml:space="preserve">
+    <value>Taquilla reservada per a {0}. Nota: {1}</value>
+    <comment>{0} student, {1} note</comment>
+  </data>
+  <data name="History.Locker.ReservationConsumed" xml:space="preserve">
+    <value>La reserva s'ha convertit en una assignació.</value>
+  </data>
+  <data name="History.Locker.Assigned" xml:space="preserve">
+    <value>Taquilla assignada a {0}.</value>
+    <comment>{0} student</comment>
+  </data>
+  <data name="History.Locker.Released" xml:space="preserve">
+    <value>{0} ha deixat la taquilla ({1}).</value>
+    <comment>{0} student, {1} reason</comment>
+  </data>
+  <data name="History.Locker.ReleasedWithNote" xml:space="preserve">
+    <value>{0} ha deixat la taquilla ({1}). Nota: {2}</value>
+    <comment>{0} student, {1} reason, {2} note</comment>
+  </data>
+  <data name="History.Student.AssignmentOpened" xml:space="preserve">
+    <value>Taquilla {0} assignada.</value>
+    <comment>{0} locker number</comment>
+  </data>
+  <data name="History.Student.AssignmentClosed" xml:space="preserve">
+    <value>Taquilla {0} alliberada ({1}).</value>
+    <comment>{0} locker number, {1} reason</comment>
+  </data>
+  <data name="History.Student.LockerReserved" xml:space="preserve">
+    <value>Taquilla {0} reservada per a l'alumne.</value>
+    <comment>{0} locker number</comment>
+  </data>
+  <data name="History.Student.LockerReservationRemoved" xml:space="preserve">
+    <value>S'ha tret la reserva de taquilla de l'alumne.</value>
+  </data>
+  <data name="History.Reason.Released" xml:space="preserve">
+    <value>alliberada manualment</value>
+  </data>
+  <data name="History.Reason.Changed" xml:space="preserve">
+    <value>canvi de taquilla</value>
+  </data>
+  <data name="History.Reason.StudentRetired" xml:space="preserve">
+    <value>baixa de l'alumne</value>
+  </data>
+  <data name="History.Reason.OutOfServiceReleased" xml:space="preserve">
+    <value>taquilla fora de servei: alumne alliberat</value>
+  </data>
+  <data name="History.Reason.OutOfServiceReassigned" xml:space="preserve">
+    <value>taquilla fora de servei: alumne reassignat</value>
+  </data>
 </root>

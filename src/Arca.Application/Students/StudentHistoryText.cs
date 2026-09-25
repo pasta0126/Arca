@@ -14,7 +14,8 @@ namespace Arca.Application.Students;
 /// The history is opened from the record of the student, where the email may be shown.
 /// </summary>
 internal sealed class StudentHistoryText(
-    ILocalizer localizer, IReadOnlyDictionary<Guid, string> levels, IReadOnlyDictionary<Guid, string> groups, IReadOnlyDictionary<Guid, string> years)
+    ILocalizer localizer, IReadOnlyDictionary<Guid, string> levels, IReadOnlyDictionary<Guid, string> groups, IReadOnlyDictionary<Guid, string> years,
+    IReadOnlyDictionary<Guid, int> lockerNumbers)
 {
     public string Compose(HistoryEvent change)
     {
@@ -30,6 +31,10 @@ internal sealed class StudentHistoryText(
             StudentEventTypes.EnrollmentChanged => Get(change.Type, Placement(before), Placement(after)),
             StudentEventTypes.Retired => Get(change.Type, Text(after, "reason")),
             StudentEventTypes.Reactivated => Get(change.Type),
+            StudentEventTypes.AssignmentOpened => Get(change.Type, Number(after)),
+            StudentEventTypes.AssignmentClosed => Get(change.Type, Number(before), localizer.Get(string.Concat("History.Reason.", Text(after, "reason")))),
+            StudentEventTypes.LockerReserved => Get(change.Type, Number(after)),
+            StudentEventTypes.LockerReservationRemoved => Get(change.Type),
             _ => localizer.Get("History.Unknown", change.Type),
         };
     }
@@ -54,6 +59,11 @@ internal sealed class StudentHistoryText(
     string Placement(JsonElement? root) => Text(root, "groupId") is { Length: > 0 }
         ? localizer.Get("History.Student.PlacementWithGroup", Name(levels, root, "levelId"), Name(groups, root, "groupId"))
         : localizer.Get("History.Student.Placement", Name(levels, root, "levelId"));
+
+    string Number(JsonElement? root) =>
+        Guid.TryParse(Text(root, "lockerId"), out var id) && lockerNumbers.TryGetValue(id, out var number)
+            ? number.ToString(System.Globalization.CultureInfo.InvariantCulture)
+            : "?";
 
     static JsonElement? Parse(string? json) => json is null ? null : JsonDocument.Parse(json).RootElement.Clone();
 

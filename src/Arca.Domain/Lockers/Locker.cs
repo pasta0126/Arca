@@ -27,7 +27,7 @@ public sealed class Locker
     /// <summary>Rebuilds a stored locker. Used by persistence, which has already validated it.</summary>
     public Locker(
         Guid id, int number, Guid zoneId, string? note, OutOfServiceKind? outOfService, bool isReserved, string? reservationNote,
-        DateTimeOffset? retiredAtUtc)
+        DateTimeOffset? retiredAtUtc, Guid? reservedForStudentId = null)
     {
         Id = id;
         Number = number;
@@ -37,6 +37,7 @@ public sealed class Locker
         IsReserved = isReserved;
         ReservationNote = reservationNote;
         RetiredAtUtc = retiredAtUtc;
+        ReservedForStudentId = reservedForStudentId;
     }
 
     /// <summary>The internal identity. It never changes; history and everything tied to the locker follow it, not the number.</summary>
@@ -53,6 +54,9 @@ public sealed class Locker
     public bool IsReserved { get; private set; }
 
     public string? ReservationNote { get; private set; }
+
+    /// <summary>The student the reservation is for, or null for a reservation with no student (alumnes-i-assignacions).</summary>
+    public Guid? ReservedForStudentId { get; private set; }
 
     public DateTimeOffset? RetiredAtUtc { get; private set; }
 
@@ -173,6 +177,35 @@ public sealed class Locker
         return Done(LockerEventTypes.Reserved, now, null, new { note = cleanNote.Value });
     }
 
+    /// <summary>
+    /// Reserves a free locker for a given student, with an optional note. It becomes an assignment when it is formalised, and the
+    /// reservation is then consumed. Whether the student already has a locker or another reservation is checked by the use case.
+    /// </summary>
+    public Result<HistoryEvent> ReserveForStudent(Guid studentId, string? note, bool hasAssignment, DateTimeOffset now)
+    {
+        var reserved = Reserve(note, hasAssignment, now);
+        if (!reserved.IsSuccess)
+        {
+            return reserved;
+        }
+
+        ReservedForStudentId = studentId;
+        return Done(LockerEventTypes.Reserved, now, null, new { note = ReservationNote, studentId });
+    }
+
+    /// <summary>The reservation is turned into an assignment for the student it was for.</summary>
+    public Result<HistoryEvent> ConsumeReservation(DateTimeOffset now)
+    {
+        if (!IsReserved)
+        {
+            return Result<HistoryEvent>.Failure(LockerErrors.NotReserved);
+        }
+
+        var before = new { note = ReservationNote, studentId = ReservedForStudentId };
+        (IsReserved, ReservationNote, ReservedForStudentId) = (false, null, null);
+        return Done(LockerEventTypes.ReservationConsumed, now, before, null);
+    }
+
     public Result<HistoryEvent> RemoveReservation(DateTimeOffset now)
     {
         var refused = RefuseIfRetired();
@@ -186,10 +219,9 @@ public sealed class Locker
             return Result<HistoryEvent>.Failure(LockerErrors.NotReserved);
         }
 
-        var before = ReservationNote;
-        IsReserved = false;
-        ReservationNote = null;
-        return Done(LockerEventTypes.ReservationRemoved, now, new { note = before }, null);
+        var before = new { note = ReservationNote, studentId = ReservedForStudentId };
+        (IsReserved, ReservationNote, ReservedForStudentId) = (false, null, null);
+        return Done(LockerEventTypes.ReservationRemoved, now, before, null);
     }
 
     /// <summary>
@@ -229,6 +261,7 @@ public sealed class Locker
             {
                 return Result<OutOfServiceOutcome>.Failure(LockerErrors.DecisionNotAvailable(decision.Value));
             }
+
         }
 
         OutOfService = kind;

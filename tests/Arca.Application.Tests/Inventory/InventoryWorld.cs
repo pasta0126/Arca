@@ -30,15 +30,20 @@ namespace Arca.Application.Tests.Inventory;
 /// <summary>Every use case of zones and lockers wired over the in-memory inventory, so a test reads as what a person does.</summary>
 public sealed class InventoryWorld
 {
-    public InventoryWorld()
+    public InventoryWorld(InMemoryInventory? store = null, FakeClock? clock = null, ILockerOccupancy? occupancy = null)
     {
-        Clock = new FakeClock(new DateTimeOffset(2026, 9, 25, 9, 0, 0, TimeSpan.Zero));
+        Store = store ?? new InMemoryInventory();
+        Clock = clock ?? new FakeClock(new DateTimeOffset(2026, 9, 25, 9, 0, 0, TimeSpan.Zero));
+        Occupancy = occupancy ?? Store.Occupancy;
         Hooks = [];
     }
 
-    public InMemoryInventory Store { get; } = new();
+    public InMemoryInventory Store { get; }
 
     public FakeClock Clock { get; }
+
+    /// <summary>Which lockers a student holds: the configurable stand-in, or the real one derived from the assignments.</summary>
+    public ILockerOccupancy Occupancy { get; }
 
     public List<ILockerRetiredHandler> Hooks { get; }
 
@@ -58,25 +63,25 @@ public sealed class InventoryWorld
 
     public AddLockerHandler AddLocker => new(Store.Lockers, Store.Zones, Store.Events, Store, Clock);
 
-    public ReserveLockerHandler ReserveLocker => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public ReserveLockerHandler ReserveLocker => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 
-    public RemoveLockerReservationHandler RemoveReservation => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public RemoveLockerReservationHandler RemoveReservation => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 
-    public MarkLockerOutOfServiceHandler MarkOutOfService => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public MarkLockerOutOfServiceHandler MarkOutOfService => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 
-    public RestoreLockerServiceHandler RestoreService => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public RestoreLockerServiceHandler RestoreService => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 
-    public ChangeLockerNumberHandler ChangeNumber => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public ChangeLockerNumberHandler ChangeNumber => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 
-    public ChangeLockerZoneHandler ChangeZone => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public ChangeLockerZoneHandler ChangeZone => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 
-    public RetireLockerHandler RetireLocker => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Hooks, Store, Clock);
+    public RetireLockerHandler RetireLocker => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Hooks, Store, Clock);
 
     public CreateLockerRangeHandler CreateRange => new(Store.Lockers, Store.Zones, Store.Events, Store, Clock);
 
-    public GetLockerHistoryHandler History => new(Store.Lockers, Store.Zones, Store.Events, Localizer);
+    public GetLockerHistoryHandler History => new(Store.Lockers, Store.Zones, Store.Events, Store.Students, Localizer);
 
-    public ListLockersHandler ListLockers => new(Store.Lockers, Store.Zones, Store.Occupancy);
+    public ListLockersHandler ListLockers => new(Store.Lockers, Store.Zones, Occupancy);
 
     public async Task<Guid> ZoneAsync(string name) => (await CreateZone.HandleAsync(new CreateZoneRequest(name), default)).Value!.Id;
 

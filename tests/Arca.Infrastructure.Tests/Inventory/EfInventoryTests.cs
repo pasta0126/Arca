@@ -203,7 +203,7 @@ public sealed class EfInventoryTests : IDisposable
         await new MarkLockerOutOfServiceHandler(store.Lockers, store.Zones, store.Events, _occupancy, store, _clock)
             .HandleAsync(new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Broken), default);
 
-        var history = (await new GetLockerHistoryHandler(store.Lockers, store.Zones, store.Events, new ResxLocalizer())
+        var history = (await new GetLockerHistoryHandler(store.Lockers, store.Zones, store.Events, new InMemoryInventory().Students, new ResxLocalizer())
             .HandleAsync(new GetLockerHistoryRequest(locker), default)).Value!;
 
         Assert.Equal([LockerEventTypes.OutOfService, LockerEventTypes.Created], history.Select(e => e.Type));
@@ -244,7 +244,7 @@ public sealed class EfInventoryTests : IDisposable
         var current = await LockerAsync(store, 15, zone);
         var duplicate = await new AddLockerHandler(store.Lockers, store.Zones, store.Events, store, _clock).HandleAsync(new AddLockerRequest(15, zone), default);
 
-        var history = new GetLockerHistoryHandler(store.Lockers, store.Zones, store.Events, new ResxLocalizer());
+        var history = new GetLockerHistoryHandler(store.Lockers, store.Zones, store.Events, new InMemoryInventory().Students, new ResxLocalizer());
         var oldHistory = (await history.HandleAsync(new GetLockerHistoryRequest(old), default)).Value!;
         var currentHistory = (await history.HandleAsync(new GetLockerHistoryRequest(current), default)).Value!;
 

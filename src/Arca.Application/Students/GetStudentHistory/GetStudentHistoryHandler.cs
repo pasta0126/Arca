@@ -3,6 +3,7 @@
 
 using Arca.Application.Catalog;
 using Arca.Application.Localization;
+using Arca.Application.Lockers;
 using Arca.Application.SchoolYears;
 using Arca.Domain.Common;
 using Arca.Domain.Students;
@@ -11,7 +12,7 @@ namespace Arca.Application.Students.GetStudentHistory;
 
 /// <summary>The history of one student, most recent first, asked for when their record is opened.</summary>
 public sealed class GetStudentHistoryHandler(
-    IStudentRepository students, IStudentEventRepository events, ICatalogRepository catalog, IAcademicYearRepository years, ILocalizer localizer)
+    IStudentRepository students, IStudentEventRepository events, ICatalogRepository catalog, IAcademicYearRepository years, ILockerRepository lockers, ILocalizer localizer)
 {
     public async Task<Result<IReadOnlyList<StudentHistoryEntry>>> HandleAsync(GetStudentHistoryRequest request, CancellationToken ct)
     {
@@ -24,7 +25,8 @@ public sealed class GetStudentHistoryHandler(
             localizer,
             (await catalog.ListLevelsAsync(ct)).ToDictionary(l => l.Id, l => l.Name),
             (await catalog.ListGroupsAsync(ct)).ToDictionary(g => g.Id, g => g.Name),
-            (await years.ListAsync(ct)).ToDictionary(y => y.Id, y => y.Name));
+            (await years.ListAsync(ct)).ToDictionary(y => y.Id, y => y.Name),
+            (await lockers.ListAsync(includeRetired: true, ct)).ToDictionary(l => l.Id, l => l.Number));
         IReadOnlyList<StudentHistoryEntry> entries =
         [
             .. (await events.ListAsync(request.StudentId, ct))

@@ -27,11 +27,11 @@
 
 ## 4. Asignaciones
 
-- [ ] 4.1 Crear `Assignment` con curso, inicio, fin y motivo de cierre, y las reglas de una vigente por alumno y una por taquilla
-- [ ] 4.2 Implementar el caso de uso único `AssignLocker` con todas las validaciones de alumno, matrícula, taquilla asignable y reserva (D7)
-- [ ] 4.3 Definir `IAssignmentGuard` con hallazgos de dos tipos (aviso que exige confirmación e impedimento que rechaza) y aplicarlos antes de asignar (D8)
-- [ ] 4.4 Definir `IAssignmentOpenedHandler`, `IAssignmentClosedHandler` e `IStudentLifecycleHandler` e invocarlos dentro de la transacción, con un contexto de operación extensible, al abrir o cerrar una asignación y al dar de baja o reactivar a un alumno (D9)
-- [ ] 4.5 Implementar cambio de taquilla y liberación, ambos indivisibles y con eventos en historiales de alumno y taquilla
+- [x] 4.1 Crear `Assignment` con curso, inicio, fin y motivo de cierre, y las reglas de una vigente por alumno y una por taquilla
+- [x] 4.2 Implementar el caso de uso único `AssignLocker` con todas las validaciones de alumno, matrícula, taquilla asignable y reserva (D7)
+- [x] 4.3 Definir `IAssignmentGuard` con hallazgos de dos tipos (aviso que exige confirmación e impedimento que rechaza) y aplicarlos antes de asignar (D8)
+- [x] 4.4 Definir `IAssignmentOpenedHandler`, `IAssignmentClosedHandler` e `IStudentLifecycleHandler` e invocarlos dentro de la transacción, con un contexto de operación extensible, al abrir o cerrar una asignación y al dar de baja o reactivar a un alumno (D9)
+- [x] 4.5 Implementar cambio de taquilla y liberación, ambos indivisibles y con eventos en historiales de alumno y taquilla
 - [ ] 4.6 Implementar la sugerencia de taquilla libre de número más bajo de la zona y de la siguiente con disponibilidad
 - [ ] 4.7 Implementar la reserva para un alumno, su consumo al asignar y su retirada al dar de baja al alumno
 - [ ] 4.8 Implementar las decisiones de reasignar y liberar al averiarse una taquilla ocupada, ampliando el caso de uso de `taquilles-i-zones`

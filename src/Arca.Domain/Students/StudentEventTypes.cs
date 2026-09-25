@@ -15,6 +15,10 @@ public static class StudentEventTypes
     public const string EnrollmentChanged = "Student.EnrollmentChanged";
     public const string Retired = "Student.Retired";
     public const string Reactivated = "Student.Reactivated";
+    public const string AssignmentOpened = "Student.AssignmentOpened";
+    public const string AssignmentClosed = "Student.AssignmentClosed";
+    public const string LockerReserved = "Student.LockerReserved";
+    public const string LockerReservationRemoved = "Student.LockerReservationRemoved";
 
-    public static IReadOnlyList<string> All { get; } = [Created, DataChanged, Enrolled, EnrollmentChanged, Retired, Reactivated];
+    public static IReadOnlyList<string> All { get; } = [Created, DataChanged, Enrolled, EnrollmentChanged, Retired, Reactivated, AssignmentOpened, AssignmentClosed, LockerReserved, LockerReservationRemoved];
 }

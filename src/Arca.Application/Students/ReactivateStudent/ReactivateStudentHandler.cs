@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.Application.Assignments;
 using Arca.Application.Catalog;
 using Arca.Application.Common;
 using Arca.Application.Enrollments;
@@ -18,7 +19,7 @@ namespace Arca.Application.Students.ReactivateStudent;
 /// </summary>
 public sealed class ReactivateStudentHandler(
     IStudentRepository students, IEnrollmentRepository enrollments, ICatalogRepository catalog, IAcademicYearRepository years,
-    IStudentEventRepository events, IStudentLockers lockers, IUnitOfWork unit, IClock clock)
+    IStudentEventRepository events, IStudentLockers lockers, IEnumerable<IStudentLifecycleHandler> lifecycle, IUnitOfWork unit, IClock clock)
 {
     public Task<Result<StudentChangeResult>> HandleAsync(ReactivateStudentRequest request, CancellationToken ct) =>
         unit.RunAsync(async token =>
@@ -84,6 +85,11 @@ public sealed class ReactivateStudentHandler(
 
                 await enrollments.UpdateAsync(existing, token);
                 await events.AddAsync(changed.Value!, token);
+            }
+
+            foreach (var hook in lifecycle)
+            {
+                await hook.OnReactivatedAsync(student, OperationContext.None, token);
             }
 
             return StudentChangeResult.Done(await new StudentViews(years, enrollments, catalog, lockers).DetailAsync(student, year.Value, token));
