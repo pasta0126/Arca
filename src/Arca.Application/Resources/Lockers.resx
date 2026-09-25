@@ -47,4 +47,7 @@
   <data name="Lockers.Error.Unchanged" xml:space="preserve">
     <value>No hi ha res a canviar: el valor nou és el que ja té.</value>
   </data>
+  <data name="Lockers.Error.NotFound" xml:space="preserve">
+    <value>No s'ha trobat la taquilla. Torna a carregar la llista.</value>
+  </data>
 </root>

@@ -47,4 +47,7 @@ public static class LockerErrors
 
     /// <summary>The new value is the one it already has.</summary>
     public static readonly Error Unchanged = new("Lockers.Unchanged");
+
+    /// <summary>There is no locker with that identity.</summary>
+    public static readonly Error NotFound = new("Lockers.NotFound");
 }

@@ -18,14 +18,15 @@
 
 ## 3. Casos de uso de aplicación
 
-- [ ] 3.1 Definir `ILockerRetiredHandler` (D3b) y los puertos: repositorios de zonas, taquillas y eventos, consulta de ocupación (D2) y `ICsvReader` (D8)
-- [ ] 3.2 Implementar el sustituto de ocupación "sin asignación" y un doble configurable para pruebas
-- [ ] 3.3 Casos de uso de zonas: crear, renombrar, desactivar, reactivar, eliminar y listar con recuento de activas
-- [ ] 3.4 Casos de uso de taquillas: alta individual, reservar, quitar reserva, marcar y resolver avería, cambiar número y zona, dar de baja
-- [ ] 3.5 Registro del evento de historial en la misma operación que origina cada cambio
-- [ ] 3.6 Consulta del historial de una taquilla, más reciente primero, con texto compuesto desde claves del idioma activo
-- [ ] 3.7 Consulta de taquillas con filtros por zona, estado y número, inclusión opcional de bajas, orden por número y contadores por estado y zona (D9)
-- [ ] 3.8 Pruebas de los casos de uso con repositorios en memoria
+- [x] 3.1 Definir `ILockerRetiredHandler` (D3b) y los puertos: repositorios de zonas, taquillas y eventos, consulta de ocupación (D2) y la unidad de trabajo
+- [ ] 3.1b Definir el puerto `ICsvReader` (D8) (hito 2: solo lo usan las importaciones)
+- [x] 3.2 Implementar el sustituto de ocupación "sin asignación" y un doble configurable para pruebas
+- [x] 3.3 Casos de uso de zonas: crear, renombrar, desactivar, reactivar, eliminar y listar con recuento de activas
+- [x] 3.4 Casos de uso de taquillas: alta individual, reservar, quitar reserva, marcar y resolver avería, cambiar número y zona, dar de baja
+- [x] 3.5 Registro del evento de historial en la misma operación que origina cada cambio
+- [x] 3.6 Consulta del historial de una taquilla, más reciente primero, con texto compuesto desde claves del idioma activo
+- [x] 3.7 Consulta de taquillas con filtros por zona, estado y número, inclusión opcional de bajas, orden por número y contadores por estado y zona (D9)
+- [x] 3.8 Pruebas de los casos de uso con repositorios en memoria
 
 ## 4. Altas masivas
 

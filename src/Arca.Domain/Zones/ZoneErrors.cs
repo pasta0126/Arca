@@ -22,4 +22,7 @@ public static class ZoneErrors
 
     /// <summary>The zone has or had lockers, so it cannot be deleted, only deactivated.</summary>
     public static readonly Error HasHistory = new("Zones.HasHistory");
+
+    /// <summary>There is no zone with that identity.</summary>
+    public static readonly Error NotFound = new("Zones.NotFound");
 }

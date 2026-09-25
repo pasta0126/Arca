@@ -22,4 +22,7 @@
   <data name="Zones.Error.HasHistory" xml:space="preserve">
     <value>No es pot eliminar una zona que té o ha tingut taquilles. Pots desactivar-la.</value>
   </data>
+  <data name="Zones.Error.NotFound" xml:space="preserve">
+    <value>No s'ha trobat la zona. Potser algú l'ha eliminat; torna a carregar la llista.</value>
+  </data>
 </root>

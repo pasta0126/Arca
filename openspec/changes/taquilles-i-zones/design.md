@@ -82,3 +82,9 @@ Una migración de EF Core crea las tablas de zonas, taquillas y eventos, con los
 ## Open Questions
 
 Ninguna pendiente.
+
+## Cambios durante la implementación
+
+### 2026-09-25. La tarea 3.1 se divide para el hito 1
+El hito 1 (`docs/hito-1.md`) deja fuera `ICsvReader`, que solo usan las importaciones. La tarea 3.1 pasa a ser los puertos sin `ICsvReader`, y el puerto se recoge en la tarea nueva 3.1b (hito 2), para no marcar como hecho lo que no lo está. Además, la unidad de trabajo (`IUnitOfWork`, `docs/convenciones.md`, sección 4) se añade a los puertos de 3.1 porque los casos de uso la necesitan para guardar cambios y evento en una sola transacción.
+

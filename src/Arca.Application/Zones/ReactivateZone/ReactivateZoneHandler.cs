@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 Guillermo Garcia Carballo
+
+using Arca.Application.Common;
+using Arca.Application.Lockers;
+using Arca.Domain.Common;
+using Arca.Domain.Zones;
+
+namespace Arca.Application.Zones.ReactivateZone;
+
+public sealed class ReactivateZoneHandler(IZoneRepository zones, ILockerRepository lockers, IUnitOfWork unit)
+{
+    public Task<Result<ZoneSummary>> HandleAsync(ReactivateZoneRequest request, CancellationToken ct) =>
+        unit.RunAsync(async token =>
+        {
+            var zone = await zones.GetAsync(request.ZoneId, token);
+            if (zone is null)
+            {
+                return Result<ZoneSummary>.Failure(ZoneErrors.NotFound);
+            }
+
+            var done = zone.Reactivate(await zones.ListAsync(token));
+            if (!done.IsSuccess)
+            {
+                return Result<ZoneSummary>.Failure(done.Error!);
+            }
+
+            await zones.UpdateAsync(zone, token);
+            return Result<ZoneSummary>.Success(ZoneSummary.Of(zone, await lockers.CountActiveInZoneAsync(zone.Id, token)));
+        }, ct);
+}
