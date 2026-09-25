@@ -18,7 +18,8 @@ public sealed class ListLockersHandler(ILockerRepository lockers, IZoneRepositor
     {
         var filter = request.Filter ?? new LockerFilter();
         var all = await lockers.ListAsync(includeRetired: true, ct);
-        var names = (await zones.ListAsync(ct)).ToDictionary(z => z.Id, z => z.Name);
+        var allZones = await zones.ListAsync(ct);
+        var names = allZones.ToDictionary(z => z.Id, z => z.Name);
         var occupied = await occupancy.OccupiedAmongAsync([.. all.Where(l => !l.IsRetired).Select(l => l.Id)], ct);
 
         var rows = all
@@ -46,7 +47,11 @@ public sealed class ListLockersHandler(ILockerRepository lockers, IZoneRepositor
                 .Select(g => new ZoneCounters(g.Key, names.GetValueOrDefault(g.Key, string.Empty), Count(g)))
                 .OrderBy(z => z.ZoneName, TextComparer.Comparer)
         ];
-        return Result<LockerListing>.Success(new LockerListing(matching, Count(active), byZone));
+        var empty = matching.Count > 0 ? LockerEmptyState.None
+            : !allZones.Any(z => z.IsActive) ? LockerEmptyState.NoZones
+            : active.Count == 0 ? LockerEmptyState.NoLockers
+            : LockerEmptyState.NoResults;
+        return Result<LockerListing>.Success(new LockerListing(matching, Count(active), byZone, empty));
     }
 
     static LockerCounters Count(IEnumerable<LockerRow> rows)

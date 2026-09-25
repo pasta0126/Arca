@@ -64,4 +64,90 @@
   <data name="Lockers.Warning.RangeChanged" xml:space="preserve">
     <value>Les dades han canviat des de la revisió. No s'ha creat res; revisa el rang actualitzat i torna-ho a confirmar.</value>
   </data>
+  <data name="Lockers.Empty.NoZones" xml:space="preserve">
+    <value>Encara no hi ha cap zona. Crea una zona primer i després hi podràs afegir taquilles.</value>
+  </data>
+  <data name="Lockers.Empty.NoLockers" xml:space="preserve">
+    <value>Encara no hi ha cap taquilla. Pots crear-ne moltes de cop indicant un rang de números, o afegir-les una a una.</value>
+  </data>
+  <data name="Lockers.Empty.NoResults" xml:space="preserve">
+    <value>Cap taquilla compleix els filtres. Neteja els filtres per veure-les totes.</value>
+  </data>
+  <data name="Lockers.Label.CreateZone" xml:space="preserve">
+    <value>Crea una zona</value>
+  </data>
+  <data name="Lockers.Label.CreateRange" xml:space="preserve">
+    <value>Crea taquilles per rang</value>
+  </data>
+  <data name="Lockers.Label.AddLocker" xml:space="preserve">
+    <value>Afegeix una taquilla</value>
+  </data>
+  <data name="Lockers.Label.ClearFilters" xml:space="preserve">
+    <value>Neteja els filtres</value>
+  </data>
+  <data name="Lockers.Label.RetireTitle" xml:space="preserve">
+    <value>Donar de baixa la taquilla {0}?</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Label.RetireConsequence" xml:space="preserve">
+    <value>La baixa de la taquilla {0} ({1}) no es pot desfer. Se'n conserva l'historial, i sempre es pot donar d'alta una taquilla nova amb el mateix número.</value>
+    <comment>{0} number, {1} zone</comment>
+  </data>
+  <data name="Lockers.Label.RetireConfirm" xml:space="preserve">
+    <value>Dona-la de baixa</value>
+  </data>
+  <data name="Lockers.Label.RangeTitle" xml:space="preserve">
+    <value>Crear les taquilles del rang?</value>
+  </data>
+  <data name="Lockers.Label.RangeConsequence" xml:space="preserve">
+    <value>Es crearan {0} taquilles noves lliures a la zona {1}.</value>
+    <comment>{0} how many, {1} zone</comment>
+  </data>
+  <data name="Lockers.Label.RangeConfirm" xml:space="preserve">
+    <value>Crea {0} taquilles</value>
+    <comment>{0} how many</comment>
+  </data>
+  <data name="Lockers.Label.RangeNumbers" xml:space="preserve">
+    <value>Del número {0} al {1}</value>
+    <comment>{0} first, {1} last</comment>
+  </data>
+  <data name="Lockers.Result.Added" xml:space="preserve">
+    <value>S'ha creat la taquilla {0} a la zona {1}.</value>
+    <comment>{0} number, {1} zone</comment>
+  </data>
+  <data name="Lockers.Result.Reserved" xml:space="preserve">
+    <value>S'ha reservat la taquilla {0}.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.ReservationRemoved" xml:space="preserve">
+    <value>S'ha tret la reserva de la taquilla {0}.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.OutOfService" xml:space="preserve">
+    <value>La taquilla {0} ha quedat fora de servei.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.ServiceRestored" xml:space="preserve">
+    <value>La taquilla {0} torna a estar en servei.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.NumberChanged" xml:space="preserve">
+    <value>La taquilla ara té el número {0}.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.ZoneChanged" xml:space="preserve">
+    <value>La taquilla {0} és ara a la zona {1}.</value>
+    <comment>{0} number, {1} zone</comment>
+  </data>
+  <data name="Lockers.Result.Retired" xml:space="preserve">
+    <value>S'ha donat de baixa la taquilla {0}.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.RangeCreated" xml:space="preserve">
+    <value>S'han creat {0} taquilles a la zona {1}.</value>
+    <comment>{0} how many, {1} zone</comment>
+  </data>
+  <data name="Lockers.Result.RangeNotCreated" xml:space="preserve">
+    <value>No s'ha creat cap taquilla.</value>
+  </data>
 </root>

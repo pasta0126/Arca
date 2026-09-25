@@ -46,12 +46,12 @@
 
 ## 6. Feedback y guía al usuario
 
-- [ ] 6.1 Devolver el resultado estructurado con recuentos en todos los casos de uso de zonas, taquillas, rangos e importación (D9b)
-- [ ] 6.2 Informar progreso con recuentos y aceptar cancelación en el análisis del alta por rangos, solo antes de la transacción de guardado
-- [ ] 6.3 Preparar las solicitudes de confirmación de baja y alta por rangos, con su consecuencia como datos localizados
-- [ ] 6.4 Preparar los estados vacíos del inventario (sin zonas, sin taquillas, filtros sin resultados) con su acción sugerida
-- [ ] 6.5 Consulta de detalle e historial de una taquilla bajo demanda, sin carga perezosa implícita
-- [ ] 6.6 Pruebas: recuentos del resultado, cancelación durante el análisis sin datos creados, confirmación rechazada sin efectos
+- [x] 6.1 Devolver el resultado estructurado con recuentos en todos los casos de uso de zonas, taquillas, rangos e importación (D9b)
+- [x] 6.2 Informar progreso con recuentos y aceptar cancelación en el análisis del alta por rangos, solo antes de la transacción de guardado
+- [x] 6.3 Preparar las solicitudes de confirmación de baja y alta por rangos, con su consecuencia como datos localizados
+- [x] 6.4 Preparar los estados vacíos del inventario (sin zonas, sin taquillas, filtros sin resultados) con su acción sugerida
+- [x] 6.5 Consulta de detalle e historial de una taquilla bajo demanda, sin carga perezosa implícita
+- [x] 6.6 Pruebas: recuentos del resultado, cancelación durante el análisis sin datos creados, confirmación rechazada sin efectos
 
 ## 7. Verificación transversal
 

@@ -25,4 +25,23 @@
   <data name="Zones.Error.NotFound" xml:space="preserve">
     <value>No s'ha trobat la zona. Potser algú l'ha eliminat; torna a carregar la llista.</value>
   </data>
+  <data name="Zones.Result.Created" xml:space="preserve">
+    <value>S'ha creat la zona «{0}».</value>
+    <comment>{0} name</comment>
+  </data>
+  <data name="Zones.Result.Renamed" xml:space="preserve">
+    <value>La zona ara es diu «{0}».</value>
+    <comment>{0} name</comment>
+  </data>
+  <data name="Zones.Result.Deactivated" xml:space="preserve">
+    <value>S'ha desactivat la zona «{0}».</value>
+    <comment>{0} name</comment>
+  </data>
+  <data name="Zones.Result.Reactivated" xml:space="preserve">
+    <value>S'ha reactivat la zona «{0}».</value>
+    <comment>{0} name</comment>
+  </data>
+  <data name="Zones.Result.Deleted" xml:space="preserve">
+    <value>S'ha eliminat la zona.</value>
+  </data>
 </root>
