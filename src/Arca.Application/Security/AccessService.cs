@@ -50,6 +50,34 @@ public sealed class AccessService(IKeyCrypto crypto, IKeyFileStore store, Argon2
     public Result<KeyFile> CheckKeyFile(string databasePath) => store.Read(databasePath);
 
     /// <summary>
+    /// Whether the recovery key typed opens the key file, before asking for anything more. It says only yes or no,
+    /// as a wrong password does, and keeps nothing.
+    /// </summary>
+    public Result<bool> CheckRecoveryKey(string databasePath, string? typedRecoveryKey)
+    {
+        var read = store.Read(databasePath);
+        if (!read.IsSuccess)
+        {
+            return Result<bool>.Failure(read.Error!);
+        }
+
+        var recovery = RecoveryKey.Normalize(typedRecoveryKey);
+        if (!recovery.IsSuccess)
+        {
+            return Result<bool>.Failure(recovery.Error!);
+        }
+
+        var opened = KeyWrapping.UnwrapWithRecoveryKey(crypto, read.Value!, recovery.Value!);
+        if (!opened.IsSuccess)
+        {
+            return Result<bool>.Failure(opened.Error!);
+        }
+
+        opened.Value!.Dispose();
+        return Result<bool>.Success(true);
+    }
+
+    /// <summary>
     /// Opens the database key with the password. A later successful unlock is what lets the previous key file go
     /// (D3). A wrong password says only that, so nothing is revealed.
     /// </summary>

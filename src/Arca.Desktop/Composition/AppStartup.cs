@@ -6,13 +6,17 @@ using Arca.Application;
 using Arca.Application.Common;
 using Arca.Application.Feedback;
 using Arca.Application.Localization;
+using Arca.Application.Security;
 using Arca.Application.Startup;
 using Arca.Application.Storage;
 using Arca.Domain.Common;
 using Arca.Infrastructure.Common;
+using Arca.Infrastructure.Security;
 using Arca.Infrastructure.Storage;
+using Arca.UI.Access;
 using Arca.UI.Confirmation;
 using Arca.UI.Notifications;
+using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Arca.Desktop.Composition;
@@ -23,18 +27,21 @@ namespace Arca.Desktop.Composition;
 /// </summary>
 public static class AppStartup
 {
-    /// <summary>Development only, until the first-run screen exists: create the database when it is missing.</summary>
-    public const string CreateVariable = "ARCA_DEV_CREATE";
-
     /// <summary>The technical log, available from the first instant so even a failure while starting gets a reference.</summary>
     public static IErrorLog CreateErrorLog() =>
         new FileErrorLog(DataLocations.Resolve(PlatformContext.Current()).LogFolder);
 
+    /// <param name="log">The technical log.</param>
+    /// <param name="startupWindow">The window the password screens open over, if it is showing.</param>
     public static async Task<Result<AppRuntime>> StartAsync(
-        IErrorLog log, IProgress<StartupProgress>? progress = null, CancellationToken ct = default)
+        IErrorLog log, Func<Window?> startupWindow, IProgress<StartupProgress>? progress = null, CancellationToken ct = default)
     {
-        var createIfMissing = Environment.GetEnvironmentVariable(CreateVariable) == "1";
-        var storage = new StorageStartup(PlatformContext.Current(), new EnvironmentKeyProvider(), createIfMissing);
+        var localizer = new ResxLocalizer();
+        var access = new AccessService(new NSecKeyCrypto(), new FileKeyFileStore());
+        var flows = new AccessFlows(
+            access, new WindowFormPresenter(startupWindow), localizer,
+            (path, newAccess, groups, token) => DatabaseCreator.CreateAsync(path, newAccess, groups, token));
+        var storage = new StorageStartup(PlatformContext.Current(), new PasswordKeyProvider(access, flows), firstRun: flows);
 
         var opened = await storage.OpenAsync(progress, ct);
         if (!opened.IsSuccess)
@@ -46,12 +53,13 @@ public static class AppStartup
         var session = opened.Value!;
         var info = session.Info(ApplicationVersion());
         var windows = new MainWindowAccessor();
-        var localizer = new ResxLocalizer();
         var clock = new SystemClock();
         var delay = new SystemDelay();
         var notifications = new NotificationCenter(clock, delay);
         var services = new ServiceCollection()
             .AddSingleton<ILocalizer>(localizer)
+            .AddSingleton(access)
+            .AddSingleton(flows)
             .AddSingleton<IClock>(clock)
             .AddSingleton<IDelay>(delay)
             .AddSingleton(log)

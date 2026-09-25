@@ -4,6 +4,7 @@
 using System.Security.Cryptography;
 using Arca.Application.Security;
 using Arca.Application.Startup;
+using Arca.Domain.Common;
 using Arca.Application.Storage;
 using Arca.Infrastructure.Security;
 using Arca.Infrastructure.Storage;
@@ -36,16 +37,14 @@ public sealed class EncryptedAccessTests
         return (path, access);
     }
 
-    sealed class ScriptedPrompt(params string?[] answers) : IUnlockPrompt
+    sealed class CountingFlow : IUnlockFlow
     {
-        readonly Queue<string?> _answers = new(answers);
-
         public int Asked { get; private set; }
 
-        public Task<string?> AskPasswordAsync(bool previousFailure, CancellationToken ct)
+        public Task<Result<DatabaseKey>> UnlockAsync(string databasePath, CancellationToken ct)
         {
             Asked++;
-            return Task.FromResult(_answers.Dequeue());
+            return Task.FromResult(Result<DatabaseKey>.Failure(KeyErrors.UnlockCancelled));
         }
     }
 
@@ -189,7 +188,7 @@ public sealed class EncryptedAccessTests
 
         var database = Hash(path);
         var keyBefore = File.Exists(keyFile) ? Hash(keyFile) : null;
-        var prompt = new ScriptedPrompt(Password);
+        var prompt = new CountingFlow();
 
         var result = await new PasswordKeyProvider(Service(), prompt).GetKeyAsync(path);
 
@@ -206,7 +205,7 @@ public sealed class EncryptedAccessTests
         using var dir = new TempDirectory();
         var (path, _) = await CreateAsync(dir);
         File.Delete(KeyFileStore.PathFor(path));
-        var result = await new PasswordKeyProvider(Service(), new ScriptedPrompt()).GetKeyAsync(path);
+        var result = await new PasswordKeyProvider(Service(), new CountingFlow()).GetKeyAsync(path);
 
         var text = new Arca.Application.Localization.ResxLocalizer().Get(Arca.Application.Localization.ResourceKeys.For(result.Error!));
 

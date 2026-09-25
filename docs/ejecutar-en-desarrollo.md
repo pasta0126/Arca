@@ -1,11 +1,10 @@
 # Ejecutar ARCA en desarrollo
 
-Mientras no exista el flujo de contraseña de `acces-i-xifrat`, la aplicación no puede pedir la llave de la base de datos. Para desarrollar hay dos variables de entorno que **solo existen para desarrollo** y desaparecerán cuando llegue ese cambio. Ninguna llave vive en el código.
+## Contraseña y primera ejecución
 
-| Variable | Qué hace |
-|----------|----------|
-| `ARCA_DEV_DB_KEY` | Llave de 64 caracteres hexadecimales. Sin ella la aplicación muestra «Aquesta versió d'ARCA encara no té l'accés amb contrasenya» y no abre nada. |
-| `ARCA_DEV_CREATE` | Con el valor `1` crea la base de datos si el fichero no existe (hasta que exista la pantalla de primera ejecución de `configuracio-inicial`). |
+La aplicación pide la contraseña del centro cada vez que se abre (`acces-i-xifrat`). Si la base de datos no existe, la primera ejecución pide una contraseña de al menos 12 caracteres, muestra la clave de recuperación y pide confirmarla escribiendo dos grupos antes de crear la base en la carpeta de datos. **No hay ninguna llave ni contraseña por defecto**: las variables `ARCA_DEV_DB_KEY` y `ARCA_DEV_CREATE` que existían hasta ahora ya no existen.
+
+Para desarrollar, usa una contraseña de prueba que cumpla la política (por ejemplo `gat ratllat sota pluja`) y guarda la clave de recuperación que se muestra. Las pruebas y la futura herramienta de datos de ejemplo definen sus propias contraseñas en sus proyectos.
 
 ## Ejemplo (macOS y Linux)
 
@@ -13,11 +12,8 @@ Mientras no exista el flujo de contraseña de `acces-i-xifrat`, la aplicación n
 dotnet build src/Arca.Desktop
 OUT=src/Arca.Desktop/bin/Debug/net10.0
 touch $OUT/arca.portable          # modo portable: los datos van en $OUT/data y no se toca tu carpeta de usuario
-export ARCA_DEV_DB_KEY=$(python3 -c "import secrets;print(secrets.token_hex(32))")
-ARCA_DEV_CREATE=1 $OUT/Arca
+$OUT/Arca                         # la primera vez pide la contraseña y muestra la clave de recuperación
 ```
-
-Guarda la llave que has generado (la misma variable) para volver a abrir esa base de datos: una base creada con una llave no se abre con otra.
 
 ## Dónde van los datos sin modo portable
 

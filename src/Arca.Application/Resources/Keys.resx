@@ -63,4 +63,114 @@
   <data name="Keys.Warning.RestoreAdoptsPassword" xml:space="preserve">
     <value>En restaurar aquesta còpia, la contrasenya del centre passarà a ser la que tenia la còpia. Les dades actuals es guardaran en una còpia prèvia.</value>
   </data>
+  <data name="Keys.Label.PasswordField" xml:space="preserve">
+    <value>Contrasenya</value>
+  </data>
+  <data name="Keys.Label.UnlockTitle" xml:space="preserve">
+    <value>Contrasenya del centre</value>
+  </data>
+  <data name="Keys.Label.UnlockIntro" xml:space="preserve">
+    <value>Escriu la contrasenya del centre per obrir les dades.</value>
+  </data>
+  <data name="Keys.Label.UnlockButton" xml:space="preserve">
+    <value>Obre</value>
+  </data>
+  <data name="Keys.Label.Checking" xml:space="preserve">
+    <value>Comprovant…</value>
+  </data>
+  <data name="Keys.Label.ForgotButton" xml:space="preserve">
+    <value>He oblidat la contrasenya</value>
+  </data>
+  <data name="Keys.Label.CreateTitle" xml:space="preserve">
+    <value>Crea la contrasenya del centre</value>
+  </data>
+  <data name="Keys.Label.CreateIntro" xml:space="preserve">
+    <value>Aquesta contrasenya la compartiran els conserges i protegeix les dades dels alumnes. Et demanarà cada vegada que obris ARCA. Pot ser una frase de diverses paraules, com «riu cadira blau gos».</value>
+  </data>
+  <data name="Keys.Label.ContinueButton" xml:space="preserve">
+    <value>Continua</value>
+  </data>
+  <data name="Keys.Label.CreateButton" xml:space="preserve">
+    <value>Confirma i crea les dades</value>
+  </data>
+  <data name="Keys.Label.Creating" xml:space="preserve">
+    <value>Creant les dades…</value>
+  </data>
+  <data name="Keys.Label.RecoveryField" xml:space="preserve">
+    <value>Clau de recuperació</value>
+  </data>
+  <data name="Keys.Label.RecoveryTitle" xml:space="preserve">
+    <value>Entra amb la clau de recuperació</value>
+  </data>
+  <data name="Keys.Label.RecoveryIntro" xml:space="preserve">
+    <value>Escriu la clau de recuperació que es va mostrar en crear la contrasenya (26 caràcters en cinc grups). Pots escriure-la en minúscules, sense guions o amb espais.</value>
+  </data>
+  <data name="Keys.Label.ResetTitle" xml:space="preserve">
+    <value>Tria una contrasenya nova</value>
+  </data>
+  <data name="Keys.Label.ResetIntro" xml:space="preserve">
+    <value>La clau de recuperació és correcta. Ara has de triar una contrasenya nova; després se't mostrarà una clau de recuperació nova, i l'anterior deixarà de valer.</value>
+  </data>
+  <data name="Keys.Label.ConfirmButton" xml:space="preserve">
+    <value>Confirma i continua</value>
+  </data>
+  <data name="Keys.Label.Saving" xml:space="preserve">
+    <value>Desant…</value>
+  </data>
+  <data name="Keys.Label.NewPasswordField" xml:space="preserve">
+    <value>Contrasenya</value>
+  </data>
+  <data name="Keys.Label.ConfirmationField" xml:space="preserve">
+    <value>Repeteix la contrasenya</value>
+  </data>
+  <data name="Keys.Label.LossWarning" xml:space="preserve">
+    <value>Si perds la contrasenya i la clau de recuperació, les dades i les còpies de seguretat no es poden recuperar. Ningú, tampoc qui ha fet ARCA, no les pot recuperar per tu.</value>
+  </data>
+  <data name="Keys.Label.GroupField" xml:space="preserve">
+    <value>Grup {0} de la clau</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Keys.Label.KeyTitle" xml:space="preserve">
+    <value>Desa la clau de recuperació</value>
+  </data>
+  <data name="Keys.Label.KeyIntro" xml:space="preserve">
+    <value>Desa aquesta clau fora de l'ordinador, per exemple en un sobre tancat i en dos llocs diferents. Només es mostra ara i no es podrà tornar a veure. Per confirmar que l'has desada, escriu els grups que et demanem.</value>
+  </data>
+  <data name="Keys.Label.KeyCaption" xml:space="preserve">
+    <value>Clau de recuperació</value>
+  </data>
+  <data name="Keys.Label.CopyButton" xml:space="preserve">
+    <value>Copia</value>
+  </data>
+  <data name="Keys.Label.PrintButton" xml:space="preserve">
+    <value>Imprimeix</value>
+  </data>
+  <data name="Keys.Label.KeyCopied" xml:space="preserve">
+    <value>S'ha copiat la clau al porta-retalls. Enganxa-la en un lloc segur i esborra-la després.</value>
+  </data>
+  <data name="Keys.Label.KeyPrinted" xml:space="preserve">
+    <value>S'ha obert una pàgina amb la clau perquè la imprimeixis. S'esborra en tancar aquesta finestra.</value>
+  </data>
+  <data name="Keys.Label.PrintTitle" xml:space="preserve">
+    <value>Clau de recuperació d'ARCA</value>
+  </data>
+  <data name="Keys.Label.PrintIntro" xml:space="preserve">
+    <value>Clau de recuperació de les dades del centre. Guarda-la en un lloc segur, fora de l'ordinador.</value>
+  </data>
+  <data name="Keys.Label.PrintAdvice" xml:space="preserve">
+    <value>Sense la contrasenya i aquesta clau, les dades no es poden recuperar.</value>
+  </data>
+  <data name="Keys.Label.LengthCounter" xml:space="preserve">
+    <value>{0} de {1} caràcters</value>
+    <comment>{0} characters written, {1} minimum</comment>
+  </data>
+  <data name="Keys.Label.StrengthWeak" xml:space="preserve">
+    <value>Fortalesa: fluixa</value>
+  </data>
+  <data name="Keys.Label.StrengthFair" xml:space="preserve">
+    <value>Fortalesa: acceptable</value>
+  </data>
+  <data name="Keys.Label.StrengthGood" xml:space="preserve">
+    <value>Fortalesa: bona</value>
+  </data>
 </root>

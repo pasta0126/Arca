@@ -56,7 +56,7 @@ public sealed class App : Avalonia.Application
         var progress = new Progress<StartupProgress>(splashModel.Show);
         try
         {
-            var result = await Task.Run(() => AppStartup.StartAsync(log, progress));
+            var result = await Task.Run(() => AppStartup.StartAsync(log, () => splash, progress));
             if (!result.IsSuccess)
             {
                 if (result.Error!.Code == KeyErrors.UnlockCancelled.Code)

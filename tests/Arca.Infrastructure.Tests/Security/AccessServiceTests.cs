@@ -221,32 +221,18 @@ public sealed class AccessServiceTests
         Assert.Equal(key, Service().Unlock(database, Other).Value!.ToArray());
     }
 
-    sealed class ScriptedPrompt(params string?[] answers) : IUnlockPrompt
+    /// <summary>A stand-in for the password screens: unlocks with the given password, or gives up when it is null.</summary>
+    sealed class FakeUnlockFlow(AccessService access, string? password) : IUnlockFlow
     {
-        readonly Queue<string?> _answers = new(answers);
+        public int Calls { get; private set; }
 
-        public List<bool> PreviousFailures { get; } = [];
-
-        public Task<string?> AskPasswordAsync(bool previousFailure, CancellationToken ct)
+        public Task<Result<DatabaseKey>> UnlockAsync(string databasePath, CancellationToken ct)
         {
-            PreviousFailures.Add(previousFailure);
-            return Task.FromResult(_answers.Dequeue());
+            Calls++;
+            return Task.FromResult(password is null
+                ? Result<DatabaseKey>.Failure(KeyErrors.UnlockCancelled)
+                : access.Unlock(databasePath, password));
         }
-    }
-
-    [Fact]
-    [Trait("spec", Spec + ": Contraseña al abrir la aplicación (Contraseña incorrecta)")]
-    public async Task The_unlock_stage_asks_again_after_a_wrong_password_and_then_opens()
-    {
-        using var dir = new TempDirectory();
-        var database = dir.File("arca.db");
-        var (key, _) = Setup(dir, database);
-        var prompt = new ScriptedPrompt(Other, "", Password);
-
-        var result = await new PasswordKeyProvider(Service(), prompt).GetKeyAsync(database);
-
-        Assert.Equal(key, result.Value!.ToArray());
-        Assert.Equal([false, true, true], prompt.PreviousFailures);
     }
 
     [Fact]
@@ -257,7 +243,7 @@ public sealed class AccessServiceTests
         var database = dir.File("arca.db");
         Setup(dir, database);
 
-        var result = await new PasswordKeyProvider(Service(), new ScriptedPrompt((string?)null)).GetKeyAsync(database);
+        var result = await new PasswordKeyProvider(Service(), new FakeUnlockFlow(Service(), null)).GetKeyAsync(database);
 
         Assert.Equal(KeyErrors.UnlockCancelled.Code, result.Error!.Code);
     }
@@ -280,9 +266,9 @@ public sealed class AccessServiceTests
         }
 
         var progress = new RecordingProgress();
-        var prompt = new ScriptedPrompt(Password);
+        var flow = new FakeUnlockFlow(Service(), Password);
 
-        var result = await new StorageStartup(platform, new PasswordKeyProvider(Service(), prompt)).OpenAsync(progress);
+        var result = await new StorageStartup(platform, new PasswordKeyProvider(Service(), flow)).OpenAsync(progress);
 
         Assert.True(result.IsSuccess);
         await using var session = result.Value!;
@@ -300,7 +286,7 @@ public sealed class AccessServiceTests
         var log = new RecordingErrorLog();
 
         var direct = Service().Unlock(database, Wrong);
-        var staged = await new PasswordKeyProvider(Service(), new ScriptedPrompt(Wrong, null)).GetKeyAsync(database);
+        var staged = await new PasswordKeyProvider(Service(), new FakeUnlockFlow(Service(), Wrong)).GetKeyAsync(database);
         var change = Service().ChangePassword(database, Wrong, Other, Other);
 
         Assert.Empty(log.Entries);

@@ -265,29 +265,4 @@ public sealed class StorageStartupTests
         public Task<Result<DatabaseKey>> GetKeyAsync(string databasePath, CancellationToken ct = default) =>
             Task.FromResult(Result<DatabaseKey>.Success(TestKeys.Fixture()));
     }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("abcd")]
-    [InlineData("zz00000000000000000000000000000000000000000000000000000000000000")]
-    public async Task Environment_key_rejects_missing_short_or_non_hex_values(string? value)
-    {
-        var provider = new EnvironmentKeyProvider(_ => value);
-
-        var result = await provider.GetKeyAsync("unused");
-
-        Assert.Equal("Storage.KeyNotAvailable", result.Error!.Code);
-    }
-
-    [Fact]
-    public async Task Environment_key_accepts_64_hex_characters()
-    {
-        var provider = new EnvironmentKeyProvider(name => name == EnvironmentKeyProvider.VariableName ? new string('a', 64) : null);
-
-        var result = await provider.GetKeyAsync("unused");
-
-        Assert.True(result.IsSuccess);
-        Assert.All(result.Value!.ToArray(), b => Assert.Equal(0xAA, b));
-    }
 }
