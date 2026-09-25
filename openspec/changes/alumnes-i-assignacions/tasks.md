@@ -19,11 +19,11 @@
 
 ## 3. Casos de uso de alumnos
 
-- [ ] 3.1 Casos de uso de alta manual con confirmación de valores nuevos de catálogo, edición, cambio de nivel o grupo, baja y reactivación
-- [ ] 3.2 Búsqueda por nombre, apellidos, nivel, grupo, número de taquilla y estado de asignación, sin mayúsculas ni acentos, mostrando por defecto activos del curso activo (D13)
-- [ ] 3.3 Consulta del historial del alumno con texto compuesto desde claves del idioma activo
-- [ ] 3.4 Objetos de transferencia de listados sin correo; el detalle de la ficha y de la revisión de la importación sí lo llevan (D11)
-- [ ] 3.5 Pruebas con repositorios en memoria: búsquedas, filtro de sin taquilla, incluir bajas, lista vacía y privacidad de listados
+- [x] 3.1 Casos de uso de alta manual con confirmación de valores nuevos de catálogo, edición, cambio de nivel o grupo, baja y reactivación
+- [x] 3.2 Búsqueda por nombre, apellidos, nivel, grupo, número de taquilla y estado de asignación, sin mayúsculas ni acentos, mostrando por defecto activos del curso activo (D13)
+- [x] 3.3 Consulta del historial del alumno con texto compuesto desde claves del idioma activo
+- [x] 3.4 Objetos de transferencia de listados sin correo; el detalle de la ficha y de la revisión de la importación sí lo llevan (D11)
+- [x] 3.5 Pruebas con repositorios en memoria: búsquedas, filtro de sin taquilla, incluir bajas, lista vacía y privacidad de listados
 
 ## 4. Asignaciones
 

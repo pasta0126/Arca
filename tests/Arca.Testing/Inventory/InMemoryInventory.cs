@@ -2,11 +2,17 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using Arca.Application.Common;
+using Arca.Application.Catalog;
+using Arca.Application.Enrollments;
 using Arca.Application.Lockers;
+using Arca.Application.Students;
 using Arca.Application.SchoolYears;
 using Arca.Application.Zones;
 using Arca.Domain.Common;
+using Arca.Domain.Catalog;
+using Arca.Domain.Enrollments;
 using Arca.Domain.Lockers;
+using Arca.Domain.Students;
 using Arca.Domain.SchoolYears;
 using Arca.Domain.Zones;
 
@@ -24,6 +30,10 @@ public sealed class InMemoryInventory : IUnitOfWork
         Lockers = new LockerRepository(this);
         Events = new EventRepository(this);
         Years = new YearRepository(this);
+        Students = new StudentRepository(this);
+        Enrollments = new EnrollmentRepository(this);
+        Catalog = new CatalogRepository(this);
+        StudentEvents = new StudentEventRepository(this);
     }
 
     public List<Zone> ZoneList { get; private set; } = [];
@@ -33,6 +43,19 @@ public sealed class InMemoryInventory : IUnitOfWork
     public List<HistoryEvent> EventList { get; private set; } = [];
 
     public List<AcademicYear> YearList { get; private set; } = [];
+
+    public List<Student> StudentList { get; private set; } = [];
+
+    public List<Enrollment> EnrollmentList { get; private set; } = [];
+
+    public List<Level> LevelList { get; private set; } = [];
+
+    public List<Group> GroupList { get; private set; } = [];
+
+    public List<HistoryEvent> StudentEventList { get; private set; } = [];
+
+    /// <summary>The locker each student holds, until the assignments exist. A test sets it.</summary>
+    public ConfigurableStudentLockers StudentLockers { get; } = new();
 
     /// <summary>The years a test marks as holding enrolments or assignments, until those exist.</summary>
     public HashSet<Guid> YearsWithData { get; } = [];
@@ -44,6 +67,14 @@ public sealed class InMemoryInventory : IUnitOfWork
     public ILockerEventRepository Events { get; }
 
     public IAcademicYearRepository Years { get; }
+
+    public IStudentRepository Students { get; }
+
+    public IEnrollmentRepository Enrollments { get; }
+
+    public ICatalogRepository Catalog { get; }
+
+    public IStudentEventRepository StudentEvents { get; }
 
     /// <summary>Which lockers a student holds. The real one comes with the assignments.</summary>
     public ConfigurableOccupancy Occupancy { get; } = new();
@@ -59,6 +90,11 @@ public sealed class InMemoryInventory : IUnitOfWork
         var zones = ZoneList.Select(z => new Zone(z.Id, z.Name, z.NameKey, z.IsActive)).ToList();
         var lockers = LockerList.Select(Copy).ToList();
         var events = EventList.ToList();
+        var students = StudentList.Select(x => new Student(x.Id, x.FirstName, x.LastName, x.Email, x.NameKey, x.RetiredAtUtc, x.RetirementReason)).ToList();
+        var enrollments = EnrollmentList.Select(x => new Enrollment(x.Id, x.StudentId, x.YearId, x.LevelId, x.GroupId)).ToList();
+        var levels = LevelList.ToList();
+        var groups = GroupList.ToList();
+        var studentEvents = StudentEventList.ToList();
         var years = YearList.Select(y => AcademicYear.Restore(y.Id, y.StartDate, y.EndDate, y.IsActive)).ToList();
         Result<T> result;
         try
@@ -68,12 +104,14 @@ public sealed class InMemoryInventory : IUnitOfWork
         catch
         {
             (ZoneList, LockerList, EventList, YearList) = (zones, lockers, events, years);
+            (StudentList, EnrollmentList, LevelList, GroupList, StudentEventList) = (students, enrollments, levels, groups, studentEvents);
             throw;
         }
 
         if (!result.IsSuccess)
         {
             (ZoneList, LockerList, EventList, YearList) = (zones, lockers, events, years);
+            (StudentList, EnrollmentList, LevelList, GroupList, StudentEventList) = (students, enrollments, levels, groups, studentEvents);
         }
 
         return result;
@@ -103,6 +141,69 @@ public sealed class InMemoryInventory : IUnitOfWork
         }
 
         public Task<bool> HasDataAsync(Guid yearId, CancellationToken ct) => Task.FromResult(owner.YearsWithData.Contains(yearId));
+    }
+
+    sealed class StudentRepository(InMemoryInventory owner) : IStudentRepository
+    {
+        public Task<IReadOnlyList<Student>> ListAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<Student>>([.. owner.StudentList]);
+
+        public Task<Student?> GetAsync(Guid id, CancellationToken ct) => Task.FromResult(owner.StudentList.FirstOrDefault(s => s.Id == id));
+
+        public Task AddAsync(Student student, CancellationToken ct)
+        {
+            owner.StudentList.Add(student);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateAsync(Student student, CancellationToken ct) => Task.CompletedTask;
+    }
+
+    sealed class EnrollmentRepository(InMemoryInventory owner) : IEnrollmentRepository
+    {
+        public Task<IReadOnlyList<Enrollment>> ListByYearAsync(Guid yearId, CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<Enrollment>>([.. owner.EnrollmentList.Where(e => e.YearId == yearId)]);
+
+        public Task<Enrollment?> GetAsync(Guid studentId, Guid yearId, CancellationToken ct) =>
+            Task.FromResult(owner.EnrollmentList.FirstOrDefault(e => e.StudentId == studentId && e.YearId == yearId));
+
+        public Task AddAsync(Enrollment enrollment, CancellationToken ct)
+        {
+            owner.EnrollmentList.Add(enrollment);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateAsync(Enrollment enrollment, CancellationToken ct) => Task.CompletedTask;
+    }
+
+    sealed class CatalogRepository(InMemoryInventory owner) : ICatalogRepository
+    {
+        public Task<IReadOnlyList<Level>> ListLevelsAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<Level>>([.. owner.LevelList]);
+
+        public Task<IReadOnlyList<Group>> ListGroupsAsync(CancellationToken ct) => Task.FromResult<IReadOnlyList<Group>>([.. owner.GroupList]);
+
+        public Task AddLevelAsync(Level level, CancellationToken ct)
+        {
+            owner.LevelList.Add(level);
+            return Task.CompletedTask;
+        }
+
+        public Task AddGroupAsync(Group group, CancellationToken ct)
+        {
+            owner.GroupList.Add(group);
+            return Task.CompletedTask;
+        }
+    }
+
+    sealed class StudentEventRepository(InMemoryInventory owner) : IStudentEventRepository
+    {
+        public Task AddAsync(HistoryEvent change, CancellationToken ct)
+        {
+            owner.StudentEventList.Add(change);
+            return Task.CompletedTask;
+        }
+
+        public Task<IReadOnlyList<HistoryEvent>> ListAsync(Guid studentId, CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<HistoryEvent>>([.. Enumerable.Reverse(owner.StudentEventList).Where(e => e.EntityId == studentId).OrderByDescending(e => e.OccurredAtUtc)]);
     }
 
     static Locker Copy(Locker l) =>
@@ -172,6 +273,6 @@ public sealed class InMemoryInventory : IUnitOfWork
         }
 
         public Task<IReadOnlyList<HistoryEvent>> ListAsync(Guid lockerId, CancellationToken ct) =>
-            Task.FromResult<IReadOnlyList<HistoryEvent>>([.. owner.EventList.Where(e => e.EntityId == lockerId).OrderByDescending(e => e.OccurredAtUtc)]);
+            Task.FromResult<IReadOnlyList<HistoryEvent>>([.. Enumerable.Reverse(owner.EventList).Where(e => e.EntityId == lockerId).OrderByDescending(e => e.OccurredAtUtc)]);
     }
 }

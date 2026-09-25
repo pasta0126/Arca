@@ -46,4 +46,52 @@
   <data name="History.Unknown" xml:space="preserve">
     <value>Esdeveniment no reconegut ({0}).</value>
   </data>
+  <data name="History.Student.Created" xml:space="preserve">
+    <value>Alumne creat: {0} {1}.</value>
+    <comment>{0} name, {1} surnames</comment>
+  </data>
+  <data name="History.Student.DataChanged" xml:space="preserve">
+    <value>Dades corregides: {0}.</value>
+    <comment>{0} the changes</comment>
+  </data>
+  <data name="History.Student.Change" xml:space="preserve">
+    <value>{0}: «{1}» → «{2}»</value>
+    <comment>{0} field, {1} before, {2} after</comment>
+  </data>
+  <data name="History.Student.Enrolled" xml:space="preserve">
+    <value>Matriculat al curs {0}: {1}.</value>
+    <comment>{0} year, {1} level</comment>
+  </data>
+  <data name="History.Student.EnrolledWithGroup" xml:space="preserve">
+    <value>Matriculat al curs {0}: {1}, grup {2}.</value>
+    <comment>{0} year, {1} level, {2} group</comment>
+  </data>
+  <data name="History.Student.EnrollmentChanged" xml:space="preserve">
+    <value>Matrícula canviada de {0} a {1}.</value>
+    <comment>{0} before, {1} after</comment>
+  </data>
+  <data name="History.Student.Placement" xml:space="preserve">
+    <value>{0}</value>
+    <comment>{0} level</comment>
+  </data>
+  <data name="History.Student.PlacementWithGroup" xml:space="preserve">
+    <value>{0}, grup {1}</value>
+    <comment>{0} level, {1} group</comment>
+  </data>
+  <data name="History.Student.Retired" xml:space="preserve">
+    <value>Baixa de l'alumne. Motiu: {0}</value>
+    <comment>{0} reason</comment>
+  </data>
+  <data name="History.Student.Reactivated" xml:space="preserve">
+    <value>Alumne reactivat.</value>
+  </data>
+  <data name="History.Field.firstName" xml:space="preserve">
+    <value>nom</value>
+  </data>
+  <data name="History.Field.lastName" xml:space="preserve">
+    <value>cognoms</value>
+  </data>
+  <data name="History.Field.email" xml:space="preserve">
+    <value>correu</value>
+  </data>
 </root>
