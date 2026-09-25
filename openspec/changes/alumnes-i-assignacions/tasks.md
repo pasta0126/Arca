@@ -32,12 +32,12 @@
 - [x] 4.3 Definir `IAssignmentGuard` con hallazgos de dos tipos (aviso que exige confirmación e impedimento que rechaza) y aplicarlos antes de asignar (D8)
 - [x] 4.4 Definir `IAssignmentOpenedHandler`, `IAssignmentClosedHandler` e `IStudentLifecycleHandler` e invocarlos dentro de la transacción, con un contexto de operación extensible, al abrir o cerrar una asignación y al dar de baja o reactivar a un alumno (D9)
 - [x] 4.5 Implementar cambio de taquilla y liberación, ambos indivisibles y con eventos en historiales de alumno y taquilla
-- [ ] 4.6 Implementar la sugerencia de taquilla libre de número más bajo de la zona y de la siguiente con disponibilidad
-- [ ] 4.7 Implementar la reserva para un alumno, su consumo al asignar y su retirada al dar de baja al alumno
-- [ ] 4.8 Implementar las decisiones de reasignar y liberar al averiarse una taquilla ocupada, ampliando el caso de uso de `taquilles-i-zones`
-- [ ] 4.9 Consultas de historial de asignaciones por alumno y por taquilla, sin mezclar taquillas de baja con número reutilizado
-- [ ] 4.10 Pruebas: asignación correcta, alumno con taquilla, taquilla ocupada, alumno de baja, sin matrícula, taquilla averiada, de baja, reservada sin alumno, para otro alumno y para el mismo alumno, cambio, mismo destino, destino no asignable, liberación, aviso confirmado y rechazado
-- [ ] 4.11 Pruebas de equivalencia: asignar desde el alumno, desde la taquilla y arrastrando produce el mismo resultado y las mismas validaciones
+- [x] 4.6 Implementar la sugerencia de taquilla libre de número más bajo de la zona y de la siguiente con disponibilidad
+- [x] 4.7 Implementar la reserva para un alumno, su consumo al asignar y su retirada al dar de baja al alumno
+- [x] 4.8 Implementar las decisiones de reasignar y liberar al averiarse una taquilla ocupada, ampliando el caso de uso de `taquilles-i-zones`
+- [x] 4.9 Consultas de historial de asignaciones por alumno y por taquilla, sin mezclar taquillas de baja con número reutilizado
+- [x] 4.10 Pruebas: asignación correcta, alumno con taquilla, taquilla ocupada, alumno de baja, sin matrícula, taquilla averiada, de baja, reservada sin alumno, para otro alumno y para el mismo alumno, cambio, mismo destino, destino no asignable, liberación, aviso confirmado y rechazado
+- [x] 4.11 Pruebas de equivalencia: asignar desde el alumno, desde la taquilla y arrastrando produce el mismo resultado y las mismas validaciones
 
 ## 5. Ocupación real e integración con taquillas
 
