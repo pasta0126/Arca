@@ -47,4 +47,7 @@
   <data name="Assignments.Error.NotFound" xml:space="preserve">
     <value>No s'ha trobat l'assignació.</value>
   </data>
+  <data name="Assignments.Error.TargetRequired" xml:space="preserve">
+    <value>Per reassignar l'alumne cal triar la taquilla on anirà.</value>
+  </data>
 </root>

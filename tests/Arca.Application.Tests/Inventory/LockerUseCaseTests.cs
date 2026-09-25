@@ -185,23 +185,6 @@ public sealed class LockerUseCaseTests
         Assert.Contains("Keep", world.Store.EventList.Last().AfterJson, StringComparison.Ordinal);
     }
 
-    [Theory]
-    [InlineData(OutOfServiceDecision.Reassign)]
-    [InlineData(OutOfServiceDecision.Release)]
-    [Trait("spec", Spec + ": Decisión obligatoria al poner fuera de servicio una taquilla ocupada (Avería sin decisión)")]
-    public async Task Reassigning_or_releasing_is_not_available_until_the_assignments_exist(OutOfServiceDecision decision)
-    {
-        var world = new InventoryWorld();
-        var zone = await world.ZoneAsync("Planta 1");
-        var locker = await world.LockerAsync(1, zone);
-        world.Store.Occupancy.Occupy(locker);
-
-        var result = await world.MarkOutOfService.HandleAsync(new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Broken, decision), default);
-
-        Assert.Equal("Lockers.DecisionNotAvailable", result.Error!.Code);
-        Assert.Equal(LockerStatus.Occupied, (await world.RowAsync(locker)).Status);
-    }
-
     [Fact]
     [Trait("spec", Spec + ": Estado visible derivado (Estado tras resolver la avería)")]
     public async Task Resolving_the_breakdown_of_an_occupied_locker_shows_it_occupied_again()

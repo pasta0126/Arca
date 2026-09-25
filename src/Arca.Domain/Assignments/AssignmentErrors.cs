@@ -42,6 +42,9 @@ public static class AssignmentErrors
     public static readonly Error AlreadyClosed = new("Assignments.AlreadyClosed");
 
     /// <summary>There is no free locker in the whole centre.</summary>
+    /// <summary>Reassigning after a breakdown needs the locker the student moves to.</summary>
+    public static readonly Error TargetRequired = new("Assignments.TargetRequired");
+
     public static readonly Error NoFreeLockers = new("Assignments.NoFreeLockers");
 
     /// <summary>The note is longer than allowed. Args: {0} maximum length.</summary>

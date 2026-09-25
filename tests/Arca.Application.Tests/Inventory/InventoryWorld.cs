@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.Application.Assignments;
 using Arca.Application.Localization;
 using Arca.Application.Lockers;
 using Arca.Application.Lockers.AddLocker;
@@ -30,13 +31,17 @@ namespace Arca.Application.Tests.Inventory;
 /// <summary>Every use case of zones and lockers wired over the in-memory inventory, so a test reads as what a person does.</summary>
 public sealed class InventoryWorld
 {
-    public InventoryWorld(InMemoryInventory? store = null, FakeClock? clock = null, ILockerOccupancy? occupancy = null)
+    public InventoryWorld(
+        InMemoryInventory? store = null, FakeClock? clock = null, ILockerOccupancy? occupancy = null, Func<AssignmentServices>? assignments = null)
     {
+        _assignments = assignments;
         Store = store ?? new InMemoryInventory();
         Clock = clock ?? new FakeClock(new DateTimeOffset(2026, 9, 25, 9, 0, 0, TimeSpan.Zero));
         Occupancy = occupancy ?? Store.Occupancy;
         Hooks = [];
     }
+
+    readonly Func<AssignmentServices>? _assignments;
 
     public InMemoryInventory Store { get; }
 
@@ -65,9 +70,13 @@ public sealed class InventoryWorld
 
     public ReserveLockerHandler ReserveLocker => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 
-    public RemoveLockerReservationHandler RemoveReservation => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
+    public RemoveLockerReservationHandler RemoveReservation => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store.StudentEvents, Store, Clock);
 
-    public MarkLockerOutOfServiceHandler MarkOutOfService => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
+    /// <summary>The hooks of other capabilities; empty here, the tests of assignments fill them in.</summary>
+    public AssignmentServices Assignments => _assignments?.Invoke() ?? new(
+        Store.Assignments, Store.Students, Store.Lockers, Store.Zones, Store.Enrollments, Store.Years, Store.StudentEvents, Store.Events, [], [], []);
+
+    public MarkLockerOutOfServiceHandler MarkOutOfService => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Assignments, Store, Clock);
 
     public RestoreLockerServiceHandler RestoreService => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 

@@ -226,8 +226,9 @@ public sealed class Locker
 
     /// <summary>
     /// Puts the locker out of service as broken or in maintenance (taquilles-i-zones, D3). If a student holds it, a
-    /// decision is needed first and nothing changes without one. Only keeping the student is available for now.
-    /// Changing from one kind to the other needs no decision. A reservation is kept.
+    /// decision is needed first and nothing changes without one. The decision is recorded in the event; carrying it out
+    /// (reassigning or releasing the student) is done by the use case of the assignments. Changing from one kind to the
+    /// other needs no decision. A reservation is kept.
     /// </summary>
     public Result<OutOfServiceOutcome> MarkOutOfService(
         OutOfServiceKind kind, OutOfServiceDecision? decision, bool hasAssignment, DateTimeOffset now)
@@ -255,11 +256,6 @@ public sealed class Locker
             if (decision is null)
             {
                 return Result<OutOfServiceOutcome>.Success(OutOfServiceOutcome.DecisionRequired());
-            }
-
-            if (decision != OutOfServiceDecision.Keep)
-            {
-                return Result<OutOfServiceOutcome>.Failure(LockerErrors.DecisionNotAvailable(decision.Value));
             }
 
         }

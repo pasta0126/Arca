@@ -104,6 +104,10 @@ internal sealed class AssignmentFlow(
         return Result<bool>.Success(true);
     }
 
+    /// <summary>The row of a locker for results, with the zone name.</summary>
+    public async Task<LockerRow> LockerRowAsync(Locker locker, bool occupied, CancellationToken ct) =>
+        LockerRow.Of(locker, (await zones.GetAsync(locker.ZoneId, ct))?.Name ?? string.Empty, occupied);
+
     /// <summary>The row of an assignment for results and histories.</summary>
     public async Task<AssignmentRow> RowAsync(Assignment assignment, CancellationToken ct)
     {

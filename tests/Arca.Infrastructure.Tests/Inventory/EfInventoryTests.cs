@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.Application.Assignments;
 using Arca.Application.Lockers;
 using Arca.Application.Lockers.AddLocker;
 using Arca.Application.Lockers.CreateLockerRange;
@@ -69,6 +70,15 @@ public sealed class EfInventoryTests : IDisposable
         var added = await new AddLockerHandler(store.Lockers, store.Zones, store.Events, store, _clock)
             .HandleAsync(new AddLockerRequest(number, zone), default);
         return added.Value!.Id;
+    }
+
+    /// <summary>The out-of-service use case over the database; the parts that belong to the students are in memory until they are persisted.</summary>
+    MarkLockerOutOfServiceHandler MarkOutOfService(EfInventory store)
+    {
+        var others = new InMemoryInventory();
+        var assignments = new AssignmentServices(
+            others.Assignments, others.Students, store.Lockers, store.Zones, others.Enrollments, others.Years, others.StudentEvents, store.Events, [], [], []);
+        return new MarkLockerOutOfServiceHandler(store.Lockers, store.Zones, store.Events, _occupancy, assignments, store, _clock);
     }
 
     RetireLockerHandler Retire(EfInventory store, params ILockerRetiredHandler[] hooks) =>
@@ -200,7 +210,7 @@ public sealed class EfInventoryTests : IDisposable
         var zone = await ZoneAsync(store, "Planta 1");
         var locker = await LockerAsync(store, 15, zone);
         _clock.Advance(TimeSpan.FromMinutes(5));
-        await new MarkLockerOutOfServiceHandler(store.Lockers, store.Zones, store.Events, _occupancy, store, _clock)
+        await MarkOutOfService(store)
             .HandleAsync(new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Broken), default);
 
         var history = (await new GetLockerHistoryHandler(store.Lockers, store.Zones, store.Events, new InMemoryInventory().Students, new ResxLocalizer())
@@ -221,7 +231,7 @@ public sealed class EfInventoryTests : IDisposable
         var free = await LockerAsync(store, 1, zone);
         var occupied = await LockerAsync(store, 2, zone);
         _occupancy.Occupy(occupied);
-        await new MarkLockerOutOfServiceHandler(store.Lockers, store.Zones, store.Events, _occupancy, store, _clock)
+        await MarkOutOfService(store)
             .HandleAsync(new MarkLockerOutOfServiceRequest(occupied, OutOfServiceKind.Broken, OutOfServiceDecision.Keep), default);
 
         var listing = (await new ListLockersHandler(store.Lockers, store.Zones, _occupancy).HandleAsync(new ListLockersRequest(), default)).Value!;

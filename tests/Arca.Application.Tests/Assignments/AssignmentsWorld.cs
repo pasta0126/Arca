@@ -4,6 +4,10 @@
 using Arca.Application.Assignments;
 using Arca.Application.Assignments.AssignLocker;
 using Arca.Application.Assignments.ChangeStudentLocker;
+using Arca.Application.Assignments.GetLockerAssignments;
+using Arca.Application.Assignments.GetStudentAssignments;
+using Arca.Application.Assignments.ReserveLockerForStudent;
+using Arca.Application.Assignments.SuggestLocker;
 using Arca.Application.Assignments.ReleaseStudentLocker;
 using Arca.Application.Students;
 using Arca.Application.Tests.Inventory;
@@ -21,8 +25,8 @@ public sealed class AssignmentsWorld
         Store = new InMemoryInventory();
         Clock = new FakeClock(new DateTimeOffset(2026, 9, 25, 9, 0, 0, TimeSpan.Zero));
         var occupancy = new AssignmentOccupancy(Store.Assignments, Store.Lockers);
-        Inventory = new InventoryWorld(Store, Clock, occupancy);
         Students = new StudentsWorld(Store, Clock, occupancy);
+        Inventory = new InventoryWorld(Store, Clock, occupancy, () => Students.Services);
     }
 
     public InMemoryInventory Store { get; }
@@ -38,6 +42,14 @@ public sealed class AssignmentsWorld
     public ChangeStudentLockerHandler Change => new(Students.Services, Store, Clock);
 
     public ReleaseStudentLockerHandler Release => new(Students.Services, Store, Clock);
+
+    public SuggestLockerHandler Suggest => new(Store.Lockers, Store.Zones, Inventory.Occupancy);
+
+    public ReserveLockerForStudentHandler ReserveForStudent => new(Students.Services, Store, Clock);
+
+    public GetStudentAssignmentsHandler StudentAssignments => new(Students.Services);
+
+    public GetLockerAssignmentsHandler LockerAssignments => new(Students.Services);
 
     public Task<Guid> ZoneAsync(string name) => Inventory.ZoneAsync(name);
 

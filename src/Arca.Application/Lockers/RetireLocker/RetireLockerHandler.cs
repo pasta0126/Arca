@@ -31,6 +31,8 @@ public sealed class RetireLockerHandler(
                     {
                         await hook.HandleAsync(retired.Id, retired.RetiredAtUtc!.Value, token);
                     }
+
+                    return null;
                 }),
             ct);
 }
