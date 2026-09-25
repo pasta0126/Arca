@@ -50,4 +50,10 @@ public static class LockerErrors
 
     /// <summary>There is no locker with that identity.</summary>
     public static readonly Error NotFound = new("Lockers.NotFound");
+
+    /// <summary>The first number of a range is greater than the last.</summary>
+    public static readonly Error RangeInvalid = new("Lockers.RangeInvalid");
+
+    /// <summary>A range has more lockers than one operation may create. Args: {0} the maximum.</summary>
+    public static Error RangeTooLarge(int maximum) => new("Lockers.RangeTooLarge", Args: [maximum]);
 }

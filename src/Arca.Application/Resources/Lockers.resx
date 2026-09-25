@@ -50,4 +50,18 @@
   <data name="Lockers.Error.NotFound" xml:space="preserve">
     <value>No s'ha trobat la taquilla. Torna a carregar la llista.</value>
   </data>
+  <data name="Lockers.Error.RangeInvalid" xml:space="preserve">
+    <value>El primer número del rang no pot ser més gran que l'últim.</value>
+  </data>
+  <data name="Lockers.Error.RangeTooLarge" xml:space="preserve">
+    <value>Un rang no pot tenir més de {0} taquilles. Divideix-lo en diversos rangs.</value>
+    <comment>{0} maximum</comment>
+  </data>
+  <data name="Lockers.Warning.RangeConflicts" xml:space="preserve">
+    <value>No s'ha creat cap taquilla: aquests números ja els usen taquilles actives: {0}.</value>
+    <comment>{0} the numbers</comment>
+  </data>
+  <data name="Lockers.Warning.RangeChanged" xml:space="preserve">
+    <value>Les dades han canviat des de la revisió. No s'ha creat res; revisa el rang actualitzat i torna-ho a confirmar.</value>
+  </data>
 </root>

@@ -6,6 +6,7 @@ using Arca.Application.Lockers;
 using Arca.Application.Lockers.AddLocker;
 using Arca.Application.Lockers.ChangeLockerNumber;
 using Arca.Application.Lockers.ChangeLockerZone;
+using Arca.Application.Lockers.CreateLockerRange;
 using Arca.Application.Lockers.GetLockerHistory;
 using Arca.Application.Lockers.ListLockers;
 using Arca.Application.Lockers.MarkLockerOutOfService;
@@ -70,6 +71,8 @@ public sealed class InventoryWorld
     public ChangeLockerZoneHandler ChangeZone => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
 
     public RetireLockerHandler RetireLocker => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Hooks, Store, Clock);
+
+    public CreateLockerRangeHandler CreateRange => new(Store.Lockers, Store.Zones, Store.Events, Store, Clock);
 
     public GetLockerHistoryHandler History => new(Store.Lockers, Store.Zones, Store.Events, Localizer);
 

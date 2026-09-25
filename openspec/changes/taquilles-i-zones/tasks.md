@@ -30,9 +30,9 @@
 
 ## 4. Altas masivas
 
-- [ ] 4.1 Análisis y confirmación de alta por rangos en dos fases con revalidación al confirmar (D6)
-- [ ] 4.2 Validaciones de rango: invertido, un solo número, máximo 1000, zona activa, conflictos con lista completa de números
-- [ ] 4.3 Pruebas: rango correcto, con conflicto, invertido, de un número, excesivo y fallo a mitad de guardado (sin taquillas creadas)
+- [x] 4.1 Análisis y confirmación de alta por rangos en dos fases con revalidación al confirmar (D6)
+- [x] 4.2 Validaciones de rango: invertido, un solo número, máximo 1000, zona activa, conflictos con lista completa de números
+- [x] 4.3 Pruebas: rango correcto, con conflicto, invertido, de un número, excesivo y fallo a mitad de guardado (sin taquillas creadas)
 - [ ] 4.4 Análisis de importación: detección de columnas por cabecera del idioma activo, columnas obligatoria y opcional, columnas desconocidas ignoradas con aviso
 - [ ] 4.5 Validación por fila: número, repetición en el fichero, número en uso, número de una baja, zona vacía, desactivada, con otra grafía, inexistente y nota larga
 - [ ] 4.6 Opción de crear zonas que faltan, con deduplicación de grafías equivalentes y recuento de zonas nuevas

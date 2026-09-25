@@ -41,6 +41,9 @@ public sealed class InMemoryInventory : IUnitOfWork
     /// <summary>Makes the next saved change fail, so a test can prove that nothing stays half done.</summary>
     public bool FailOnNextEvent { get; set; }
 
+    /// <summary>Lets this many events be saved and makes the next one fail: a failure in the middle of a bulk save.</summary>
+    public int? EventsBeforeFailure { get; set; }
+
     public async Task<Result<T>> RunAsync<T>(Func<CancellationToken, Task<Result<T>>> work, CancellationToken ct)
     {
         var zones = ZoneList.Select(z => new Zone(z.Id, z.Name, z.NameKey, z.IsActive)).ToList();
@@ -115,10 +118,16 @@ public sealed class InMemoryInventory : IUnitOfWork
     {
         public Task AddAsync(HistoryEvent change, CancellationToken ct)
         {
-            if (owner.FailOnNextEvent)
+            if (owner.FailOnNextEvent || owner.EventsBeforeFailure == 0)
             {
                 owner.FailOnNextEvent = false;
+                owner.EventsBeforeFailure = null;
                 throw new IOException("the disk failed while saving");
+            }
+
+            if (owner.EventsBeforeFailure is > 0)
+            {
+                owner.EventsBeforeFailure--;
             }
 
             owner.EventList.Add(change);
