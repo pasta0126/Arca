@@ -45,9 +45,9 @@
 
 ## 7. Verificación transversal
 
-- [ ] 7.1 Prueba de que no existe ninguna contraseña ni llave por defecto en el código de producción (D8)
-- [ ] 7.2 Prueba de privacidad: un fallo con contraseña o clave de recuperación no deja rastro en el registro técnico
-- [ ] 7.3 Prueba de arquitectura: `Domain` y `Application` no referencian NSec ni SQLite3 Multiple Ciphers
-- [ ] 7.4 Prueba de tiempo de desbloqueo con los parámetros de Argon2id en equipo de gama baja
-- [ ] 7.5 Prueba automática de que todas las claves de recurso nuevas existen en catalán
-- [ ] 7.6 Prueba de extremo a extremo: crear contraseña, guardar la clave, cerrar, desbloquear, olvidar y recuperar, cambiar la contraseña y restaurar una copia antigua
+- [x] 7.1 Prueba de que no existe ninguna contraseña ni llave por defecto en el código de producción (D8)
+- [x] 7.2 Prueba de privacidad: un fallo con contraseña o clave de recuperación no deja rastro en el registro técnico
+- [x] 7.3 Prueba de arquitectura: `Domain` y `Application` no referencian NSec ni SQLite3 Multiple Ciphers
+- [x] 7.4 Prueba de tiempo de desbloqueo con los parámetros de Argon2id en equipo de gama baja
+- [x] 7.5 Prueba automática de que todas las claves de recurso nuevas existen en catalán
+- [x] 7.6 Prueba de extremo a extremo: crear contraseña, guardar la clave, cerrar, desbloquear, olvidar y recuperar, cambiar la contraseña y restaurar una copia antigua

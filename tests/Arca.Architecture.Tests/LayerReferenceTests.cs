@@ -14,7 +14,7 @@ namespace Arca.Architecture.Tests;
 public sealed class LayerReferenceTests
 {
     static readonly string[] _forbiddenInInnerLayers =
-        ["Microsoft.EntityFrameworkCore", "Microsoft.Data.Sqlite", "SQLite", "SQLitePCLRaw", "Avalonia"];
+        ["Microsoft.EntityFrameworkCore", "Microsoft.Data.Sqlite", "SQLite", "SQLitePCLRaw", "Avalonia", "NSec"];
 
     public static TheoryData<string, string[]> AllowedProjectReferences => new()
     {
@@ -42,6 +42,19 @@ public sealed class LayerReferenceTests
             .Select(e => (string?)e.Attribute("Include") ?? "")
             .Where(name => _forbiddenInInnerLayers.Any(f => name.StartsWith(f, StringComparison.OrdinalIgnoreCase)));
         Assert.Empty(packages);
+    }
+
+    [Theory]
+    [Trait("spec", "acces-i-xifrat/xifrat-de-la-base: Ningún secreto en el código (7.3: las capas internas no conocen el cifrado)")]
+    [InlineData(typeof(Domain.AssemblyMarker))]
+    [InlineData(typeof(Application.AssemblyMarker))]
+    public void Inner_layers_do_not_reference_the_cryptography_or_the_encrypted_database(Type marker)
+    {
+        var referenced = marker.Assembly.GetReferencedAssemblies().Select(a => a.Name ?? string.Empty);
+
+        Assert.DoesNotContain(referenced, n => n.StartsWith("NSec", StringComparison.OrdinalIgnoreCase)
+            || n.StartsWith("SQLite", StringComparison.OrdinalIgnoreCase)
+            || n.StartsWith("Microsoft.Data.Sqlite", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
