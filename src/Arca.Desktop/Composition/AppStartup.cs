@@ -40,7 +40,7 @@ public static class AppStartup
         var access = new AccessService(new NSecKeyCrypto(), new FileKeyFileStore());
         var flows = new AccessFlows(
             access, new WindowFormPresenter(startupWindow), localizer,
-            (path, newAccess, groups, token) => DatabaseCreator.CreateAsync(path, newAccess, groups, token));
+            CreateDatabase);
         var storage = new StorageStartup(PlatformContext.Current(), new PasswordKeyProvider(access, flows), firstRun: flows);
 
         var opened = await storage.OpenAsync(progress, ct);
@@ -58,7 +58,7 @@ public static class AppStartup
         var notifications = new NotificationCenter(clock, delay);
         var settingsFlows = new AccessFlows(
             access, new WindowFormPresenter(() => windows.Current), localizer,
-            (path, newAccess, groups, token) => DatabaseCreator.CreateAsync(path, newAccess, groups, token));
+            CreateDatabase);
         var security = new SecurityViewModel(settingsFlows, session.DatabasePath, notifications, localizer, log);
         var services = new ServiceCollection()
             .AddSingleton<ILocalizer>(localizer)
@@ -77,6 +77,10 @@ public static class AppStartup
             .BuildServiceProvider();
         return Result<AppRuntime>.Success(new AppRuntime(services, info, windows));
     }
+
+    /// <summary>Creates the database and its key file as one operation; the first run and the settings share it.</summary>
+    static Task<Result<bool>> CreateDatabase(string path, NewAccess access, IReadOnlyList<string?> groups, CancellationToken ct) =>
+        DatabaseCreator.CreateAsync(path, access, groups, ct);
 
     static string ApplicationVersion()
     {

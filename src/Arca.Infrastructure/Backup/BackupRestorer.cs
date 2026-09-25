@@ -110,7 +110,7 @@ public sealed class BackupRestorer(AccessService access, TimeProvider? timeProvi
             File.Move(staging, databasePath, overwrite: true);
             File.Copy(KeyFileStore.PathFor(session.DatabasePath), keyFile + ".restoring", overwrite: true);
             File.Move(keyFile + ".restoring", keyFile, overwrite: true);
-            KeyFileStore.DiscardPrevious(databasePath); // the previous version belonged to the data that was replaced
+            DiscardPreviousKeyFile(databasePath); // it belonged to the data that was replaced
             return Result<string>.Success(previous);
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException)
@@ -175,6 +175,19 @@ public sealed class BackupRestorer(AccessService access, TimeProvider? timeProvi
         {
             DeleteQuietly(databasePath + ".restoring");
             DeleteQuietly(keyFile + ".restoring");
+        }
+    }
+
+    /// <summary>A leftover file that cannot be removed must not turn a restore that worked into a failure.</summary>
+    static void DiscardPreviousKeyFile(string databasePath)
+    {
+        try
+        {
+            KeyFileStore.DiscardPrevious(databasePath);
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            // Harmless: the next unlock removes it.
         }
     }
 

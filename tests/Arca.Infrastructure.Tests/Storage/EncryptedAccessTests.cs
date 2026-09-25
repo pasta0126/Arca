@@ -163,6 +163,23 @@ public sealed class EncryptedAccessTests
         Assert.True(Service().Unlock(path, Password).IsSuccess);
     }
 
+    [Fact]
+    [Trait("spec", Spec + ": Fichero de claves protegido (Contenido del fichero)")]
+    public async Task A_failed_creation_puts_back_the_key_file_it_had_replaced()
+    {
+        using var dir = new TempDirectory();
+        var path = dir.File("arca.db");
+        File.WriteAllText(KeyFileStore.PathFor(path), "someone else's key file");
+        Directory.CreateDirectory(path); // the database cannot take its place, after the key file was written
+        using var access = Service().CreateAccess(Password, Password).Value!;
+
+        await Assert.ThrowsAnyAsync<Exception>(() => DatabaseCreator.CreateAsync(path, access, Answers(access)));
+
+        Assert.Equal("someone else's key file", File.ReadAllText(KeyFileStore.PathFor(path)));
+        Assert.False(File.Exists(KeyFileStore.PreviousPathFor(path)));
+        Assert.False(File.Exists(path + ".new"));
+    }
+
     [Theory]
     [Trait("spec", Spec + ": Abrir la base de datos (Fichero de claves ausente)")]
     [InlineData("missing", "Keys.FileMissing")]

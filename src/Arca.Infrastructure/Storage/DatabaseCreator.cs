@@ -44,6 +44,7 @@ public static class DatabaseCreator
         var building = path + BuildingSuffix;
         var keyFile = KeyFileStore.PathFor(path);
         DeleteQuietly(building); // leftovers of an earlier attempt that never finished
+        var moved = false;
         try
         {
             var created = await ArcaDatabase.CreateAsync(building, access.DataKey, ct);
@@ -57,20 +58,49 @@ public static class DatabaseCreator
 
             KeyFileStore.Write(path, access.KeyFile);
             File.Move(building, path);
-            KeyFileStore.DiscardPrevious(path);
+            moved = true;
+            DiscardPreviousQuietly(path);
             return Result<bool>.Success(true);
         }
         catch
         {
             SqliteConnection.ClearAllPools();
             DeleteQuietly(building);
-            if (!File.Exists(path))
+            if (!moved)
             {
-                DeleteQuietly(keyFile);
-                DeleteQuietly(KeyFileStore.PreviousPathFor(path));
+                // The database never took its place, so the key file written for it must not stay next to whatever is
+                // there: put back the one it replaced (a leftover of an earlier attempt or another database's), or remove it.
+                var previous = KeyFileStore.PreviousPathFor(path);
+                try
+                {
+                    if (File.Exists(previous))
+                    {
+                        File.Move(previous, keyFile, overwrite: true);
+                    }
+                    else
+                    {
+                        DeleteQuietly(keyFile);
+                    }
+                }
+                catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+                {
+                    // Both files are still where they were; nothing is deleted.
+                }
             }
 
             throw;
+        }
+    }
+
+    static void DiscardPreviousQuietly(string path)
+    {
+        try
+        {
+            KeyFileStore.DiscardPrevious(path);
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            // A leftover previous key file is harmless and the next unlock removes it.
         }
     }
 
