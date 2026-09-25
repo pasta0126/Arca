@@ -208,6 +208,85 @@ public sealed class AccessServiceTests
     }
 
     [Fact]
+    [Trait("spec", "acces-i-xifrat/xifrat-de-la-base: Cambiar la contraseña no recifra la base (Credenciales sustituidas)")]
+    public void A_completed_change_leaves_no_previous_key_file_that_still_opens_the_data_with_the_old_password()
+    {
+        using var dir = new TempDirectory();
+        var database = dir.File("arca.db");
+        var (key, recovery) = Setup(dir, database);
+
+        Assert.True(Service().ChangePassword(database, Password, Other, Other).IsSuccess);
+
+        Assert.False(File.Exists(KeyFileStore.PreviousPathFor(database)));
+        Assert.Equal("Keys.WrongCredentials", Service().Unlock(database, Password).Error!.Code);
+        Assert.Equal(key, Service().Unlock(database, Other).Value!.ToArray());
+        Assert.True(Service().CheckRecoveryKey(database, recovery).IsSuccess); // the recovery key is untouched
+    }
+
+    [Fact]
+    [Trait("spec", "acces-i-xifrat/xifrat-de-la-base: Cambiar la contraseña no recifra la base (Credenciales sustituidas)")]
+    public void A_regenerated_recovery_key_leaves_no_previous_key_file_that_still_opens_the_data_with_the_old_key()
+    {
+        using var dir = new TempDirectory();
+        var database = dir.File("arca.db");
+        var (_, oldRecovery) = Setup(dir, database);
+        using var pending = Service().PrepareRegeneration(database, Password).Value!;
+
+        Assert.True(Service().Commit(database, pending, pending.Challenge.Indices.Select(i => RecoveryKey.Groups(pending.RecoveryKey)[i]).ToArray()).IsSuccess);
+
+        Assert.False(File.Exists(KeyFileStore.PreviousPathFor(database)));
+        Assert.All(Directory.EnumerateFiles(dir.Path), file =>
+        {
+            var read = KeyFileStore.Read(Path.ChangeExtension(file, ".db"));
+            Assert.False(read.IsSuccess && KeyWrapping.UnwrapWithRecoveryKey(new NSecKeyCrypto(), read.Value!, oldRecovery).IsSuccess);
+        });
+        Assert.False(Service().CheckRecoveryKey(database, oldRecovery).IsSuccess);
+        Assert.True(Service().CheckRecoveryKey(database, pending.RecoveryKey).IsSuccess);
+    }
+
+    /// <summary>A store whose disk silently damages the next write, so the read-back proof has to catch it.</summary>
+    sealed class DamagingStore(IKeyFileStore inner) : IKeyFileStore
+    {
+        public bool Damage { get; set; }
+
+        public Result<KeyFile> Read(string databasePath) => inner.Read(databasePath);
+
+        public void Write(string databasePath, KeyFile file)
+        {
+            if (!Damage)
+            {
+                inner.Write(databasePath, file);
+                return;
+            }
+
+            Damage = false; // only that first write goes wrong; putting the previous file back works
+            var wrapped = (byte[])file.Password.Wrapped.Clone();
+            wrapped[0] ^= 0xFF;
+            inner.Write(databasePath, file with { Password = file.Password with { Wrapped = wrapped } });
+        }
+
+        public void DiscardPrevious(string databasePath) => inner.DiscardPrevious(databasePath);
+    }
+
+    [Fact]
+    [Trait("spec", "acces-i-xifrat/xifrat-de-la-base: Cambiar la contraseña no recifra la base (Fichero nuevo que no se comprueba)")]
+    public void A_new_key_file_that_does_not_read_back_right_is_replaced_by_the_previous_one_and_the_old_password_keeps_working()
+    {
+        using var dir = new TempDirectory();
+        var database = dir.File("arca.db");
+        var (key, _) = Setup(dir, database);
+        var store = new DamagingStore(new FileKeyFileStore()) { Damage = true };
+        var damaging = new AccessService(new NSecKeyCrypto(), store, _cost);
+
+        var result = damaging.ChangePassword(database, Password, Other, Other);
+
+        Assert.Equal("Keys.ChangeFailed", result.Error!.Code);
+        Assert.Equal(key, Service().Unlock(database, Password).Value!.ToArray());
+        Assert.Equal("Keys.WrongCredentials", Service().Unlock(database, Other).Error!.Code);
+        Assert.False(File.Exists(KeyFileStore.PreviousPathFor(database)));
+    }
+
+    [Fact]
     [Trait("spec", Spec + ": Cambiar la contraseña (Fallo a mitad)")]
     public void An_interrupted_write_leaves_no_half_written_key_file()
     {

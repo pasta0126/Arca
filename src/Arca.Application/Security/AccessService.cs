@@ -218,8 +218,11 @@ public sealed class AccessService(IKeyCrypto crypto, IKeyFileStore store, Argon2
 
         try
         {
-            store.Write(databasePath, pending.NewFile);
-            return Result<bool>.Success(true);
+            // The recovery wrapper is the one that always changes here; a reset also changes the password wrapper, which
+            // the read-back comparison covers.
+            var saved = WriteVerified(databasePath, pending.NewFile, file =>
+                KeyWrapping.UnwrapWithRecoveryKey(crypto, file, pending.RecoveryKey).IsSuccess);
+            return saved ? Result<bool>.Success(true) : Result<bool>.Failure(KeyErrors.ChangeFailed);
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException)
         {
@@ -240,8 +243,10 @@ public sealed class AccessService(IKeyCrypto crypto, IKeyFileStore store, Argon2
         try
         {
             var replaced = KeyWrapping.ReplacePassword(crypto, current, key, bytes, _cost);
-            store.Write(databasePath, replaced);
-            return Result<bool>.Success(true, [.. accepted.Notices, .. notices]);
+            var saved = WriteVerified(databasePath, replaced, file => KeyWrapping.UnwrapWithPassword(crypto, file, bytes).IsSuccess);
+            return saved
+                ? Result<bool>.Success(true, [.. accepted.Notices, .. notices])
+                : Result<bool>.Failure(KeyErrors.ChangeFailed);
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException)
         {
@@ -252,6 +257,45 @@ public sealed class AccessService(IKeyCrypto crypto, IKeyFileStore store, Argon2
             System.Security.Cryptography.CryptographicOperations.ZeroMemory(bytes);
         }
     }
+
+    /// <summary>
+    /// Saves a new key file and proves it (acces-i-xifrat, D3): it is read back, must be the file that was written, and
+    /// must open with the new credentials. Only then is the previous version removed, so a replaced password or recovery
+    /// key stops opening the data at once. If the proof fails the previous file is put back and the change is refused.
+    /// </summary>
+    bool WriteVerified(string databasePath, KeyFile newFile, Func<KeyFile, bool> opensWithNewCredentials)
+    {
+        var before = store.Read(databasePath);
+        store.Write(databasePath, newFile);
+        var readBack = store.Read(databasePath);
+        if (readBack.IsSuccess && SameWrappers(readBack.Value!, newFile) && opensWithNewCredentials(readBack.Value!))
+        {
+            DiscardPreviousQuietly(databasePath);
+            return true;
+        }
+
+        if (before.IsSuccess)
+        {
+            store.Write(databasePath, before.Value!);
+            var restored = store.Read(databasePath);
+            if (restored.IsSuccess && SameWrappers(restored.Value!, before.Value!))
+            {
+                DiscardPreviousQuietly(databasePath);
+            }
+
+            // Otherwise the previous version stays next to the file: it is the only good copy left.
+        }
+
+        return false;
+    }
+
+    static bool SameWrappers(KeyFile a, KeyFile b) =>
+        a.FormatVersion == b.FormatVersion
+        && a.Password.Parameters == b.Password.Parameters
+        && a.Password.Salt.AsSpan().SequenceEqual(b.Password.Salt)
+        && a.Password.Wrapped.AsSpan().SequenceEqual(b.Password.Wrapped)
+        && a.Recovery.Salt.AsSpan().SequenceEqual(b.Recovery.Salt)
+        && a.Recovery.Wrapped.AsSpan().SequenceEqual(b.Recovery.Wrapped);
 
     Result<DatabaseKey> UnwrapWithPassword(KeyFile file, string? password)
     {
