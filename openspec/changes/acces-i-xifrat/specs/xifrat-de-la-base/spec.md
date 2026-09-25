@@ -53,11 +53,19 @@ El sistema SHALL abrir la base de datos desenvolviendo la llave con la contrase�
 - **THEN** el sistema lo indica, no modifica nada y ofrece restaurar una copia
 
 ### Requirement: Cambiar la contraseña no recifra la base
-El sistema SHALL cambiar la contraseña o regenerar la clave de recuperación renovando solo el envoltorio de la llave, de forma atómica, y conservando la versión anterior del fichero de claves hasta el siguiente desbloqueo correcto.
+El sistema SHALL cambiar la contraseña o regenerar la clave de recuperación renovando solo el envoltorio de la llave, de forma atómica, y conservando la versión anterior del fichero de claves solo hasta comprobar que la nueva se ha guardado bien y abre con las credenciales nuevas, momento en que la elimina para que la contraseña o la clave sustituidas dejen de abrir los datos.
 
 #### Scenario: Atomicidad
 - **WHEN** el cambio se interrumpe a mitad
 - **THEN** el fichero de claves anterior sigue siendo válido
+
+#### Scenario: Credenciales sustituidas
+- **WHEN** se completa el cambio de contraseña o la regeneración de la clave de recuperación
+- **THEN** no queda ninguna versión anterior del fichero de claves y la contraseña o la clave sustituidas ya no abren los datos
+
+#### Scenario: Fichero nuevo que no se comprueba
+- **WHEN** tras guardar el fichero de claves nuevo no se puede comprobar que abre con las credenciales nuevas
+- **THEN** el sistema restablece el fichero anterior, avisa del fallo y las credenciales anteriores siguen funcionando
 
 #### Scenario: Copias anteriores
 - **WHEN** se cambia la contraseña
