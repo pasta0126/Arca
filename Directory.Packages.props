@@ -9,6 +9,8 @@
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.1.3" />
     <PackageVersion Include="Avalonia.Headless.XUnit" Version="12.1.3" />
     <PackageVersion Include="Avalonia.Skia" Version="12.1.3" />
+    <!-- Key wrapping: Argon2id, HKDF and XChaCha20-Poly1305 over libsodium (MIT) -->
+    <PackageVersion Include="NSec.Cryptography" Version="26.4.0" />
     <!-- Technical log (Apache-2.0) -->
     <PackageVersion Include="Serilog" Version="4.4.0" />
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />

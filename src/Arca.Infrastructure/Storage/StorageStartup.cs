@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.Application.Security;
 using Arca.Application.Startup;
 using Arca.Application.Storage;
 using Arca.Domain.Common;
@@ -14,11 +15,16 @@ namespace Arca.Infrastructure.Storage;
 /// </summary>
 /// <param name="platform">Facts about the machine that decide the default location.</param>
 /// <param name="keys">Where the database key comes from.</param>
+/// <param name="firstRun">
+/// The first-run screens. When the database file does not exist they create it (and its key file) and give the key,
+/// instead of asking for a password that does not exist yet. Null means a missing file is reported.
+/// </param>
 /// <param name="createIfMissing">
 /// Development only, until the first-run screen of configuracio-inicial exists: creates the database
 /// when the file is missing instead of reporting it.
 /// </param>
-public sealed class StorageStartup(PlatformContext platform, IDatabaseKeyProvider keys, bool createIfMissing = false)
+public sealed class StorageStartup(
+    PlatformContext platform, IDatabaseKeyProvider keys, bool createIfMissing = false, IFirstRunFlow? firstRun = null)
 {
     const int StageCount = 4;
 
@@ -28,6 +34,7 @@ public sealed class StorageStartup(PlatformContext platform, IDatabaseKeyProvide
         InstanceLock? instance = null;
         DatabaseKey? key = null;
         StorageSession? session = null;
+        var created = false;
 
         var steps = new SyncProgress<string>(textKey => progress?.Report(new StartupProgress(textKey, StageCount, StageCount)));
         var sequence = new StartupSequence(
@@ -54,7 +61,11 @@ public sealed class StorageStartup(PlatformContext platform, IDatabaseKeyProvide
             }),
             new StartupStage("Startup.Stage.Key", async token =>
             {
-                var result = await keys.GetKeyAsync(token);
+                var firstRunNeeded = firstRun is not null && !File.Exists(path);
+                var result = firstRunNeeded
+                    ? await firstRun!.CreateAsync(path, token)
+                    : await keys.GetKeyAsync(path, token);
+                created = firstRunNeeded && result.IsSuccess;
                 key = result.Value;
                 return result.Error;
             }),
@@ -71,7 +82,7 @@ public sealed class StorageStartup(PlatformContext platform, IDatabaseKeyProvide
 
                 await using var context = opened.Value!;
                 var version = await StorageSession.ReadSchemaVersionAsync(context, token);
-                session = new StorageSession(path, instance!, key!, version, !exists);
+                session = new StorageSession(path, instance!, key!, version, !exists || created);
                 return null;
             }),
         ]);

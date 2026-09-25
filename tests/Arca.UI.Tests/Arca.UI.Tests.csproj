@@ -10,6 +10,7 @@
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Avalonia.Skia" />
     <ProjectReference Include="..\..\src\Arca.UI\Arca.UI.csproj" />
+    <ProjectReference Include="..\..\src\Arca.Infrastructure\Arca.Infrastructure.csproj" />
     <ProjectReference Include="..\Arca.Testing\Arca.Testing.csproj" />
   </ItemGroup>
 </Project>

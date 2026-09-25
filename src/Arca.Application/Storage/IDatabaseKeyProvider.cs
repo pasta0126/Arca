@@ -6,10 +6,10 @@ using Arca.Domain.Common;
 namespace Arca.Application.Storage;
 
 /// <summary>
-/// Supplies the key that opens the database. The real implementation is the access flow of acces-i-xifrat
-/// (centre password or recovery key). Until it exists, a development-only provider is used.
+/// Supplies the key that opens the database at a path. The real implementation asks for the centre password
+/// (acces-i-xifrat); a development-only provider reads it from the environment.
 /// </summary>
 public interface IDatabaseKeyProvider
 {
-    Task<Result<DatabaseKey>> GetKeyAsync(CancellationToken ct = default);
+    Task<Result<DatabaseKey>> GetKeyAsync(string databasePath, CancellationToken ct = default);
 }

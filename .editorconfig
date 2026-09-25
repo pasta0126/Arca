@@ -37,6 +37,8 @@ dotnet_diagnostic.IDE0073.severity = warning
 # (Error, Result<T>.Success) without helping any consumer.
 dotnet_diagnostic.CA1716.severity = none
 dotnet_diagnostic.CA1000.severity = none
+# Key material and the key-file model are byte arrays by nature (serialisation, libsodium); an immutable wrapper would only copy them
+dotnet_diagnostic.CA1819.severity = none
 
 [tests/**.cs]
 # Test names describe the scenario with underscores (docs/convenciones.md)

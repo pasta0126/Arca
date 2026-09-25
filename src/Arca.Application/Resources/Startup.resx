@@ -11,7 +11,7 @@
     <value>Comprovant que ARCA no està obert en un altre lloc…</value>
   </data>
   <data name="Startup.Stage.Key" xml:space="preserve">
-    <value>Obtenint la clau de les dades…</value>
+    <value>Esperant la contrasenya per desbloquejar les dades…</value>
   </data>
   <data name="Startup.Stage.Database" xml:space="preserve">
     <value>Obrint la base de dades…</value>

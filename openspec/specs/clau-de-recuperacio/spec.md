@@ -1,15 +1,16 @@
-## Purpose
+# clau-de-recuperacio Specification
 
+## Purpose
 Evitar la pérdida de datos por olvidar la contraseña: una segunda llave, larga y generada por el sistema, que el centro guarda aparte.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Generación de la clave de recuperación
 El sistema SHALL generar al crear la contraseña una clave de recuperación aleatoria de al menos 128 bits, escrita en un alfabeto sin caracteres ambiguos y agrupada para poder leerla y copiarla.
 
 #### Scenario: Formato
 - **WHEN** se genera la clave de recuperación
-- **THEN** es un código de 26 caracteres en grupos de 5, por ejemplo `K7F2P-9XQ4M-...`
+- **THEN** es un código de 26 caracteres en cinco grupos (cuatro de 5 y el último de 6), por ejemplo `K7F2P-9XQ4M-ABCDE-FGHJK-MNPQRS`
 
 #### Scenario: Aleatoria
 - **WHEN** se generan dos claves

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using Arca.Application.Storage;
 using Arca.Domain.Common;
+using Arca.Infrastructure.Security;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -122,6 +123,7 @@ public sealed class SchemaMigrator(
         try
         {
             File.Copy(path, backup, overwrite: false);
+            CopyKeyFile(path, backup); // a copy is only useful together with the key file it opens with (acces-i-xifrat, D7)
             if (await _verifyBackup(backup, key, ct))
             {
                 return true;
@@ -134,7 +136,29 @@ public sealed class SchemaMigrator(
 
         SqliteConnection.ClearAllPools();
         File.Delete(backup);
+        DeleteKeyFileCopy(backup);
         return false;
+    }
+
+    /// <summary>The key file of the database, saved next to its safety copy with the copy's name.</summary>
+    public static string KeyFileCopyOf(string backup) => backup + KeyFileStore.Extension;
+
+    static void CopyKeyFile(string databasePath, string backup)
+    {
+        var keyFile = KeyFileStore.PathFor(databasePath);
+        if (File.Exists(keyFile))
+        {
+            File.Copy(keyFile, KeyFileCopyOf(backup), overwrite: true);
+        }
+    }
+
+    static void DeleteKeyFileCopy(string backup)
+    {
+        var copy = KeyFileCopyOf(backup);
+        if (File.Exists(copy))
+        {
+            File.Delete(copy);
+        }
     }
 
     static void DeleteOlderCopies(string path)
@@ -143,6 +167,7 @@ public sealed class SchemaMigrator(
         foreach (var old in copies.Take(Math.Max(0, copies.Count - CopiesToKeep)))
         {
             File.Delete(old);
+            DeleteKeyFileCopy(old);
         }
     }
 
