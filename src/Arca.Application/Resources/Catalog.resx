@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Catalog.Error.NameRequired" xml:space="preserve">
+    <value>El nom és obligatori.</value>
+  </data>
+  <data name="Catalog.Error.NameTooLong" xml:space="preserve">
+    <value>El nom no pot tenir més de {0} caràcters.</value>
+    <comment>{0} maximum length</comment>
+  </data>
+  <data name="Catalog.Error.LevelExists" xml:space="preserve">
+    <value>Ja existeix el nivell «{0}» (no es distingeixen majúscules ni accents).</value>
+    <comment>{0} name</comment>
+  </data>
+  <data name="Catalog.Error.GroupExists" xml:space="preserve">
+    <value>Aquest nivell ja té el grup «{0}» (no es distingeixen majúscules ni accents).</value>
+    <comment>{0} name</comment>
+  </data>
+</root>

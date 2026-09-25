@@ -9,13 +9,13 @@
 
 ## 2. Dominio de alumnos
 
-- [ ] 2.1 Crear `Student` con nombre y apellidos obligatorios (máx. 100), correo obligatorio y único, y estado activo o de baja con motivo y fecha
-- [ ] 2.2 Normalizar y guardar el correo (único, incluye bajas) y la clave de nombre y apellidos para búsquedas, con el componente de comparación central (D2)
-- [ ] 2.3 Crear `Enrollment` con nivel obligatorio, grupo opcional y una sola matrícula por alumno y curso
-- [ ] 2.4 Crear el catálogo `Level` y `Group` con claves normalizadas, grupo por nivel, creación de valores nuevos y ordenación natural (D6)
-- [ ] 2.5 Reglas de baja (con motivo y liberación de taquilla), reactivación y edición de datos, con evento estructurado en el historial del alumno
-- [ ] 2.6 Códigos de error y claves de recurso en catalán de alumnos
-- [ ] 2.7 Pruebas: datos obligatorios, longitud, equivalencia de grafías en grupos, mismo grupo en distinto nivel, correo obligatorio, inválido y repetido (con otras mayúsculas), homónimos con correos distintos, baja ya registrada, reactivar activo, continuidad de ficha entre cursos
+- [x] 2.1 Crear `Student` con nombre y apellidos obligatorios (máx. 100), correo obligatorio y único, y estado activo o de baja con motivo y fecha
+- [x] 2.2 Normalizar y guardar el correo (único, incluye bajas) y la clave de nombre y apellidos para búsquedas, con el componente de comparación central (D2)
+- [x] 2.3 Crear `Enrollment` con nivel obligatorio, grupo opcional y una sola matrícula por alumno y curso
+- [x] 2.4 Crear el catálogo `Level` y `Group` con claves normalizadas, grupo por nivel, creación de valores nuevos y ordenación natural (D6)
+- [x] 2.5 Reglas de baja (con motivo y liberación de taquilla), reactivación y edición de datos, con evento estructurado en el historial del alumno
+- [x] 2.6 Códigos de error y claves de recurso en catalán de alumnos
+- [x] 2.7 Pruebas: datos obligatorios, longitud, equivalencia de grafías en grupos, mismo grupo en distinto nivel, correo obligatorio, inválido y repetido (con otras mayúsculas), homónimos con correos distintos, baja ya registrada, reactivar activo, continuidad de ficha entre cursos
 
 ## 3. Casos de uso de alumnos
 

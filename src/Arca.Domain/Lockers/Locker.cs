@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using Arca.Domain.Common;
 using Arca.Domain.Zones;
@@ -17,7 +18,11 @@ public sealed class Locker
 {
     public const int MaximumNoteLength = 500;
 
-    static readonly JsonSerializerOptions _json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    static readonly JsonSerializerOptions _json = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, // keep accents readable in the stored history
+    };
 
     /// <summary>Rebuilds a stored locker. Used by persistence, which has already validated it.</summary>
     public Locker(

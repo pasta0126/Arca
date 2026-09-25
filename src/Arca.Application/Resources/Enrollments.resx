@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Enrollments.Error.LevelRequired" xml:space="preserve">
+    <value>Cal indicar el nivell de l'alumne.</value>
+  </data>
+  <data name="Enrollments.Error.GroupNotInLevel" xml:space="preserve">
+    <value>El grup no pertany al nivell triat.</value>
+  </data>
+  <data name="Enrollments.Error.AlreadyEnrolled" xml:space="preserve">
+    <value>L'alumne ja té matrícula en aquest curs.</value>
+  </data>
+  <data name="Enrollments.Error.StudentRetired" xml:space="preserve">
+    <value>L'alumne està de baixa. Cal reactivar-lo abans de matricular-lo.</value>
+  </data>
+  <data name="Enrollments.Error.Unchanged" xml:space="preserve">
+    <value>No hi ha res a canviar: el nivell i el grup són els mateixos.</value>
+  </data>
+  <data name="Enrollments.Error.NotFound" xml:space="preserve">
+    <value>No s'ha trobat la matrícula.</value>
+  </data>
+</root>
