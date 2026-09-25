@@ -1,11 +1,11 @@
 ## 1. Curso escolar
 
-- [ ] 1.1 Crear la entidad `AcademicYear` con nombre derivado, fechas, validación de coherencia y de solapamiento, y estado activo
-- [ ] 1.2 Reglas de un solo curso activo, primera activación automática, activación solo sin otro activo y eliminación solo sin datos
-- [ ] 1.3 Casos de uso: crear, activar, listar, consultar y eliminar cursos
-- [ ] 1.4 Guarda de dominio que rechaza modificar matrículas y asignaciones de un curso no activo (D12), como comprobación por curso y tipo de operación que `cursos-i-historial` amplía
-- [ ] 1.5 Códigos de error y claves de recurso en catalán del curso escolar
-- [ ] 1.6 Pruebas: fechas incoherentes, solapamiento, nombre duplicado, segundo curso sin activar, activar con otro activo, sin curso activo, histórico de solo lectura, eliminar con y sin datos
+- [x] 1.1 Crear la entidad `AcademicYear` con nombre derivado, fechas, validación de coherencia y de solapamiento, y estado activo
+- [x] 1.2 Reglas de un solo curso activo, primera activación automática, activación solo sin otro activo y eliminación solo sin datos
+- [x] 1.3 Casos de uso: crear, activar, listar, consultar y eliminar cursos
+- [x] 1.4 Guarda de dominio que rechaza modificar matrículas y asignaciones de un curso no activo (D12), como comprobación por curso y tipo de operación que `cursos-i-historial` amplía
+- [x] 1.5 Códigos de error y claves de recurso en catalán del curso escolar
+- [x] 1.6 Pruebas: fechas incoherentes, solapamiento, nombre duplicado, segundo curso sin activar, activar con otro activo, sin curso activo, histórico de solo lectura, eliminar con y sin datos
 
 ## 2. Dominio de alumnos
 

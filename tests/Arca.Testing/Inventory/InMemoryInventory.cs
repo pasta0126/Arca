@@ -3,9 +3,11 @@
 
 using Arca.Application.Common;
 using Arca.Application.Lockers;
+using Arca.Application.SchoolYears;
 using Arca.Application.Zones;
 using Arca.Domain.Common;
 using Arca.Domain.Lockers;
+using Arca.Domain.SchoolYears;
 using Arca.Domain.Zones;
 
 namespace Arca.Testing.Inventory;
@@ -21,6 +23,7 @@ public sealed class InMemoryInventory : IUnitOfWork
         Zones = new ZoneRepository(this);
         Lockers = new LockerRepository(this);
         Events = new EventRepository(this);
+        Years = new YearRepository(this);
     }
 
     public List<Zone> ZoneList { get; private set; } = [];
@@ -29,11 +32,18 @@ public sealed class InMemoryInventory : IUnitOfWork
 
     public List<HistoryEvent> EventList { get; private set; } = [];
 
+    public List<AcademicYear> YearList { get; private set; } = [];
+
+    /// <summary>The years a test marks as holding enrolments or assignments, until those exist.</summary>
+    public HashSet<Guid> YearsWithData { get; } = [];
+
     public IZoneRepository Zones { get; }
 
     public ILockerRepository Lockers { get; }
 
     public ILockerEventRepository Events { get; }
+
+    public IAcademicYearRepository Years { get; }
 
     /// <summary>Which lockers a student holds. The real one comes with the assignments.</summary>
     public ConfigurableOccupancy Occupancy { get; } = new();
@@ -49,6 +59,7 @@ public sealed class InMemoryInventory : IUnitOfWork
         var zones = ZoneList.Select(z => new Zone(z.Id, z.Name, z.NameKey, z.IsActive)).ToList();
         var lockers = LockerList.Select(Copy).ToList();
         var events = EventList.ToList();
+        var years = YearList.Select(y => AcademicYear.Restore(y.Id, y.StartDate, y.EndDate, y.IsActive)).ToList();
         Result<T> result;
         try
         {
@@ -56,16 +67,42 @@ public sealed class InMemoryInventory : IUnitOfWork
         }
         catch
         {
-            (ZoneList, LockerList, EventList) = (zones, lockers, events);
+            (ZoneList, LockerList, EventList, YearList) = (zones, lockers, events, years);
             throw;
         }
 
         if (!result.IsSuccess)
         {
-            (ZoneList, LockerList, EventList) = (zones, lockers, events);
+            (ZoneList, LockerList, EventList, YearList) = (zones, lockers, events, years);
         }
 
         return result;
+    }
+
+    sealed class YearRepository(InMemoryInventory owner) : IAcademicYearRepository
+    {
+        public Task<IReadOnlyList<AcademicYear>> ListAsync(CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<AcademicYear>>([.. owner.YearList]);
+
+        public Task<AcademicYear?> GetAsync(Guid id, CancellationToken ct) => Task.FromResult(owner.YearList.FirstOrDefault(y => y.Id == id));
+
+        public Task<AcademicYear?> GetActiveAsync(CancellationToken ct) => Task.FromResult(owner.YearList.FirstOrDefault(y => y.IsActive));
+
+        public Task AddAsync(AcademicYear year, CancellationToken ct)
+        {
+            owner.YearList.Add(year);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateAsync(AcademicYear year, CancellationToken ct) => Task.CompletedTask;
+
+        public Task RemoveAsync(AcademicYear year, CancellationToken ct)
+        {
+            owner.YearList.Remove(year);
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> HasDataAsync(Guid yearId, CancellationToken ct) => Task.FromResult(owner.YearsWithData.Contains(yearId));
     }
 
     static Locker Copy(Locker l) =>

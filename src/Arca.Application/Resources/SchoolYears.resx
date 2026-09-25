@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="SchoolYears.Error.DatesInvalid" xml:space="preserve">
+    <value>La data de fi ha de ser posterior a la data d'inici.</value>
+  </data>
+  <data name="SchoolYears.Error.Overlaps" xml:space="preserve">
+    <value>Les dates se sol·lapen amb les del curs {0}. Tria unes dates que no coincideixin.</value>
+    <comment>{0} name of the other year</comment>
+  </data>
+  <data name="SchoolYears.Error.AlreadyExists" xml:space="preserve">
+    <value>Ja existeix el curs {0}.</value>
+    <comment>{0} name</comment>
+  </data>
+  <data name="SchoolYears.Error.AnotherActive" xml:space="preserve">
+    <value>Ja hi ha un curs actiu. Abans d'activar-ne un altre cal iniciar el tancament del curs actiu.</value>
+  </data>
+  <data name="SchoolYears.Error.NotActive" xml:space="preserve">
+    <value>Aquest curs no és l'actiu, així que no es poden canviar les seves matrícules ni assignacions. Només es poden consultar.</value>
+  </data>
+  <data name="SchoolYears.Error.NoActiveYear" xml:space="preserve">
+    <value>No hi ha cap curs actiu. Cal crear un curs o activar-ne un abans de continuar.</value>
+  </data>
+  <data name="SchoolYears.Error.HasData" xml:space="preserve">
+    <value>El curs té matrícules o assignacions i no es pot eliminar.</value>
+  </data>
+  <data name="SchoolYears.Error.NotFound" xml:space="preserve">
+    <value>No s'ha trobat el curs.</value>
+  </data>
+</root>
