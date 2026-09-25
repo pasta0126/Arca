@@ -102,7 +102,7 @@ public sealed class EfInventoryTests : IDisposable
 
         Assert.DoesNotContain(columns, c => c.Contains("Status", StringComparison.OrdinalIgnoreCase));
         Assert.Equal(
-            ["Id", "IsReserved", "Note", "Number", "OutOfService", "ReservationNote", "RetiredAtUtc", "ZoneId"], columns.Order());
+            ["Id", "IsReserved", "Note", "Number", "OutOfService", "ReservationNote", "ReservedForStudentId", "RetiredAtUtc", "ZoneId"], columns.Order());
     }
 
     // --- Unique indexes ---
