@@ -16,7 +16,7 @@ public sealed class EnvironmentKeyProvider(Func<string, string?>? readVariable =
 
     readonly Func<string, string?> _read = readVariable ?? Environment.GetEnvironmentVariable;
 
-    public Task<Result<DatabaseKey>> GetKeyAsync(CancellationToken ct = default)
+    public Task<Result<DatabaseKey>> GetKeyAsync(string databasePath, CancellationToken ct = default)
     {
         var text = _read(VariableName);
         if (string.IsNullOrWhiteSpace(text) || text.Length != DatabaseKey.Length * 2)

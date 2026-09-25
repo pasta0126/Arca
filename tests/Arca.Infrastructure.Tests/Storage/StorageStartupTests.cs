@@ -14,13 +14,13 @@ public sealed class StorageStartupTests
 {
     sealed class FixedKey(string seed) : IDatabaseKeyProvider
     {
-        public Task<Result<DatabaseKey>> GetKeyAsync(CancellationToken ct = default) =>
+        public Task<Result<DatabaseKey>> GetKeyAsync(string databasePath, CancellationToken ct = default) =>
             Task.FromResult(Result<DatabaseKey>.Success(TestKeys.FromSeed(seed)));
     }
 
     sealed class NoKey : IDatabaseKeyProvider
     {
-        public Task<Result<DatabaseKey>> GetKeyAsync(CancellationToken ct = default) =>
+        public Task<Result<DatabaseKey>> GetKeyAsync(string databasePath, CancellationToken ct = default) =>
             Task.FromResult(Result<DatabaseKey>.Failure(StorageErrors.KeyNotAvailable));
     }
 
@@ -173,7 +173,7 @@ public sealed class StorageStartupTests
 
     sealed class ThrowingKey : IDatabaseKeyProvider
     {
-        public Task<Result<DatabaseKey>> GetKeyAsync(CancellationToken ct = default) =>
+        public Task<Result<DatabaseKey>> GetKeyAsync(string databasePath, CancellationToken ct = default) =>
             throw new InvalidOperationException("boom");
     }
 
@@ -262,7 +262,7 @@ public sealed class StorageStartupTests
 
     sealed class FixedFixtureKey : IDatabaseKeyProvider
     {
-        public Task<Result<DatabaseKey>> GetKeyAsync(CancellationToken ct = default) =>
+        public Task<Result<DatabaseKey>> GetKeyAsync(string databasePath, CancellationToken ct = default) =>
             Task.FromResult(Result<DatabaseKey>.Success(TestKeys.Fixture()));
     }
 
@@ -275,7 +275,7 @@ public sealed class StorageStartupTests
     {
         var provider = new EnvironmentKeyProvider(_ => value);
 
-        var result = await provider.GetKeyAsync();
+        var result = await provider.GetKeyAsync("unused");
 
         Assert.Equal("Storage.KeyNotAvailable", result.Error!.Code);
     }
@@ -285,7 +285,7 @@ public sealed class StorageStartupTests
     {
         var provider = new EnvironmentKeyProvider(name => name == EnvironmentKeyProvider.VariableName ? new string('a', 64) : null);
 
-        var result = await provider.GetKeyAsync();
+        var result = await provider.GetKeyAsync("unused");
 
         Assert.True(result.IsSuccess);
         Assert.All(result.Value!.ToArray(), b => Assert.Equal(0xAA, b));

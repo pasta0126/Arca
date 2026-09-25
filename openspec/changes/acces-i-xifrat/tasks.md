@@ -7,11 +7,11 @@
 
 ## 2. Contraseña del centro
 
-- [ ] 2.1 Política de contraseña (mínimo 12 caracteres sin reglas de composición) con contador de longitud, lista de contraseñas habituales embebida, rechazo de repeticiones y secuencias, normalización Unicode e indicador de fortaleza sin dependencias (D5)
-- [ ] 2.2 Casos de uso: crear la contraseña y la base, desbloquear, cambiar la contraseña y restablecer con la clave de recuperación
-- [ ] 2.3 Etapa de desbloqueo en el arranque por etapas y cancelación que cierra la aplicación (D6)
-- [ ] 2.4 Higiene de memoria y garantías de no registrar la contraseña (D9)
-- [ ] 2.5 Pruebas: creación válida, demasiado corta, una sola palabra de 12 letras aceptada con aviso, contraseña habitual, repetición y secuencia rechazadas, frase con espacios, letras acentuadas, desbloqueo correcto e incorrecto, cambio con fallo a mitad, contraseñas con acentos, "ç" y "l·l", y ausencia de la contraseña en el registro técnico
+- [x] 2.1 Política de contraseña (mínimo 12 caracteres sin reglas de composición) con contador de longitud, lista de contraseñas habituales embebida, rechazo de repeticiones y secuencias, normalización Unicode e indicador de fortaleza sin dependencias (D5)
+- [x] 2.2 Casos de uso: crear la contraseña y la base, desbloquear, cambiar la contraseña y restablecer con la clave de recuperación
+- [x] 2.3 Etapa de desbloqueo en el arranque por etapas y cancelación que cierra la aplicación (D6)
+- [x] 2.4 Higiene de memoria y garantías de no registrar la contraseña (D9)
+- [x] 2.5 Pruebas: creación válida, demasiado corta, una sola palabra de 12 letras aceptada con aviso, contraseña habitual, repetición y secuencia rechazadas, frase con espacios, letras acentuadas, desbloqueo correcto e incorrecto, cambio con fallo a mitad, contraseñas con acentos, "ç" y "l·l", y ausencia de la contraseña en el registro técnico
 
 ## 3. Clave de recuperación
 

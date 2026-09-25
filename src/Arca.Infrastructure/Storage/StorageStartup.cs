@@ -54,7 +54,7 @@ public sealed class StorageStartup(PlatformContext platform, IDatabaseKeyProvide
             }),
             new StartupStage("Startup.Stage.Key", async token =>
             {
-                var result = await keys.GetKeyAsync(token);
+                var result = await keys.GetKeyAsync(path, token);
                 key = result.Value;
                 return result.Error;
             }),

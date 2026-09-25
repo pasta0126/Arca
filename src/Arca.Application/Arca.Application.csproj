@@ -3,6 +3,9 @@
     <RootNamespace>Arca.Application</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Security\CommonPasswords.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Arca.Domain\Arca.Domain.csproj" />
   </ItemGroup>
 </Project>

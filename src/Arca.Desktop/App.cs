@@ -3,6 +3,7 @@
 
 using Arca.Application.Common;
 using Arca.Application.Localization;
+using Arca.Application.Security;
 using Arca.Application.Startup;
 using Arca.Desktop.Composition;
 using Arca.UI.Startup;
@@ -58,6 +59,12 @@ public sealed class App : Avalonia.Application
             var result = await Task.Run(() => AppStartup.StartAsync(log, progress));
             if (!result.IsSuccess)
             {
+                if (result.Error!.Code == KeyErrors.UnlockCancelled.Code)
+                {
+                    desktop.Shutdown(0); // the person cancelled the password: close without opening the data
+                    return;
+                }
+
                 splashModel.ShowError(result.Error!);
                 return;
             }

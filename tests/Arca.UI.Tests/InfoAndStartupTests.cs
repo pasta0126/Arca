@@ -116,7 +116,7 @@ public sealed class InfoAndStartupTests
 
         model.Show(new StartupProgress("Startup.Stage.Key", 3, 4));
         Dispatcher.UIThread.RunJobs();
-        Assert.Contains("Obtenint la clau de les dades…", Texts(window));
+        Assert.Contains("Esperant la contrasenya per desbloquejar les dades…", Texts(window));
         Assert.False(window.CloseButton.IsEffectivelyVisible);
 
         model.ShowError(StorageErrors.PathNotAccessible("/dades/arca.db"));

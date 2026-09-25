@@ -50,6 +50,28 @@ public static class KeyWrapping
         }
     }
 
+    /// <summary>
+    /// A key file with a new password wrapper (new salt) and the recovery wrapper untouched. The database key does not
+    /// change, so neither the database nor any copy needs re-encrypting.
+    /// </summary>
+    public static KeyFile ReplacePassword(
+        IKeyCrypto crypto, KeyFile current, DatabaseKey dataKey, ReadOnlySpan<byte> password, Argon2Parameters cost)
+    {
+        var dek = dataKey.ToArray();
+        var salt = crypto.RandomBytes(SaltLength);
+        byte[]? passwordKey = null;
+        try
+        {
+            passwordKey = crypto.DerivePasswordKey(password, salt, cost);
+            var wrapped = crypto.Wrap(passwordKey, dek, PasswordAad(current.FormatVersion, cost, salt));
+            return current with { Password = new PasswordSlot(PasswordKdf, cost, salt, wrapped) };
+        }
+        finally
+        {
+            Wipe(dek, passwordKey);
+        }
+    }
+
     /// <summary>Opens the wrapper of the password. Fails, with no detail, if the password is wrong or the header was altered.</summary>
     public static Result<DatabaseKey> UnwrapWithPassword(IKeyCrypto crypto, KeyFile file, ReadOnlySpan<byte> password)
     {

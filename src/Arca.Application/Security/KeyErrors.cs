@@ -22,4 +22,22 @@ public static class KeyErrors
 
     /// <summary>The password or the recovery key does not open the key file. It says nothing more.</summary>
     public static readonly Error WrongCredentials = new("Keys.WrongCredentials");
+
+    /// <summary>No password was given.</summary>
+    public static readonly Error PasswordRequired = new("Keys.PasswordRequired");
+
+    /// <summary>Shorter than the minimum. Args: {0} minimum length.</summary>
+    public static Error PasswordTooShort(int minimum) => new("Keys.PasswordTooShort", Args: [minimum]);
+
+    /// <summary>In the list of common passwords, or an obvious repetition or sequence.</summary>
+    public static readonly Error PasswordTooCommon = new("Keys.PasswordTooCommon");
+
+    /// <summary>The two passwords typed are different.</summary>
+    public static readonly Error PasswordMismatch = new("Keys.PasswordMismatch");
+
+    /// <summary>The new key file could not be written; the previous password still works.</summary>
+    public static readonly Error ChangeFailed = new("Keys.ChangeFailed");
+
+    /// <summary>The person cancelled the password request; the application closes without opening the data.</summary>
+    public static readonly Error UnlockCancelled = new("Keys.UnlockCancelled");
 }

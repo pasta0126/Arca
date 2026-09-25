@@ -22,4 +22,29 @@
   <data name="Keys.Error.WrongCredentials" xml:space="preserve">
     <value>La contrasenya o la clau no són correctes. Torna-ho a provar.</value>
   </data>
+  <data name="Keys.Error.PasswordRequired" xml:space="preserve">
+    <value>Cal escriure una contrasenya.</value>
+  </data>
+  <data name="Keys.Error.PasswordTooShort" xml:space="preserve">
+    <value>La contrasenya és massa curta: ha de tenir com a mínim {0} caràcters.</value>
+    <comment>{0} minimum length</comment>
+  </data>
+  <data name="Keys.Error.PasswordTooCommon" xml:space="preserve">
+    <value>Aquesta contrasenya és massa habitual o massa previsible. Tria'n una altra, per exemple diverses paraules sense relació.</value>
+  </data>
+  <data name="Keys.Error.PasswordMismatch" xml:space="preserve">
+    <value>Les dues contrasenyes no coincideixen. Escriu-les de nou.</value>
+  </data>
+  <data name="Keys.Error.ChangeFailed" xml:space="preserve">
+    <value>No s'ha pogut desar la contrasenya nova. La contrasenya anterior continua funcionant. Torna-ho a provar.</value>
+  </data>
+  <data name="Keys.Error.UnlockCancelled" xml:space="preserve">
+    <value>S'ha cancel·lat la petició de contrasenya. ARCA es tanca sense obrir les dades.</value>
+  </data>
+  <data name="Keys.Warning.PasswordWeak" xml:space="preserve">
+    <value>Aquesta contrasenya és una sola paraula o un patró previsible. És més segura si uses diverses paraules sense relació.</value>
+  </data>
+  <data name="Keys.Warning.BackupsKeepOldPassword" xml:space="preserve">
+    <value>Les còpies de seguretat fetes abans d'aquest canvi s'obren amb la contrasenya anterior.</value>
+  </data>
 </root>
