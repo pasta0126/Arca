@@ -275,5 +275,29 @@ public sealed class BackupKeysTests
         Assert.Equal("current data", await MarkerOfAsync(path, currentKey));
     }
 
+    [Fact]
+    [Trait("spec", Spec + ": Adoptar la llave de la copia al restaurar (Conservación de lo anterior)")]
+    public async Task A_failed_restore_into_an_empty_place_leaves_no_half_applied_state()
+    {
+        using var dir = new TempDirectory();
+        var path = dir.File("arca.db");
+        var (key, _) = await CreateAsync(path, Password, "old data");
+        var backup = dir.File("copia" + BackupContainer.Extension);
+        await BackupMaker.CreateAsync(path, key, backup);
+        SqliteClear();
+        File.Delete(path);
+        File.Delete(KeyFileStore.PathFor(path)); // nothing there: a new computer
+        var restorer = new BackupRestorer(Service());
+        using var session = restorer.Open(backup, dir.Path).Value!;
+        await restorer.UnlockWithPasswordAsync(session, Password);
+        Directory.CreateDirectory(KeyFileStore.PathFor(path)); // the key file cannot take its place, after the database has
+
+        var result = restorer.Complete(session, path);
+
+        Assert.Equal("Keys.RestoreFailed", result.Error!.Code);
+        Assert.False(File.Exists(path)); // the restored database did not stay behind without its key file
+        Assert.False(File.Exists(KeyFileStore.PathFor(path)));
+    }
+
     static void SqliteClear() => Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
 }

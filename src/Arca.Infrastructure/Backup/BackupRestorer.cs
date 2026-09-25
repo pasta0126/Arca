@@ -153,10 +153,18 @@ public sealed class BackupRestorer(AccessService access, TimeProvider? timeProvi
             {
                 File.Copy(previous, databasePath, overwrite: true);
             }
+            else if (!hadDatabase)
+            {
+                DeleteQuietly(databasePath); // there was none before: the restored one must not stay behind
+            }
 
             if (hadKeys && File.Exists(previous + KeyFileStore.Extension))
             {
                 File.Copy(previous + KeyFileStore.Extension, keyFile, overwrite: true);
+            }
+            else if (!hadKeys)
+            {
+                DeleteQuietly(keyFile);
             }
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException)
