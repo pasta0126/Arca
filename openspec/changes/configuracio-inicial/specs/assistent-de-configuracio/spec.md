@@ -63,10 +63,6 @@ El sistema SHALL ejecutar cada paso mediante los casos de uso y validaciones de 
 - **WHEN** el usuario importa alumnos en el asistente
 - **THEN** pasa por la revisión previa de la importación habitual antes de confirmar
 
-#### Scenario: Importación de taquillas
-- **WHEN** el usuario elige importar taquillas en su paso
-- **THEN** se usa la misma importación con revisión previa que fuera del asistente
-
 ### Requirement: Paso de curso escolar
 El sistema SHALL proponer en el paso de curso escolar el año académico actual con fechas de inicio y fin editables, crearlo y activarlo, y SHALL indicarlo como hecho cuando exista un curso activo.
 
@@ -90,7 +86,7 @@ El sistema SHALL permitir en el paso de importes definir la cuota, la fianza y l
 - **THEN** el paso de importes indica que primero hay que completar el de curso escolar
 
 ### Requirement: Pasos de zonas y taquillas
-El sistema SHALL permitir en el paso de zonas crear las zonas, y en el de taquillas dar de alta taquillas por rangos o importarlas, y SHALL requerir al menos una zona para el paso de taquillas.
+El sistema SHALL permitir en el paso de zonas crear las zonas, y en el de taquillas dar de alta taquillas por rangos o una a una, y SHALL requerir al menos una zona para el paso de taquillas.
 
 #### Scenario: Taquillas sin zonas
 - **WHEN** no hay ninguna zona y el usuario abre el paso de taquillas

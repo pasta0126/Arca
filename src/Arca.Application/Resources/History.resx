@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="History.Locker.Created" xml:space="preserve">
+    <value>Taquilla creada amb el número {0} a la zona {1}.</value>
+  </data>
+  <data name="History.Locker.NumberChanged" xml:space="preserve">
+    <value>Número canviat de {0} a {1}.</value>
+  </data>
+  <data name="History.Locker.ZoneChanged" xml:space="preserve">
+    <value>Taquilla moguda de la zona {0} a la zona {1}.</value>
+  </data>
+  <data name="History.Locker.Reserved" xml:space="preserve">
+    <value>Taquilla reservada.</value>
+  </data>
+  <data name="History.Locker.ReservedWithNote" xml:space="preserve">
+    <value>Taquilla reservada. Nota: {0}</value>
+  </data>
+  <data name="History.Locker.ReservationRemoved" xml:space="preserve">
+    <value>S'ha tret la reserva de la taquilla.</value>
+  </data>
+  <data name="History.Locker.OutOfService" xml:space="preserve">
+    <value>Taquilla fora de servei: {0}.</value>
+  </data>
+  <data name="History.Locker.OutOfServiceKeeping" xml:space="preserve">
+    <value>Taquilla fora de servei: {0}. Es manté l'alumne assignat.</value>
+  </data>
+  <data name="History.Locker.ServiceTypeChanged" xml:space="preserve">
+    <value>Canvi de tipus de fora de servei: de {0} a {1}.</value>
+  </data>
+  <data name="History.Locker.ServiceRestored" xml:space="preserve">
+    <value>Taquilla de nou en servei (s'ha resolt: {0}).</value>
+  </data>
+  <data name="History.Locker.Retired" xml:space="preserve">
+    <value>Taquilla donada de baixa.</value>
+  </data>
+  <data name="History.Kind.Broken" xml:space="preserve">
+    <value>avariada</value>
+  </data>
+  <data name="History.Kind.Maintenance" xml:space="preserve">
+    <value>en manteniment</value>
+  </data>
+  <data name="History.Unknown" xml:space="preserve">
+    <value>Esdeveniment no reconegut ({0}).</value>
+  </data>
+</root>

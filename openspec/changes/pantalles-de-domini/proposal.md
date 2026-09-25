@@ -28,7 +28,7 @@ Ningún cambio especifica las pantallas concretas de dominio (hallazgo del hito 
 
 ## Fuera de alcance
 
-- Pantallas de llaves, incidencias y mantenimiento en bloque, informes, cierre de curso y conservación, copias de seguridad, importación de alumnos y de taquillas por CSV, devolución de fianza y devolución en bloque, condonación en bloque, asistente de configuración e identidad y tema: van con sus cambios y en hitos posteriores (`docs/hito-1.md`). Cada uno añadirá su pantalla, o se ampliará este cambio, cuando se implemente.
+- Pantallas de llaves, incidencias y mantenimiento en bloque, informes, cierre de curso y conservación, copias de seguridad, importación de alumnos (ODS), devolución de fianza y devolución en bloque, condonación en bloque, asistente de configuración e identidad y tema: van con sus cambios y en hitos posteriores (`docs/hito-1.md`). Cada uno añadirá su pantalla, o se ampliará este cambio, cuando se implemente.
 - Marco, navegación, búsqueda global, Inicio y componentes: son de `ui-shell` y `ux-fonaments`.
 - Reglas de negocio nuevas y cambios de comportamiento de las capacidades de dominio.
 - Maquetas o diseño visual detallado (paleta, iconos, espaciados finales): los define `ui-shell`.

@@ -59,7 +59,7 @@ Orden recomendado: 2 → 4 → 5 → 6 (convención) → 9 → 8 → 7 → 12 �
 | Versión de .NET | LTS vigente al empezar |
 | Versión de Avalonia | Última estable compatible con el renderizado sin ventana |
 | SQLite cifrado | SQLite3 Multiple Ciphers en formato SQLCipher 4 (decidido; ver `docs/stack.md`) |
-| Lectura de CSV | Biblioteca consolidada tras `ICsvReader` (`taquilles-i-zones`) |
+| Escritura de CSV (informes) | Biblioteca consolidada tras un puerto propio (`informes-csv`); no hay lectura de CSV |
 | Firma de avisos de versión | Ed25519 con NSec.Cryptography (verificación) |
 | Pruebas | Marco de pruebas, biblioteca de aserciones, dobles y pruebas de arquitectura |
 | Inyección de dependencias y MVVM | Microsoft.Extensions.* y biblioteca MVVM |
@@ -161,7 +161,7 @@ Cada fila con versión, motivo y alternativa descartada.
 | Cambio | Lo que entra en el hito 1 | Lo que queda para después |
 |--------|---------------------------|---------------------------|
 | `arquitectura-base` | Capas, base cifrada, migrador, i18n, resultado estructurado, CI | Distribución e instalador |
-| `taquilles-i-zones` | Zonas, taquillas, estado derivado, alta por rangos | Importación de taquillas, historial completo |
+| `taquilles-i-zones` | Zonas, taquillas, estado derivado, alta por rangos | Historial completo (la importación de taquillas se retiró el 2026-09-25) |
 | `alumnes-i-assignacions` | Curso, alumnos, matrícula, asignación | Conciliación completa de la importación |
 | `pagaments` | Importes y cargos generados al asignar | Devolución de fianza, bloque |
 | `ux-fonaments` | Notificaciones, confirmación, comando de ejecución única | Adaptabilidad, atajos completos |

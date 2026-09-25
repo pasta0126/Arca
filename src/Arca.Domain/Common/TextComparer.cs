@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using System.Globalization;
+using System.Text;
 
 namespace Arca.Domain.Common;
 
@@ -15,6 +16,39 @@ public static class TextComparer
     const CompareOptions Searching = CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace;
 
     static CompareInfo Info => Cultures.Catalan.CompareInfo;
+
+    /// <summary>
+    /// A stable key for "the same text": trimmed, without accents, case or repeated spaces. Unlike a culture sort key it is
+    /// the same on every operating system and version, so it can be stored and given a unique index (taquilles-i-zones, D5).
+    /// </summary>
+    public static string Key(string? text)
+    {
+        var builder = new StringBuilder();
+        var pendingSpace = false;
+        foreach (var c in (text ?? string.Empty).Normalize(NormalizationForm.FormD))
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.NonSpacingMark)
+            {
+                continue;
+            }
+
+            if (char.IsWhiteSpace(c))
+            {
+                pendingSpace = builder.Length > 0;
+                continue;
+            }
+
+            if (pendingSpace)
+            {
+                builder.Append(' ');
+                pendingSpace = false;
+            }
+
+            builder.Append(char.ToLowerInvariant(c));
+        }
+
+        return builder.ToString().Normalize(NormalizationForm.FormC);
+    }
 
     public static IComparer<string?> Comparer { get; } = Comparer<string?>.Create(Compare);
 

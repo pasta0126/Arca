@@ -120,7 +120,7 @@ Estado de cada término: **fijado** (decidido) o **validar** (propuesta a confir
 
 | Castellano | Catalán | Inglés | Estado | Notas |
 |------------|---------|--------|--------|-------|
-| importación | importació | `Import` | fijado | Alumnos: ODS; taquillas: CSV |
+| importación | importació | `Import` | fijado | Solo alumnos (ODS); las taquillas no se importan |
 | revisión previa | revisió prèvia | `Preview` | fijado | Sin efectos |
 | plan | pla | `Plan` | fijado | Inmutable |
 | confirmar / aplicar | confirmar / aplicar | `Confirm` / `Apply` | fijado | Revalida y aplica todo |

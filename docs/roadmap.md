@@ -6,7 +6,7 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 | # | Cambio | Contenido | Estado |
 |---|---|---|---|
 | 1 | `arquitectura-base` | Capas .NET, EF Core + SQLite cifrado (SQLCipher 4), migraciones, i18n, distribución, contrato de feedback, arranque y registro | redactado |
-| 2 | `taquilles-i-zones` | Zonas, taquillas, estados derivados, altas por rangos y CSV, historial | redactado |
+| 2 | `taquilles-i-zones` | Zonas, taquillas, estados derivados, altas por rangos e individual, historial | redactado |
 | 3 | `alumnes-i-assignacions` | Curso escolar (año académico), alumno persistente con matrícula por curso, catálogo de niveles y grupos, asignación 1 a 1, importación ODS (correo como identificador único) con revisión, baja y cambio de taquilla, reasignar y liberar al averiarse | redactado |
 | 4 | `pagaments` | Importes por curso, cargos con estados (pendiente, pagado, exento, condonado, anulado), fianza única por estancia y devolución, deuda arrastrada o condonada, morosos | redactado |
 | 5 | `claus` | Estado de la llave por asignación, entrega, devolución individual y masiva, pérdida con reposición y copia, disponibilidad de la llave de la taquilla | redactado |

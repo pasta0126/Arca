@@ -25,3 +25,15 @@ public sealed class RecordingErrorLog : IErrorLog
         return "REF" + Entries.Count.ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 }
+
+/// <summary>A confirmation service that answers as a test decides and remembers what it was asked.</summary>
+public sealed class RecordingConfirmations(bool answer) : IConfirmationService
+{
+    public List<ConfirmationRequest> Asked { get; } = [];
+
+    public Task<bool> ConfirmAsync(ConfirmationRequest request, CancellationToken ct = default)
+    {
+        Asked.Add(request);
+        return Task.FromResult(answer);
+    }
+}

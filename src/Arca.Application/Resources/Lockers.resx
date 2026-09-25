@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Lockers.Error.NumberInvalid" xml:space="preserve">
+    <value>El número de la taquilla ha de ser un enter entre {0} i {1}.</value>
+    <comment>{0} lowest, {1} highest</comment>
+  </data>
+  <data name="Lockers.Error.NumberInUse" xml:space="preserve">
+    <value>El número {0} ja el té una altra taquilla activa. Tria un altre número.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Error.NoteTooLong" xml:space="preserve">
+    <value>La nota no pot tenir més de {0} caràcters.</value>
+    <comment>{0} maximum length</comment>
+  </data>
+  <data name="Lockers.Error.ZoneUnavailable" xml:space="preserve">
+    <value>La zona està desactivada i no admet taquilles. Reactiva-la o tria'n una altra.</value>
+  </data>
+  <data name="Lockers.Error.Retired" xml:space="preserve">
+    <value>La taquilla està de baixa i no es pot canviar.</value>
+  </data>
+  <data name="Lockers.Error.NotFree" xml:space="preserve">
+    <value>La taquilla no està lliure (està ocupada, reservada o fora de servei), així que no es pot reservar.</value>
+  </data>
+  <data name="Lockers.Error.NotReserved" xml:space="preserve">
+    <value>La taquilla no està reservada.</value>
+  </data>
+  <data name="Lockers.Error.AlreadyOutOfService" xml:space="preserve">
+    <value>La taquilla ja està fora de servei amb aquest tipus.</value>
+  </data>
+  <data name="Lockers.Error.NotOutOfService" xml:space="preserve">
+    <value>La taquilla no està fora de servei.</value>
+  </data>
+  <data name="Lockers.Error.HasAssignment" xml:space="preserve">
+    <value>La taquilla té un alumne assignat. Cal alliberar-la abans de donar-la de baixa.</value>
+  </data>
+  <data name="Lockers.Error.HasReservation" xml:space="preserve">
+    <value>La taquilla està reservada. Cal treure la reserva abans de donar-la de baixa.</value>
+  </data>
+  <data name="Lockers.Error.DecisionNotAvailable" xml:space="preserve">
+    <value>Aquesta opció encara no està disponible: cal l'assignació d'alumnes. De moment només es pot mantenir l'alumne a la taquilla.</value>
+    <comment>{0} the option</comment>
+  </data>
+  <data name="Lockers.Error.Unchanged" xml:space="preserve">
+    <value>No hi ha res a canviar: el valor nou és el que ja té.</value>
+  </data>
+  <data name="Lockers.Error.NotFound" xml:space="preserve">
+    <value>No s'ha trobat la taquilla. Torna a carregar la llista.</value>
+  </data>
+  <data name="Lockers.Error.RangeInvalid" xml:space="preserve">
+    <value>El primer número del rang no pot ser més gran que l'últim.</value>
+  </data>
+  <data name="Lockers.Error.RangeTooLarge" xml:space="preserve">
+    <value>Un rang no pot tenir més de {0} taquilles. Divideix-lo en diversos rangs.</value>
+    <comment>{0} maximum</comment>
+  </data>
+  <data name="Lockers.Warning.RangeConflicts" xml:space="preserve">
+    <value>No s'ha creat cap taquilla: aquests números ja els usen taquilles actives: {0}.</value>
+    <comment>{0} the numbers</comment>
+  </data>
+  <data name="Lockers.Warning.RangeChanged" xml:space="preserve">
+    <value>Les dades han canviat des de la revisió. No s'ha creat res; revisa el rang actualitzat i torna-ho a confirmar.</value>
+  </data>
+  <data name="Lockers.Empty.NoZones" xml:space="preserve">
+    <value>Encara no hi ha cap zona. Crea una zona primer i després hi podràs afegir taquilles.</value>
+  </data>
+  <data name="Lockers.Empty.NoLockers" xml:space="preserve">
+    <value>Encara no hi ha cap taquilla. Pots crear-ne moltes de cop indicant un rang de números, o afegir-les una a una.</value>
+  </data>
+  <data name="Lockers.Empty.NoResults" xml:space="preserve">
+    <value>Cap taquilla compleix els filtres. Neteja els filtres per veure-les totes.</value>
+  </data>
+  <data name="Lockers.Label.CreateZone" xml:space="preserve">
+    <value>Crea una zona</value>
+  </data>
+  <data name="Lockers.Label.CreateRange" xml:space="preserve">
+    <value>Crea taquilles per rang</value>
+  </data>
+  <data name="Lockers.Label.AddLocker" xml:space="preserve">
+    <value>Afegeix una taquilla</value>
+  </data>
+  <data name="Lockers.Label.ClearFilters" xml:space="preserve">
+    <value>Neteja els filtres</value>
+  </data>
+  <data name="Lockers.Label.RetireTitle" xml:space="preserve">
+    <value>Donar de baixa la taquilla {0}?</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Label.RetireConsequence" xml:space="preserve">
+    <value>La baixa de la taquilla {0} ({1}) no es pot desfer. Se'n conserva l'historial, i sempre es pot donar d'alta una taquilla nova amb el mateix número.</value>
+    <comment>{0} number, {1} zone</comment>
+  </data>
+  <data name="Lockers.Label.RetireConfirm" xml:space="preserve">
+    <value>Dona-la de baixa</value>
+  </data>
+  <data name="Lockers.Label.RangeTitle" xml:space="preserve">
+    <value>Crear les taquilles del rang?</value>
+  </data>
+  <data name="Lockers.Label.RangeConsequence" xml:space="preserve">
+    <value>Es crearan {0} taquilles noves lliures a la zona {1}.</value>
+    <comment>{0} how many, {1} zone</comment>
+  </data>
+  <data name="Lockers.Label.RangeConfirm" xml:space="preserve">
+    <value>Crea {0} taquilles</value>
+    <comment>{0} how many</comment>
+  </data>
+  <data name="Lockers.Label.RangeNumbers" xml:space="preserve">
+    <value>Del número {0} al {1}</value>
+    <comment>{0} first, {1} last</comment>
+  </data>
+  <data name="Lockers.Result.Added" xml:space="preserve">
+    <value>S'ha creat la taquilla {0} a la zona {1}.</value>
+    <comment>{0} number, {1} zone</comment>
+  </data>
+  <data name="Lockers.Result.Reserved" xml:space="preserve">
+    <value>S'ha reservat la taquilla {0}.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.ReservationRemoved" xml:space="preserve">
+    <value>S'ha tret la reserva de la taquilla {0}.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.OutOfService" xml:space="preserve">
+    <value>La taquilla {0} ha quedat fora de servei.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.ServiceRestored" xml:space="preserve">
+    <value>La taquilla {0} torna a estar en servei.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.NumberChanged" xml:space="preserve">
+    <value>La taquilla ara té el número {0}.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.ZoneChanged" xml:space="preserve">
+    <value>La taquilla {0} és ara a la zona {1}.</value>
+    <comment>{0} number, {1} zone</comment>
+  </data>
+  <data name="Lockers.Result.Retired" xml:space="preserve">
+    <value>S'ha donat de baixa la taquilla {0}.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Result.RangeCreated" xml:space="preserve">
+    <value>S'han creat {0} taquilles a la zona {1}.</value>
+    <comment>{0} how many, {1} zone</comment>
+  </data>
+  <data name="Lockers.Result.RangeNotCreated" xml:space="preserve">
+    <value>No s'ha creat cap taquilla.</value>
+  </data>
+</root>

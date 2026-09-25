@@ -6,6 +6,7 @@ using Arca.Application.Storage;
 using Arca.Domain.Common;
 using Arca.Infrastructure.Storage;
 using Arca.Testing;
+using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace Arca.Infrastructure.Tests.Storage;
@@ -22,6 +23,13 @@ public sealed class StorageStartupTests
     {
         public Task<Result<DatabaseKey>> GetKeyAsync(string databasePath, CancellationToken ct = default) =>
             Task.FromResult(Result<DatabaseKey>.Failure(StorageErrors.KeyNotAvailable));
+    }
+
+    /// <summary>The last migration of the model, so these tests do not change with every capability that adds one.</summary>
+    static string LatestMigration()
+    {
+        using var context = new ArcaDbContext("unused.db", TestKeys.FromSeed("unused"));
+        return context.Database.GetMigrations().Last();
     }
 
     static PlatformContext Machine(TempDirectory home) => new(
@@ -41,7 +49,7 @@ public sealed class StorageStartupTests
         await using var session = result.Value!;
         Assert.True(session.WasCreated);
         Assert.Equal(Path.Combine(home.Path, "xdg", "arca", "arca.db"), session.DatabasePath);
-        Assert.EndsWith("_InitialCreate", session.SchemaVersion, StringComparison.Ordinal);
+        Assert.Equal(LatestMigration(), session.SchemaVersion);
         Assert.True(File.Exists(session.DatabasePath));
     }
 
@@ -56,7 +64,7 @@ public sealed class StorageStartupTests
         Assert.True(result.IsSuccess);
         await using var session = result.Value!;
         Assert.False(session.WasCreated);
-        Assert.EndsWith("_InitialCreate", session.SchemaVersion, StringComparison.Ordinal);
+        Assert.Equal(LatestMigration(), session.SchemaVersion);
         Assert.Equal("1.2.3", session.Info("1.2.3").ApplicationVersion);
     }
 

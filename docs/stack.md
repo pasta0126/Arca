@@ -69,7 +69,7 @@ Notas:
 | Acceso a datos | Entity Framework Core con `Microsoft.EntityFrameworkCore.Sqlite.Core` | Alineada con .NET 10 | **Nunca** `Microsoft.EntityFrameworkCore.Sqlite` (trae su propio SQLite sin cifrado). Solo en `Infrastructure`. |
 | Cifrado de la base | **SQLite3 Multiple Ciphers**: `SQLite3MC.PCLRaw.bundle` | 2.4.0 (28 de julio de 2026, SQLite 3.53.4) | Licencia MIT. Un solo paquete de enlace SQLitePCLRaw en el proyecto. |
 | Formato de cifrado | **Compatible con SQLCipher 4** (`cipher=sqlcipher`, `legacy=4`) | — | Formato estándar y documentado: los datos se pueden recuperar con herramientas SQLCipher aunque ARCA dejara de existir. Confirmado en el spike: en cada conexión, antes de cualquier otra sentencia, `PRAGMA cipher='sqlcipher'; PRAGMA legacy=4; PRAGMA key="x'<64 hex>'"` (llave de 256 bits directa) con un interceptor de conexión de EF Core y `Pooling=False`. Sin `cipher` se usaría ChaCha20, incompatible con SQLCipher. |
-| Ficheros de exportación | CSV con la biblioteca **CsvHelper** tras `ICsvReader` | *A confirmar* (licencia y versión; si es MS-PL o Apache 2.0, acogerse a Apache 2.0 por compatibilidad con la GPL) | Si no cumpliera los principios, se sustituye tras el puerto. |
+| Ficheros de exportación | CSV con la biblioteca **CsvHelper** tras un puerto propio de `informes-csv` | *A confirmar* (licencia y versión; si es MS-PL o Apache 2.0, acogerse a Apache 2.0 por compatibilidad con la GPL) | Si no cumpliera los principios, se sustituye tras el puerto. |
 
 **Por qué no el SQLCipher que asumían las primeras specs**
 - `SQLitePCLRaw.bundle_e_sqlcipher` está **obsoleto** (sin mantenimiento) y contiene binarios de SQLCipher antiguos.

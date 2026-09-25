@@ -27,7 +27,7 @@
 - [ ] 4.1 Curso escolar: propuesta del año académico y fechas, creación y activación con los casos de uso existentes (D7, D8)
 - [ ] 4.2 Importes: definición de los tres conceptos con los importes del curso anterior como propuesta
 - [ ] 4.3 Zonas: alta reutilizando los casos de uso de zonas
-- [ ] 4.4 Taquillas: alta por rangos o importación con revisión previa, exigiendo una zona
+- [ ] 4.4 Taquillas: alta por rangos con vista previa, o individual, exigiendo una zona
 - [ ] 4.5 Alumnos: importación con revisión previa y omisión sin fichero
 - [ ] 4.6 Pruebas de cada paso reutilizando los errores de sus casos de uso, y de guardado inmediato con cancelación a mitad
 
