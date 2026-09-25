@@ -7,14 +7,14 @@
 
 ## 2. Dominio de taquillas
 
-- [ ] 2.1 Crear la entidad `Locker` con identificador interno, número (1 a 99999), zona, nota (máx. 500), estado de fuera de servicio con tipo (averiada o en mantenimiento), reserva con nota y fecha de baja
-- [ ] 2.2 Implementar la función pura del estado visible con la precedencia baja, fuera de servicio, ocupación, reserva y libre (D1)
-- [ ] 2.3 Reglas de reserva, avería, mantenimiento (mismas reglas, tipos excluyentes y cambio de tipo) y vuelta a servicio, cambio de número y zona, y baja definitiva sin reactivación
-- [ ] 2.4 Resultado de "decisión requerida" al averiar una taquilla ocupada y opción de mantener; error de opción no disponible para reasignar y liberar (D3)
-- [ ] 2.5 Definir el tipo de evento de historial con código extensible y valores anterior y nuevo estructurados (D7)
-- [ ] 2.6 Códigos de error de negocio de taquillas y sus claves de recurso en catalán
-- [ ] 2.7 Pruebas del estado derivado con la tabla completa de combinaciones, incluidas avería con alumno, avería con reserva y resolución de avería
-- [ ] 2.8 Pruebas de reglas: número no válido, reservar una ocupada, avería en una de baja, baja con asignación o con reserva, cambios sobre una de baja
+- [x] 2.1 Crear la entidad `Locker` con identificador interno, número (1 a 99999), zona, nota (máx. 500), estado de fuera de servicio con tipo (averiada o en mantenimiento), reserva con nota y fecha de baja
+- [x] 2.2 Implementar la función pura del estado visible con la precedencia baja, fuera de servicio, ocupación, reserva y libre (D1)
+- [x] 2.3 Reglas de reserva, avería, mantenimiento (mismas reglas, tipos excluyentes y cambio de tipo) y vuelta a servicio, cambio de número y zona, y baja definitiva sin reactivación
+- [x] 2.4 Resultado de "decisión requerida" al averiar una taquilla ocupada y opción de mantener; error de opción no disponible para reasignar y liberar (D3)
+- [x] 2.5 Definir el tipo de evento de historial con código extensible y valores anterior y nuevo estructurados (D7)
+- [x] 2.6 Códigos de error de negocio de taquillas y sus claves de recurso en catalán
+- [x] 2.7 Pruebas del estado derivado con la tabla completa de combinaciones, incluidas avería con alumno, avería con reserva y resolución de avería
+- [x] 2.8 Pruebas de reglas: número no válido, reservar una ocupada, avería en una de baja, baja con asignación o con reserva, cambios sobre una de baja
 
 ## 3. Casos de uso de aplicación
 

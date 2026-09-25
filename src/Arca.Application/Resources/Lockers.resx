@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Lockers.Error.NumberInvalid" xml:space="preserve">
+    <value>El número de la taquilla ha de ser un enter entre {0} i {1}.</value>
+    <comment>{0} lowest, {1} highest</comment>
+  </data>
+  <data name="Lockers.Error.NumberInUse" xml:space="preserve">
+    <value>El número {0} ja el té una altra taquilla activa. Tria un altre número.</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Lockers.Error.NoteTooLong" xml:space="preserve">
+    <value>La nota no pot tenir més de {0} caràcters.</value>
+    <comment>{0} maximum length</comment>
+  </data>
+  <data name="Lockers.Error.ZoneUnavailable" xml:space="preserve">
+    <value>La zona està desactivada i no admet taquilles. Reactiva-la o tria'n una altra.</value>
+  </data>
+  <data name="Lockers.Error.Retired" xml:space="preserve">
+    <value>La taquilla està de baixa i no es pot canviar.</value>
+  </data>
+  <data name="Lockers.Error.NotFree" xml:space="preserve">
+    <value>La taquilla no està lliure (està ocupada, reservada o fora de servei), així que no es pot reservar.</value>
+  </data>
+  <data name="Lockers.Error.NotReserved" xml:space="preserve">
+    <value>La taquilla no està reservada.</value>
+  </data>
+  <data name="Lockers.Error.AlreadyOutOfService" xml:space="preserve">
+    <value>La taquilla ja està fora de servei amb aquest tipus.</value>
+  </data>
+  <data name="Lockers.Error.NotOutOfService" xml:space="preserve">
+    <value>La taquilla no està fora de servei.</value>
+  </data>
+  <data name="Lockers.Error.HasAssignment" xml:space="preserve">
+    <value>La taquilla té un alumne assignat. Cal alliberar-la abans de donar-la de baixa.</value>
+  </data>
+  <data name="Lockers.Error.HasReservation" xml:space="preserve">
+    <value>La taquilla està reservada. Cal treure la reserva abans de donar-la de baixa.</value>
+  </data>
+  <data name="Lockers.Error.DecisionNotAvailable" xml:space="preserve">
+    <value>Aquesta opció encara no està disponible: cal l'assignació d'alumnes. De moment només es pot mantenir l'alumne a la taquilla.</value>
+    <comment>{0} the option</comment>
+  </data>
+  <data name="Lockers.Error.Unchanged" xml:space="preserve">
+    <value>No hi ha res a canviar: el valor nou és el que ja té.</value>
+  </data>
+</root>
