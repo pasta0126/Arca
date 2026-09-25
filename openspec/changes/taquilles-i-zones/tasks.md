@@ -55,7 +55,7 @@
 
 ## 7. Verificación transversal
 
-- [ ] 7.1 Prueba automática de que todas las claves de recurso nuevas existen en catalán
-- [ ] 7.2 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core
-- [ ] 7.3 Prueba de volumen con 1000 taquillas para confirmar que la consulta con filtros responde con fluidez
-- [ ] 7.4 Documentar en la config del proyecto el punto de enganche con `alumnes-i-assignacions`: implementar la ocupación real, la reserva con alumno y las decisiones de reasignar y liberar
+- [x] 7.1 Prueba automática de que todas las claves de recurso nuevas existen en catalán
+- [x] 7.2 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core
+- [x] 7.3 Prueba de volumen con 1000 taquillas para confirmar que la consulta con filtros responde con fluidez
+- [x] 7.4 Documentar en la config del proyecto el punto de enganche con `alumnes-i-assignacions`: implementar la ocupación real, la reserva con alumno y las decisiones de reasignar y liberar

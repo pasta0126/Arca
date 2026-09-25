@@ -111,6 +111,16 @@ context: |
     Una sola incidència oberta per taquilla; només el conserge la registra. Sense estats
     intermedis (obert/en curs), adjunts ni costos. Si estava ocupada, s'aplica el flux
     "reassignar, mantenir o alliberar". La baixa de la taquilla tanca la incidència oberta.
+  - Punts d'enganxament de taquilles i zones amb l'assignació d'alumnes (canvi `alumnes-i-assignacions`).
+    `taquilles-i-zones` no coneix els alumnes i deixa aquests ganxos, que l'assignació ha d'implementar:
+    (1) `ILockerOccupancy`: la consulta real de quines taquilles té un alumne (avui `NoOccupancy`, que diu
+    "cap"); ha de respondre per a un conjunt de taquilles amb una sola consulta. (2) La reserva amb alumne
+    concret: ara la reserva només porta una nota. (3) Les decisions de reassignar i alliberar en posar una
+    taquilla ocupada fora de servei: avui `OutOfServiceDecision.Reassign` i `Release` retornen
+    `Lockers.DecisionNotAvailable`, i només funciona mantenir. (4) `ILockerRetiredHandler`: es crida dins
+    la mateixa transacció que la baixa d'una taquilla, perquè altres capacitats (incidències, assignacions)
+    tanquin el que en depèn; avui no té cap implementació. En implementar-los, substitueix el sustitut i
+    afegeix proves d'integració d'extrem a extrem.
   - Final de curs: procés guiat amb passos opcionals i represa (alliberar taquilles, tornar claus, revisar deute, tancar). El curs passa d'actiu a "en tancament" i després a tancat; es pot activar el curs següent mentre l'anterior és en tancament. Sense renovació automàtica. Els alumnes s'actualitzen després amb la importació anual (conciliació).
   - Morosos: marca visual i llistat exportable; sense cartes ni alliberament automàtic.
   - Conservació: decisió per curs tancat (conservar, anonimitzar o esborrar), que es pregunta en tancar-lo i es pot ajornar. Res és automàtic ni hi ha nombre de cursos per defecte fins a consultar-ho amb els conserges. Anonimitzar conserva imports i recomptes sense identificar ningú.
