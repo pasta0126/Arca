@@ -38,12 +38,22 @@ public sealed class CreateLockerRangeHandler(
         }
 
         var fresh = analysis.Value!;
-        if (fresh.HasConflicts)
+
+        // Only what the person saw is applied: if the data changed so the plan is no longer the one that was previewed
+        // (a conflict appeared, or a conflict went away), nothing is created and the updated plan comes back to be
+        // confirmed again. A plan that had conflicts is never applied by itself just because they cleared up.
+        var changed = !fresh.ToCreate.SequenceEqual(plan.ToCreate) || !fresh.Conflicts.SequenceEqual(plan.Conflicts);
+        if (fresh.HasConflicts || changed)
         {
-            var notices = new List<Notice> { new("Lockers.RangeConflicts", [string.Join(", ", fresh.Conflicts)]) };
-            if (!plan.HasConflicts)
+            var notices = new List<Notice>();
+            if (changed)
             {
-                notices.Insert(0, new Notice("Lockers.RangeChanged"));
+                notices.Add(new Notice("Lockers.RangeChanged"));
+            }
+
+            if (fresh.HasConflicts)
+            {
+                notices.Add(new Notice("Lockers.RangeConflicts", [string.Join(", ", fresh.Conflicts)]));
             }
 
             return Result<CreateLockerRangeResult>.Success(new CreateLockerRangeResult(false, 0, fresh), [.. notices]);

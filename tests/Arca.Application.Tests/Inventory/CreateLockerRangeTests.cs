@@ -132,6 +132,43 @@ public sealed class CreateLockerRangeTests
     }
 
     [Fact]
+    [Trait("spec", Spec + " (Conflicto con números existentes)")]
+    public async Task A_previewed_conflict_that_clears_up_is_not_applied_by_itself()
+    {
+        var world = new InventoryWorld();
+        var zone = await world.ZoneAsync("Planta 1");
+        var blocking = await world.LockerAsync(4, zone);
+        var plan = await AnalyzeAsync(world, 1, 10, zone);
+        Assert.Equal([4], plan.Conflicts);
+        await world.RetireLocker.HandleAsync(new RetireLockerRequest(blocking), default); // the conflict goes away after the preview
+
+        var result = await world.CreateRange.ApplyAsync(plan, null, default);
+
+        Assert.False(result.Value!.Applied);
+        Assert.Equal(0, result.Value.Created);
+        Assert.Equal(10, result.Value.Plan.ToCreate.Count); // the plan that can now be confirmed
+        Assert.Equal(["Lockers.RangeChanged"], result.Notices.Select(n => n.Code));
+        Assert.Single(world.Store.LockerList); // only the retired one, nothing new was created
+    }
+
+    [Fact]
+    [Trait("spec", Spec + " (Conflicto con números existentes)")]
+    public async Task Confirming_the_updated_plan_after_a_change_then_applies_it()
+    {
+        var world = new InventoryWorld();
+        var zone = await world.ZoneAsync("Planta 1");
+        var blocking = await world.LockerAsync(4, zone);
+        var plan = await AnalyzeAsync(world, 1, 10, zone);
+        await world.RetireLocker.HandleAsync(new RetireLockerRequest(blocking), default);
+        var updated = (await world.CreateRange.ApplyAsync(plan, null, default)).Value!.Plan;
+
+        var result = await world.CreateRange.ApplyAsync(updated, null, default);
+
+        Assert.True(result.Value!.Applied);
+        Assert.Equal(10, result.Value.Created);
+    }
+
+    [Fact]
     [Trait("spec", Spec + " (Rango invertido)")]
     public async Task A_range_with_the_first_number_greater_than_the_last_is_refused()
     {
