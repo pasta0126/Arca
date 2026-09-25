@@ -30,10 +30,10 @@
 
 ## 5. Copias y restauración
 
-- [ ] 5.1 Contenedor de copia con base y fichero de claves, verificado con la DEK en memoria al copiar (D7)
-- [ ] 5.2 Restauración que lee el fichero de claves de la copia, pide la contraseña o la clave de recuperación y adopta su llave, con aviso previo
-- [ ] 5.3 Copia previa a la restauración con la base y el fichero de claves anteriores
-- [ ] 5.4 Pruebas: copia y restauración con contraseña, con clave de recuperación, copia anterior a un cambio de contraseña, contraseña equivocada y restauración en otro equipo
+- [x] 5.1 Contenedor de copia con base y fichero de claves, verificado con la DEK en memoria al copiar (D7)
+- [x] 5.2 Restauración que lee el fichero de claves de la copia, pide la contraseña o la clave de recuperación y adopta su llave, con aviso previo
+- [x] 5.3 Copia previa a la restauración con la base y el fichero de claves anteriores
+- [x] 5.4 Pruebas: copia y restauración con contraseña, con clave de recuperación, copia anterior a un cambio de contraseña, contraseña equivocada y restauración en otro equipo
 
 ## 6. Pantallas y textos
 

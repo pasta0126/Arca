@@ -53,4 +53,14 @@
   <data name="Keys.Error.ConfirmationIncorrect" xml:space="preserve">
     <value>Els grups escrits no coincideixen amb la clau de recuperació. Torna a mirar la clau i prova-ho de nou.</value>
   </data>
+  <data name="Keys.Error.BackupDamaged" xml:space="preserve">
+    <value>El fitxer ({0}) no és una còpia de seguretat d'ARCA vàlida o està incomplet. No s'ha canviat res.</value>
+    <comment>{0} path</comment>
+  </data>
+  <data name="Keys.Error.RestoreFailed" xml:space="preserve">
+    <value>No s'ha pogut restaurar la còpia. Les dades d'abans s'han deixat tal com estaven.</value>
+  </data>
+  <data name="Keys.Warning.RestoreAdoptsPassword" xml:space="preserve">
+    <value>En restaurar aquesta còpia, la contrasenya del centre passarà a ser la que tenia la còpia. Les dades actuals es guardaran en una còpia prèvia.</value>
+  </data>
 </root>

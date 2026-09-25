@@ -46,4 +46,10 @@ public static class KeyErrors
 
     /// <summary>The groups typed do not match the recovery key; nothing was changed.</summary>
     public static readonly Error ConfirmationIncorrect = new("Keys.ConfirmationIncorrect");
+
+    /// <summary>The backup file is not a valid ARCA backup, or is incomplete. Args: {0} path.</summary>
+    public static Error BackupDamaged(string path) => new("Keys.BackupDamaged", Args: [path]);
+
+    /// <summary>The current data could not be replaced by the backup; what was there before has been put back.</summary>
+    public static readonly Error RestoreFailed = new("Keys.RestoreFailed");
 }
