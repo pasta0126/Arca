@@ -1,9 +1,9 @@
 ## 1. Dominio de zonas
 
-- [ ] 1.1 Crear la entidad `Zone` con nombre recortado, longitud máxima 60, clave normalizada y estado activo
-- [ ] 1.2 Reglas de creación, renombrado (excluyéndose a sí misma), desactivación (sin taquillas activas), reactivación y eliminación (solo sin historial)
-- [ ] 1.3 Códigos de error de negocio de zonas y sus claves de recurso en catalán
-- [ ] 1.4 Pruebas: nombre vacío, largo, con espacios, duplicado con otra grafía, duplicado con desactivada, renombrar con el mismo nombre, desactivar con taquillas activas, eliminar con historial
+- [x] 1.1 Crear la entidad `Zone` con nombre recortado, longitud máxima 60, clave normalizada y estado activo
+- [x] 1.2 Reglas de creación, renombrado (excluyéndose a sí misma), desactivación (sin taquillas activas), reactivación y eliminación (solo sin historial)
+- [x] 1.3 Códigos de error de negocio de zonas y sus claves de recurso en catalán
+- [x] 1.4 Pruebas: nombre vacío, largo, con espacios, duplicado con otra grafía, duplicado con desactivada, renombrar con el mismo nombre, desactivar con taquillas activas, eliminar con historial
 
 ## 2. Dominio de taquillas
 
