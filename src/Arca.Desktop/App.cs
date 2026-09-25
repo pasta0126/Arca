@@ -70,7 +70,7 @@ public sealed class App : Avalonia.Application
             }
 
             var runtime = result.Value!;
-            var main = new MainWindow(runtime.Info, runtime.Localizer);
+            var main = new MainWindow(runtime.Info, runtime.Localizer, runtime.Security);
             runtime.SetMainWindow(main);
             main.Closed += async (_, _) =>
             {

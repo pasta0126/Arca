@@ -519,4 +519,119 @@ public sealed class AccessFlowsTests : IDisposable
 
         Assert.Equal("Keys.FileDamaged", result.Error!.Code);
     }
+
+    [Fact]
+    [Trait("spec", UnlockSpec + ": Cambiar la contraseña (Cambio correcto)")]
+    public async Task Changing_the_password_from_settings_asks_for_the_current_and_the_new_one()
+    {
+        await FirstRunAsync(Password);
+        var (flows, presenter, _, access) = Build();
+        var key = access.Unlock(Database, Password).Value!.ToArray();
+        IReadOnlyList<string> hints = [];
+        presenter.Form(
+            f =>
+            {
+                f.Fields[0].Text = Password;
+                f.Fields[1].Text = "insmonturiol";
+                hints = f.Hints;
+                f.Fields[1].Text = Newer;
+                f.Fields[2].Text = Newer;
+                return Task.CompletedTask;
+            },
+            Submit());
+
+        var result = await flows.ChangePasswordAsync(Database, CancellationToken.None);
+
+        Assert.True(result!.IsSuccess);
+        Assert.Contains(result.Notices, n => n.Code == "Keys.BackupsKeepOldPassword");
+        Assert.Contains("Fortalesa: fluixa", hints);
+        Assert.Equal(key, access.Unlock(Database, Newer).Value!.ToArray());
+        Assert.Equal("Keys.WrongCredentials", access.Unlock(Database, Password).Error!.Code);
+    }
+
+    [Theory]
+    [Trait("spec", UnlockSpec + ": Cambiar la contraseña (Contraseña actual incorrecta)")]
+    [InlineData("una altra contrasenya", "gat ratllat sota pluja", "no són correctes")]
+    [InlineData("riu cadira blau gos", "xyzzy", "mínim 12 caràcters")]
+    public async Task A_change_that_is_refused_says_why_and_leaves_the_password_as_it_was(string current, string next, string expected)
+    {
+        await FirstRunAsync(Password);
+        var (flows, presenter, _, access) = Build();
+        var before = File.ReadAllBytes(KeyFileStore.PathFor(Database));
+        string error = string.Empty;
+        presenter.Form(
+            Type(current, next, next),
+            async f =>
+            {
+                await f.SubmitAsync();
+                error = f.Error;
+            },
+            Cancel());
+
+        var result = await flows.ChangePasswordAsync(Database, CancellationToken.None);
+
+        Assert.Null(result);
+        Assert.Contains(expected, error, StringComparison.Ordinal);
+        Assert.Equal(before, File.ReadAllBytes(KeyFileStore.PathFor(Database)));
+        Assert.True(access.Unlock(Database, Password).IsSuccess);
+    }
+
+    [Fact]
+    [Trait("spec", KeySpec + ": Regenerar la clave (Regenerar)")]
+    public async Task Regenerating_asks_for_the_password_then_shows_and_confirms_a_new_key()
+    {
+        var recovery = await FirstRunAsync(Password);
+        var (flows, presenter, _, access) = Build();
+        presenter.Form(Type(Password), Submit());
+        presenter.Form(TypeAskedGroups(), Submit());
+
+        var result = await flows.RegenerateKeyAsync(Database, CancellationToken.None);
+
+        Assert.True(result!.IsSuccess);
+        var newKey = presenter.Shown[1].Secret!.Formatted.Replace("-", string.Empty, StringComparison.Ordinal);
+        Assert.NotEqual(recovery, newKey);
+        Assert.True(access.CheckRecoveryKey(Database, newKey).IsSuccess);
+        Assert.False(access.CheckRecoveryKey(Database, recovery).IsSuccess);
+        Assert.Contains("no es podrà tornar a veure", presenter.Shown[1].Intro, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    [Trait("spec", KeySpec + ": Regenerar la clave (Cancelar antes de confirmar)")]
+    public async Task Cancelling_a_regeneration_keeps_the_previous_key_valid()
+    {
+        var recovery = await FirstRunAsync(Password);
+        var (flows, presenter, _, access) = Build();
+        var before = File.ReadAllBytes(KeyFileStore.PathFor(Database));
+        presenter.Form(Type(Password), Submit());
+        presenter.Form(Cancel());
+
+        var result = await flows.RegenerateKeyAsync(Database, CancellationToken.None);
+
+        Assert.Null(result);
+        Assert.Equal(before, File.ReadAllBytes(KeyFileStore.PathFor(Database)));
+        Assert.True(access.CheckRecoveryKey(Database, recovery).IsSuccess);
+    }
+
+    [Fact]
+    [Trait("spec", KeySpec + ": Regenerar la clave (Regenerar)")]
+    public async Task Regenerating_with_a_wrong_password_is_refused_before_showing_any_key()
+    {
+        await FirstRunAsync(Password);
+        var (flows, presenter, _, _) = Build();
+        string error = string.Empty;
+        presenter.Form(
+            Type(Newer),
+            async f =>
+            {
+                await f.SubmitAsync();
+                error = f.Error;
+            },
+            Cancel());
+
+        var result = await flows.RegenerateKeyAsync(Database, CancellationToken.None);
+
+        Assert.Null(result);
+        Assert.Contains("no són correctes", error, StringComparison.Ordinal);
+        Assert.Single(presenter.Shown);
+    }
 }

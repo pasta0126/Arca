@@ -108,6 +108,82 @@ public sealed class AccessFlows(
     }
 
     /// <summary>
+    /// From settings: the current password and a new one. Returns null if the person gave up, or the result with its
+    /// notices (which remind that earlier copies keep the old password).
+    /// </summary>
+    public async Task<Result<bool>?> ChangePasswordAsync(string databasePath, CancellationToken ct)
+    {
+        Result<bool>? outcome = null;
+        var current = new FormField(Text("Keys.Label.CurrentField"), isSecret: true);
+        var password = new FormField(Text("Keys.Label.NewPasswordField"), isSecret: true);
+        var confirmation = new FormField(Text("Keys.Label.ConfirmationField"), isSecret: true);
+        var form = NewForm("Keys.Label.ChangeTitle", "Keys.Label.ChangeIntro", "Keys.Label.ChangeButton", "Keys.Label.Saving",
+            [current, password, confirmation],
+            async f =>
+            {
+                var (now, next, again) = (current.Text, password.Text, confirmation.Text);
+                var result = await Task.Run(() => access.ChangePassword(databasePath, now, next, again), ct);
+                if (result.IsSuccess)
+                {
+                    outcome = result;
+                    return true;
+                }
+
+                f.Error = localizer.Message(result.Error!);
+                return false;
+            },
+            hints: texts => PasswordHints(texts[1]),
+            warning: "Keys.Label.LossWarning");
+        return await presenter.ShowAsync(form, ct) == FormOutcome.Submitted ? outcome : null;
+    }
+
+    /// <summary>
+    /// From settings: a new recovery key after the current password. The old key stays valid until the new one is
+    /// confirmed, so giving up at any point changes nothing. Returns null if the person gave up.
+    /// </summary>
+    public async Task<Result<bool>?> RegenerateKeyAsync(string databasePath, CancellationToken ct)
+    {
+        PendingKeyChange? pending = null;
+        try
+        {
+            var current = new FormField(Text("Keys.Label.CurrentField"), isSecret: true);
+            var first = NewForm("Keys.Label.RegenerateTitle", "Keys.Label.RegenerateIntro", "Keys.Label.ContinueButton", "Keys.Label.Checking",
+                [current],
+                async f =>
+                {
+                    var typed = current.Text;
+                    var result = await Task.Run(() => access.PrepareRegeneration(databasePath, typed), ct);
+                    if (result.IsSuccess)
+                    {
+                        pending = result.Value;
+                        return true;
+                    }
+
+                    f.Error = localizer.Message(result.Error!);
+                    return false;
+                });
+            if (await presenter.ShowAsync(first, ct) != FormOutcome.Submitted || pending is null)
+            {
+                return null;
+            }
+
+            var confirmed = await ShowKeyAsync(
+                pending.RecoveryKey, pending.Challenge, "Keys.Label.ConfirmButton", "Keys.Label.Saving",
+                (groups, _) =>
+                {
+                    var saved = access.Commit(databasePath, pending, groups);
+                    return Task.FromResult(saved.IsSuccess ? null : saved.Error);
+                },
+                ct);
+            return confirmed ? Result<bool>.Success(true) : null;
+        }
+        finally
+        {
+            pending?.Dispose();
+        }
+    }
+
+    /// <summary>
     /// Forgotten password: the recovery key, then a new password, then the new recovery key shown and confirmed.
     /// Returns the key that opens the data, or null when the person went back without finishing (nothing changes).
     /// </summary>

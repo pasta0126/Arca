@@ -173,4 +173,40 @@
   <data name="Keys.Label.StrengthGood" xml:space="preserve">
     <value>Fortalesa: bona</value>
   </data>
+  <data name="Keys.Label.CurrentField" xml:space="preserve">
+    <value>Contrasenya actual</value>
+  </data>
+  <data name="Keys.Label.ChangeTitle" xml:space="preserve">
+    <value>Canvia la contrasenya</value>
+  </data>
+  <data name="Keys.Label.ChangeIntro" xml:space="preserve">
+    <value>Escriu la contrasenya actual i la nova. Les dades no es tornen a xifrar: només canvia la contrasenya que les obre.</value>
+  </data>
+  <data name="Keys.Label.ChangeButton" xml:space="preserve">
+    <value>Canvia la contrasenya</value>
+  </data>
+  <data name="Keys.Label.RegenerateTitle" xml:space="preserve">
+    <value>Genera una clau de recuperació nova</value>
+  </data>
+  <data name="Keys.Label.RegenerateIntro" xml:space="preserve">
+    <value>Escriu la contrasenya actual. Se't mostrarà una clau nova; l'actual continuarà valent fins que confirmis la nova.</value>
+  </data>
+  <data name="Keys.Label.SecurityTitle" xml:space="preserve">
+    <value>Seguretat de les dades</value>
+  </data>
+  <data name="Keys.Label.SecurityNote" xml:space="preserve">
+    <value>La contrasenya del centre obre les dades. La clau de recuperació només serveix si s'oblida la contrasenya, i no es pot tornar a veure: si cal, se'n genera una de nova.</value>
+  </data>
+  <data name="Keys.Label.ChangeAction" xml:space="preserve">
+    <value>Canvia la contrasenya…</value>
+  </data>
+  <data name="Keys.Label.RegenerateAction" xml:space="preserve">
+    <value>Genera una clau de recuperació nova…</value>
+  </data>
+  <data name="Keys.Label.PasswordChanged" xml:space="preserve">
+    <value>S'ha canviat la contrasenya.</value>
+  </data>
+  <data name="Keys.Label.KeyRegenerated" xml:space="preserve">
+    <value>S'ha generat i confirmat la clau de recuperació nova. L'anterior ja no val.</value>
+  </data>
 </root>

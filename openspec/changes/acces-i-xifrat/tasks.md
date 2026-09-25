@@ -38,10 +38,10 @@
 ## 6. Pantallas y textos
 
 - [x] 6.1 Pantalla de contraseña en el arranque y en la primera ejecución, integrada con `configuracio-inicial`
-- [ ] 6.2 Sección de seguridad en ajustes: cambiar la contraseña, regenerar la clave y recordatorio de que no hay recuperación sin llave
-- [ ] 6.3 Guía para la dirección del centro sobre cómo guardar la clave de recuperación (sobre cerrado, dos copias) y qué pasa si se pierde todo
-- [ ] 6.4 Claves de recurso en catalán para todos los textos
-- [ ] 6.5 Pruebas de mensajes, doble Intro, uso solo con teclado y estados de error
+- [x] 6.2 Sección de seguridad en ajustes: cambiar la contraseña, regenerar la clave y recordatorio de que no hay recuperación sin llave
+- [x] 6.3 Guía para la dirección del centro sobre cómo guardar la clave de recuperación (sobre cerrado, dos copias) y qué pasa si se pierde todo
+- [x] 6.4 Claves de recurso en catalán para todos los textos
+- [x] 6.5 Pruebas de mensajes, doble Intro, uso solo con teclado y estados de error
 
 ## 7. Verificación transversal
 

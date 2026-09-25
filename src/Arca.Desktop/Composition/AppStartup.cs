@@ -56,10 +56,15 @@ public static class AppStartup
         var clock = new SystemClock();
         var delay = new SystemDelay();
         var notifications = new NotificationCenter(clock, delay);
+        var settingsFlows = new AccessFlows(
+            access, new WindowFormPresenter(() => windows.Current), localizer,
+            (path, newAccess, groups, token) => DatabaseCreator.CreateAsync(path, newAccess, groups, token));
+        var security = new SecurityViewModel(settingsFlows, session.DatabasePath, notifications, localizer, log);
         var services = new ServiceCollection()
             .AddSingleton<ILocalizer>(localizer)
             .AddSingleton(access)
             .AddSingleton(flows)
+            .AddSingleton(security)
             .AddSingleton<IClock>(clock)
             .AddSingleton<IDelay>(delay)
             .AddSingleton(log)
