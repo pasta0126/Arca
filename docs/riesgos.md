@@ -69,6 +69,7 @@ Punto 12 de `docs/preparacion-desarrollo.md`. Reúne en un solo sitio lo que pue
 | D2 | ~~Dónde se hace el spike~~ **Decidido (2026-09-24)**: rama descartable (`spike/tecnico`), que no se fusiona; lo aprendido se anota en `docs/` | — | — | — |
 | D3 | ~~Herramienta y método para las maquetas~~ **Decidido (2026-09-24)**: no habrá maquetas; las decisiones de interfaz las propone Claude directamente en las specs de `pantalles-de-domini` y se iteran con la aplicación funcionando | — | — | — |
 | D4 | Alcance del hito 2 | Propuesta en `docs/hito-1.md` | Persona responsable, tras la demostración | Fin del hito 1 |
+| D6 | Bajar la exigencia de la contraseña del centro (`acces-i-xifrat`, ya archivado): mínimo 6 caracteres, sin exigir mayúsculas, números ni símbolos, pero evaluando la fortaleza y mostrando un aviso si es débil, con un ejemplo de contraseña fuerte y sus criterios | Mantener la política actual / relajarla como se describe, con cambio nuevo de OpenSpec contra la spec archivada | Persona responsable | Antes de tocar `acces-i-xifrat` |
 
 ## Revisión
 
