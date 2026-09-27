@@ -12,11 +12,11 @@ namespace Arca.Domain.SchoolYears;
 /// </summary>
 public sealed class AcademicYear
 {
-    AcademicYear(Guid id, DateOnly start, DateOnly end, bool isActive)
+    AcademicYear(Guid id, DateOnly startDate, DateOnly endDate, bool isActive)
     {
         Id = id;
-        StartDate = start;
-        EndDate = end;
+        StartDate = startDate;
+        EndDate = endDate;
         IsActive = isActive;
     }
 

@@ -72,12 +72,10 @@ public sealed class EfInventoryTests : IDisposable
         return added.Value!.Id;
     }
 
-    /// <summary>The out-of-service use case over the database; the parts that belong to the students are in memory until they are persisted.</summary>
     MarkLockerOutOfServiceHandler MarkOutOfService(EfInventory store)
     {
-        var others = new InMemoryInventory();
         var assignments = new AssignmentServices(
-            others.Assignments, others.Students, store.Lockers, store.Zones, others.Enrollments, others.Years, others.StudentEvents, store.Events, [], [], []);
+            store.Assignments, store.Students, store.Lockers, store.Zones, store.Enrollments, store.Years, store.StudentEvents, store.Events, [], [], []);
         return new MarkLockerOutOfServiceHandler(store.Lockers, store.Zones, store.Events, _occupancy, assignments, store, _clock);
     }
 

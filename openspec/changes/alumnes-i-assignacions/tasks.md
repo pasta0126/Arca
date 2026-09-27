@@ -63,12 +63,12 @@
 
 ## 7. Persistencia
 
-- [ ] 7.1 Entidades y configuraciones EF Core de cursos, alumnos, matrículas, niveles, grupos y asignaciones, sin filtrar EF Core a `Domain` ni `Application`
-- [ ] 7.2 Índices únicos parciales: una asignación vigente por taquilla y una por alumno; índice único en el correo normalizado e índice no único en la clave de nombre
-- [ ] 7.3 Migración de EF Core y verificación de que el modelo no tiene cambios sin migrar
-- [ ] 7.4 Implementación de repositorios y de las operaciones transaccionales de importación, cambio y reasignación
-- [ ] 7.5 Pruebas de integración sobre SQLite cifrado temporal: índices, atomicidad, migración con reservas existentes y cierre de asignación con manejadores
-- [ ] 7.6 Comprobar que las pruebas pasan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
+- [x] 7.1 Entidades y configuraciones EF Core de cursos, alumnos, matrículas, niveles, grupos y asignaciones, sin filtrar EF Core a `Domain` ni `Application`
+- [x] 7.2 Índices únicos parciales: una asignación vigente por taquilla y una por alumno; índice único en el correo normalizado e índice no único en la clave de nombre
+- [x] 7.3 Migración de EF Core y verificación de que el modelo no tiene cambios sin migrar
+- [x] 7.4 Implementación de repositorios y de las operaciones transaccionales de importación, cambio y reasignación
+- [x] 7.5 Pruebas de integración sobre SQLite cifrado temporal: índices, atomicidad, migración con reservas existentes y cierre de asignación con manejadores
+- [x] 7.6 Comprobar que las pruebas pasan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
 
 ## 8. Feedback y guía al usuario
 
