@@ -20,13 +20,13 @@
 
 ## 3. Generación de cargos y avisos
 
-- [ ] 3.1 Implementar `IAssignmentOpenedHandler`: generar la cuota del curso si no existe y la fianza si no hay una vigente, de forma idempotente (D4)
-- [ ] 3.2 Cuota completa en llegadas a mitad de curso, sin prorrateo, y sin reembolso al liberar
-- [ ] 3.3 Rechazar la asignación completa si faltan los importes del curso, con aviso de que hay que definirlos
-- [ ] 3.4 Implementar la reposición de llave a demanda, con posibilidad de varias en un curso
-- [ ] 3.5 Implementar `IAssignmentGuard` que avisa de la deuda de cursos anteriores con conceptos, cursos e importe total
-- [ ] 3.6 Permitir gestionar cargos de cursos anteriores, incluido marcar como pagados los antiguos
-- [ ] 3.7 Pruebas: primera asignación del curso, cambio de taquilla, liberar y reasignar, llegada a mitad de curso, salida con cuota pendiente, importes sin definir, aviso con y sin deuda anterior, aviso rechazado
+- [x] 3.1 Implementar `IAssignmentOpenedHandler`: generar la cuota del curso si no existe y la fianza si no hay una vigente, de forma idempotente (D4)
+- [x] 3.2 Cuota completa en llegadas a mitad de curso, sin prorrateo, y sin reembolso al liberar
+- [x] 3.3 Rechazar la asignación completa si faltan los importes del curso, con aviso de que hay que definirlos (implementado como impedimento de `IAssignmentGuard`, antes de tocar nada, en vez de hacer fallar el gancho de apertura)
+- [x] 3.4 Implementar la reposición de llave a demanda, con posibilidad de varias en un curso
+- [x] 3.5 Implementar `IAssignmentGuard` que avisa de la deuda de cursos anteriores con conceptos, cursos e importe total
+- [x] 3.6 Permitir gestionar cargos de cursos anteriores, incluido marcar como pagados los antiguos (los casos de uso de transición de `Charge` —pagar, exento, condonar, revertir, anular, ajustar importe— se han creado en este grupo, ya que `tasks.md` no los incluía en el grupo 2)
+- [x] 3.7 Pruebas: primera asignación del curso, cambio de taquilla, liberar y reasignar, llegada a mitad de curso, salida con cuota pendiente, importes sin definir, aviso con y sin deuda anterior, aviso rechazado
 
 ## 4. Fianza
 

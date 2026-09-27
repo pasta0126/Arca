@@ -11,4 +11,7 @@
   <data name="ConceptAmounts.Error.YearFinished" xml:space="preserve">
     <value>Aquest curs ja ha acabat: no se'n poden canviar els imports.</value>
   </data>
+  <data name="ConceptAmounts.Error.NotDefined" xml:space="preserve">
+    <value>Cal definir els imports d'aquest curs abans de continuar.</value>
+  </data>
 </root>

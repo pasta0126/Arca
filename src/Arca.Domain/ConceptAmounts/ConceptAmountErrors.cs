@@ -13,4 +13,7 @@ public static class ConceptAmountErrors
 
     /// <summary>The year's end date has already passed, so its amounts cannot be changed.</summary>
     public static readonly Error YearFinished = new("ConceptAmounts.YearFinished");
+
+    /// <summary>The amount of a concept needed right now has not been defined for the year yet.</summary>
+    public static readonly Error NotDefined = new("ConceptAmounts.NotDefined");
 }

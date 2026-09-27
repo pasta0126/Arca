@@ -27,4 +27,8 @@
   <data name="Charges.Error.NotFound" xml:space="preserve">
     <value>No s'ha trobat el càrrec.</value>
   </data>
+  <data name="Charges.Warning.PriorDebt" xml:space="preserve">
+    <value>L'alumne té {0} càrrecs pendents de cursos anteriors, per un total de {1:C}.</value>
+    <comment>{0} number of pending charges, {1} total amount</comment>
+  </data>
 </root>

@@ -3,6 +3,7 @@
 
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Arca.Application.Lockers;
 using Arca.Domain.Common;
 using Xunit;
 
@@ -10,10 +11,18 @@ namespace Arca.Architecture.Tests;
 
 public sealed class ConventionTests
 {
+    /// <summary>
+    /// The hooks of alumnes-i-assignacions and taquilles-i-zones: their HandleAsync is fixed by the interface and
+    /// returns a plain Task by design, because a hook can only fail by throwing, which undoes the whole transaction
+    /// it runs inside (docs/convenciones.md, section 4; IAssignmentHooks.cs, ILockerRetiredHandler.cs).
+    /// </summary>
+    static readonly string[] _hookInterfaces = ["IAssignmentOpenedHandler", "IAssignmentClosedHandler", "ILockerRetiredHandler"];
+
     /// <summary>Public use-case handlers: every HandleAsync must return Task of Result, never throw for business rules.</summary>
     public static IEnumerable<string> HandlerViolations(IEnumerable<Type> types) =>
         types
             .Where(t => (t.IsPublic || t.IsNestedPublic) && t.IsClass && t.Name.EndsWith("Handler", StringComparison.Ordinal))
+            .Where(t => !t.GetInterfaces().Any(i => _hookInterfaces.Contains(i.Name)))
             .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                 .Where(m => m.Name == "HandleAsync")
                 .Where(m => !IsTaskOfResult(m.ReturnType))
@@ -47,12 +56,18 @@ public sealed class ConventionTests
         public Task HandleAsync(CancellationToken ct) => Task.CompletedTask;
     }
 
+    public sealed class HookHandler : ILockerRetiredHandler
+    {
+        public Task HandleAsync(Guid lockerId, DateTimeOffset retiredAtUtc, CancellationToken ct) => Task.CompletedTask;
+    }
+
     [Fact]
     public void The_handler_rule_accepts_results_and_rejects_anything_else()
     {
         Assert.Empty(HandlerViolations([typeof(GoodHandler)]));
         Assert.Single(HandlerViolations([typeof(BadHandler)]));
         Assert.Single(HandlerViolations([typeof(VoidHandler)]));
+        Assert.Empty(HandlerViolations([typeof(HookHandler)])); // a hook fails by throwing, not by Result: not a violation
     }
 
     static string Root()
