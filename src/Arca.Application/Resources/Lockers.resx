@@ -40,10 +40,6 @@
   <data name="Lockers.Error.HasReservation" xml:space="preserve">
     <value>La taquilla està reservada. Cal treure la reserva abans de donar-la de baixa.</value>
   </data>
-  <data name="Lockers.Error.DecisionNotAvailable" xml:space="preserve">
-    <value>Aquesta opció encara no està disponible: cal l'assignació d'alumnes. De moment només es pot mantenir l'alumne a la taquilla.</value>
-    <comment>{0} the option</comment>
-  </data>
   <data name="Lockers.Error.Unchanged" xml:space="preserve">
     <value>No hi ha res a canviar: el valor nou és el que ja té.</value>
   </data>

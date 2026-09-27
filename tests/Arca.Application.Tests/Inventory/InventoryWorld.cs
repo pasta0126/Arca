@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.Application.Assignments;
 using Arca.Application.Localization;
 using Arca.Application.Lockers;
 using Arca.Application.Lockers.AddLocker;
@@ -30,15 +31,24 @@ namespace Arca.Application.Tests.Inventory;
 /// <summary>Every use case of zones and lockers wired over the in-memory inventory, so a test reads as what a person does.</summary>
 public sealed class InventoryWorld
 {
-    public InventoryWorld()
+    public InventoryWorld(
+        InMemoryInventory? store = null, FakeClock? clock = null, ILockerOccupancy? occupancy = null, Func<AssignmentServices>? assignments = null)
     {
-        Clock = new FakeClock(new DateTimeOffset(2026, 9, 25, 9, 0, 0, TimeSpan.Zero));
+        _assignments = assignments;
+        Store = store ?? new InMemoryInventory();
+        Clock = clock ?? new FakeClock(new DateTimeOffset(2026, 9, 25, 9, 0, 0, TimeSpan.Zero));
+        Occupancy = occupancy ?? Store.Occupancy;
         Hooks = [];
     }
 
-    public InMemoryInventory Store { get; } = new();
+    readonly Func<AssignmentServices>? _assignments;
+
+    public InMemoryInventory Store { get; }
 
     public FakeClock Clock { get; }
+
+    /// <summary>Which lockers a student holds: the configurable stand-in, or the real one derived from the assignments.</summary>
+    public ILockerOccupancy Occupancy { get; }
 
     public List<ILockerRetiredHandler> Hooks { get; }
 
@@ -58,25 +68,29 @@ public sealed class InventoryWorld
 
     public AddLockerHandler AddLocker => new(Store.Lockers, Store.Zones, Store.Events, Store, Clock);
 
-    public ReserveLockerHandler ReserveLocker => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public ReserveLockerHandler ReserveLocker => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 
-    public RemoveLockerReservationHandler RemoveReservation => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public RemoveLockerReservationHandler RemoveReservation => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store.StudentEvents, Store, Clock);
 
-    public MarkLockerOutOfServiceHandler MarkOutOfService => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    /// <summary>The hooks of other capabilities; empty here, the tests of assignments fill them in.</summary>
+    public AssignmentServices Assignments => _assignments?.Invoke() ?? new(
+        Store.Assignments, Store.Students, Store.Lockers, Store.Zones, Store.Enrollments, Store.Years, Store.StudentEvents, Store.Events, [], [], []);
 
-    public RestoreLockerServiceHandler RestoreService => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public MarkLockerOutOfServiceHandler MarkOutOfService => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Assignments, Store, Clock);
 
-    public ChangeLockerNumberHandler ChangeNumber => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public RestoreLockerServiceHandler RestoreService => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 
-    public ChangeLockerZoneHandler ChangeZone => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Store, Clock);
+    public ChangeLockerNumberHandler ChangeNumber => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
 
-    public RetireLockerHandler RetireLocker => new(Store.Lockers, Store.Zones, Store.Events, Store.Occupancy, Hooks, Store, Clock);
+    public ChangeLockerZoneHandler ChangeZone => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Store, Clock);
+
+    public RetireLockerHandler RetireLocker => new(Store.Lockers, Store.Zones, Store.Events, Occupancy, Hooks, Store, Clock);
 
     public CreateLockerRangeHandler CreateRange => new(Store.Lockers, Store.Zones, Store.Events, Store, Clock);
 
-    public GetLockerHistoryHandler History => new(Store.Lockers, Store.Zones, Store.Events, Localizer);
+    public GetLockerHistoryHandler History => new(Store.Lockers, Store.Zones, Store.Events, Store.Students, Localizer);
 
-    public ListLockersHandler ListLockers => new(Store.Lockers, Store.Zones, Store.Occupancy);
+    public ListLockersHandler ListLockers => new(Store.Lockers, Store.Zones, Occupancy);
 
     public async Task<Guid> ZoneAsync(string name) => (await CreateZone.HandleAsync(new CreateZoneRequest(name), default)).Value!.Id;
 

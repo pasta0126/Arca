@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.Application.Assignments;
 using Arca.Application.Lockers;
 using Arca.Application.Lockers.AddLocker;
 using Arca.Application.Lockers.CreateLockerRange;
@@ -71,6 +72,13 @@ public sealed class EfInventoryTests : IDisposable
         return added.Value!.Id;
     }
 
+    MarkLockerOutOfServiceHandler MarkOutOfService(EfInventory store)
+    {
+        var assignments = new AssignmentServices(
+            store.Assignments, store.Students, store.Lockers, store.Zones, store.Enrollments, store.Years, store.StudentEvents, store.Events, [], [], []);
+        return new MarkLockerOutOfServiceHandler(store.Lockers, store.Zones, store.Events, _occupancy, assignments, store, _clock);
+    }
+
     RetireLockerHandler Retire(EfInventory store, params ILockerRetiredHandler[] hooks) =>
         new(store.Lockers, store.Zones, store.Events, _occupancy, hooks, store, _clock);
 
@@ -102,7 +110,7 @@ public sealed class EfInventoryTests : IDisposable
 
         Assert.DoesNotContain(columns, c => c.Contains("Status", StringComparison.OrdinalIgnoreCase));
         Assert.Equal(
-            ["Id", "IsReserved", "Note", "Number", "OutOfService", "ReservationNote", "RetiredAtUtc", "ZoneId"], columns.Order());
+            ["Id", "IsReserved", "Note", "Number", "OutOfService", "ReservationNote", "ReservedForStudentId", "RetiredAtUtc", "ZoneId"], columns.Order());
     }
 
     // --- Unique indexes ---
@@ -200,10 +208,10 @@ public sealed class EfInventoryTests : IDisposable
         var zone = await ZoneAsync(store, "Planta 1");
         var locker = await LockerAsync(store, 15, zone);
         _clock.Advance(TimeSpan.FromMinutes(5));
-        await new MarkLockerOutOfServiceHandler(store.Lockers, store.Zones, store.Events, _occupancy, store, _clock)
+        await MarkOutOfService(store)
             .HandleAsync(new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Broken), default);
 
-        var history = (await new GetLockerHistoryHandler(store.Lockers, store.Zones, store.Events, new ResxLocalizer())
+        var history = (await new GetLockerHistoryHandler(store.Lockers, store.Zones, store.Events, new InMemoryInventory().Students, new ResxLocalizer())
             .HandleAsync(new GetLockerHistoryRequest(locker), default)).Value!;
 
         Assert.Equal([LockerEventTypes.OutOfService, LockerEventTypes.Created], history.Select(e => e.Type));
@@ -221,7 +229,7 @@ public sealed class EfInventoryTests : IDisposable
         var free = await LockerAsync(store, 1, zone);
         var occupied = await LockerAsync(store, 2, zone);
         _occupancy.Occupy(occupied);
-        await new MarkLockerOutOfServiceHandler(store.Lockers, store.Zones, store.Events, _occupancy, store, _clock)
+        await MarkOutOfService(store)
             .HandleAsync(new MarkLockerOutOfServiceRequest(occupied, OutOfServiceKind.Broken, OutOfServiceDecision.Keep), default);
 
         var listing = (await new ListLockersHandler(store.Lockers, store.Zones, _occupancy).HandleAsync(new ListLockersRequest(), default)).Value!;
@@ -244,7 +252,7 @@ public sealed class EfInventoryTests : IDisposable
         var current = await LockerAsync(store, 15, zone);
         var duplicate = await new AddLockerHandler(store.Lockers, store.Zones, store.Events, store, _clock).HandleAsync(new AddLockerRequest(15, zone), default);
 
-        var history = new GetLockerHistoryHandler(store.Lockers, store.Zones, store.Events, new ResxLocalizer());
+        var history = new GetLockerHistoryHandler(store.Lockers, store.Zones, store.Events, new InMemoryInventory().Students, new ResxLocalizer());
         var oldHistory = (await history.HandleAsync(new GetLockerHistoryRequest(old), default)).Value!;
         var currentHistory = (await history.HandleAsync(new GetLockerHistoryRequest(current), default)).Value!;
 

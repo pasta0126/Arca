@@ -26,6 +26,7 @@ sealed class LockerConfiguration : IEntityTypeConfiguration<Locker>
         locker.Property(l => l.OutOfService).HasConversion<string>().HasMaxLength(20);
         locker.Property(l => l.IsReserved).IsRequired();
         locker.Property(l => l.ReservationNote).HasMaxLength(Locker.MaximumNoteLength);
+        locker.Property(l => l.ReservedForStudentId); // the student a reservation is for, if any (alumnes-i-assignacions)
         locker.Property(l => l.RetiredAtUtc).HasConversion(Instants.Converter);
         locker.Ignore(l => l.IsRetired);
 

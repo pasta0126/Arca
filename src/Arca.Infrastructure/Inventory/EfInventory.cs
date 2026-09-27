@@ -1,19 +1,30 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.Application.Assignments;
+using Arca.Application.Catalog;
 using Arca.Application.Common;
+using Arca.Application.Enrollments;
 using Arca.Application.Lockers;
+using Arca.Application.SchoolYears;
+using Arca.Application.Students;
 using Arca.Application.Zones;
 using Arca.Domain.Common;
 using Arca.Domain.Lockers;
 using Arca.Domain.Zones;
+using Arca.Infrastructure.Assignments;
+using Arca.Infrastructure.Catalog;
+using Arca.Infrastructure.Enrollments;
+using Arca.Infrastructure.SchoolYears;
 using Arca.Infrastructure.Storage;
+using Arca.Infrastructure.Students;
 using Microsoft.EntityFrameworkCore;
 
 namespace Arca.Infrastructure.Inventory;
 
 /// <summary>
-/// The zones, lockers and their history over the encrypted database. As a unit of work it opens one database context and
+/// Every repository over the encrypted database: zones and lockers (taquilles-i-zones), and school years, students,
+/// enrolments, catalogue and assignments (alumnes-i-assignacions). As a unit of work it opens one database context and
 /// one transaction for a use case, and the repositories use that context while it runs (docs/convenciones.md, section 4):
 /// what the work saves is committed together if it succeeds and undone if it fails or throws. A read that runs outside a
 /// unit of work uses a short-lived context of its own. Nothing is loaded lazily.
@@ -30,6 +41,12 @@ public sealed class EfInventory : IUnitOfWork
         Zones = new EfZoneRepository(this);
         Lockers = new EfLockerRepository(this);
         Events = new EfLockerEventRepository(this);
+        Years = new EfAcademicYearRepository(this);
+        Students = new EfStudentRepository(this);
+        Enrollments = new EfEnrollmentRepository(this);
+        Catalog = new EfCatalogRepository(this);
+        StudentEvents = new EfStudentEventRepository(this);
+        Assignments = new EfAssignmentRepository(this);
     }
 
     public IZoneRepository Zones { get; }
@@ -37,6 +54,18 @@ public sealed class EfInventory : IUnitOfWork
     public ILockerRepository Lockers { get; }
 
     public ILockerEventRepository Events { get; }
+
+    public IAcademicYearRepository Years { get; }
+
+    public IStudentRepository Students { get; }
+
+    public IEnrollmentRepository Enrollments { get; }
+
+    public ICatalogRepository Catalog { get; }
+
+    public IStudentEventRepository StudentEvents { get; }
+
+    public IAssignmentRepository Assignments { get; }
 
     public async Task<Result<T>> RunAsync<T>(Func<CancellationToken, Task<Result<T>>> work, CancellationToken ct)
     {

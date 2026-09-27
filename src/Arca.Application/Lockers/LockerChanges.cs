@@ -17,7 +17,7 @@ internal sealed class LockerChanges(
 {
     /// <param name="rule">The rule to apply. It returns the event to record, or null when nothing changed.</param>
     public async Task<Result<LockerRow>> ApplyAsync(
-        Guid lockerId, Func<Locker, bool, Result<HistoryEvent?>> rule, CancellationToken ct, Func<Locker, Task>? afterSaved = null)
+        Guid lockerId, Func<Locker, bool, Result<HistoryEvent?>> rule, CancellationToken ct, Func<Locker, Task<Error?>>? afterSaved = null)
     {
         var locker = await lockers.GetAsync(lockerId, ct);
         if (locker is null)
@@ -36,10 +36,13 @@ internal sealed class LockerChanges(
         {
             await lockers.UpdateAsync(locker, ct);
             await events.AddAsync(change, ct);
-            if (afterSaved is not null)
+            if (afterSaved is not null && await afterSaved(locker) is { } error)
             {
-                await afterSaved(locker);
+                return Result<LockerRow>.Failure(error);
             }
+
+            // afterSaved may have opened or closed an assignment of this same locker (a reassignment or a release): re-read.
+            occupied = (await occupancy.OccupiedAmongAsync([lockerId], ct)).Contains(lockerId);
         }
 
         return Result<LockerRow>.Success(await RowAsync(locker, occupied, ct), [.. applied.Notices]);

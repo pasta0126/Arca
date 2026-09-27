@@ -41,10 +41,6 @@ public static class LockerErrors
     /// <summary>It is reserved; the reservation must be removed before retiring the locker.</summary>
     public static readonly Error HasReservation = new("Lockers.HasReservation");
 
-    /// <summary>The option needs the assignments, which do not exist yet. Args: {0} the option.</summary>
-    public static Error DecisionNotAvailable(OutOfServiceDecision decision) =>
-        new("Lockers.DecisionNotAvailable", Args: [decision.ToString()]);
-
     /// <summary>The new value is the one it already has.</summary>
     public static readonly Error Unchanged = new("Lockers.Unchanged");
 

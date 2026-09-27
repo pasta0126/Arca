@@ -14,7 +14,7 @@ namespace Arca.Application.Lockers;
 /// </summary>
 internal sealed class LockerHistoryText(ILocalizer localizer)
 {
-    public string Compose(HistoryEvent change, IReadOnlyDictionary<Guid, string> zoneNames)
+    public string Compose(HistoryEvent change, IReadOnlyDictionary<Guid, string> zoneNames, IReadOnlyDictionary<Guid, string> studentNames)
     {
         var before = Parse(change.BeforeJson);
         var after = Parse(change.AfterJson);
@@ -23,8 +23,13 @@ internal sealed class LockerHistoryText(ILocalizer localizer)
             "Locker.Created" => Get(change.Type, Number(after), Zone(after, zoneNames)),
             "Locker.NumberChanged" => Get(change.Type, Number(before), Number(after)),
             "Locker.ZoneChanged" => Get(change.Type, Zone(before, zoneNames), Zone(after, zoneNames)),
-            "Locker.Reserved" => Note(after) is { } note ? Get(change.Type + "WithNote", note) : Get(change.Type),
+            "Locker.Reserved" => Reserved(change.Type, after, studentNames),
             "Locker.ReservationRemoved" => Get(change.Type),
+            "Locker.ReservationConsumed" => Get(change.Type),
+            "Locker.Assigned" => Get(change.Type, Student(after, studentNames)),
+            "Locker.Released" => Text(after, "note") is { Length: > 0 } releaseNote
+                ? Get(change.Type + "WithNote", Student(before, studentNames), Reason(after), releaseNote)
+                : Get(change.Type, Student(before, studentNames), Reason(after)),
             "Locker.OutOfService" => Text(after, "decision") == "Keep"
                 ? Get(change.Type + "Keeping", Kind(after))
                 : Get(change.Type, Kind(after)),
@@ -47,6 +52,24 @@ internal sealed class LockerHistoryText(ILocalizer localizer)
 
     static string Number(JsonElement? root) =>
         root is { ValueKind: JsonValueKind.Object } element && element.TryGetProperty("number", out var value) ? value.GetRawText() : "?";
+
+    string Reserved(string type, JsonElement? after, IReadOnlyDictionary<Guid, string> studentNames)
+    {
+        var note = Note(after);
+        if (Text(after, "studentId").Length > 0)
+        {
+            return note is null
+                ? Get(type + "ForStudent", Student(after, studentNames))
+                : Get(type + "ForStudentWithNote", Student(after, studentNames), note);
+        }
+
+        return note is null ? Get(type) : Get(type + "WithNote", note);
+    }
+
+    string Reason(JsonElement? root) => Text(root, "reason") is { Length: > 0 } reason ? localizer.Get(string.Concat("History.Reason.", reason)) : "?";
+
+    static string Student(JsonElement? root, IReadOnlyDictionary<Guid, string> names) =>
+        Guid.TryParse(Text(root, "studentId"), out var id) && names.TryGetValue(id, out var name) ? name : "?";
 
     static string? Note(JsonElement? root) => Text(root, "note") is { Length: > 0 } note ? note : null;
 

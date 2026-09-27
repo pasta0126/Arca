@@ -47,6 +47,7 @@ Fase de especificación cerrada: 16 cambios redactados y validados (`openspec va
 - Política de conservación de datos de cursos cerrados (cuántos cursos, si se automatiza). Hasta entonces es manual y por curso (`cursos-i-historial`).
 - Informes adicionales y sus columnas (`informes-csv` solo incluye seis; el catálogo es ampliable).
 - Si echan en falta un recordatorio o la fecha de la última copia (`copies-de-seguretat` no los tiene).
+- ¿Los ordenadores del centro tienen habilitada la **Microsoft Store** y permiten instalar sin permisos de administrador? Decide si vale la pena ofrecer ARCA también como paquete MSIX de la Store, que Microsoft firma gratis y no muestra aviso de SmartScreen (`docs/firma-de-codigo.md`).
 
 ## Pendiente de recibir
 - Decidir dónde se aloja el servidor de registro y desde qué dominio se envían los correos.

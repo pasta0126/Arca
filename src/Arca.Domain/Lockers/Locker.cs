@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using Arca.Domain.Common;
 using Arca.Domain.Zones;
@@ -17,12 +18,16 @@ public sealed class Locker
 {
     public const int MaximumNoteLength = 500;
 
-    static readonly JsonSerializerOptions _json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    static readonly JsonSerializerOptions _json = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, // keep accents readable in the stored history
+    };
 
     /// <summary>Rebuilds a stored locker. Used by persistence, which has already validated it.</summary>
     public Locker(
         Guid id, int number, Guid zoneId, string? note, OutOfServiceKind? outOfService, bool isReserved, string? reservationNote,
-        DateTimeOffset? retiredAtUtc)
+        DateTimeOffset? retiredAtUtc, Guid? reservedForStudentId = null)
     {
         Id = id;
         Number = number;
@@ -32,6 +37,7 @@ public sealed class Locker
         IsReserved = isReserved;
         ReservationNote = reservationNote;
         RetiredAtUtc = retiredAtUtc;
+        ReservedForStudentId = reservedForStudentId;
     }
 
     /// <summary>The internal identity. It never changes; history and everything tied to the locker follow it, not the number.</summary>
@@ -48,6 +54,9 @@ public sealed class Locker
     public bool IsReserved { get; private set; }
 
     public string? ReservationNote { get; private set; }
+
+    /// <summary>The student the reservation is for, or null for a reservation with no student (alumnes-i-assignacions).</summary>
+    public Guid? ReservedForStudentId { get; private set; }
 
     public DateTimeOffset? RetiredAtUtc { get; private set; }
 
@@ -168,6 +177,35 @@ public sealed class Locker
         return Done(LockerEventTypes.Reserved, now, null, new { note = cleanNote.Value });
     }
 
+    /// <summary>
+    /// Reserves a free locker for a given student, with an optional note. It becomes an assignment when it is formalised, and the
+    /// reservation is then consumed. Whether the student already has a locker or another reservation is checked by the use case.
+    /// </summary>
+    public Result<HistoryEvent> ReserveForStudent(Guid studentId, string? note, bool hasAssignment, DateTimeOffset now)
+    {
+        var reserved = Reserve(note, hasAssignment, now);
+        if (!reserved.IsSuccess)
+        {
+            return reserved;
+        }
+
+        ReservedForStudentId = studentId;
+        return Done(LockerEventTypes.Reserved, now, null, new { note = ReservationNote, studentId });
+    }
+
+    /// <summary>The reservation is turned into an assignment for the student it was for.</summary>
+    public Result<HistoryEvent> ConsumeReservation(DateTimeOffset now)
+    {
+        if (!IsReserved)
+        {
+            return Result<HistoryEvent>.Failure(LockerErrors.NotReserved);
+        }
+
+        var before = new { note = ReservationNote, studentId = ReservedForStudentId };
+        (IsReserved, ReservationNote, ReservedForStudentId) = (false, null, null);
+        return Done(LockerEventTypes.ReservationConsumed, now, before, null);
+    }
+
     public Result<HistoryEvent> RemoveReservation(DateTimeOffset now)
     {
         var refused = RefuseIfRetired();
@@ -181,16 +219,16 @@ public sealed class Locker
             return Result<HistoryEvent>.Failure(LockerErrors.NotReserved);
         }
 
-        var before = ReservationNote;
-        IsReserved = false;
-        ReservationNote = null;
-        return Done(LockerEventTypes.ReservationRemoved, now, new { note = before }, null);
+        var before = new { note = ReservationNote, studentId = ReservedForStudentId };
+        (IsReserved, ReservationNote, ReservedForStudentId) = (false, null, null);
+        return Done(LockerEventTypes.ReservationRemoved, now, before, null);
     }
 
     /// <summary>
     /// Puts the locker out of service as broken or in maintenance (taquilles-i-zones, D3). If a student holds it, a
-    /// decision is needed first and nothing changes without one. Only keeping the student is available for now.
-    /// Changing from one kind to the other needs no decision. A reservation is kept.
+    /// decision is needed first and nothing changes without one. The decision is recorded in the event; carrying it out
+    /// (reassigning or releasing the student) is done by the use case of the assignments. Changing from one kind to the
+    /// other needs no decision. A reservation is kept.
     /// </summary>
     public Result<OutOfServiceOutcome> MarkOutOfService(
         OutOfServiceKind kind, OutOfServiceDecision? decision, bool hasAssignment, DateTimeOffset now)
@@ -220,10 +258,6 @@ public sealed class Locker
                 return Result<OutOfServiceOutcome>.Success(OutOfServiceOutcome.DecisionRequired());
             }
 
-            if (decision != OutOfServiceDecision.Keep)
-            {
-                return Result<OutOfServiceOutcome>.Failure(LockerErrors.DecisionNotAvailable(decision.Value));
-            }
         }
 
         OutOfService = kind;

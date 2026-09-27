@@ -410,16 +410,16 @@ public sealed class LockerRulesTests
     [Theory]
     [InlineData(OutOfServiceDecision.Reassign)]
     [InlineData(OutOfServiceDecision.Release)]
-    [Trait("spec", Spec + ": Decisión obligatoria al poner fuera de servicio una taquilla ocupada (Avería sin decisión)")]
-    public void Reassigning_or_releasing_is_not_available_yet_and_changes_nothing(OutOfServiceDecision decision)
+    [Trait("spec", "alumnes-i-assignacions/assignacions: Decisión de reasignar o liberar al poner fuera de servicio una taquilla ocupada")]
+    public void Reassigning_or_releasing_puts_the_locker_out_of_service_and_records_the_decision(OutOfServiceDecision decision)
     {
         var locker = Make();
 
         var result = locker.MarkOutOfService(OutOfServiceKind.Broken, decision, hasAssignment: true, _now);
 
-        Assert.Equal("Lockers.DecisionNotAvailable", result.Error!.Code);
-        Assert.Equal(decision.ToString(), Assert.Single(result.Error.Args));
-        Assert.Null(locker.OutOfService);
+        Assert.False(result.Value!.NeedsDecision);
+        Assert.Equal(OutOfServiceKind.Broken, locker.OutOfService);
+        Assert.Contains(decision.ToString(), result.Value.Event!.AfterJson, StringComparison.Ordinal);
     }
 
     // --- Zone change ---
