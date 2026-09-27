@@ -50,4 +50,27 @@
   <data name="Assignments.Error.TargetRequired" xml:space="preserve">
     <value>Per reassignar l'alumne cal triar la taquilla on anirà.</value>
   </data>
+  <data name="Assignments.Result.Assigned" xml:space="preserve">
+    <value>{0} té ara la taquilla {1} a la zona {2}.</value>
+    <comment>{0} student name, {1} locker number, {2} zone name</comment>
+  </data>
+  <data name="Assignments.Result.Changed" xml:space="preserve">
+    <value>{0} ha canviat a la taquilla {1} a la zona {2}.</value>
+    <comment>{0} student name, {1} locker number, {2} zone name</comment>
+  </data>
+  <data name="Assignments.Result.Released" xml:space="preserve">
+    <value>S'ha alliberat la taquilla de {0}.</value>
+    <comment>{0} student name</comment>
+  </data>
+  <data name="Assignments.Label.ReleaseTitle" xml:space="preserve">
+    <value>Alliberar la taquilla de {0}?</value>
+    <comment>{0} student name</comment>
+  </data>
+  <data name="Assignments.Label.ReleaseConsequence" xml:space="preserve">
+    <value>La taquilla {0} quedarà lliure.</value>
+    <comment>{0} locker number</comment>
+  </data>
+  <data name="Assignments.Label.ReleaseConfirm" xml:space="preserve">
+    <value>Allibera la taquilla</value>
+  </data>
 </root>

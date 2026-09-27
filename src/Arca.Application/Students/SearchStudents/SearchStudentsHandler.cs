@@ -60,6 +60,11 @@ public sealed class SearchStudentsHandler(
 
         var active = enrolled.Count(s => !s.IsRetired);
         var withLocker = enrolled.Count(s => !s.IsRetired && held.ContainsKey(s.Id));
-        return Result<StudentListing>.Success(new StudentListing(rows, new StudentCounters(active, withLocker, active - withLocker)));
+        var withoutLocker = active - withLocker;
+        var empty = rows.Count > 0 ? StudentEmptyState.None
+            : enrolled.Count == 0 ? StudentEmptyState.NoStudents
+            : filter.LockerState == StudentLockerState.WithoutLocker && withoutLocker == 0 ? StudentEmptyState.NoStudentsWithoutLocker
+            : StudentEmptyState.NoResults;
+        return Result<StudentListing>.Success(new StudentListing(rows, new StudentCounters(active, withLocker, withoutLocker), empty));
     }
 }

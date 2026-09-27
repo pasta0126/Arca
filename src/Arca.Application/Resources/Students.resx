@@ -39,4 +39,54 @@
   <data name="Students.Error.NotFound" xml:space="preserve">
     <value>No s'ha trobat l'alumne. Torna a carregar la llista.</value>
   </data>
+  <data name="Students.Result.Added" xml:space="preserve">
+    <value>S'ha donat d'alta {0} {1}.</value>
+    <comment>{0} first name, {1} last name</comment>
+  </data>
+  <data name="Students.Result.Edited" xml:space="preserve">
+    <value>S'han actualitzat les dades de {0} {1}.</value>
+    <comment>{0} first name, {1} last name</comment>
+  </data>
+  <data name="Students.Result.Retired" xml:space="preserve">
+    <value>S'ha donat de baixa {0} {1}.</value>
+    <comment>{0} first name, {1} last name</comment>
+  </data>
+  <data name="Students.Result.Reactivated" xml:space="preserve">
+    <value>S'ha reactivat {0} {1}.</value>
+    <comment>{0} first name, {1} last name</comment>
+  </data>
+  <data name="Students.Result.EnrollmentChanged" xml:space="preserve">
+    <value>S'ha canviat la matrícula de {0} {1}.</value>
+    <comment>{0} first name, {1} last name</comment>
+  </data>
+  <data name="Students.Label.RetireTitle" xml:space="preserve">
+    <value>Donar de baixa {0} {1}?</value>
+    <comment>{0} first name, {1} last name</comment>
+  </data>
+  <data name="Students.Label.RetireConsequenceWithLocker" xml:space="preserve">
+    <value>Es donarà de baixa {0} {1} i s'alliberarà la taquilla {2}.</value>
+    <comment>{0} first name, {1} last name, {2} locker number</comment>
+  </data>
+  <data name="Students.Label.RetireConsequenceNoLocker" xml:space="preserve">
+    <value>Es donarà de baixa {0} {1}.</value>
+    <comment>{0} first name, {1} last name</comment>
+  </data>
+  <data name="Students.Label.RetireConfirm" xml:space="preserve">
+    <value>Dona de baixa</value>
+  </data>
+  <data name="Students.Label.AddStudent" xml:space="preserve">
+    <value>Dona d'alta un alumne</value>
+  </data>
+  <data name="Students.Label.ClearFilters" xml:space="preserve">
+    <value>Neteja els filtres</value>
+  </data>
+  <data name="Students.Empty.NoStudents" xml:space="preserve">
+    <value>Encara no hi ha cap alumne donat d'alta en aquest curs.</value>
+  </data>
+  <data name="Students.Empty.NoStudentsWithoutLocker" xml:space="preserve">
+    <value>Tots els alumnes actius ja tenen taquilla.</value>
+  </data>
+  <data name="Students.Empty.NoResults" xml:space="preserve">
+    <value>Cap alumne compleix els filtres.</value>
+  </data>
 </root>

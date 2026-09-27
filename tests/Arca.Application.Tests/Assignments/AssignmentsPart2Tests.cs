@@ -206,6 +206,7 @@ public sealed class AssignmentsPart2Tests
             new MarkLockerOutOfServiceRequest(broken, OutOfServiceKind.Broken, OutOfServiceDecision.Reassign, target), default);
 
         Assert.False(result.Value!.DecisionRequired);
+        Assert.False(result.Value.Locker.HasAssignment); // the result itself, not a re-query, reflects the reassignment
         var oldRow = await world.Inventory.RowAsync(broken);
         Assert.Equal(LockerStatus.Broken, oldRow.Status);
         Assert.False(oldRow.HasAssignment);
@@ -253,9 +254,10 @@ public sealed class AssignmentsPart2Tests
         var locker = await world.LockerAsync(1, zone);
         await world.AssignAsync(student.Id, locker);
 
-        await world.Inventory.MarkOutOfService.HandleAsync(
+        var result = await world.Inventory.MarkOutOfService.HandleAsync(
             new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Maintenance, OutOfServiceDecision.Release), default);
 
+        Assert.False(result.Value!.Locker.HasAssignment); // the result itself, not a re-query, reflects the release
         var row = await world.Inventory.RowAsync(locker);
         Assert.Equal(LockerStatus.Maintenance, row.Status);
         Assert.False(row.HasAssignment);

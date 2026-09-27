@@ -72,11 +72,11 @@
 
 ## 8. Feedback y guía al usuario
 
-- [ ] 8.1 Devolver el resultado estructurado con recuentos en todos los casos de uso nuevos
-- [ ] 8.2 Preparar confirmaciones con su consecuencia: baja de alumno, liberación, importación y segunda confirmación de bajas masivas
-- [ ] 8.3 Preparar los estados vacíos: sin curso activo, sin alumnos, sin alumnos sin taquilla, sin taquillas libres, filtros sin resultados
-- [ ] 8.4 Claves de recurso en catalán para todos los mensajes, incluidos los de la revisión de la importación
-- [ ] 8.5 Pruebas de mensajes de resultado y de estados vacíos
+- [x] 8.1 Devolver el resultado estructurado con recuentos en todos los casos de uso nuevos
+- [x] 8.2 Preparar confirmaciones con su consecuencia: baja de alumno, liberación, importación y segunda confirmación de bajas masivas (las dos últimas son de la importación, `importacio-alumnes`, fuera del hito 1: ver grupo 6)
+- [x] 8.3 Preparar los estados vacíos: sin curso activo, sin alumnos, sin alumnos sin taquilla, sin taquillas libres, filtros sin resultados
+- [x] 8.4 Claves de recurso en catalán para todos los mensajes, incluidos los de la revisión de la importación (los de la importación quedan fuera del hito 1: ver grupo 6)
+- [x] 8.5 Pruebas de mensajes de resultado y de estados vacíos
 
 ## 9. Verificación transversal
 

@@ -40,6 +40,9 @@ internal sealed class LockerChanges(
             {
                 return Result<LockerRow>.Failure(error);
             }
+
+            // afterSaved may have opened or closed an assignment of this same locker (a reassignment or a release): re-read.
+            occupied = (await occupancy.OccupiedAmongAsync([lockerId], ct)).Contains(lockerId);
         }
 
         return Result<LockerRow>.Success(await RowAsync(locker, occupied, ct), [.. applied.Notices]);
