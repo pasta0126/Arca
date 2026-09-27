@@ -80,8 +80,8 @@
 
 ## 9. Verificación transversal
 
-- [ ] 9.1 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core ni el lector de ODS
-- [ ] 9.2 Prueba de privacidad: un error provocado con datos de un alumno no deja rastro personal en el registro técnico y el correo no sale en listados ni exportaciones
-- [ ] 9.3 Prueba automática de que todas las claves de recurso nuevas existen en catalán
-- [ ] 9.4 Documentar los puntos de enganche para `pagaments` (aviso de deuda, cargos al abrir una asignación, fianza en baja y reactivación) y `claus` (estado de la llave al cerrar una asignación)
+- [x] 9.1 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core ni el lector de ODS (cubierto por la prueba genérica de `arquitectura-base`/`taquilles-i-zones`, ya verificada con el código de este cambio; el lector de ODS no existe todavía, grupo 6 fuera del hito 1)
+- [x] 9.2 Prueba de privacidad: un error provocado con datos de un alumno no deja rastro personal en el registro técnico y el correo no sale en listados ni exportaciones (la prueba genérica de `FileErrorLogTests` ya usa datos de alumno y la operación `AssignLocker`; la privacidad del correo en listados está probada desde el grupo 3)
+- [x] 9.3 Prueba automática de que todas las claves de recurso nuevas existen en catalán (`ResourceCoverageTests`, genérica desde `arquitectura-base`, ya verificada con las claves de este cambio)
+- [x] 9.4 Documentar los puntos de enganche para `pagaments` (aviso de deuda, cargos al abrir una asignación, fianza en baja y reactivación) y `claus` (estado de la llave al cerrar una asignación) — documentado en los comentarios de `IAssignmentGuard`, `IAssignmentOpenedHandler`, `IAssignmentClosedHandler` e `IStudentLifecycleHandler` (grupo 4)
 - [ ] 9.5 Verificar que el fichero de ejemplo anonimizado (`docs/datos-de-ejemplo-anonimizado.ods`) se importa entero y que la documentación del formato coincide con `importacio-alumnes`
