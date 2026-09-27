@@ -63,7 +63,7 @@ public sealed class ConceptAmount
     }
 
     static Result<Money> ValidateAmount(decimal amount) =>
-        Money.TryFromDecimal(amount, out var money) && money.Amount > 0 && money.Amount <= MaximumAmount
+        Money.TryFromDecimalInRange(amount, MaximumAmount, out var money)
             ? Result<Money>.Success(money)
             : Result<Money>.Failure(ConceptAmountErrors.AmountInvalid(MaximumAmount));
 

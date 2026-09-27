@@ -35,6 +35,18 @@ public readonly record struct Money : IComparable<Money>
         return true;
     }
 
+    /// <summary>Converts an exact decimal that is greater than zero and no more than a maximum, both checked together.</summary>
+    public static bool TryFromDecimalInRange(decimal amount, decimal maximum, out Money money)
+    {
+        if (TryFromDecimal(amount, out money) && money.Amount > 0 && money.Amount <= maximum)
+        {
+            return true;
+        }
+
+        money = default;
+        return false;
+    }
+
     public static Money operator +(Money left, Money right) => new(checked(left.Cents + right.Cents));
 
     public static Money operator -(Money left, Money right) => new(checked(left.Cents - right.Cents));

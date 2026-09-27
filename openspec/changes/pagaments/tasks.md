@@ -9,14 +9,14 @@
 
 ## 2. Dominio de cargos
 
-- [ ] 2.1 Crear `Charge` con alumno, concepto, curso, importe fijado, estado y datos de la última transición (D1)
-- [ ] 2.2 Implementar la tabla de transiciones permitidas y rechazar todas las demás con un error de estado no válido
-- [ ] 2.3 Reglas de fecha de pago (por defecto hoy, nunca futura) y de motivo obligatorio de 1 a 500 caracteres
-- [ ] 2.4 Reversión de pagado, exento y condonado a pendiente con motivo, y anulación solo de pendientes
-- [ ] 2.5 Ajuste del importe de un cargo pendiente con motivo
-- [ ] 2.6 Historial de eventos del cargo de solo añadir, con datos estructurados y sin texto traducido (D2)
-- [ ] 2.7 Códigos de error y claves de recurso en catalán de cargos
-- [ ] 2.8 Pruebas de la tabla completa de transiciones, fechas pasada, futura y por defecto, motivos vacío y largo, reversión, anulación de pagado, ajuste de importe y historial inmutable
+- [x] 2.1 Crear `Charge` con alumno, concepto, curso, importe fijado, estado y datos de la última transición (D1)
+- [x] 2.2 Implementar la tabla de transiciones permitidas y rechazar todas las demás con un error de estado no válido
+- [x] 2.3 Reglas de fecha de pago (por defecto hoy, nunca futura) y de motivo obligatorio de 1 a 500 caracteres
+- [x] 2.4 Reversión de pagado, exento y condonado a pendiente con motivo, y anulación solo de pendientes
+- [x] 2.5 Ajuste del importe de un cargo pendiente con motivo
+- [x] 2.6 Historial de eventos del cargo de solo añadir, con datos estructurados y sin texto traducido (D2)
+- [x] 2.7 Códigos de error y claves de recurso en catalán de cargos
+- [x] 2.8 Pruebas de la tabla completa de transiciones, fechas pasada, futura y por defecto, motivos vacío y largo, reversión, anulación de pagado, ajuste de importe y historial inmutable (esto último por diseño: el historial no ofrece ninguna operación de editar ni borrar)
 
 ## 3. Generación de cargos y avisos
 
