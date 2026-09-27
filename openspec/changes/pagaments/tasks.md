@@ -1,11 +1,11 @@
 ## 1. Importes por curso
 
-- [ ] 1.1 Crear el catálogo cerrado de conceptos (cuota, fianza, reposición) y `ConceptAmount` por curso con el tipo de importe exacto y sus límites
-- [ ] 1.2 Regla de modificación solo si la fecha de fin del curso no ha pasado y propuesta de los importes del curso anterior (D5)
-- [ ] 1.3 Historial de cambios de importe de solo añadir
-- [ ] 1.4 Casos de uso: definir, consultar y modificar importes de un curso
-- [ ] 1.5 Códigos de error y claves de recurso en catalán de importes
-- [ ] 1.6 Pruebas: importe cero, negativo, con más decimales y superior al máximo, herencia del curso anterior, cambio sin efecto retroactivo, curso finalizado, curso sin importes
+- [x] 1.1 Crear el catálogo cerrado de conceptos (cuota, fianza, reposición) y `ConceptAmount` por curso con el tipo de importe exacto y sus límites
+- [x] 1.2 Regla de modificación solo si la fecha de fin del curso no ha pasado y propuesta de los importes del curso anterior (D5)
+- [x] 1.3 Historial de cambios de importe de solo añadir
+- [x] 1.4 Casos de uso: definir, consultar y modificar importes de un curso
+- [x] 1.5 Códigos de error y claves de recurso en catalán de importes
+- [x] 1.6 Pruebas: importe cero, negativo, con más decimales y superior al máximo, herencia del curso anterior, cambio sin efecto retroactivo, curso finalizado, curso sin importes (el caso "cargo generado conserva el importe antiguo" se prueba de extremo a extremo en el grupo 3, cuando existe `Charge`)
 
 ## 2. Dominio de cargos
 

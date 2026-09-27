@@ -4,6 +4,7 @@
 using Arca.Application.Common;
 using Arca.Application.Assignments;
 using Arca.Application.Catalog;
+using Arca.Application.ConceptAmounts;
 using Arca.Application.Enrollments;
 using Arca.Application.Lockers;
 using Arca.Application.Students;
@@ -12,6 +13,7 @@ using Arca.Application.Zones;
 using Arca.Domain.Common;
 using Arca.Domain.Assignments;
 using Arca.Domain.Catalog;
+using Arca.Domain.ConceptAmounts;
 using Arca.Domain.Enrollments;
 using Arca.Domain.Lockers;
 using Arca.Domain.Students;
@@ -37,6 +39,8 @@ public sealed class InMemoryInventory : IUnitOfWork
         Catalog = new CatalogRepository(this);
         StudentEvents = new StudentEventRepository(this);
         Assignments = new AssignmentRepository(this);
+        ConceptAmounts = new ConceptAmountRepository(this);
+        ConceptAmountEvents = new ConceptAmountEventRepository(this);
     }
 
     public List<Zone> ZoneList { get; private set; } = [];
@@ -58,6 +62,10 @@ public sealed class InMemoryInventory : IUnitOfWork
     public List<HistoryEvent> StudentEventList { get; private set; } = [];
 
     public List<Assignment> AssignmentList { get; private set; } = [];
+
+    public List<ConceptAmount> ConceptAmountList { get; private set; } = [];
+
+    public List<HistoryEvent> ConceptAmountEventList { get; private set; } = [];
 
     /// <summary>The locker each student holds, until the assignments exist. A test sets it.</summary>
     public ConfigurableStudentLockers StudentLockers { get; } = new();
@@ -83,6 +91,10 @@ public sealed class InMemoryInventory : IUnitOfWork
 
     public IAssignmentRepository Assignments { get; }
 
+    public IConceptAmountRepository ConceptAmounts { get; }
+
+    public IConceptAmountEventRepository ConceptAmountEvents { get; }
+
     /// <summary>Which lockers a student holds. The real one comes with the assignments.</summary>
     public ConfigurableOccupancy Occupancy { get; } = new();
 
@@ -104,6 +116,8 @@ public sealed class InMemoryInventory : IUnitOfWork
         var studentEvents = StudentEventList.ToList();
         var assignments = AssignmentList.Select(a => new Assignment(a.Id, a.StudentId, a.LockerId, a.YearId, a.StartedAtUtc, a.EndedAtUtc, a.CloseReason, a.CloseNote)).ToList();
         var years = YearList.Select(y => AcademicYear.Restore(y.Id, y.StartDate, y.EndDate, y.IsActive)).ToList();
+        var conceptAmounts = ConceptAmountList.Select(a => new ConceptAmount(a.Id, a.YearId, a.Concept, a.Amount)).ToList();
+        var conceptAmountEvents = ConceptAmountEventList.ToList();
         Result<T> result;
         try
         {
@@ -113,6 +127,7 @@ public sealed class InMemoryInventory : IUnitOfWork
         {
             (ZoneList, LockerList, EventList, YearList) = (zones, lockers, events, years);
             (StudentList, EnrollmentList, LevelList, GroupList, StudentEventList, AssignmentList) = (students, enrollments, levels, groups, studentEvents, assignments);
+            (ConceptAmountList, ConceptAmountEventList) = (conceptAmounts, conceptAmountEvents);
             throw;
         }
 
@@ -120,6 +135,7 @@ public sealed class InMemoryInventory : IUnitOfWork
         {
             (ZoneList, LockerList, EventList, YearList) = (zones, lockers, events, years);
             (StudentList, EnrollmentList, LevelList, GroupList, StudentEventList, AssignmentList) = (students, enrollments, levels, groups, studentEvents, assignments);
+            (ConceptAmountList, ConceptAmountEventList) = (conceptAmounts, conceptAmountEvents);
         }
 
         return result;
@@ -238,6 +254,33 @@ public sealed class InMemoryInventory : IUnitOfWork
         }
 
         public Task UpdateAsync(Assignment assignment, CancellationToken ct) => Task.CompletedTask;
+    }
+
+    sealed class ConceptAmountRepository(InMemoryInventory owner) : IConceptAmountRepository
+    {
+        public Task<IReadOnlyList<ConceptAmount>> ListByYearAsync(Guid yearId, CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<ConceptAmount>>([.. owner.ConceptAmountList.Where(a => a.YearId == yearId)]);
+
+        public Task AddAsync(ConceptAmount amount, CancellationToken ct)
+        {
+            owner.ConceptAmountList.Add(amount);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateAsync(ConceptAmount amount, CancellationToken ct) => Task.CompletedTask;
+    }
+
+    sealed class ConceptAmountEventRepository(InMemoryInventory owner) : IConceptAmountEventRepository
+    {
+        public Task AddAsync(HistoryEvent change, CancellationToken ct)
+        {
+            owner.ConceptAmountEventList.Add(change);
+            return Task.CompletedTask;
+        }
+
+        public Task<IReadOnlyList<HistoryEvent>> ListAsync(Guid conceptAmountId, CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<HistoryEvent>>(
+                [.. Enumerable.Reverse(owner.ConceptAmountEventList).Where(e => e.EntityId == conceptAmountId).OrderByDescending(e => e.OccurredAtUtc)]);
     }
 
     static Locker Copy(Locker l) =>
