@@ -4,8 +4,8 @@
 namespace Arca.Application.Lockers;
 
 /// <summary>
-/// Which lockers a student holds (taquilles-i-zones, D2). The assignments provide the real answer; until they exist
-/// <see cref="NoOccupancy"/> says that no locker is occupied.
+/// Which lockers a student holds (taquilles-i-zones, D2). Answered from the current assignments
+/// (<see cref="Arca.Application.Assignments.AssignmentOccupancy"/>, alumnes-i-assignacions D10).
 /// </summary>
 public interface ILockerOccupancy
 {

@@ -41,10 +41,10 @@
 
 ## 5. Ocupación real e integración con taquillas
 
-- [ ] 5.1 Implementar la consulta real de ocupación por lotes y sustituir el sustituto de `taquilles-i-zones` (D10)
-- [ ] 5.2 Ampliar el hecho de reserva de `Locker` con un alumno opcional sin romper las reservas existentes
-- [ ] 5.3 Comprobar que el estado visible derivado usa la ocupación real: ocupada, libre tras liberar, averiada con alumno
-- [ ] 5.4 Actualizar las pruebas de `taquilles-i-zones` que usaban el doble de ocupación para que pasen también con la implementación real
+- [x] 5.1 Implementar la consulta real de ocupación por lotes y sustituir el sustituto de `taquilles-i-zones` (D10)
+- [x] 5.2 Ampliar el hecho de reserva de `Locker` con un alumno opcional sin romper las reservas existentes
+- [x] 5.3 Comprobar que el estado visible derivado usa la ocupación real: ocupada, libre tras liberar, averiada con alumno
+- [x] 5.4 Actualizar las pruebas de `taquilles-i-zones` que usaban el doble de ocupación para que pasen también con la implementación real
 
 ## 6. Importación de alumnos
 

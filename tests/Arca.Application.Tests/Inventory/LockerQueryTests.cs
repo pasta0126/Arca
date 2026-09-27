@@ -12,6 +12,7 @@ using Arca.Application.Lockers.RemoveLockerReservation;
 using Arca.Application.Lockers.ReserveLocker;
 using Arca.Application.Lockers.RestoreLockerService;
 using Arca.Application.Lockers.RetireLocker;
+using Arca.Application.Tests.Assignments;
 using Arca.Domain.Lockers;
 using Xunit;
 
@@ -205,7 +206,7 @@ public sealed class LockerQueryTests
     [Trait("spec", Spec + ": Consulta y filtros (Contadores)")]
     public async Task The_counters_give_the_active_total_and_each_status_in_total_and_by_zone()
     {
-        var world = new InventoryWorld();
+        var world = new AssignmentsWorld();
         var first = await world.ZoneAsync("Planta 1");
         var second = await world.ZoneAsync("Gimnàs");
         await world.LockerAsync(1, first);
@@ -214,13 +215,14 @@ public sealed class LockerQueryTests
         var broken = await world.LockerAsync(4, second);
         var maintenance = await world.LockerAsync(5, second);
         var retired = await world.LockerAsync(6, second);
-        world.Store.Occupancy.Occupy(occupied);
-        await world.ReserveLocker.HandleAsync(new ReserveLockerRequest(reserved), default);
-        await world.MarkOutOfService.HandleAsync(new MarkLockerOutOfServiceRequest(broken, OutOfServiceKind.Broken), default);
-        await world.MarkOutOfService.HandleAsync(new MarkLockerOutOfServiceRequest(maintenance, OutOfServiceKind.Maintenance), default);
-        await world.RetireLocker.HandleAsync(new RetireLockerRequest(retired), default);
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, occupied);
+        await world.Inventory.ReserveLocker.HandleAsync(new ReserveLockerRequest(reserved), default);
+        await world.Inventory.MarkOutOfService.HandleAsync(new MarkLockerOutOfServiceRequest(broken, OutOfServiceKind.Broken), default);
+        await world.Inventory.MarkOutOfService.HandleAsync(new MarkLockerOutOfServiceRequest(maintenance, OutOfServiceKind.Maintenance), default);
+        await world.Inventory.RetireLocker.HandleAsync(new RetireLockerRequest(retired), default);
 
-        var listing = (await world.ListLockers.HandleAsync(Filter(zone: first), default)).Value!;
+        var listing = (await world.Inventory.ListLockers.HandleAsync(Filter(zone: first), default)).Value!;
 
         Assert.Equal(new LockerCounters(Active: 5, Free: 1, Occupied: 1, Broken: 1, Maintenance: 1, Reserved: 1), listing.Total); // whatever the filter
         Assert.Equal(["Gimnàs", "Planta 1"], listing.ByZone.Select(z => z.ZoneName));
@@ -249,14 +251,15 @@ public sealed class LockerQueryTests
     [Trait("spec", Spec + ": Estado visible derivado (Taquilla averiada con alumno)")]
     public async Task The_list_shows_the_status_derived_from_the_occupancy_and_the_other_facts()
     {
-        var world = new InventoryWorld();
+        var world = new AssignmentsWorld();
         var zone = await world.ZoneAsync("Planta 1");
         var locker = await world.LockerAsync(1, zone);
-        world.Store.Occupancy.Occupy(locker);
-        await world.MarkOutOfService.HandleAsync(
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, locker);
+        await world.Inventory.MarkOutOfService.HandleAsync(
             new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Broken, OutOfServiceDecision.Keep), default);
 
-        var row = (await world.ListLockers.HandleAsync(Filter(), default)).Value!.Rows.Single();
+        var row = (await world.Inventory.ListLockers.HandleAsync(Filter(), default)).Value!.Rows.Single();
 
         Assert.Equal(LockerStatus.Broken, row.Status);
         Assert.True(row.HasAssignment);

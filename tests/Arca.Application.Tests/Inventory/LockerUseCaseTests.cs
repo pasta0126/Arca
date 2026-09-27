@@ -10,6 +10,7 @@ using Arca.Application.Lockers.RemoveLockerReservation;
 using Arca.Application.Lockers.ReserveLocker;
 using Arca.Application.Lockers.RestoreLockerService;
 using Arca.Application.Lockers.RetireLocker;
+using Arca.Application.Tests.Assignments;
 using Arca.Domain.Lockers;
 using Xunit;
 
@@ -106,15 +107,16 @@ public sealed class LockerUseCaseTests
     [Trait("spec", Spec + ": Reserva con nota opcional (Reservar una taquilla ocupada)")]
     public async Task An_occupied_locker_cannot_be_reserved_and_records_no_event()
     {
-        var world = new InventoryWorld();
+        var world = new AssignmentsWorld();
         var zone = await world.ZoneAsync("Planta 1");
         var locker = await world.LockerAsync(1, zone);
-        world.Store.Occupancy.Occupy(locker);
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, locker);
 
-        var result = await world.ReserveLocker.HandleAsync(new ReserveLockerRequest(locker), default);
+        var result = await world.Inventory.ReserveLocker.HandleAsync(new ReserveLockerRequest(locker), default);
 
         Assert.Equal("Lockers.NotFree", result.Error!.Code);
-        Assert.Equal([LockerEventTypes.Created], EventTypes(world, locker));
+        Assert.Equal([LockerEventTypes.Created, LockerEventTypes.Assigned], EventTypes(world.Inventory, locker));
     }
 
     [Fact]
@@ -154,30 +156,32 @@ public sealed class LockerUseCaseTests
     [Trait("spec", Spec + ": Decisión obligatoria al poner fuera de servicio una taquilla ocupada (Avería sin decisión)")]
     public async Task An_occupied_locker_without_a_decision_returns_the_options_and_changes_nothing()
     {
-        var world = new InventoryWorld();
+        var world = new AssignmentsWorld();
         var zone = await world.ZoneAsync("Planta 1");
         var locker = await world.LockerAsync(1, zone);
-        world.Store.Occupancy.Occupy(locker);
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, locker);
 
-        var result = await world.MarkOutOfService.HandleAsync(new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Maintenance), default);
+        var result = await world.Inventory.MarkOutOfService.HandleAsync(new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Maintenance), default);
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value!.DecisionRequired);
         Assert.Equal(3, result.Value.DecisionsOffered.Count);
         Assert.Equal(LockerStatus.Occupied, result.Value.Locker.Status);
-        Assert.Equal([LockerEventTypes.Created], EventTypes(world, locker));
+        Assert.Equal([LockerEventTypes.Created, LockerEventTypes.Assigned], EventTypes(world.Inventory, locker));
     }
 
     [Fact]
     [Trait("spec", Spec + ": Decisión obligatoria al poner fuera de servicio una taquilla ocupada (Decisión de mantener)")]
     public async Task Keeping_the_student_marks_it_broken_and_the_event_records_the_decision()
     {
-        var world = new InventoryWorld();
+        var world = new AssignmentsWorld();
         var zone = await world.ZoneAsync("Planta 1");
         var locker = await world.LockerAsync(1, zone);
-        world.Store.Occupancy.Occupy(locker);
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, locker);
 
-        var result = await world.MarkOutOfService.HandleAsync(
+        var result = await world.Inventory.MarkOutOfService.HandleAsync(
             new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Broken, OutOfServiceDecision.Keep), default);
 
         Assert.Equal(LockerStatus.Broken, result.Value!.Locker.Status);
@@ -189,14 +193,15 @@ public sealed class LockerUseCaseTests
     [Trait("spec", Spec + ": Estado visible derivado (Estado tras resolver la avería)")]
     public async Task Resolving_the_breakdown_of_an_occupied_locker_shows_it_occupied_again()
     {
-        var world = new InventoryWorld();
+        var world = new AssignmentsWorld();
         var zone = await world.ZoneAsync("Planta 1");
         var locker = await world.LockerAsync(1, zone);
-        world.Store.Occupancy.Occupy(locker);
-        await world.MarkOutOfService.HandleAsync(
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, locker);
+        await world.Inventory.MarkOutOfService.HandleAsync(
             new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Broken, OutOfServiceDecision.Keep), default);
 
-        var restored = await world.RestoreService.HandleAsync(new RestoreLockerServiceRequest(locker), default);
+        var restored = await world.Inventory.RestoreService.HandleAsync(new RestoreLockerServiceRequest(locker), default);
 
         Assert.Equal(LockerStatus.Occupied, restored.Value!.Status);
     }
@@ -307,17 +312,18 @@ public sealed class LockerUseCaseTests
     [Trait("spec", Spec + ": Baja definitiva (Baja con asignación)")]
     public async Task Retiring_with_an_assignment_or_a_reservation_is_refused_and_no_hook_runs()
     {
-        var world = new InventoryWorld();
-        var hook = new RecordingHook(world);
-        world.Hooks.Add(hook);
+        var world = new AssignmentsWorld();
+        var hook = new RecordingHook(world.Inventory);
+        world.Inventory.Hooks.Add(hook);
         var zone = await world.ZoneAsync("Planta 1");
         var occupied = await world.LockerAsync(1, zone);
         var reserved = await world.LockerAsync(2, zone);
-        world.Store.Occupancy.Occupy(occupied);
-        await world.ReserveLocker.HandleAsync(new ReserveLockerRequest(reserved), default);
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, occupied);
+        await world.Inventory.ReserveLocker.HandleAsync(new ReserveLockerRequest(reserved), default);
 
-        var withAssignment = await world.RetireLocker.HandleAsync(new RetireLockerRequest(occupied), default);
-        var withReservation = await world.RetireLocker.HandleAsync(new RetireLockerRequest(reserved), default);
+        var withAssignment = await world.Inventory.RetireLocker.HandleAsync(new RetireLockerRequest(occupied), default);
+        var withReservation = await world.Inventory.RetireLocker.HandleAsync(new RetireLockerRequest(reserved), default);
 
         Assert.Equal("Lockers.HasAssignment", withAssignment.Error!.Code);
         Assert.Equal("Lockers.HasReservation", withReservation.Error!.Code);
@@ -350,15 +356,5 @@ public sealed class LockerUseCaseTests
 
         Assert.Empty(world.Store.LockerList);
         Assert.Empty(world.Store.EventList);
-    }
-
-    [Fact]
-    [Trait("spec", Spec + ": Historial de eventos de la taquilla (Consulta del historial)")]
-    public async Task Without_the_assignments_no_locker_is_occupied()
-    {
-        var occupancy = new NoOccupancy();
-        var id = Guid.NewGuid();
-
-        Assert.Empty(await occupancy.OccupiedAmongAsync([id], default));
     }
 }

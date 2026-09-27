@@ -7,8 +7,8 @@ namespace Arca.Application.Students;
 public sealed record AssignedLocker(Guid LockerId, int Number);
 
 /// <summary>
-/// Which locker each student holds (alumnes-i-assignacions). The assignments provide the real answer; until they exist
-/// <see cref="NoAssignments"/> says that nobody holds a locker. Asked for a set of students in one query.
+/// Which locker each student holds (alumnes-i-assignacions). Answered from the current assignments
+/// (<see cref="Arca.Application.Assignments.AssignmentOccupancy"/>, D10). Asked for a set of students in one query.
 /// </summary>
 public interface IStudentLockers
 {
