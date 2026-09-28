@@ -6,6 +6,7 @@ using Arca.Application;
 using Arca.Application.Common;
 using Arca.Application.Feedback;
 using Arca.Application.Localization;
+using Arca.Application.Preferences;
 using Arca.Application.Security;
 using Arca.Application.Startup;
 using Arca.Application.Storage;
@@ -16,6 +17,7 @@ using Arca.Infrastructure.Storage;
 using Arca.UI.Access;
 using Arca.UI.Confirmation;
 using Arca.UI.Notifications;
+using Arca.UI.Preferences;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -59,12 +61,15 @@ public static class AppStartup
         var settingsFlows = new AccessFlows(
             access, new WindowFormPresenter(() => windows.Current), localizer,
             CreateDatabase);
+        var preferences = new UiPreferencesSession(
+            new LocalUiPreferencesStore(new LocalSettingsStore(DataLocations.Resolve(PlatformContext.Current()).SettingsFile)));
         var security = new SecurityViewModel(settingsFlows, session.DatabasePath, notifications, localizer, log);
         var services = new ServiceCollection()
             .AddSingleton<ILocalizer>(localizer)
             .AddSingleton(access)
             .AddSingleton(flows)
             .AddSingleton(security)
+            .AddSingleton(preferences)
             .AddSingleton<IClock>(clock)
             .AddSingleton<IDelay>(delay)
             .AddSingleton(log)

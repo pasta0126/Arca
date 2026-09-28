@@ -6,6 +6,7 @@ using Arca.Application.Feedback;
 using Arca.Application.Localization;
 using Arca.UI.Access;
 using Arca.UI.Notifications;
+using Arca.UI.Preferences;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,8 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
     public ILocalizer Localizer => services.GetRequiredService<ILocalizer>();
 
     public SecurityViewModel Security => services.GetRequiredService<SecurityViewModel>();
+
+    public UiPreferencesSession Preferences => services.GetRequiredService<UiPreferencesSession>();
 
     public NotificationCenter Notifications => services.GetRequiredService<NotificationCenter>();
 

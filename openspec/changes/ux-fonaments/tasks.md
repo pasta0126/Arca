@@ -18,10 +18,10 @@
 
 ## 3. Adaptabilidad
 
-- [ ] 3.1 Tamaño mínimo de ventana y disposición adaptable con umbral de apilado (D9)
-- [ ] 3.2 Sección colapsable con título, resumen y expansión automática ante error de validación
+- [x] 3.1 Tamaño mínimo de ventana y disposición adaptable con umbral de apilado (D9)
+- [x] 3.2 Sección colapsable con título, resumen y expansión automática ante error de validación
 - [ ] 3.3 Vista compacta de listas de zonas y taquillas
-- [ ] 3.4 Preferencias locales de interfaz con lectura tolerante y corrección de posición fuera de pantalla (D10)
+- [x] 3.4 Preferencias locales de interfaz con lectura tolerante y corrección de posición fuera de pantalla (D10)
 - [ ] 3.5 Pruebas con DPI del 100 %, 150 % y 200 %, ventana reducida, preferencias dañadas y posición inválida
 
 ## 4. Teclado y menús
