@@ -118,4 +118,27 @@ public sealed class ScreenshotTests
         Dispatcher.UIThread.RunJobs();
         Take(window, "focus");
     }
+
+    sealed record DemoStudent(Guid Id, string Name, string Group, int Locker);
+
+    [AvaloniaFact]
+    public void Virtualized_list()
+    {
+        var model = new ListViewModel<DemoStudent, Guid>(
+            [
+                new ListColumn<DemoStudent>("name", "Alumne", s => s.Name, Width: 3),
+                new ListColumn<DemoStudent>("group", "Grup", s => s.Group, Width: 1),
+                new ListColumn<DemoStudent>("locker", "Taquilla", s => s.Locker.ToString(System.Globalization.CultureInfo.InvariantCulture), s => s.Locker, Width: 1),
+            ],
+            s => s.Id, _localizer);
+        model.SetItems(Enumerable.Range(1, 300).Select(i => new DemoStudent(Guid.NewGuid(), $"Alumne {i:000} Garcia", i % 2 == 0 ? "1r A" : "1r B", i)));
+        model.SortBy("locker");
+        model.SortBy("locker");
+        foreach (var row in model.Rows.Take(3))
+        {
+            model.SetSelected(row, true);
+        }
+
+        Take(new Window { Width = 700, Height = 360, Content = new VirtualizedListView<DemoStudent, Guid>(model), Title = "ARCA" }, "list");
+    }
 }

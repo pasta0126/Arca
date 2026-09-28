@@ -43,7 +43,7 @@
 
 ## 6. Listas, planes y pasos
 
-- [ ] 6.1 Lista virtualizada con orden, filtro y selección persistente por identidad (D7)
+- [x] 6.1 Lista virtualizada con orden, filtro y selección persistente por identidad (D7)
 - [ ] 6.2 Selección múltiple con seleccionar todo, quitar, invertir, teclado y recuento "N de M"
 - [ ] 6.3 Vista de plan de operaciones masivas con selección editable, bloqueos con motivo, plan que cambia y confirmación
 - [ ] 6.4 Componente de pasos con estado, progreso, siguiente paso, apertura en cualquier orden y omisión solo de opcionales (D8)
