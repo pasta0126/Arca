@@ -36,7 +36,10 @@ public sealed class HeaderView : UserControl
         var bar = new DockPanel();
         DockPanel.SetDock(Year, Dock.Right);
         bar.Children.Add(Year);
+        DockPanel.SetDock(left, Dock.Left);
         bar.Children.Add(left);
+        SearchSlot = new ContentControl { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+        bar.Children.Add(SearchSlot);
         Content = bar;
 
         state.Changed += (_, _) => Refresh();
@@ -45,6 +48,9 @@ public sealed class HeaderView : UserControl
 
     /// <summary>Where the logo of the centre goes, once the centre has one.</summary>
     public ContentControl Logo { get; }
+
+    /// <summary>Where the global search box goes, in the middle of the header, so it is on every screen.</summary>
+    public ContentControl SearchSlot { get; }
 
     /// <summary>The name of the centre.</summary>
     public new TextBlock Name { get; }

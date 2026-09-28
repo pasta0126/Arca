@@ -6,6 +6,7 @@ using Arca.Application;
 using Arca.Application.Common;
 using Arca.Application.Feedback;
 using Arca.Application.GlobalState;
+using Arca.Application.Search;
 using Arca.Application.Localization;
 using Arca.Application.Preferences;
 using Arca.Application.Security;
@@ -79,6 +80,9 @@ public static class AppStartup
             .AddSingleton(security)
             .AddSingleton(preferences)
             .AddSingleton(globalState)
+            .AddSingleton(new GlobalSearchHandler(
+                inventory.Students, inventory.Enrollments, inventory.Catalog, inventory.Years, inventory.Lockers, inventory.Zones,
+                inventory.Assignments, inventory.Charges))
             .AddSingleton(new ActionRegistry(localizer, UiPlatforms.Current))
             .AddSingleton<IClock>(clock)
             .AddSingleton<IDelay>(delay)

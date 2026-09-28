@@ -9,6 +9,8 @@ using Arca.Application.Storage;
 using Arca.Testing;
 using Arca.UI.Actions;
 using Arca.UI.Access;
+using Arca.Application.Search;
+using Arca.UI.Search;
 using Arca.Application.GlobalState;
 using Arca.UI.Shell;
 using Arca.UI.Confirmation;
@@ -196,5 +198,23 @@ public sealed class ScreenshotTests
         header.Children.Add(new NoticeBarView(new GlobalNoticesViewModel(state, navigation, _localizer), _localizer));
         shell.HeaderSlot.Content = header;
         Take(new Window { Width = 1024, Height = 640, Content = shell, Title = "ARCA" }, "shell-state");
+    }
+
+    [AvaloniaFact]
+    public void Search_box_with_results()
+    {
+        var registry = SectionRegistry.Compose(new Dictionary<string, Func<Control>>());
+        var navigation = new NavigationViewModel(registry, new Arca.UI.Preferences.UiPreferencesSession(new EmptyPreferences()), s => SectionPlaceholder.Create(s, registry, _localizer));
+        var result = new GlobalSearchResult(
+            [new StudentHit(Guid.NewGuid(), "Marta", "García Puig", "1r ESO", "A", 15, false, true, 70m), new StudentHit(Guid.NewGuid(), "Pau", "García Abad", "2n ESO", "B", null, false, false, 0m)], 2,
+            [new LockerHit(Guid.NewGuid(), 15, "Planta 1", LockerStatusView.Occupied, "Marta García Puig")], 1, [], 0, 0);
+        var delay = new Arca.Testing.ManualDelay();
+        var model = new GlobalSearchViewModel((_, _) => Task.FromResult(Arca.Domain.Common.Result<GlobalSearchResult>.Success(result)), delay,
+            new Arca.UI.Notifications.ResultNotifier(new Arca.Testing.RecordingNotifications(), _localizer, new Arca.Testing.RecordingErrorLog()), new SearchNavigator(navigation), _localizer);
+        var box = new SearchBoxView(model, _localizer);
+        var window = new Window { Width = 800, Height = 420, Content = new StackPanel { Margin = new Thickness(24), Children = { box } }, Title = "ARCA" };
+        model.Text = "garcia";
+        delay.Elapse(GlobalSearchViewModel.Pause + TimeSpan.FromMilliseconds(1)); // the pause is over: the search runs
+        Take(window, "search");
     }
 }

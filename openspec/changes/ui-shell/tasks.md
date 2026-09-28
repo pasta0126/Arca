@@ -16,11 +16,11 @@
 
 ## 3. Búsqueda global
 
-- [ ] 3.1 Caso de uso de búsqueda en Application con grupos limitados, totales, comparación centralizada y ámbito de curso y bajas (D4)
-- [ ] 3.2 Objetos de transferencia de resultados sin correo ni identificador, con estado de pago, taquilla y llave
-- [ ] 3.3 Cuadro de búsqueda siempre visible con atajo, espera corta, cancelación de la búsqueda anterior y navegación por teclado
-- [ ] 3.4 Abrir la ficha del resultado en su sección y resaltar la taquilla en el mapa
-- [ ] 3.5 Pruebas: acentos y mayúsculas, alumno, taquilla y grupo, sin resultados, muchos resultados, bajas, curso en cierre y escritura rápida
+- [x] 3.1 Caso de uso de búsqueda en Application con grupos limitados, totales, comparación centralizada y ámbito de curso y bajas (D4)
+- [x] 3.2 Objetos de transferencia de resultados sin correo ni identificador, con estado de pago, taquilla y llave
+- [x] 3.3 Cuadro de búsqueda siempre visible con atajo, espera corta, cancelación de la búsqueda anterior y navegación por teclado
+- [x] 3.4 Abrir la ficha del resultado en su sección y resaltar la taquilla en el mapa (`SearchNavigator` abre la sección y deja la petición y la taquilla resaltada para que las pantallas las recojan; las pantallas de ficha y el mapa llegan con `pantalles-de-domini` y el grupo 5)
+- [x] 3.5 Pruebas: acentos y mayúsculas, alumno, taquilla y grupo, sin resultados, muchos resultados, bajas, curso en cierre y escritura rápida
 
 ## 4. Identidad y tema
 

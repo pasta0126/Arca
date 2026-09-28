@@ -2,7 +2,9 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using Arca.Application;
+using Arca.Application.Common;
 using Arca.Application.Feedback;
+using Arca.Application.Search;
 using Arca.Application.Localization;
 using Arca.UI.Access;
 using Arca.UI.Actions;
@@ -26,6 +28,12 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
     public UiPreferencesSession Preferences => services.GetRequiredService<UiPreferencesSession>();
 
     public GlobalStateService GlobalState => services.GetRequiredService<GlobalStateService>();
+
+    public GlobalSearchHandler Search => services.GetRequiredService<GlobalSearchHandler>();
+
+    public IDelay Delay => services.GetRequiredService<IDelay>();
+
+    public IErrorLog ErrorLog => services.GetRequiredService<IErrorLog>();
 
     public ActionRegistry Actions => services.GetRequiredService<ActionRegistry>();
 

@@ -7,6 +7,7 @@ using Arca.UI.Common;
 using Arca.UI.Info;
 using Arca.UI.Layout;
 using Arca.UI.Notifications;
+using Arca.UI.Search;
 using Arca.UI.Access;
 using Arca.UI.Shell;
 using Avalonia.Controls;
@@ -34,7 +35,14 @@ public sealed class MainWindow : Window
         var navigation = new NavigationViewModel(registry, runtime.Preferences, section => SectionPlaceholder.Create(section, registry, localizer));
         var shell = new ShellView(navigation, localizer, new NotificationHostView(runtime.Notifications, localizer));
         var header = new StackPanel();
-        header.Children.Add(new HeaderView(state, localizer, localizer.Get("App.Label.Title")));
+        var headerView = new HeaderView(state, localizer, localizer.Get("App.Label.Title"));
+        var search = new GlobalSearchViewModel(
+            runtime.Search.HandleAsync, runtime.Delay, new ResultNotifier(runtime.Notifications, localizer, runtime.ErrorLog),
+            new SearchNavigator(navigation), localizer);
+        var searchBox = new SearchBoxView(search, localizer);
+        headerView.SearchSlot.Content = searchBox;
+        runtime.Actions[StandardActions.Search].Attach(searchBox.FocusInput); // Control or Command + F, from any screen
+        header.Children.Add(headerView);
         header.Children.Add(new NoticeBarView(new GlobalNoticesViewModel(state, navigation, localizer), localizer));
         shell.HeaderSlot.Content = header;
         Content = shell;

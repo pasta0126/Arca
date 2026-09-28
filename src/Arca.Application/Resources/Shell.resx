@@ -135,4 +135,82 @@
     <value>{0} pendents</value>
     <comment>{0} number of things that need attention in a section</comment>
   </data>
+  <data name="Shell.Search.Placeholder" xml:space="preserve">
+    <value>Cerca alumnes, taquilles i grups</value>
+  </data>
+  <data name="Shell.Search.Students" xml:space="preserve">
+    <value>Alumnes</value>
+  </data>
+  <data name="Shell.Search.Lockers" xml:space="preserve">
+    <value>Taquilles</value>
+  </data>
+  <data name="Shell.Search.Groups" xml:space="preserve">
+    <value>Grups</value>
+  </data>
+  <data name="Shell.Search.Searching" xml:space="preserve">
+    <value>Cercant…</value>
+  </data>
+  <data name="Shell.Search.Empty" xml:space="preserve">
+    <value>Cap resultat per «{0}». Revisa el que has escrit.</value>
+    <comment>{0} the text typed</comment>
+  </data>
+  <data name="Shell.Search.IncludeRetired" xml:space="preserve">
+    <value>Inclou alumnes de baixa</value>
+  </data>
+  <data name="Shell.Search.EmptyRetired" xml:space="preserve">
+    <value>{0} alumnes de baixa coincideixen. Marca «Inclou alumnes de baixa» per veure'ls.</value>
+    <comment>{0} number of students who left that match</comment>
+  </data>
+  <data name="Shell.Search.SeeAll" xml:space="preserve">
+    <value>Veure els {0}</value>
+    <comment>{0} total results of this kind</comment>
+  </data>
+  <data name="Shell.Search.Student" xml:space="preserve">
+    <value>{0} · {1}</value>
+    <comment>{0} name, {1} details</comment>
+  </data>
+  <data name="Shell.Search.Locker" xml:space="preserve">
+    <value>Taquilla {0} · {1} · {2}</value>
+    <comment>{0} number, {1} zone, {2} status</comment>
+  </data>
+  <data name="Shell.Search.WithStudent" xml:space="preserve">
+    <value>{0} · {1}</value>
+    <comment>{0} locker text, {1} student</comment>
+  </data>
+  <data name="Shell.Search.Group" xml:space="preserve">
+    <value>{0} {1} · {2} alumnes</value>
+    <comment>{0} level, {1} group, {2} students</comment>
+  </data>
+  <data name="Shell.Search.Retired" xml:space="preserve">
+    <value>de baixa</value>
+  </data>
+  <data name="Shell.Search.Debt" xml:space="preserve">
+    <value>Pendent de pagament ({0:C})</value>
+    <comment>{0} amount</comment>
+  </data>
+  <data name="Shell.Search.UpToDate" xml:space="preserve">
+    <value>Al corrent</value>
+  </data>
+  <data name="Shell.Search.LockerNumber" xml:space="preserve">
+    <value>Taquilla {0}</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Shell.Search.Status.Free" xml:space="preserve">
+    <value>Lliure</value>
+  </data>
+  <data name="Shell.Search.Status.Occupied" xml:space="preserve">
+    <value>Ocupada</value>
+  </data>
+  <data name="Shell.Search.Status.Reserved" xml:space="preserve">
+    <value>Reservada</value>
+  </data>
+  <data name="Shell.Search.Status.Broken" xml:space="preserve">
+    <value>Avariada</value>
+  </data>
+  <data name="Shell.Search.Status.Maintenance" xml:space="preserve">
+    <value>En manteniment</value>
+  </data>
+  <data name="Shell.Search.Status.Retired" xml:space="preserve">
+    <value>De baixa</value>
+  </data>
 </root>
