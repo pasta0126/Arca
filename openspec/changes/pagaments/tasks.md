@@ -57,12 +57,12 @@
 
 ## 7. Persistencia
 
-- [ ] 7.1 Entidades y configuraciones EF Core de importes, cargos, eventos y devolución, sin filtrar EF Core a `Domain` ni `Application`
-- [ ] 7.2 Índice único parcial de la cuota por alumno y curso, e índices para consultar cargos pendientes por alumno y por curso
-- [ ] 7.3 Migración de EF Core y verificación de que el modelo no tiene cambios sin migrar
-- [ ] 7.4 Implementación de repositorios y de las operaciones transaccionales, incluidos los manejadores dentro de la transacción de la asignación
-- [ ] 7.5 Pruebas de integración sobre SQLite cifrado temporal: asignación que genera cargos, reversión completa si faltan importes, baja masiva con fianzas y atomicidad de operaciones en bloque
-- [ ] 7.6 Comprobar que las pruebas pasan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
+- [x] 7.1 Entidades y configuraciones EF Core de importes, cargos, eventos y devolución, sin filtrar EF Core a `Domain` ni `Application`
+- [x] 7.2 Índice único parcial de la cuota por alumno y curso, e índices para consultar cargos pendientes por alumno y por curso
+- [x] 7.3 Migración de EF Core y verificación de que el modelo no tiene cambios sin migrar
+- [x] 7.4 Implementación de repositorios y de las operaciones transaccionales, incluidos los manejadores dentro de la transacción de la asignación
+- [x] 7.5 Pruebas de integración sobre SQLite cifrado temporal: asignación que genera cargos, reversión completa si faltan importes, baja masiva con fianzas y atomicidad de operaciones en bloque
+- [x] 7.6 Comprobar que las pruebas pasan en Windows, Linux y macOS con los scripts de verificación (`docs/stack.md`)
 
 ## 8. Feedback y guía al usuario
 

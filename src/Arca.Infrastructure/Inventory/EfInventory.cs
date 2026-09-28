@@ -3,6 +3,8 @@
 
 using Arca.Application.Assignments;
 using Arca.Application.Catalog;
+using Arca.Application.Charges;
+using Arca.Application.ConceptAmounts;
 using Arca.Application.Common;
 using Arca.Application.Enrollments;
 using Arca.Application.Lockers;
@@ -14,6 +16,8 @@ using Arca.Domain.Lockers;
 using Arca.Domain.Zones;
 using Arca.Infrastructure.Assignments;
 using Arca.Infrastructure.Catalog;
+using Arca.Infrastructure.Charges;
+using Arca.Infrastructure.ConceptAmounts;
 using Arca.Infrastructure.Enrollments;
 using Arca.Infrastructure.SchoolYears;
 using Arca.Infrastructure.Storage;
@@ -47,6 +51,10 @@ public sealed class EfInventory : IUnitOfWork
         Catalog = new EfCatalogRepository(this);
         StudentEvents = new EfStudentEventRepository(this);
         Assignments = new EfAssignmentRepository(this);
+        ConceptAmounts = new EfConceptAmountRepository(this);
+        ConceptAmountEvents = new EfConceptAmountEventRepository(this);
+        Charges = new EfChargeRepository(this);
+        ChargeEvents = new EfChargeEventRepository(this);
     }
 
     public IZoneRepository Zones { get; }
@@ -66,6 +74,14 @@ public sealed class EfInventory : IUnitOfWork
     public IStudentEventRepository StudentEvents { get; }
 
     public IAssignmentRepository Assignments { get; }
+
+    public IConceptAmountRepository ConceptAmounts { get; }
+
+    public IConceptAmountEventRepository ConceptAmountEvents { get; }
+
+    public IChargeRepository Charges { get; }
+
+    public IChargeEventRepository ChargeEvents { get; }
 
     public async Task<Result<T>> RunAsync<T>(Func<CancellationToken, Task<Result<T>>> work, CancellationToken ct)
     {

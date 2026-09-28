@@ -27,7 +27,7 @@ public sealed class Charge
     /// <summary>Rebuilds a stored charge. Used by persistence, which has already validated it.</summary>
     public Charge(
         Guid id, Guid studentId, ChargeConcept concept, Guid yearId, Money amount, ChargeStatus status, DateOnly? paidOn, string? reason,
-        DepositReturnStatus returnStatus = DepositReturnStatus.None, DateOnly? returnedOn = null, string? returnNote = null)
+        DepositReturnStatus @return = DepositReturnStatus.None, DateOnly? returnedOn = null, string? returnNote = null)
     {
         Id = id;
         StudentId = studentId;
@@ -37,7 +37,7 @@ public sealed class Charge
         Status = status;
         PaidOn = paidOn;
         Reason = reason;
-        Return = returnStatus;
+        Return = @return;
         ReturnedOn = returnedOn;
         ReturnNote = returnNote;
     }
