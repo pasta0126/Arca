@@ -24,8 +24,14 @@ public static class ArcaResourceKeys
     public const string OnSemantic = "Arca.Brush.OnSemantic";
     public const string Focus = "Arca.Brush.Focus";
 
+    /// <summary>The text of a validation or failure message shown on the page itself (not on a coloured card).</summary>
+    public const string ErrorText = "Arca.Brush.ErrorText";
+
     // Type: one family and a short scale of sizes.
     public const string FontFamilyText = "Arca.FontFamily.Text";
+
+    /// <summary>For text that has to be read character by character, such as a recovery key.</summary>
+    public const string FontFamilyMonospace = "Arca.FontFamily.Monospace";
     public const string FontSizeSmall = "Arca.FontSize.Small";
     public const string FontSizeBody = "Arca.FontSize.Body";
     public const string FontSizeTitle = "Arca.FontSize.Title";
@@ -38,11 +44,11 @@ public static class ArcaResourceKeys
 
     /// <summary>Colours that change with the theme variant.</summary>
     public static IReadOnlyList<string> Brushes { get; } =
-        [Background, Surface, Border, Text, TextSecondary, Accent, OnAccent, Success, Warning, Error, OnSemantic, Focus];
+        [Background, Surface, Border, Text, TextSecondary, Accent, OnAccent, Success, Warning, Error, OnSemantic, Focus, ErrorText];
 
     /// <summary>Type and spacing, which do not change with the variant.</summary>
     public static IReadOnlyList<string> Metrics { get; } =
-        [FontFamilyText, FontSizeSmall, FontSizeBody, FontSizeTitle, FontSizeHeading, SpacingSmall, SpacingMedium, SpacingLarge];
+        [FontFamilyText, FontFamilyMonospace, FontSizeSmall, FontSizeBody, FontSizeTitle, FontSizeHeading, SpacingSmall, SpacingMedium, SpacingLarge];
 
     public static IReadOnlyList<string> All { get; } = [.. Brushes, .. Metrics];
 }

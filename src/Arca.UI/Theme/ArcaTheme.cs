@@ -118,12 +118,14 @@ public static class ArcaTheme
         Brush(d, ArcaResourceKeys.Error, ArcaPalette.Error);
         Brush(d, ArcaResourceKeys.OnSemantic, ArcaPalette.OnSemantic);
         Brush(d, ArcaResourceKeys.Focus, ArcaPalette.Focus);
+        Brush(d, ArcaResourceKeys.ErrorText, ArcaPalette.ErrorText);
     }
 
     /// <summary>The default type and spacing scales. They do not depend on the theme variant.</summary>
     static void Metrics(ResourceDictionary d)
     {
         d[ArcaResourceKeys.FontFamilyText] = FontFamily.Default;
+        d[ArcaResourceKeys.FontFamilyMonospace] = new FontFamily("Menlo, Consolas, monospace");
         d[ArcaResourceKeys.FontSizeSmall] = 12d;
         d[ArcaResourceKeys.FontSizeBody] = 14d;
         d[ArcaResourceKeys.FontSizeTitle] = 18d;

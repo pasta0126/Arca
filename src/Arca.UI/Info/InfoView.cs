@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.UI.Common;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -28,7 +29,7 @@ public sealed class InfoView : UserControl
             Spacing = 16,
             Children =
             {
-                new TextBlock { Text = model.Title, FontSize = 20, FontWeight = FontWeight.SemiBold },
+                ThemedText.Title(model.Title),
                 grid,
             },
         };

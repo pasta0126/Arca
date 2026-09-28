@@ -51,8 +51,8 @@
 
 ## 7. Verificación transversal
 
-- [ ] 7.1 Prueba de arquitectura: los comandos que modifican datos usan el comando de ejecución única (D5)
-- [ ] 7.2 Prueba automática de que todas las claves de recurso nuevas existen en catalán y de que los componentes no contienen textos ni colores literales
-- [ ] 7.3 Prueba de privacidad: notificaciones y errores no dejan datos de alumnos en el registro técnico
-- [ ] 7.4 Ejemplo mínimo de uso de cada componente para documentar cómo lo consume `ui-shell`
-- [ ] 7.5 Documentar los puntos de enganche con `ui-shell` (tema, navegación, dónde se ofrece cada componente)
+- [x] 7.1 Prueba de arquitectura: los comandos que modifican datos usan el comando de ejecución única (D5)
+- [x] 7.2 Prueba automática de que todas las claves de recurso nuevas existen en catalán y de que los componentes no contienen textos ni colores literales
+- [x] 7.3 Prueba de privacidad: notificaciones y errores no dejan datos de alumnos en el registro técnico
+- [x] 7.4 Ejemplo mínimo de uso de cada componente para documentar cómo lo consume `ui-shell` (`ComponentUsageExamplesTests` y `docs/componentes-ui.md`)
+- [x] 7.5 Documentar los puntos de enganche con `ui-shell` (tema, navegación, dónde se ofrece cada componente) (`docs/componentes-ui.md`)
