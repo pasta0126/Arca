@@ -328,9 +328,21 @@ public sealed class LockerMapUiTests
     [Trait("spec", Spec + ": Inicio como pantalla registrable (Cambiar el inicio)")]
     public async Task The_map_is_the_default_start_screen_and_takes_a_locker_chosen_in_the_search_before_it_existed()
     {
-        var model = Model();
+        var services = new LockerHomeServices(
+            _ => Task.FromResult(Result<LockerMapData>.Success(_map)),
+            (id, _) => Task.FromResult(Result<MapLocker?>.Success(_reread(id))),
+            (_, _) => Task.FromResult(Result<Arca.Application.LockerMap.LockerDetail?>.Success(null)),
+            _ => Task.FromResult(Result<Arca.Application.Students.StudentListing>.Success(new([], new(0, 0, 0)))),
+            (_, _, _) => Task.FromResult(Result<Arca.Application.Assignments.CheckAssignmentTarget.AssignmentTargetCheck>.Success(new(null, []))),
+            (_, _) => Task.FromResult(Result<Arca.Application.Assignments.AssignLocker.AssignLockerResult>.Failure(new Error("Nowhere.Nothing"))),
+            (_, _) => Task.FromResult(Result<Arca.Application.Assignments.AssignLocker.AssignLockerResult>.Failure(new Error("Nowhere.Nothing"))),
+            new LockerOperations(Nothing, Nothing, Nothing, Nothing, Nothing));
+        var state = new GlobalStateService(_ => Task.FromResult(Result<Arca.Application.GlobalState.GlobalState>.Success(new(null, 0))), new ResultNotifier(_notifications, _localizer, _log));
+        var homeModel = new LockerHomeModel(
+            services, new UiPreferencesSession(_store), new ResultNotifier(_notifications, _localizer, _log), new RecordingConfirmations(true),
+            _localizer, _notifications, _log, new ManualDelay(), state);
         var navigator = new SearchNavigator();
-        var home = new LockerMapHomeScreen(model, navigator, _localizer);
+        var home = new LockerMapHomeScreen(homeModel, navigator, _localizer);
         var registry = SectionRegistry.Compose(new Dictionary<string, Func<Control>>(), home: home);
         var navigation = new NavigationViewModel(registry, new UiPreferencesSession(_store), s => SectionPlaceholder.Create(s, registry, _localizer), startSection: "Students");
         navigator.Bind(navigation);
@@ -342,7 +354,9 @@ public sealed class LockerMapUiTests
         Dispatcher.UIThread.RunJobs();
 
         Assert.Equal("Home", navigation.CurrentSectionId);
-        Assert.Equal(_occupied, model.HighlightedLockerId);
-        Assert.Equal(_occupied, model.SelectedLockerId);
+        Assert.Equal(_occupied, homeModel.Map.HighlightedLockerId);
+        Assert.Equal(_occupied, homeModel.Map.SelectedLockerId);
     }
+
+    static Task<Result<string>> Nothing(Guid id, CancellationToken ct) => Task.FromResult(Result<string>.Success("fet"));
 }

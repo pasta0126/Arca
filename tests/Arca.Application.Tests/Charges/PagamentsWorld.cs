@@ -79,6 +79,8 @@ public sealed class PagamentsWorld
 
     public GetLockerMapHandler LockerMap => new(Store.Zones, Store.Lockers, Store.Assignments, Store.Students, Store.Charges);
 
+    public GetLockerDetailHandler LockerDetail => new(Store.Lockers, Store.Zones, Store.Assignments, Store.Students, Store.Enrollments, Store.Catalog, Store.Years, Store.Charges);
+
     public GetMapLockerHandler MapLocker => new(Store.Lockers, Store.Assignments, Store.Students, Store.Charges);
 
     public GlobalSearchHandler Search => new(Store.Students, Store.Enrollments, Store.Catalog, Store.Years, Store.Lockers, Store.Zones, Store.Assignments, Store.Charges);

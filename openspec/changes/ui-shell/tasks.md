@@ -37,10 +37,10 @@
 - [x] 5.1 `IHomeScreen` y su registro como raíz de Inicio (D2)
 - [x] 5.2 Consulta agregada del mapa con estado visible, alumno, llave y marca de deuda por lotes (D5)
 - [x] 5.3 Mapa por zonas con secciones colapsables, contadores por estado, filtros y resalte desde la búsqueda
-- [ ] 5.4 Panel de detalle con las acciones del registro, no disponibles con su motivo y sin correo ni identificador (D6)
-- [ ] 5.5 Panel de alumnos sin taquilla como origen del arrastre, con alternativa de menú y teclado, y estado sin curso activo
+- [x] 5.4 Panel de detalle con las acciones del registro, no disponibles con su motivo y sin correo ni identificador (D6) (liberar, cambiar, asignar, reservar, quitar reserva, marcar como averiada y volver a poner en servicio; marcar como averiada una taquilla ocupada, con sus decisiones, queda para más adelante y se indica con su motivo)
+- [x] 5.5 Panel de alumnos sin taquilla como origen del arrastre, con alternativa de menú y teclado, y estado sin curso activo
 - [x] 5.6 Actualización puntual de una taquilla y de los contadores tras cada cambio (la consulta y el modelo están; se engancha a las operaciones de escritura cuando llegan las acciones del detalle, 5.4 y 5.5)
-- [ ] 5.7 Pruebas: mapa con 300 taquillas y zonas, estados y marca de deuda, filtros, asignar arrastrando y por menú, sin taquillas, sin curso activo y sustitución del inicio
+- [x] 5.7 Pruebas: mapa con 300 taquillas y zonas, estados y marca de deuda, filtros, asignar arrastrando y por menú, sin taquillas, sin curso activo y sustitución del inicio
 
 ## 6. Feedback y guía al usuario
 

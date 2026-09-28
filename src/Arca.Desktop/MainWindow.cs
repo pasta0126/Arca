@@ -32,9 +32,9 @@ public sealed class MainWindow : Window
         var state = runtime.GlobalState;
         var navigator = new SearchNavigator();
         var notifier = new ResultNotifier(runtime.Notifications, localizer, runtime.ErrorLog);
-        var mapModel = new LockerMapViewModel(
-            runtime.LockerMap.HandleAsync, runtime.MapLocker.HandleAsync, runtime.Preferences, notifier, localizer);
-        var home = new LockerMapHomeScreen(mapModel, navigator, localizer);
+        var homeModel = new LockerHomeModel(
+            runtime.HomeServices, runtime.Preferences, notifier, runtime.Confirmations, localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay, state);
+        var home = new LockerMapHomeScreen(homeModel, navigator, localizer);
         var registry = SectionRegistry.Compose(
             new Dictionary<string, Func<Avalonia.Controls.Control>> { [ShellCatalog.Settings] = () => SettingsRoot(runtime) },
             new Dictionary<string, Func<int>> { [ShellCatalog.Payments] = () => state.Current?.PendingCharges ?? 0 },

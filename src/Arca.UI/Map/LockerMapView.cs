@@ -4,6 +4,7 @@
 using Arca.Application.LockerMap;
 using Arca.Application.Localization;
 using Arca.Application.Search;
+using Arca.UI.Assigning;
 using Arca.UI.Common;
 using Arca.UI.Layout;
 using Arca.UI.Lists;
@@ -31,16 +32,21 @@ public sealed class LockerMapView : UserControl
 
     readonly LockerMapViewModel _model;
     readonly ILocalizer _localizer;
+    readonly AssignmentDropViewModel? _drop;
     readonly StackPanel _zones = new();
     readonly WrapPanel _chips = new() { Orientation = Orientation.Horizontal };
     readonly ComboBox _zoneFilter = new();
     readonly Dictionary<Guid, Button> _cells = [];
+    readonly Border _pickBanner;
+    readonly TextBlock _pickText = new();
     bool _syncing;
 
-    public LockerMapView(LockerMapViewModel model, ILocalizer localizer)
+    /// <param name="drop">What dragging a student over a locker does; without it the lockers accept no drops.</param>
+    public LockerMapView(LockerMapViewModel model, ILocalizer localizer, AssignmentDropViewModel? drop = null)
     {
         _model = model;
         _localizer = localizer;
+        _drop = drop;
         _zoneFilter.SelectionChanged += (_, _) =>
         {
             if (!_syncing)
@@ -54,12 +60,15 @@ public sealed class LockerMapView : UserControl
         bar.Children.Add(_zoneFilter);
         bar.Children.Add(_chips);
 
+        _pickBanner = BuildPickBanner();
+        DockPanel.SetDock(_pickBanner, Dock.Top);
         var body = new Grid();
         body.Children.Add(new ScrollViewer { Content = _zones });
         body.Children.Add(new ListStateView(model.State));
         var layout = new DockPanel();
         DockPanel.SetDock(bar, Dock.Top);
         layout.Children.Add(bar);
+        layout.Children.Add(_pickBanner);
         layout.Children.Add(body);
         Content = layout;
 
@@ -79,6 +88,9 @@ public sealed class LockerMapView : UserControl
                     break;
                 case nameof(LockerMapViewModel.ZoneFilter):
                     SyncZoneSelection();
+                    break;
+                case nameof(LockerMapViewModel.Picking):
+                    RefreshPickBanner();
                     break;
                 case nameof(LockerMapViewModel.SelectedLockerId):
                 case nameof(LockerMapViewModel.HighlightedLockerId):
@@ -160,7 +172,14 @@ public sealed class LockerMapView : UserControl
             {
                 var cell = Cell(locker);
                 _cells[locker.LockerId] = cell;
-                cells.Children.Add(cell);
+                var host = new Border { Child = cell, BorderThickness = new Thickness(3) }; // the outline of a drop goes here, around the cell
+                if (_drop is not null)
+                {
+                    var id = locker.LockerId;
+                    LockerDropTarget.Attach(host, () => id, _drop);
+                }
+
+                cells.Children.Add(host);
             }
 
             _zones.Children.Add(new CollapsibleSectionView(zone.Section, cells));
@@ -168,6 +187,32 @@ public sealed class LockerMapView : UserControl
 
         MarkCells();
     }
+
+    Border BuildPickBanner()
+    {
+        _pickText.Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.OnSemantic).Themed(TextBlock.FontSizeProperty, ArcaResourceKeys.FontSizeBody);
+        _pickText.VerticalAlignment = VerticalAlignment.Center;
+        var cancel = new Button { Content = _localizer.Get("Shell.Pick.Cancel") };
+        cancel.Click += (_, _) => _model.CancelPick();
+        var row = new DockPanel();
+        DockPanel.SetDock(cancel, Dock.Right);
+        row.Children.Add(cancel);
+        row.Children.Add(_pickText);
+        var banner = new Border { Child = row, IsVisible = false }
+            .Themed(Border.BackgroundProperty, ArcaResourceKeys.Warning)
+            .ThemedThickness(Border.PaddingProperty, ArcaResourceKeys.SpacingMedium);
+        return banner;
+    }
+
+    /// <summary>Tells the person, while changing a student's locker, to choose the new one on the map.</summary>
+    void RefreshPickBanner()
+    {
+        _pickBanner.IsVisible = _model.Picking is not null;
+        _pickText.Text = _model.Picking is { } picking ? _localizer.Get("Shell.Pick.Banner", picking.StudentName) : string.Empty;
+    }
+
+    /// <summary>The banner that asks for the new locker, so a test can see whether it is on.</summary>
+    public Border PickBanner => _pickBanner;
 
     Button Cell(MapLocker locker)
     {

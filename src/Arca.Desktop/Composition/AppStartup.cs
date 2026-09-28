@@ -20,6 +20,7 @@ using Arca.Infrastructure.Security;
 using Arca.Infrastructure.Storage;
 using Arca.UI.Access;
 using Arca.UI.Actions;
+using Arca.UI.Map;
 using Arca.UI.Confirmation;
 using Arca.UI.Notifications;
 using Arca.UI.Preferences;
@@ -81,6 +82,7 @@ public static class AppStartup
             .AddSingleton(security)
             .AddSingleton(preferences)
             .AddSingleton(globalState)
+            .AddSingleton(LockerHomeComposition.Create(inventory, clock, localizer))
             .AddSingleton(new GetLockerMapHandler(inventory.Zones, inventory.Lockers, inventory.Assignments, inventory.Students, inventory.Charges))
             .AddSingleton(new GetMapLockerHandler(inventory.Lockers, inventory.Assignments, inventory.Students, inventory.Charges))
             .AddSingleton(new GlobalSearchHandler(

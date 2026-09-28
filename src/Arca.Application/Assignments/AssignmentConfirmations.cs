@@ -14,8 +14,11 @@ namespace Arca.Application.Assignments;
 public sealed class AssignmentConfirmations(ILocalizer localizer)
 {
     /// <summary>Releasing a locker is reversible (it can be assigned again), but it happens right away once confirmed.</summary>
-    public ConfirmationRequest ForRelease(AssignmentRow current) => new(
-        localizer.Get("Assignments.Label.ReleaseTitle", current.StudentName),
-        localizer.Get("Assignments.Label.ReleaseConsequence", current.LockerNumber),
+    public ConfirmationRequest ForRelease(AssignmentRow current) => ForRelease(current.StudentName, current.LockerNumber);
+
+    /// <summary>The same confirmation when only the name of the student and the number of the locker are at hand, as in the detail of a locker.</summary>
+    public ConfirmationRequest ForRelease(string studentName, int lockerNumber) => new(
+        localizer.Get("Assignments.Label.ReleaseTitle", studentName),
+        localizer.Get("Assignments.Label.ReleaseConsequence", lockerNumber),
         localizer.Get("Assignments.Label.ReleaseConfirm"));
 }

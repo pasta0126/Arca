@@ -247,4 +247,109 @@
   <data name="Shell.Map.Zone" xml:space="preserve">
     <value>Zona</value>
   </data>
+  <data name="Shell.Students.Title" xml:space="preserve">
+    <value>Alumnes sense taquilla</value>
+  </data>
+  <data name="Shell.Students.Count" xml:space="preserve">
+    <value>{0} alumnes sense taquilla</value>
+    <comment>{0} how many</comment>
+  </data>
+  <data name="Shell.Students.Search" xml:space="preserve">
+    <value>Cerca entre els alumnes sense taquilla</value>
+  </data>
+  <data name="Shell.Students.NoYear" xml:space="preserve">
+    <value>No hi ha cap curs actiu. Cal activar-ne un abans d'assignar taquilles.</value>
+  </data>
+  <data name="Shell.Students.AllHaveLocker" xml:space="preserve">
+    <value>Tots els alumnes actius tenen taquilla. Bon treball!</value>
+  </data>
+  <data name="Shell.Students.Menu.Assign" xml:space="preserve">
+    <value>Assigna a la taquilla seleccionada</value>
+  </data>
+  <data name="Shell.Detail.Title" xml:space="preserve">
+    <value>Detall de la taquilla</value>
+  </data>
+  <data name="Shell.Detail.Nothing" xml:space="preserve">
+    <value>Tria una taquilla del mapa per veure'n el detall.</value>
+  </data>
+  <data name="Shell.Detail.Student" xml:space="preserve">
+    <value>Alumne</value>
+  </data>
+  <data name="Shell.Detail.Group" xml:space="preserve">
+    <value>Nivell i grup</value>
+  </data>
+  <data name="Shell.Detail.Payment" xml:space="preserve">
+    <value>Pagament</value>
+  </data>
+  <data name="Shell.Detail.UpToDate" xml:space="preserve">
+    <value>Al corrent</value>
+  </data>
+  <data name="Shell.Detail.Owes" xml:space="preserve">
+    <value>Pendent de pagament: {0:C}</value>
+    <comment>{0} amount</comment>
+  </data>
+  <data name="Shell.Detail.Note" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="Shell.Detail.NoStudent" xml:space="preserve">
+    <value>Cap alumne</value>
+  </data>
+  <data name="Shell.Action.Assign" xml:space="preserve">
+    <value>Assigna l'alumne seleccionat</value>
+  </data>
+  <data name="Shell.Action.Change" xml:space="preserve">
+    <value>Canvia de taquilla</value>
+  </data>
+  <data name="Shell.Action.Release" xml:space="preserve">
+    <value>Allibera</value>
+  </data>
+  <data name="Shell.Action.Reserve" xml:space="preserve">
+    <value>Reserva</value>
+  </data>
+  <data name="Shell.Action.RemoveReservation" xml:space="preserve">
+    <value>Treu la reserva</value>
+  </data>
+  <data name="Shell.Action.MarkBroken" xml:space="preserve">
+    <value>Marca com a avariada</value>
+  </data>
+  <data name="Shell.Action.Restore" xml:space="preserve">
+    <value>Torna-la a posar en servei</value>
+  </data>
+  <data name="Shell.Reason.NoYear" xml:space="preserve">
+    <value>No hi ha cap curs actiu.</value>
+  </data>
+  <data name="Shell.Reason.PickStudent" xml:space="preserve">
+    <value>Tria primer un alumne al panell d'alumnes sense taquilla.</value>
+  </data>
+  <data name="Shell.Reason.Occupied" xml:space="preserve">
+    <value>La taquilla ja té un alumne.</value>
+  </data>
+  <data name="Shell.Reason.NoStudent" xml:space="preserve">
+    <value>La taquilla no té cap alumne.</value>
+  </data>
+  <data name="Shell.Reason.NotReserved" xml:space="preserve">
+    <value>La taquilla no està reservada.</value>
+  </data>
+  <data name="Shell.Reason.Reserved" xml:space="preserve">
+    <value>La taquilla està reservada: treu-ne primer la reserva.</value>
+  </data>
+  <data name="Shell.Reason.OutOfService" xml:space="preserve">
+    <value>La taquilla és fora de servei.</value>
+  </data>
+  <data name="Shell.Reason.ReleaseFirst" xml:space="preserve">
+    <value>Allibera primer la taquilla.</value>
+  </data>
+  <data name="Shell.Reason.InService" xml:space="preserve">
+    <value>La taquilla ja és en servei.</value>
+  </data>
+  <data name="Shell.Pick.Banner" xml:space="preserve">
+    <value>Tria una taquilla lliure per a {0}.</value>
+    <comment>{0} student name</comment>
+  </data>
+  <data name="Shell.Pick.Cancel" xml:space="preserve">
+    <value>Cancel·la el canvi</value>
+  </data>
+  <data name="Shell.Students.PickFreeLocker" xml:space="preserve">
+    <value>Tria una taquilla lliure al mapa.</value>
+  </data>
 </root>

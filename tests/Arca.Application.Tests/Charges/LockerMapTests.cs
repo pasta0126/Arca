@@ -184,4 +184,50 @@ public sealed class LockerMapTests
         Assert.Equal(600, map.Counters.Free);
         Assert.Equal(events, world.Store.EventList.Count);
     }
+
+    [Fact]
+    [Trait("spec", Spec + ": Detalle de la taquilla seleccionada (Taquilla ocupada)")]
+    public async Task The_detail_of_an_occupied_locker_names_the_student_with_level_group_and_what_they_owe()
+    {
+        var world = await WorldAsync();
+        var zone = await world.ZoneAsync("Planta 1");
+        var locker = await world.LockerAsync(15, zone);
+        var student = await world.Assignments.StudentAsync("Marta", "Puig", "marta@example.com", "2n ESO", "B");
+        await world.AssignAsync(student.Id, locker);
+
+        var detail = (await world.LockerDetail.HandleAsync(locker, default)).Value!;
+
+        Assert.Equal((15, "Planta 1", LockerStatusView.Occupied), (detail.Number, detail.ZoneName, detail.Status));
+        Assert.Equal(("Marta Puig", "2n ESO", "B"), (detail.StudentName, detail.LevelName, detail.GroupName));
+        Assert.True(detail.HasDebt);
+        Assert.Equal(70m, detail.PendingTotal);
+    }
+
+    [Fact]
+    [Trait("spec", Spec + ": Detalle de la taquilla seleccionada (Taquilla libre)")]
+    public async Task The_detail_of_a_free_locker_has_no_student_and_that_of_a_gone_one_is_null()
+    {
+        var world = await WorldAsync();
+        var zone = await world.ZoneAsync("Planta 1");
+        var free = await world.LockerAsync(1, zone);
+        var retired = await world.LockerAsync(2, zone);
+        await world.Assignments.Inventory.RetireLocker.HandleAsync(new RetireLockerRequest(retired), default);
+
+        var detail = (await world.LockerDetail.HandleAsync(free, default)).Value!;
+
+        Assert.Equal(LockerStatusView.Free, detail.Status);
+        Assert.Null(detail.StudentId);
+        Assert.False(detail.HasDebt);
+        Assert.Null((await world.LockerDetail.HandleAsync(retired, default)).Value);
+        Assert.Null((await world.LockerDetail.HandleAsync(Guid.NewGuid(), default)).Value);
+    }
+
+    [Fact]
+    [Trait("spec", Spec + ": Detalle de la taquilla seleccionada (Correo e identificador)")]
+    public void The_detail_carries_no_email_and_no_identifier_of_the_student()
+    {
+        var forbidden = new[] { "Email", "Dni", "Identifier" };
+
+        Assert.DoesNotContain(typeof(LockerDetail).GetProperties(), p => forbidden.Any(f => p.Name.Contains(f, StringComparison.OrdinalIgnoreCase)));
+    }
 }

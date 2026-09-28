@@ -7,6 +7,7 @@ using Arca.Application.Lockers;
 using Arca.Application.Search;
 using Arca.Domain.Common;
 using Arca.UI.Actions;
+using Arca.UI.Assigning;
 using Arca.UI.Common;
 using Arca.UI.Layout;
 using Arca.UI.Lists;
@@ -194,8 +195,48 @@ public sealed class LockerMapViewModel : ObservableObject
         }
     }
 
-    /// <summary>Opens the detail of a locker, or closes it with null.</summary>
-    public void Select(Guid? lockerId) => SelectedLockerId = lockerId;
+    /// <summary>The student whose locker is being changed, while the person chooses the new one on the map; null otherwise.</summary>
+    public (Guid StudentId, string StudentName)? Picking { get; private set; }
+
+    /// <summary>What happens when a free locker is chosen while picking. The composition of the screen sets it.</summary>
+    public Func<AssignmentIntent, Task>? OnPicked { get; set; }
+
+    /// <summary>Starts choosing the new locker of a student: the next free locker chosen on the map takes them.</summary>
+    public void BeginPick(Guid studentId, string studentName)
+    {
+        Picking = (studentId, studentName);
+        Raise(nameof(Picking));
+    }
+
+    /// <summary>Stops choosing a new locker without changing anything.</summary>
+    public void CancelPick()
+    {
+        Picking = null;
+        Raise(nameof(Picking));
+    }
+
+    /// <summary>The locker a student holds on the map now, or null.</summary>
+    public MapLocker? LockerHeldBy(Guid studentId) => _zones.SelectMany(z => z.Lockers).FirstOrDefault(l => l.StudentId == studentId);
+
+    /// <summary>
+    /// Opens the detail of a locker, or closes it with null. While choosing a new locker for a student, choosing a free one
+    /// takes them there and any other is ignored, so a wrong click never opens something else.
+    /// </summary>
+    public void Select(Guid? lockerId)
+    {
+        if (Picking is { } picking)
+        {
+            if (lockerId is { } target && Find(target)?.Status == LockerStatusView.Free)
+            {
+                CancelPick();
+                _ = OnPicked?.Invoke(new AssignmentIntent(picking.StudentId, target));
+            }
+
+            return;
+        }
+
+        SelectedLockerId = lockerId;
+    }
 
     /// <summary>
     /// Draws a locker highlighted and opens its detail, as when it is chosen in the search: its zone opens if it was folded and

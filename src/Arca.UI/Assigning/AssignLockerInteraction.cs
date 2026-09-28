@@ -25,17 +25,22 @@ public sealed class AssignLockerInteraction
     readonly RunOnceCommand<AssignLockerResult> _command;
     AssignmentIntent? _pending;
 
-    /// <param name="assign">The assignment use case.</param>
+    /// <param name="assign">The assignment use case. Changing a student's locker uses the same shape, with the change use case.</param>
+    /// <param name="successText">What is said when it is done; by default that the student now has the locker.</param>
+    /// <param name="afterAssigned">Runs after a successful assignment, with what was asked, so the screens read again what changed.</param>
     public AssignLockerInteraction(
         Func<AssignLockerRequest, CancellationToken, Task<Result<AssignLockerResult>>> assign,
-        IConfirmationService confirmations, ILocalizer localizer, INotificationService notifications, IErrorLog log, IDelay delay)
+        IConfirmationService confirmations, ILocalizer localizer, INotificationService notifications, IErrorLog log, IDelay delay,
+        Func<AssignmentRow, string>? successText = null, Func<AssignmentIntent, Task>? afterAssigned = null)
     {
         _assign = assign;
         _confirmations = confirmations;
         _localizer = localizer;
         var texts = new AssignmentResultTexts(localizer);
+        var say = successText ?? texts.Assigned;
         _command = new RunOnceCommand<AssignLockerResult>(
-            RunAsync, done => texts.Assigned(done.Assignment!), "AssignLocker", notifications, localizer, log, delay);
+            RunAsync, done => say(done.Assignment!), "AssignLocker", notifications, localizer, log, delay,
+            afterAssigned is null ? null : () => afterAssigned(_pending!));
     }
 
     /// <summary>The state of the work in progress, for the indicator that goes next to whatever started it.</summary>

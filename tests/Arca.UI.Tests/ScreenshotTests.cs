@@ -244,4 +244,38 @@ public sealed class ScreenshotTests
         var view = new ScreenView("Mapa de taquilles", [], new LockerMapView(model, _localizer));
         Take(new Window { Width = 1024, Height = 640, Content = view, Title = "ARCA" }, "map");
     }
+
+    [AvaloniaFact]
+    public void Start_screen_with_detail_and_students()
+    {
+        var random = new Random(3);
+        var lockers = Enumerable.Range(1, 60).Select(i => new Arca.Application.LockerMap.MapLocker(
+            Guid.NewGuid(), i, i % 7 == 0 ? LockerStatusView.Free : i % 11 == 0 ? LockerStatusView.Broken : i % 13 == 0 ? LockerStatusView.Reserved : LockerStatusView.Occupied,
+            null, null, false)).Select(l => l.Status == LockerStatusView.Occupied ? l with { StudentId = Guid.NewGuid(), StudentName = "Marta Puig", HasDebt = random.Next(4) == 0 } : l).ToList();
+        var zone = new Arca.Application.LockerMap.ZoneMap(Guid.NewGuid(), "Planta baixa", lockers, Arca.Application.LockerMap.GetLockerMapHandler.Count(lockers));
+        var data = new Arca.Application.LockerMap.LockerMapData([zone], zone.Counters);
+        var students = new Arca.Application.Students.StudentListing(
+            [.. new[] { ("Aina", "Abad"), ("Biel", "Bosch"), ("Carla", "Camps"), ("Dani", "Costa") }.Select(n => new Arca.Application.Students.StudentRow(Guid.NewGuid(), n.Item1, n.Item2, "1r ESO", "A", false, null))],
+            new Arca.Application.Students.StudentCounters(60, 56, 4));
+        var target = lockers.First(l => l.Status == LockerStatusView.Occupied && l.HasDebt);
+        var services = new Arca.UI.Map.LockerHomeServices(
+            _ => Task.FromResult(Arca.Domain.Common.Result<Arca.Application.LockerMap.LockerMapData>.Success(data)),
+            (_, _) => Task.FromResult(Arca.Domain.Common.Result<Arca.Application.LockerMap.MapLocker?>.Success(null)),
+            (id, _) => Task.FromResult(Arca.Domain.Common.Result<Arca.Application.LockerMap.LockerDetail?>.Success(new Arca.Application.LockerMap.LockerDetail(id, target.Number, "Planta baixa", target.Status, null, null, target.StudentId, target.StudentName, "2n ESO", "B", true, 70m))),
+            _ => Task.FromResult(Arca.Domain.Common.Result<Arca.Application.Students.StudentListing>.Success(students)),
+            (_, _, _) => Task.FromResult(Arca.Domain.Common.Result<Arca.Application.Assignments.CheckAssignmentTarget.AssignmentTargetCheck>.Success(new(null, []))),
+            (_, _) => Task.FromResult(Arca.Domain.Common.Result<Arca.Application.Assignments.AssignLocker.AssignLockerResult>.Failure(new Arca.Domain.Common.Error("X.Y"))),
+            (_, _) => Task.FromResult(Arca.Domain.Common.Result<Arca.Application.Assignments.AssignLocker.AssignLockerResult>.Failure(new Arca.Domain.Common.Error("X.Y"))),
+            new Arca.UI.Map.LockerOperations(Op, Op, Op, Op, Op));
+        var notifier = new Arca.UI.Notifications.ResultNotifier(new Arca.Testing.RecordingNotifications(), _localizer, new Arca.Testing.RecordingErrorLog());
+        var state = new GlobalStateService(_ => Task.FromResult(Arca.Domain.Common.Result<GlobalState>.Success(new(null, 0))), notifier);
+        var home = new Arca.UI.Map.LockerHomeModel(services, new Arca.UI.Preferences.UiPreferencesSession(new EmptyPreferences()), notifier, new Arca.Testing.RecordingConfirmations(true), _localizer, new Arca.Testing.RecordingNotifications(), new Arca.Testing.RecordingErrorLog(), new Arca.Testing.ManualDelay(), state);
+        home.LoadAsync().GetAwaiter().GetResult();
+        home.Map.Select(target.LockerId);
+        home.Detail.ShowAsync(target.LockerId).GetAwaiter().GetResult();
+        var screen = new Arca.UI.Map.LockerMapHomeScreen(home, new SearchNavigator(), _localizer).Create();
+        Take(new Window { Width = 1180, Height = 700, Content = screen, Title = "ARCA" }, "start");
+    }
+
+    static Task<Arca.Domain.Common.Result<string>> Op(Guid id, CancellationToken ct) => Task.FromResult(Arca.Domain.Common.Result<string>.Success("fet"));
 }
