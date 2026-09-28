@@ -11,6 +11,7 @@
     <PackageReference Include="Avalonia.Skia" />
     <ProjectReference Include="..\..\src\Arca.UI\Arca.UI.csproj" />
     <ProjectReference Include="..\..\src\Arca.Infrastructure\Arca.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Arca.Desktop\Arca.Desktop.csproj" />
     <ProjectReference Include="..\Arca.Testing\Arca.Testing.csproj" />
   </ItemGroup>
 </Project>

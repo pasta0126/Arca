@@ -90,6 +90,16 @@ en `WindowLimits` (se ajustan al probar en los equipos reales).
 arrastre, menú y teclado (mismo caso de uso, misma confirmación ante avisos, una ejecución a la vez). Para arrastrar:
 `StudentDragSource.Attach(fila, () => studentId, dropModel)` y `LockerDropTarget.Attach(celda, () => lockerId, dropModel)`.
 
+## La pantalla de inicio y cómo sustituirla
+
+La sección Inicio muestra lo que dé un `IHomeScreen` (un solo método, `Create`). La propuesta es `LockerMapHomeScreen`: el mapa de taquillas por zona con, al lado, el detalle de la taquilla elegida y el panel de alumnos sin taquilla. Está pendiente de validar con los conserjes (decisión D7 de `docs/riesgos.md`), y cambiarla no exige tocar nada más:
+
+```csharp
+var registry = SectionRegistry.Compose(roots, attention, home: new MiOtroInicio());   // implementa IHomeScreen
+```
+
+La navegación, la cabecera, los avisos, la búsqueda y las demás secciones no cambian. Lo que la pantalla lee y hace lo recibe como delegados (`LockerHomeServices`), que arma la composición de la aplicación (`LockerHomeComposition`): la interfaz nunca llama a un caso de uso directamente.
+
 ## Puntos de enganche que `ui-shell` tiene que resolver
 
 | Qué | Dónde | Notas |

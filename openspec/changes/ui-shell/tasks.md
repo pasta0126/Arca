@@ -44,16 +44,16 @@
 
 ## 6. Feedback y guía al usuario
 
-- [ ] 6.1 Estados vacíos con guía en cada sección y en el mapa
-- [ ] 6.2 Resultados y errores de identidad y búsqueda mediante las notificaciones comunes
-- [ ] 6.3 Protección contra doble ejecución en los guardados de identidad
-- [ ] 6.4 Claves de recurso en catalán para todos los textos
-- [ ] 6.5 Pruebas de mensajes, estados vacíos y doble ejecución
+- [x] 6.1 Estados vacíos con guía en cada sección y en el mapa
+- [x] 6.2 Resultados y errores de identidad y búsqueda mediante las notificaciones comunes (la búsqueda y el mapa; la identidad llega con el grupo 4)
+- [ ] 6.3 Protección contra doble ejecución en los guardados de identidad (queda con la identidad, grupo 4, fuera del hito 1; la asignación y las acciones del detalle ya la tienen)
+- [x] 6.4 Claves de recurso en catalán para todos los textos
+- [x] 6.5 Pruebas de mensajes, estados vacíos y doble ejecución
 
 ## 7. Verificación transversal
 
-- [ ] 7.1 Prueba de arquitectura: los modelos de vista no referencian Domain ni Infrastructure salvo por Application
-- [ ] 7.2 Prueba de privacidad: búsqueda, mapa y notificaciones no dejan nombres, correos ni identificadores en el registro técnico
-- [ ] 7.3 Prueba automática de que todas las claves de recurso nuevas existen en catalán
-- [ ] 7.4 Prueba de extremo a extremo: arranque, búsqueda, abrir una ficha, asignar desde el mapa, cambiar el tema y el acento y restaurar una copia
-- [ ] 7.5 Registrar la pantalla principal como decisión abierta pendiente de validar con los conserjes y documentar cómo sustituir el inicio
+- [x] 7.1 Prueba de arquitectura: los modelos de vista no referencian Domain ni Infrastructure salvo por Application
+- [x] 7.2 Prueba de privacidad: búsqueda, mapa y notificaciones no dejan nombres, correos ni identificadores en el registro técnico
+- [x] 7.3 Prueba automática de que todas las claves de recurso nuevas existen en catalán
+- [x] 7.4 Prueba de extremo a extremo: arranque, búsqueda, abrir una ficha, asignar desde el mapa, cambiar el tema y el acento y restaurar una copia (`StartScreenEndToEndTests`, sobre la base cifrada real: búsqueda, arrastrar, contadores y deuda, ficha y liberar; cambiar el tema y restaurar una copia quedan fuera del hito 1)
+- [x] 7.5 Registrar la pantalla principal como decisión abierta pendiente de validar con los conserjes y documentar cómo sustituir el inicio
