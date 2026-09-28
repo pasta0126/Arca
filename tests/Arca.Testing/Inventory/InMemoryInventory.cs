@@ -130,7 +130,7 @@ public sealed class InMemoryInventory : IUnitOfWork
         var years = YearList.Select(y => AcademicYear.Restore(y.Id, y.StartDate, y.EndDate, y.IsActive)).ToList();
         var conceptAmounts = ConceptAmountList.Select(a => new ConceptAmount(a.Id, a.YearId, a.Concept, a.Amount)).ToList();
         var conceptAmountEvents = ConceptAmountEventList.ToList();
-        var charges = ChargeList.Select(c => new Charge(c.Id, c.StudentId, c.Concept, c.YearId, c.Amount, c.Status, c.PaidOn, c.Reason)).ToList();
+        var charges = ChargeList.Select(c => new Charge(c.Id, c.StudentId, c.Concept, c.YearId, c.Amount, c.Status, c.PaidOn, c.Reason, c.Return, c.ReturnedOn, c.ReturnNote)).ToList();
         var chargeEvents = ChargeEventList.ToList();
         Result<T> result;
         try

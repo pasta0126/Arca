@@ -7,6 +7,8 @@ using Arca.Application.Charges.AdjustChargeAmount;
 using Arca.Application.Charges.ChargeKeyReplacement;
 using Arca.Application.Charges.MarkChargeExempt;
 using Arca.Application.Charges.MarkChargePaid;
+using Arca.Application.Charges.MarkDepositReturned;
+using Arca.Application.Charges.RevertDepositReturn;
 using Arca.Application.Charges.RevertCharge;
 using Arca.Application.Charges.VoidCharge;
 using Arca.Application.Charges.WaiveCharge;
@@ -30,6 +32,7 @@ public sealed class PagamentsWorld
         Assignments = new AssignmentsWorld();
         Assignments.Students.Guards.Add(new ChargeGenerationGuard(Store.ConceptAmounts, Store.Charges));
         Assignments.Students.OpenedHooks.Add(new ChargeGenerationHandler(Store.ConceptAmounts, Store.Charges, Store.ChargeEvents, Clock));
+        Assignments.Students.LifecycleHooks.Add(new DepositLifecycleHandler(Store.Charges, Store.ChargeEvents, Clock));
     }
 
     public AssignmentsWorld Assignments { get; }
@@ -49,6 +52,10 @@ public sealed class PagamentsWorld
     public VoidChargeHandler Void => new(Store.Charges, Store.ChargeEvents, Store.Students, Store.Years, Store, Clock);
 
     public AdjustChargeAmountHandler Adjust => new(Store.Charges, Store.ChargeEvents, Store.Students, Store.Years, Store, Clock);
+
+    public MarkDepositReturnedHandler ReturnDeposit => new(Store.Charges, Store.ChargeEvents, Store.Students, Store.Years, Store, Clock);
+
+    public RevertDepositReturnHandler RevertReturn => new(Store.Charges, Store.ChargeEvents, Store.Students, Store.Years, Store, Clock);
 
     public ChargeKeyReplacementHandler KeyReplacement => new(Store.Students, Store.Years, Store.ConceptAmounts, Store.Charges, Store.ChargeEvents, Store, Clock);
 

@@ -13,6 +13,10 @@ public static class ChargeEventTypes
     public const string Voided = "Charge.Voided";
     public const string Reverted = "Charge.Reverted";
     public const string AmountAdjusted = "Charge.AmountAdjusted";
+    public const string ReturnDue = "Charge.ReturnDue";
+    public const string ReturnCancelled = "Charge.ReturnCancelled";
+    public const string Returned = "Charge.Returned";
+    public const string ReturnReverted = "Charge.ReturnReverted";
 
-    public static IReadOnlyList<string> All { get; } = [Created, Paid, Exempted, Waived, Voided, Reverted, AmountAdjusted];
+    public static IReadOnlyList<string> All { get; } = [Created, Paid, Exempted, Waived, Voided, Reverted, AmountAdjusted, ReturnDue, ReturnCancelled, Returned, ReturnReverted];
 }

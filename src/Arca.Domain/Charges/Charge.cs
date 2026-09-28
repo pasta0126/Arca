@@ -25,7 +25,9 @@ public sealed class Charge
     };
 
     /// <summary>Rebuilds a stored charge. Used by persistence, which has already validated it.</summary>
-    public Charge(Guid id, Guid studentId, ChargeConcept concept, Guid yearId, Money amount, ChargeStatus status, DateOnly? paidOn, string? reason)
+    public Charge(
+        Guid id, Guid studentId, ChargeConcept concept, Guid yearId, Money amount, ChargeStatus status, DateOnly? paidOn, string? reason,
+        DepositReturnStatus returnStatus = DepositReturnStatus.None, DateOnly? returnedOn = null, string? returnNote = null)
     {
         Id = id;
         StudentId = studentId;
@@ -35,6 +37,9 @@ public sealed class Charge
         Status = status;
         PaidOn = paidOn;
         Reason = reason;
+        Return = returnStatus;
+        ReturnedOn = returnedOn;
+        ReturnNote = returnNote;
     }
 
     public Guid Id { get; }
@@ -57,8 +62,23 @@ public sealed class Charge
     /// <summary>The reason of the current status, set only while it is exempt, waived or voided.</summary>
     public string? Reason { get; private set; }
 
+    /// <summary>The give-back cycle of a deposit (pagaments, D3). Always <see cref="DepositReturnStatus.None"/> for other concepts.</summary>
+    public DepositReturnStatus Return { get; private set; }
+
+    /// <summary>When the deposit was given back, set only while <see cref="Return"/> is <see cref="DepositReturnStatus.Returned"/>.</summary>
+    public DateOnly? ReturnedOn { get; private set; }
+
+    /// <summary>The optional note of the give-back. Free text: sensitive, kept out of lists and the technical log.</summary>
+    public string? ReturnNote { get; private set; }
+
     /// <summary>Only a pending charge counts as debt.</summary>
     public bool CountsAsDebt => Status == ChargeStatus.Pending;
+
+    /// <summary>
+    /// A deposit that is still current (pagaments, D3): pending, paid, exempt or waived, and neither given back nor voided.
+    /// A student has at most one, and a new one is generated only when none is current.
+    /// </summary>
+    public bool IsCurrentDeposit => Concept == ChargeConcept.Deposit && Status != ChargeStatus.Voided && Return != DepositReturnStatus.Returned;
 
     /// <summary>Generates a pending charge with the amount fixed at this instant.</summary>
     public static ChargeCreated Create(Guid id, Guid studentId, ChargeConcept concept, Guid yearId, Money amount, DateTimeOffset now)
@@ -102,6 +122,11 @@ public sealed class Charge
             return Result<HistoryEvent>.Failure(ChargeErrors.InvalidStatus);
         }
 
+        if (Return == DepositReturnStatus.Returned)
+        {
+            return Result<HistoryEvent>.Failure(ChargeErrors.MustRevertReturnFirst);
+        }
+
         var clean = CleanReason(reason);
         if (!clean.IsSuccess)
         {
@@ -109,7 +134,7 @@ public sealed class Charge
         }
 
         var before = StatusSnapshot();
-        (Status, PaidOn, Reason) = (ChargeStatus.Pending, null, null);
+        (Status, PaidOn, Reason, Return) = (ChargeStatus.Pending, null, null, DepositReturnStatus.None);
         return Result<HistoryEvent>.Success(new HistoryEvent(Id, ChargeEventTypes.Reverted, now, before, null, clean.Value));
     }
 
@@ -164,6 +189,83 @@ public sealed class Charge
         Amount = money;
         return Result<HistoryEvent>.Success(new HistoryEvent(Id, ChargeEventTypes.AmountAdjusted, now, before, Json(new { amount = Amount.Amount }), clean.Value));
     }
+
+    /// <summary>The student left with this deposit paid: it has to be given back. Nothing else changes.</summary>
+    public Result<HistoryEvent> MarkReturnDue(DateTimeOffset now)
+    {
+        if (!IsPaidDeposit(DepositReturnStatus.None))
+        {
+            return Result<HistoryEvent>.Failure(ChargeErrors.InvalidStatus);
+        }
+
+        Return = DepositReturnStatus.ToReturn;
+        return Result<HistoryEvent>.Success(new HistoryEvent(
+            Id, ChargeEventTypes.ReturnDue, now, Json(new { @return = DepositReturnStatus.None.ToString() }), Json(new { @return = Return.ToString() })));
+    }
+
+    /// <summary>The student is back before the deposit was given back: it is simply paid and current again.</summary>
+    public Result<HistoryEvent> CancelReturnDue(DateTimeOffset now)
+    {
+        if (!IsPaidDeposit(DepositReturnStatus.ToReturn))
+        {
+            return Result<HistoryEvent>.Failure(ChargeErrors.InvalidStatus);
+        }
+
+        Return = DepositReturnStatus.None;
+        return Result<HistoryEvent>.Success(new HistoryEvent(
+            Id, ChargeEventTypes.ReturnCancelled, now, Json(new { @return = DepositReturnStatus.ToReturn.ToString() }), Json(new { @return = Return.ToString() })));
+    }
+
+    /// <summary>
+    /// Marks a deposit that is due back as given back. The date defaults to today and cannot be in the future; the note is
+    /// optional and up to 500 characters. Whether the student has actually left is checked by the use case, which knows them.
+    /// </summary>
+    public Result<HistoryEvent> MarkReturned(DateOnly? returnedOn, string? note, DateOnly today, DateTimeOffset now)
+    {
+        if (!IsPaidDeposit(DepositReturnStatus.ToReturn))
+        {
+            return Result<HistoryEvent>.Failure(ChargeErrors.InvalidStatus);
+        }
+
+        var date = returnedOn ?? today;
+        if (date > today)
+        {
+            return Result<HistoryEvent>.Failure(ChargeErrors.DateInvalid);
+        }
+
+        var clean = string.IsNullOrWhiteSpace(note) ? null : note.Trim();
+        if (clean is { Length: > MaximumReasonLength })
+        {
+            return Result<HistoryEvent>.Failure(ChargeErrors.NoteTooLong(MaximumReasonLength));
+        }
+
+        (Return, ReturnedOn, ReturnNote) = (DepositReturnStatus.Returned, date, clean);
+        return Result<HistoryEvent>.Success(new HistoryEvent(
+            Id, ChargeEventTypes.Returned, now, Json(new { @return = DepositReturnStatus.ToReturn.ToString() }),
+            Json(new { @return = Return.ToString(), returnedOn = date }), clean));
+    }
+
+    /// <summary>Corrects a give-back marked by mistake: the deposit is due back again. Needs a reason.</summary>
+    public Result<HistoryEvent> RevertReturn(string? reason, DateTimeOffset now)
+    {
+        if (!IsPaidDeposit(DepositReturnStatus.Returned))
+        {
+            return Result<HistoryEvent>.Failure(ChargeErrors.InvalidStatus);
+        }
+
+        var clean = CleanReason(reason);
+        if (!clean.IsSuccess)
+        {
+            return Result<HistoryEvent>.Failure(clean.Error!);
+        }
+
+        var before = Json(new { @return = Return.ToString(), returnedOn = ReturnedOn });
+        (Return, ReturnedOn, ReturnNote) = (DepositReturnStatus.ToReturn, null, null);
+        return Result<HistoryEvent>.Success(new HistoryEvent(
+            Id, ChargeEventTypes.ReturnReverted, now, before, Json(new { @return = Return.ToString() }), clean.Value));
+    }
+
+    bool IsPaidDeposit(DepositReturnStatus expected) => Concept == ChargeConcept.Deposit && Status == ChargeStatus.Paid && Return == expected;
 
     Error? RefuseUnlessPending() => Status == ChargeStatus.Pending ? null : ChargeErrors.InvalidStatus;
 

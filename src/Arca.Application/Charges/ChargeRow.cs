@@ -9,4 +9,5 @@ namespace Arca.Application.Charges;
 /// <summary>A charge as results and histories show it: who, which concept and year, its amount, status and reason.</summary>
 public sealed record ChargeRow(
     Guid Id, Guid StudentId, string StudentName, ChargeConcept Concept, Guid YearId, string YearName,
-    decimal Amount, ChargeStatus Status, DateOnly? PaidOn, string? Reason);
+    decimal Amount, ChargeStatus Status, DateOnly? PaidOn, string? Reason,
+    DepositReturnStatus Return = DepositReturnStatus.None, DateOnly? ReturnedOn = null, string? ReturnNote = null);

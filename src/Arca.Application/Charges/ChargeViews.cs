@@ -16,6 +16,7 @@ internal sealed class ChargeViews(IStudentRepository students, IAcademicYearRepo
         var year = await years.GetAsync(charge.YearId, ct);
         return new ChargeRow(
             charge.Id, charge.StudentId, student is null ? "?" : student.FirstName + " " + student.LastName, charge.Concept,
-            charge.YearId, year?.Name ?? string.Empty, charge.Amount.Amount, charge.Status, charge.PaidOn, charge.Reason);
+            charge.YearId, year?.Name ?? string.Empty, charge.Amount.Amount, charge.Status, charge.PaidOn, charge.Reason,
+            charge.Return, charge.ReturnedOn, charge.ReturnNote);
     }
 }

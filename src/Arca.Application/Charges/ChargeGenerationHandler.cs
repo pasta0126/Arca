@@ -30,7 +30,7 @@ public sealed class ChargeGenerationHandler(IConceptAmountRepository amounts, IC
             await GenerateAsync(assignment.StudentId, ChargeConcept.Fee, assignment.YearId, yearAmounts, ct);
         }
 
-        if (!existing.Any(c => c.Concept == ChargeConcept.Deposit && c.Status != ChargeStatus.Voided))
+        if (!existing.Any(c => c.IsCurrentDeposit))
         {
             await GenerateAsync(assignment.StudentId, ChargeConcept.Deposit, assignment.YearId, yearAmounts, ct);
         }

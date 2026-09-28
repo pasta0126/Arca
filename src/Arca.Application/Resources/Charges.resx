@@ -24,6 +24,16 @@
     <value>L'import ha de ser més gran que zero, amb com a màxim dos decimals, i no pot superar {0:C}.</value>
     <comment>{0} maximum amount</comment>
   </data>
+  <data name="Charges.Error.MustRevertReturnFirst" xml:space="preserve">
+    <value>Aquest dipòsit ja s'ha retornat: primer s'ha de revertir la devolució.</value>
+  </data>
+  <data name="Charges.Error.StudentStillActive" xml:space="preserve">
+    <value>El dipòsit només es retorna quan l'alumne causa baixa.</value>
+  </data>
+  <data name="Charges.Error.NoteTooLong" xml:space="preserve">
+    <value>La nota no pot tenir més de {0} caràcters.</value>
+    <comment>{0} maximum length</comment>
+  </data>
   <data name="Charges.Error.NotFound" xml:space="preserve">
     <value>No s'ha trobat el càrrec.</value>
   </data>
