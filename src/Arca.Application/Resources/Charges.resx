@@ -37,6 +37,13 @@
   <data name="Charges.Error.NotFound" xml:space="preserve">
     <value>No s'ha trobat el càrrec.</value>
   </data>
+  <data name="Charges.Warning.BulkChanged" xml:space="preserve">
+    <value>Les dades han canviat des de la revisió. No s'ha canviat res; revisa la selecció actualitzada i torna-ho a confirmar.</value>
+  </data>
+  <data name="Charges.Warning.BulkIneligible" xml:space="preserve">
+    <value>{0} càrrecs seleccionats ja no es poden processar. No s'ha canviat res; revisa la selecció actualitzada.</value>
+    <comment>{0} number of selected charges that no longer qualify</comment>
+  </data>
   <data name="Charges.Warning.PriorDebt" xml:space="preserve">
     <value>L'alumne té {0} càrrecs pendents de cursos anteriors, per un total de {1:C}.</value>
     <comment>{0} number of pending charges, {1} total amount</comment>

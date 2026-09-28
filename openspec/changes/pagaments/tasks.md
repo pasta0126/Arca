@@ -41,10 +41,10 @@
 
 ## 5. Operaciones en bloque
 
-- [ ] 5.1 Implementar el análisis y la confirmación de la condonación en bloque con revalidación y una sola transacción (D6)
-- [ ] 5.2 Implementar el análisis y la confirmación de la devolución de fianzas en bloque con fecha y nota comunes
-- [ ] 5.3 Progreso con recuentos y cancelación solo antes del guardado; resultado con recuentos e importes
-- [ ] 5.4 Pruebas: condonar 20 cargos, cargo que deja de ser pendiente, motivo obligatorio, devolver 40 fianzas, fianza que deja de estar por devolver, fallo a mitad y cancelación sin efectos
+- [x] 5.1 Implementar el análisis y la confirmación de la condonación en bloque con revalidación y una sola transacción (D6)
+- [x] 5.2 Implementar el análisis y la confirmación de la devolución de fianzas en bloque con fecha y nota comunes
+- [x] 5.3 Progreso con recuentos y cancelación solo antes del guardado; resultado con recuentos e importes
+- [x] 5.4 Pruebas: condonar 20 cargos, cargo que deja de ser pendiente, motivo obligatorio, devolver 40 fianzas, fianza que deja de estar por devolver, fallo a mitad y cancelación sin efectos
 
 ## 6. Estado de pago y consultas
 

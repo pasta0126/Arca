@@ -227,23 +227,36 @@ public sealed class Charge
             return Result<HistoryEvent>.Failure(ChargeErrors.InvalidStatus);
         }
 
-        var date = returnedOn ?? today;
-        if (date > today)
+        var checkedReturn = CheckReturn(returnedOn, note, today);
+        if (!checkedReturn.IsSuccess)
         {
-            return Result<HistoryEvent>.Failure(ChargeErrors.DateInvalid);
+            return Result<HistoryEvent>.Failure(checkedReturn.Error!);
         }
 
-        var clean = string.IsNullOrWhiteSpace(note) ? null : note.Trim();
-        if (clean is { Length: > MaximumReasonLength })
-        {
-            return Result<HistoryEvent>.Failure(ChargeErrors.NoteTooLong(MaximumReasonLength));
-        }
-
+        var (date, clean) = checkedReturn.Value;
         (Return, ReturnedOn, ReturnNote) = (DepositReturnStatus.Returned, date, clean);
         return Result<HistoryEvent>.Success(new HistoryEvent(
             Id, ChargeEventTypes.Returned, now, Json(new { @return = DepositReturnStatus.ToReturn.ToString() }),
             Json(new { @return = Return.ToString(), returnedOn = date }), clean));
     }
+
+    /// <summary>The rules of the date and the note of a give-back, apart from any deposit, so a bulk operation can check them once.</summary>
+    public static Result<(DateOnly Date, string? Note)> CheckReturn(DateOnly? returnedOn, string? note, DateOnly today)
+    {
+        var date = returnedOn ?? today;
+        if (date > today)
+        {
+            return Result<(DateOnly, string?)>.Failure(ChargeErrors.DateInvalid);
+        }
+
+        var clean = string.IsNullOrWhiteSpace(note) ? null : note.Trim();
+        return clean is { Length: > MaximumReasonLength }
+            ? Result<(DateOnly, string?)>.Failure(ChargeErrors.NoteTooLong(MaximumReasonLength))
+            : Result<(DateOnly, string?)>.Success((date, clean));
+    }
+
+    /// <summary>Whether this is a deposit that is due back and so can be given back.</summary>
+    public bool IsDueBack => IsPaidDeposit(DepositReturnStatus.ToReturn);
 
     /// <summary>Corrects a give-back marked by mistake: the deposit is due back again. Needs a reason.</summary>
     public Result<HistoryEvent> RevertReturn(string? reason, DateTimeOffset now)
@@ -290,7 +303,8 @@ public sealed class Charge
         return Result<HistoryEvent>.Success(new HistoryEvent(Id, eventType, now, before, Json(new { status = target.ToString(), reason = clean.Value }), clean.Value));
     }
 
-    static Result<string> CleanReason(string? reason)
+    /// <summary>The rules of a reason (1 to 500 characters once trimmed), so a bulk operation can check it once.</summary>
+    public static Result<string> CleanReason(string? reason)
     {
         var clean = reason?.Trim() ?? string.Empty;
         if (clean.Length == 0)

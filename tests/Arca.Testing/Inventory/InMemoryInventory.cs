@@ -116,6 +116,21 @@ public sealed class InMemoryInventory : IUnitOfWork
     /// <summary>Lets this many events be saved and makes the next one fail: a failure in the middle of a bulk save.</summary>
     public int? EventsBeforeFailure { get; set; }
 
+    void FailIfScheduled()
+    {
+        if (FailOnNextEvent || EventsBeforeFailure == 0)
+        {
+            FailOnNextEvent = false;
+            EventsBeforeFailure = null;
+            throw new IOException("the disk failed while saving");
+        }
+
+        if (EventsBeforeFailure is > 0)
+        {
+            EventsBeforeFailure--;
+        }
+    }
+
     public async Task<Result<T>> RunAsync<T>(Func<CancellationToken, Task<Result<T>>> work, CancellationToken ct)
     {
         var zones = ZoneList.Select(z => new Zone(z.Id, z.Name, z.NameKey, z.IsActive)).ToList();
@@ -319,6 +334,7 @@ public sealed class InMemoryInventory : IUnitOfWork
     {
         public Task AddAsync(HistoryEvent change, CancellationToken ct)
         {
+            owner.FailIfScheduled();
             owner.ChargeEventList.Add(change);
             return Task.CompletedTask;
         }
@@ -378,18 +394,7 @@ public sealed class InMemoryInventory : IUnitOfWork
     {
         public Task AddAsync(HistoryEvent change, CancellationToken ct)
         {
-            if (owner.FailOnNextEvent || owner.EventsBeforeFailure == 0)
-            {
-                owner.FailOnNextEvent = false;
-                owner.EventsBeforeFailure = null;
-                throw new IOException("the disk failed while saving");
-            }
-
-            if (owner.EventsBeforeFailure is > 0)
-            {
-                owner.EventsBeforeFailure--;
-            }
-
+            owner.FailIfScheduled();
             owner.EventList.Add(change);
             return Task.CompletedTask;
         }

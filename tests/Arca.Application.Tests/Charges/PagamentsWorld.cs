@@ -8,7 +8,9 @@ using Arca.Application.Charges.ChargeKeyReplacement;
 using Arca.Application.Charges.MarkChargeExempt;
 using Arca.Application.Charges.MarkChargePaid;
 using Arca.Application.Charges.MarkDepositReturned;
+using Arca.Application.Charges.ReturnDepositsInBulk;
 using Arca.Application.Charges.RevertDepositReturn;
+using Arca.Application.Charges.WaiveChargesInBulk;
 using Arca.Application.Charges.RevertCharge;
 using Arca.Application.Charges.VoidCharge;
 using Arca.Application.Charges.WaiveCharge;
@@ -56,6 +58,10 @@ public sealed class PagamentsWorld
     public MarkDepositReturnedHandler ReturnDeposit => new(Store.Charges, Store.ChargeEvents, Store.Students, Store.Years, Store, Clock);
 
     public RevertDepositReturnHandler RevertReturn => new(Store.Charges, Store.ChargeEvents, Store.Students, Store.Years, Store, Clock);
+
+    public WaiveChargesInBulkHandler WaiveInBulk => new(Store.Charges, Store.ChargeEvents, Store, Clock);
+
+    public ReturnDepositsInBulkHandler ReturnDepositsInBulk => new(Store.Charges, Store.ChargeEvents, Store, Clock);
 
     public ChargeKeyReplacementHandler KeyReplacement => new(Store.Students, Store.Years, Store.ConceptAmounts, Store.Charges, Store.ChargeEvents, Store, Clock);
 
