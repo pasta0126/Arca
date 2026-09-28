@@ -37,6 +37,7 @@ public static class ArcaTheme
 
         var root = new ResourceDictionary();
         root.ThemeDictionaries[ThemeVariant.Light] = light;
+        Metrics(root);
         return root;
     }
 
@@ -79,17 +80,32 @@ public static class ArcaTheme
     /// <summary>Named resources the components consume: semantic colours, never a raw colour in a component.</summary>
     static void Named(ResourceDictionary d)
     {
-        d["Arca.Brush.Background"] = new SolidColorBrush(Color.Parse(ArcaPalette.Background));
-        d["Arca.Brush.Surface"] = new SolidColorBrush(Color.Parse(ArcaPalette.Surface));
-        d["Arca.Brush.Border"] = new SolidColorBrush(Color.Parse(ArcaPalette.Border));
-        d["Arca.Brush.Text"] = new SolidColorBrush(Color.Parse(ArcaPalette.Text));
-        d["Arca.Brush.TextSecondary"] = new SolidColorBrush(Color.Parse(ArcaPalette.TextSecondary));
-        d["Arca.Brush.Accent"] = new SolidColorBrush(Color.Parse(ArcaPalette.Accent));
-        d["Arca.Brush.OnAccent"] = new SolidColorBrush(Color.Parse(ArcaPalette.OnAccent));
-        d["Arca.Brush.Success"] = new SolidColorBrush(Color.Parse(ArcaPalette.Success));
-        d["Arca.Brush.Warning"] = new SolidColorBrush(Color.Parse(ArcaPalette.Warning));
-        d["Arca.Brush.Error"] = new SolidColorBrush(Color.Parse(ArcaPalette.Error));
-        d["Arca.Brush.OnSemantic"] = new SolidColorBrush(Color.Parse(ArcaPalette.OnSemantic));
-        d["Arca.Brush.Focus"] = new SolidColorBrush(Color.Parse(ArcaPalette.Focus));
+        Brush(d, ArcaResourceKeys.Background, ArcaPalette.Background);
+        Brush(d, ArcaResourceKeys.Surface, ArcaPalette.Surface);
+        Brush(d, ArcaResourceKeys.Border, ArcaPalette.Border);
+        Brush(d, ArcaResourceKeys.Text, ArcaPalette.Text);
+        Brush(d, ArcaResourceKeys.TextSecondary, ArcaPalette.TextSecondary);
+        Brush(d, ArcaResourceKeys.Accent, ArcaPalette.Accent);
+        Brush(d, ArcaResourceKeys.OnAccent, ArcaPalette.OnAccent);
+        Brush(d, ArcaResourceKeys.Success, ArcaPalette.Success);
+        Brush(d, ArcaResourceKeys.Warning, ArcaPalette.Warning);
+        Brush(d, ArcaResourceKeys.Error, ArcaPalette.Error);
+        Brush(d, ArcaResourceKeys.OnSemantic, ArcaPalette.OnSemantic);
+        Brush(d, ArcaResourceKeys.Focus, ArcaPalette.Focus);
     }
+
+    /// <summary>The default type and spacing scales. They do not depend on the theme variant.</summary>
+    static void Metrics(ResourceDictionary d)
+    {
+        d[ArcaResourceKeys.FontFamilyText] = FontFamily.Default;
+        d[ArcaResourceKeys.FontSizeSmall] = 12d;
+        d[ArcaResourceKeys.FontSizeBody] = 14d;
+        d[ArcaResourceKeys.FontSizeTitle] = 18d;
+        d[ArcaResourceKeys.FontSizeHeading] = 24d;
+        d[ArcaResourceKeys.SpacingSmall] = 4d;
+        d[ArcaResourceKeys.SpacingMedium] = 8d;
+        d[ArcaResourceKeys.SpacingLarge] = 16d;
+    }
+
+    static void Brush(ResourceDictionary d, string key, string hex) => d[key] = new SolidColorBrush(Color.Parse(hex));
 }

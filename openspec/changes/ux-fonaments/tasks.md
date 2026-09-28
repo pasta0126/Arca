@@ -1,9 +1,9 @@
 ## 1. Biblioteca de componentes
 
-- [ ] 1.1 Crear el proyecto de componentes de UI, dependiente de Application solo por interfaces, y la prueba de arquitectura que impide referencias a Domain e Infrastructure (D1)
-- [ ] 1.2 Conjunto mínimo de recursos de tema con nombre (colores semánticos, tipografías y espaciados) y su contrato para `ui-shell` (D13)
-- [ ] 1.3 Planificador de tiempo inyectable para pruebas deterministas de temporizadores (D2)
-- [ ] 1.4 Configurar las pruebas de renderizado sin ventana de Avalonia y comprobar que se ejecutan en Windows, Linux y macOS
+- [x] 1.1 Crear el proyecto de componentes de UI, dependiente de Application solo por interfaces, y la prueba de arquitectura que impide referencias a Domain e Infrastructure (D1) (el proyecto `Arca.UI` ya existía desde `arquitectura-base`; se añade la prueba, con la salvedad de `Domain.Common`, ver `design.md`)
+- [x] 1.2 Conjunto mínimo de recursos de tema con nombre (colores semánticos, tipografías y espaciados) y su contrato para `ui-shell` (D13)
+- [x] 1.3 Planificador de tiempo inyectable para pruebas deterministas de temporizadores (D2) (ya existe: `IDelay` en Application y `ManualDelay` en `Arca.Testing`, usados por las notificaciones y el comando de ejecución única)
+- [x] 1.4 Configurar las pruebas de renderizado sin ventana de Avalonia y comprobar que se ejecutan en Windows, Linux y macOS (ya configuradas con `Avalonia.Headless.XUnit`; comprobado en macOS, Windows y Linux quedan para T10)
 
 ## 2. Feedback
 

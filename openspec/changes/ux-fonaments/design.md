@@ -72,3 +72,7 @@ Sin migración de base de datos. Se crea el proyecto de componentes y las prefer
 
 - Tamaño mínimo exacto de ventana y umbral de apilado: se ajustan al probar en los equipos reales; no alteran los specs.
 - Número máximo de notificaciones visibles a la vez: detalle de implementación.
+
+## Cambios durante la implementación
+
+**2026-09-28 (grupo 1):** D1 dice que la biblioteca de componentes «no conoce Domain». Al implementarlo se ve que `Result`, `Error` y `Notice` viven en `Domain.Common` porque todas las capas los comparten, y que los componentes no pueden prescindir de ellos para convertir un resultado en una notificación (D3). La regla queda así: el proyecto no referencia `Arca.Domain` ni `Arca.Infrastructure` y ningún componente usa un espacio de nombres de Domain distinto de `Arca.Domain.Common`; entidades, reglas y repositorios siguen fuera de su alcance. La prueba de arquitectura `The_component_library_uses_neither_the_domain_model_nor_infrastructure` lo comprueba sobre las directivas `using` del proyecto. Además, `arquitectura-base` ya había creado el proyecto `Arca.UI` con las notificaciones, la confirmación, el comando de ejecución única y el tema; este cambio los amplía en lugar de recrearlos.
