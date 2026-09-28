@@ -45,6 +45,8 @@ El projecte es desenvolupa amb OpenSpec (especificació primer, després impleme
 - `docs/hito-1.md` (primera fita), `docs/roadmap.md` (ordre de treball) i `docs/riesgos.md` (riscos i pendents).
 - `docs/stack.md`: tecnologies (.NET, Avalonia, SQLite xifrat).
 
+Per executar-lo en desenvolupament (macOS i Linux), des de l’arrel del repositori: `build/run.sh`. Detalls a `docs/ejecutar-en-desarrollo.md`.
+
 La documentació del projecte és en castellà; la interfície de l’aplicació, en català; el codi, en anglès.
 
 ## Registre i avisos (opcionals)

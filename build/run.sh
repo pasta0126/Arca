@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 Guillermo Garcia Carballo
+#
+# Compila y abre ARCA en modo portable para desarrollar (macOS y Linux). Desde la raíz del repositorio:
+#
+#   build/run.sh            compila y abre la aplicación
+#   build/run.sh --reset    borra antes los datos de desarrollo (pide la contraseña y la clave de recuperación de nuevo)
+#
+# Modo portable: los datos van en src/Arca.Desktop/bin/Debug/net10.0/data y no se toca la carpeta de usuario.
+# Contraseña de prueba que cumple la política: gat ratllat sota pluja
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+OUT=src/Arca.Desktop/bin/Debug/net10.0
+
+dotnet build src/Arca.Desktop
+
+if [[ "${1:-}" == "--reset" ]]; then
+    rm -rf "$OUT/data"
+    echo "Datos de desarrollo borrados."
+fi
+
+touch "$OUT/arca.portable"
+exec "$OUT/Arca"
