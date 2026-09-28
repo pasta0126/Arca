@@ -30,14 +30,14 @@
 
 ## 4. Fianza
 
-- [ ] 4.1 Definir la fianza vigente y la generación de una sola por alumno (D3)
-- [ ] 4.2 Modelar la devolución (sin devolución, por devolver, devuelta) con fecha y nota opcional de hasta 500 caracteres
-- [ ] 4.3 Implementar `IStudentLifecycleHandler`: en baja, pagada pasa a por devolver, pendiente se anula con motivo automático y exenta o condonada sin cambios
-- [ ] 4.4 Implementar la reactivación: por devolver vuelve a pagada; devuelta o anulada permite generar una nueva
-- [ ] 4.5 Garantizar que liberar la taquilla, cerrar curso o devolver la llave no altera la fianza
-- [ ] 4.6 Casos de uso de devolución individual y corrección de una devolución con motivo, y regla de no revertir a pendiente una devuelta
-- [ ] 4.7 Rechazar la devolución de la fianza de un alumno activo y de fianzas que no están por devolver
-- [ ] 4.8 Pruebas: fianza única entre cursos, exenta vigente, baja con cada estado, bajas masivas, reactivación en cada caso, devolución con fecha futura, alumno activo y no pagada
+- [x] 4.1 Definir la fianza vigente y la generación de una sola por alumno (D3)
+- [x] 4.2 Modelar la devolución (sin devolución, por devolver, devuelta) con fecha y nota opcional de hasta 500 caracteres
+- [x] 4.3 Implementar `IStudentLifecycleHandler`: en baja, pagada pasa a por devolver, pendiente se anula con motivo automático y exenta o condonada sin cambios
+- [x] 4.4 Implementar la reactivación: por devolver vuelve a pagada; devuelta o anulada permite generar una nueva
+- [x] 4.5 Garantizar que liberar la taquilla, cerrar curso o devolver la llave no altera la fianza
+- [x] 4.6 Casos de uso de devolución individual y corrección de una devolución con motivo, y regla de no revertir a pendiente una devuelta
+- [x] 4.7 Rechazar la devolución de la fianza de un alumno activo y de fianzas que no están por devolver
+- [x] 4.8 Pruebas: fianza única entre cursos, exenta vigente, baja con cada estado, bajas masivas, reactivación en cada caso, devolución con fecha futura, alumno activo y no pagada
 
 ## 5. Operaciones en bloque
 
