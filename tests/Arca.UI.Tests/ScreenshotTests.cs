@@ -8,6 +8,7 @@ using Arca.Application.Startup;
 using Arca.Application.Storage;
 using Arca.Testing;
 using Arca.UI.Actions;
+using Arca.UI.Access;
 using Arca.UI.Shell;
 using Arca.UI.Confirmation;
 using Arca.UI.Lists;
@@ -165,5 +166,17 @@ public sealed class ScreenshotTests
         public void Save(Arca.Application.Preferences.UiPreferences preferences)
         {
         }
+    }
+
+    [AvaloniaFact]
+    public void Password_with_the_eye_button()
+    {
+        var password = new FormField("Contrasenya del centre", true) { Text = "gat ratllat" };
+        var model = new AccessFormViewModel("Obre les dades", "Escriu la contrasenya del centre.", "Obre", "Cancel·la", "Comprovant…", [password], _ => Task.FromResult(false))
+        {
+            ShowPasswordLabel = "Mostra la contrasenya",
+            HidePasswordLabel = "Amaga la contrasenya",
+        };
+        Take(new AccessWindow(model), "password");
     }
 }

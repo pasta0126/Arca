@@ -32,14 +32,5 @@ public static class SectionIcons
     public static string Outline(string sectionId) => _outlines.GetValueOrDefault(sectionId, "M4 4 H20 V20 H4 Z");
 
     /// <summary>The icon as a control, coloured by the theme.</summary>
-    public static AvaloniaPath Create(string sectionId) => new AvaloniaPath
-    {
-        Data = Geometry.Parse(Outline(sectionId)),
-        StrokeThickness = 2,
-        StrokeLineCap = PenLineCap.Round,
-        StrokeJoin = PenLineJoin.Round,
-        Width = 24,
-        Height = 24,
-        Stretch = Stretch.None,
-    }.Themed(Shape.StrokeProperty, ArcaResourceKeys.Text);
+    public static AvaloniaPath Create(string sectionId) => ThemedIcon.Create(Outline(sectionId));
 }

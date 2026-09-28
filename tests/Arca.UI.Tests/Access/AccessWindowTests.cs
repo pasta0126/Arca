@@ -114,6 +114,35 @@ public sealed class AccessWindowTests
 
     [AvaloniaFact]
     [Trait("spec", Spec + ": Feedback y guía (Mensajes)")]
+    public void A_password_can_be_shown_while_typing_with_an_eye_button_and_starts_hidden_every_time()
+    {
+        var password = new FormField("Contrasenya", true);
+        var plain = new FormField("Grup 1", false);
+        var model = new AccessFormViewModel("Títol", "Intro", "Obre", "Cancel·la", "Comprovant…", [password, plain], _ => Task.FromResult(false))
+        {
+            ShowPasswordLabel = "Mostra la contrasenya",
+            HidePasswordLabel = "Amaga la contrasenya",
+        };
+        var window = Show(model);
+        var eyes = window.GetVisualDescendants().OfType<Avalonia.Controls.Primitives.ToggleButton>().ToList();
+        var eye = Assert.Single(eyes); // only the password has one
+        Assert.False(window.Boxes[0].RevealPassword);
+        Assert.Equal("Mostra la contrasenya", ToolTip.GetTip(eye));
+
+        eye.IsChecked = true;
+        Dispatcher.UIThread.RunJobs();
+        Assert.True(window.Boxes[0].RevealPassword);
+        Assert.Equal("Amaga la contrasenya", ToolTip.GetTip(eye));
+        Assert.Equal('●', window.Boxes[0].PasswordChar); // still a password box: it is only revealed while the button is on
+
+        eye.IsChecked = false;
+        Dispatcher.UIThread.RunJobs();
+        Assert.False(window.Boxes[0].RevealPassword);
+        Assert.Equal('\0', window.Boxes[1].PasswordChar);
+    }
+
+    [AvaloniaFact]
+    [Trait("spec", Spec + ": Feedback y guía (Mensajes)")]
     public void The_window_shows_the_texts_the_error_the_hints_and_hides_the_password()
     {
         var field = new FormField("Contrasenya", true);

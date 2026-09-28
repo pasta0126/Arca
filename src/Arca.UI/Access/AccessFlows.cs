@@ -329,6 +329,8 @@ public sealed class AccessFlows(
         {
             SecondaryLabel = secondary is null ? string.Empty : Text(secondary),
             Warning = warning is null ? string.Empty : Text(warning),
+            ShowPasswordLabel = Text("Keys.Label.ShowPassword"),
+            HidePasswordLabel = Text("Keys.Label.HidePassword"),
         };
 
     string Text(string key, params object[] args) => localizer.Get(key, args);
