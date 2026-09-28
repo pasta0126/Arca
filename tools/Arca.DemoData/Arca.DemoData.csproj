@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Arca.DemoData</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Arca.Application\Arca.Application.csproj" />
+    <ProjectReference Include="..\..\src\Arca.Infrastructure\Arca.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

@@ -6,6 +6,8 @@
 #
 #   build/run.sh            compila y abre la aplicación
 #   build/run.sh --reset    borra antes los datos de desarrollo (pide la contraseña y la clave de recuperación de nuevo)
+#   build/run.sh --demo     crea antes una base con datos ficticios (600 taquillas, 900 alumnos, cobros y bajas) y la abre;
+#                           tarda unos 20 segundos y la contraseña es la de prueba (ver abajo)
 #
 # Modo portable: los datos van en src/Arca.Desktop/bin/Debug/net10.0/data y no se toca la carpeta de usuario.
 # Contraseña de prueba que cumple la política: gat ratllat sota pluja
@@ -21,6 +23,10 @@ dotnet build src/Arca.Desktop
 if [[ "${1:-}" == "--reset" ]]; then
     rm -rf "$OUT/data"
     echo "Datos de desarrollo borrados."
+fi
+
+if [[ "${1:-}" == "--demo" ]]; then
+    dotnet run --project tools/Arca.DemoData -c Release -- --folder "$OUT/data" --force
 fi
 
 touch "$OUT/arca.portable"
