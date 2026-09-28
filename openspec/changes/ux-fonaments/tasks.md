@@ -35,11 +35,11 @@
 
 ## 5. Arrastrar y soltar
 
-- [ ] 5.1 Comportamiento de arrastre de un alumno que produce la intención alumno-taquilla y usa el comando de asignación existente (D12)
-- [ ] 5.2 Respuesta visual del destino con la comprobación previa de asignación, sin escribir datos, y motivo cuando no es válido
-- [ ] 5.3 Cancelación con Escape, soltar fuera y protección contra soltar dos veces
-- [ ] 5.4 Alternativas de menú y teclado con el mismo resultado y los mismos avisos
-- [ ] 5.5 Pruebas del modelo de la intención y de que el arrastre limita los casos a alumno sobre taquilla, y prueba manual en Windows, Linux y macOS
+- [x] 5.1 Comportamiento de arrastre de un alumno que produce la intención alumno-taquilla y usa el comando de asignación existente (D12)
+- [x] 5.2 Respuesta visual del destino con la comprobación previa de asignación, sin escribir datos, y motivo cuando no es válido
+- [x] 5.3 Cancelación con Escape, soltar fuera y protección contra soltar dos veces
+- [x] 5.4 Alternativas de menú y teclado con el mismo resultado y los mismos avisos
+- [ ] 5.5 Pruebas del modelo de la intención y de que el arrastre limita los casos a alumno sobre taquilla, y prueba manual en Windows, Linux y macOS (los modelos están probados; la prueba manual del arrastre real espera a que existan las pantallas con alumnos y taquillas)
 
 ## 6. Listas, planes y pasos
 

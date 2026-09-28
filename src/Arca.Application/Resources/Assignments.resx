@@ -73,4 +73,13 @@
   <data name="Assignments.Label.ReleaseConfirm" xml:space="preserve">
     <value>Allibera la taquilla</value>
   </data>
+  <data name="Assignments.Label.ConfirmWarningsTitle" xml:space="preserve">
+    <value>Assignar la taquilla?</value>
+  </data>
+  <data name="Assignments.Label.ConfirmWarningsConsequence" xml:space="preserve">
+    <value>L'assignació té avisos. Si continues, la taquilla s'assignarà igualment.</value>
+  </data>
+  <data name="Assignments.Label.ConfirmWarningsConfirm" xml:space="preserve">
+    <value>Assigna igualment</value>
+  </data>
 </root>
