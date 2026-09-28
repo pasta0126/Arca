@@ -38,7 +38,9 @@ public sealed class GlobalSearchHandler(
         var year = await years.GetActiveAsync(ct);
         var current = await assignments.ListCurrentAsync(ct);
         var allLockers = await lockers.ListAsync(includeRetired: false, ct);
-        var zoneNames = (await zones.ListAsync(ct)).ToDictionary(z => z.Id, z => z.Name);
+        var allZones = await zones.ListAsync(ct);
+        var zoneNames = allZones.ToDictionary(z => z.Id, z => z.Name);
+        var activeZones = allZones.Where(z => z.IsActive).Select(z => z.Id).ToHashSet();
         var levels = (await catalog.ListLevelsAsync(ct)).ToDictionary(l => l.Id, l => l.Name);
         var groups = (await catalog.ListGroupsAsync(ct)).ToDictionary(g => g.Id, g => g.Name);
         var inYear = year is null ? [] : (await enrollments.ListByYearAsync(year.Id, ct)).ToDictionary(e => e.StudentId);
@@ -67,7 +69,8 @@ public sealed class GlobalSearchHandler(
             .ToList();
 
         // Lockers: the number typed, exactly.
-        var lockerMatches = number is null ? [] : allLockers.Where(l => l.Number == number).ToList();
+        // The lockers of a deactivated zone are not on the map, so they are not offered here either.
+        var lockerMatches = number is null ? [] : allLockers.Where(l => l.Number == number && activeZones.Contains(l.ZoneId)).ToList();
         var lockerHits = lockerMatches
             .OrderBy(l => l.Number).ThenBy(l => zoneNames.GetValueOrDefault(l.ZoneId), TextComparer.Comparer)
             .Take(max)

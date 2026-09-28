@@ -176,6 +176,11 @@ public sealed class GlobalSearchViewModel : ObservableObject
         }
         catch (Exception e)
         {
+            if (source.IsCancellationRequested)
+            {
+                return; // a newer search took over: its panel is the one to keep, and this failure is no longer of interest
+            }
+
             _notifier.Unexpected(e, "GlobalSearch");
             Clear();
         }

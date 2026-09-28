@@ -118,6 +118,22 @@ public sealed class LockerMapViewModel : ObservableObject
         private set => Set(ref _highlighted, value);
     }
 
+    /// <summary>Runs the change chosen on the map. Anything that fails outside the run-once command is still told to the person, never lost.</summary>
+    async Task PickedAsync(AssignmentIntent intent)
+    {
+        try
+        {
+            if (OnPicked is { } change)
+            {
+                await change(intent);
+            }
+        }
+        catch (Exception e)
+        {
+            _notifier.Unexpected(e, "ChangeLocker");
+        }
+    }
+
     /// <summary>The locker as the map holds it, or null.</summary>
     public MapLocker? Find(Guid lockerId) => _zones.SelectMany(z => z.Lockers).FirstOrDefault(l => l.LockerId == lockerId);
 
@@ -229,7 +245,7 @@ public sealed class LockerMapViewModel : ObservableObject
             if (lockerId is { } target && Find(target)?.Status == LockerStatusView.Free)
             {
                 CancelPick();
-                _ = OnPicked?.Invoke(new AssignmentIntent(picking.StudentId, target));
+                _ = PickedAsync(new AssignmentIntent(picking.StudentId, target));
             }
 
             return;
@@ -260,6 +276,11 @@ public sealed class LockerMapViewModel : ObservableObject
         {
             _zoneFilter = null;
             Raise(nameof(ZoneFilter));
+        }
+
+        if (Picking is not null)
+        {
+            CancelPick(); // choosing something in the search means the person moved on from changing a locker
         }
 
         HighlightedLockerId = lockerId;

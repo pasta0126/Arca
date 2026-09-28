@@ -45,6 +45,7 @@ public sealed class LockerDetailViewModel : ObservableObject
     readonly Operation _release, _reserve, _removeReservation, _markBroken, _restore;
     LockerDetail? _detail;
     IReadOnlyList<AppAction> _actions = [];
+    int _request;
 
     public LockerDetailViewModel(LockerDetailContext context)
     {
@@ -74,6 +75,7 @@ public sealed class LockerDetailViewModel : ObservableObject
     /// <summary>Shows the locker, or nothing with null. Called when one is chosen and again after every change.</summary>
     public async Task ShowAsync(Guid? lockerId, CancellationToken ct = default)
     {
+        var mine = ++_request; // only the answer to the latest request is shown: an older one that arrives late is dropped
         if (lockerId is not { } id)
         {
             Detail = null;
@@ -84,6 +86,11 @@ public sealed class LockerDetailViewModel : ObservableObject
         try
         {
             var result = await _context.Load(id, ct);
+            if (mine != _request)
+            {
+                return;
+            }
+
             if (!result.IsSuccess)
             {
                 new ResultNotifier(_context.Notifications, _context.Localizer, _context.Log).Error(result.Error!);
