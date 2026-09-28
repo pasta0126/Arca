@@ -47,6 +47,32 @@ public sealed class LocalSettingsStore(string file)
         File.Move(temp, file, overwrite: true);
     }
 
+    /// <summary>
+    /// Replaces one section of the file and leaves everything else exactly as it is, including sections this version does not
+    /// know. If the file exists but cannot be read, nothing is written: rewriting it from defaults would lose what it holds,
+    /// such as the path of the database.
+    /// </summary>
+    /// <returns>False if the file was left alone because it could not be read.</returns>
+    public bool SaveSection<T>(string name, T value)
+    {
+        JsonObject root;
+        try
+        {
+            root = File.Exists(file) ? JsonNode.Parse(File.ReadAllText(file)) as JsonObject ?? throw new JsonException() : [];
+        }
+        catch (Exception e) when (e is JsonException or IOException or UnauthorizedAccessException)
+        {
+            return false;
+        }
+
+        root[name] = JsonSerializer.SerializeToNode(value, _options);
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(file))!);
+        var temp = file + ".tmp";
+        File.WriteAllText(temp, root.ToJsonString(_options));
+        File.Move(temp, file, overwrite: true);
+        return true;
+    }
+
     static T? Section<T>(JsonObject root, string name) where T : class
     {
         try
@@ -65,5 +91,5 @@ public sealed class LocalUiPreferencesStore(LocalSettingsStore settings) : IUiPr
 {
     public UiPreferences Load() => settings.Load().Ui ?? new UiPreferences();
 
-    public void Save(UiPreferences preferences) => settings.Save(settings.Load() with { Ui = preferences });
+    public void Save(UiPreferences preferences) => settings.SaveSection(nameof(LocalSettings.Ui), preferences);
 }

@@ -72,4 +72,48 @@ public sealed class UiPreferencesStoreTests
             ["CompactLists", "Height", "IsMaximized", "Sections", "Width", "Window", "X", "Y"],
             properties.Order(StringComparer.Ordinal).ToArray());
     }
+
+    [Fact]
+    [Trait("spec", Spec + " (guardar y recuperar)")]
+    public void Saving_preferences_leaves_every_other_section_exactly_as_it_was()
+    {
+        using var dir = new TempDirectory();
+        var file = dir.File("settings.json");
+        File.WriteAllText(file, "{ \"DatabasePath\": 42, \"FutureSetting\": { \"a\": [1, 2] } }"); // a value of the wrong type and one from a newer version
+
+        new LocalUiPreferencesStore(new LocalSettingsStore(file)).Save(new UiPreferences(CompactLists: true));
+
+        var text = File.ReadAllText(file);
+        Assert.Contains("\"DatabasePath\": 42", text, StringComparison.Ordinal);
+        Assert.Contains("FutureSetting", text, StringComparison.Ordinal);
+        Assert.True(new LocalUiPreferencesStore(new LocalSettingsStore(file)).Load().CompactLists);
+    }
+
+    [Theory]
+    [InlineData("{ this is not json")]
+    [InlineData("[1,2,3]")]
+    [Trait("spec", Spec + " (ajustes ilegibles)")]
+    public void A_file_that_cannot_be_read_is_never_rewritten_from_the_defaults(string content)
+    {
+        using var dir = new TempDirectory();
+        var file = dir.File("settings.json");
+        File.WriteAllText(file, content);
+
+        new LocalUiPreferencesStore(new LocalSettingsStore(file)).Save(new UiPreferences(CompactLists: true));
+
+        Assert.Equal(content, File.ReadAllText(file)); // the path of the database, if it was in there, is not lost
+    }
+
+    [Fact]
+    [Trait("spec", Spec + " (guardar y recuperar)")]
+    public void Saving_preferences_creates_the_file_when_there_is_none()
+    {
+        using var dir = new TempDirectory();
+        var file = Path.Combine(dir.Path, "sub", "settings.json");
+
+        new LocalUiPreferencesStore(new LocalSettingsStore(file)).Save(new UiPreferences(CompactLists: true));
+
+        Assert.True(new LocalUiPreferencesStore(new LocalSettingsStore(file)).Load().CompactLists);
+        Assert.Equal(["settings.json"], Directory.GetFiles(Path.GetDirectoryName(file)!).Select(Path.GetFileName));
+    }
 }

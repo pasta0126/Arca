@@ -204,6 +204,27 @@ public sealed class AssignmentDragTests
         Assert.Single(_notifications.Published);
     }
 
+    [Fact]
+    [Trait("spec", Spec + ": Feedback tras soltar (Soltar dos veces)")]
+    public async Task A_second_drop_while_the_destination_is_still_being_checked_does_not_assign_twice()
+    {
+        var release = new TaskCompletionSource();
+        var model = Model(Interaction(), async (student, locker, ct) =>
+        {
+            await release.Task; // the check of an uncached locker takes a while
+            return await Check(student, locker, ct);
+        });
+        model.BeginDrag(_student);
+
+        var first = model.DropAsync(_freeLocker);
+        var second = await model.DropAsync(_freeLocker);
+        release.SetResult();
+        await first;
+
+        Assert.False(second);
+        Assert.Single(_requests);
+    }
+
     // --- Warnings ---
 
     [Fact]

@@ -194,6 +194,29 @@ public sealed class KeyboardAndMenusTests
         Assert.False(registry[StandardActions.New].IsAvailable);
     }
 
+    [AvaloniaFact]
+    [Trait("spec", Spec + ": Conjunto fijo de atajos (Cancelar)")]
+    public void A_control_that_uses_the_key_keeps_it_and_the_screen_action_does_not_run()
+    {
+        var registry = Registry(UiPlatform.Windows);
+        var runs = 0;
+        registry[StandardActions.Cancel].Attach(() => runs++);
+        var box = new TextBox(); // stands for a drop-down or a menu that closes with Escape
+        box.AddHandler(InputElement.KeyDownEvent, (_, e) => e.Handled = e.Key == Key.Escape);
+        var window = new Window { Content = box };
+        ShortcutDispatcher.Attach(window, registry);
+        window.Show();
+        box.Focus();
+        Dispatcher.UIThread.RunJobs();
+
+        Press(window, Key.Escape);
+        Assert.Equal(0, runs);
+
+        registry[StandardActions.Search].Attach(() => runs += 10);
+        Press(window, Key.F, RawInputModifiers.Control); // a key no control uses still reaches the screen
+        Assert.Equal(10, runs);
+    }
+
     // --- Context menus ---
 
     [AvaloniaFact]

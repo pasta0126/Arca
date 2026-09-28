@@ -9,8 +9,9 @@ namespace Arca.UI.Actions;
 
 /// <summary>
 /// Runs the standard action whose shortcut the person pressed in a window. If the action does not apply on the current
-/// screen nothing happens, and no error is shown (teclat-i-menus, Atajo no aplicable). A dialog handles its own Escape
-/// before it gets here, so cancelling a dialog never reaches the screen behind it.
+/// screen nothing happens, and no error is shown (teclat-i-menus, Atajo no aplicable). It listens after the focused control
+/// has had its turn, so a control that uses the key (Escape closing a drop-down or a menu, Control+Enter in a text box)
+/// keeps it, and a dialog handles its own Escape so cancelling it never reaches the screen behind.
 /// </summary>
 public static class ShortcutDispatcher
 {
@@ -22,5 +23,5 @@ public static class ShortcutDispatcher
                 action.Execute(null);
                 e.Handled = true;
             }
-        }, RoutingStrategies.Tunnel);
+        }, RoutingStrategies.Bubble);
 }

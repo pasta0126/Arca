@@ -91,17 +91,17 @@ public sealed class AssignmentDropViewModel(
             return false;
         }
 
-        var feedback = await PreviewAsync(lockerId);
-        if (feedback is not { State: DropTargetState.Valid })
-        {
-            End();
-            return false;
-        }
-
+        // Taken before the first wait: a second drop that arrives while the destination is still being checked must not pass.
         _isDropping = true;
         try
         {
+            var feedback = await PreviewAsync(lockerId);
             End();
+            if (feedback is not { State: DropTargetState.Valid })
+            {
+                return false;
+            }
+
             await interaction.AssignAsync(new AssignmentIntent(student, lockerId));
             return true;
         }
