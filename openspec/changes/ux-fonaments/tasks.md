@@ -7,14 +7,14 @@
 
 ## 2. Feedback
 
-- [ ] 2.1 `INotificationService` y modelo de vista de notificaciones apiladas: éxito con desaparición y pausa con el ratón, aviso y error persistentes, cola y máximo visible (D3)
-- [ ] 2.2 Conversión de resultado estructurado y código de error a notificación con `ILocalizer`, con la clave visible si falta el recurso y registro de ello
-- [ ] 2.3 Error inesperado con mensaje genérico y referencia del registro técnico, sin datos de alumnos
-- [ ] 2.4 `IConfirmationService` y diálogo: consecuencia, recuentos, acción destructiva, foco inicial en cancelar, Escape y un solo diálogo (D4)
-- [ ] 2.5 Comando asíncrono de ejecución única con indicador de trabajo tras 300 ms y resultado hacia las notificaciones (D5)
-- [ ] 2.6 Componente de progreso con "N de M", cancelación condicionada y motivo cuando no es cancelable (D6)
-- [ ] 2.7 Componentes de estado de carga y estado vacío con acción principal y limpiar filtro
-- [ ] 2.8 Pruebas: cada escenario de los specs sobre los modelos de vista, doble ejecución, acción de menos de 300 ms, recurso ausente y cambio de tema sin cambios de código
+- [x] 2.1 `INotificationService` y modelo de vista de notificaciones apiladas: éxito con desaparición y pausa con el ratón, aviso y error persistentes, cola y máximo visible (D3)
+- [x] 2.2 Conversión de resultado estructurado y código de error a notificación con `ILocalizer`, con la clave visible si falta el recurso y registro de ello
+- [x] 2.3 Error inesperado con mensaje genérico y referencia del registro técnico, sin datos de alumnos
+- [x] 2.4 `IConfirmationService` y diálogo: consecuencia, recuentos, acción destructiva, foco inicial en cancelar, Escape y un solo diálogo (D4)
+- [x] 2.5 Comando asíncrono de ejecución única con indicador de trabajo tras 300 ms y resultado hacia las notificaciones (D5)
+- [x] 2.6 Componente de progreso con "N de M", cancelación condicionada y motivo cuando no es cancelable (D6)
+- [x] 2.7 Componentes de estado de carga y estado vacío con acción principal y limpiar filtro
+- [x] 2.8 Pruebas: cada escenario de los specs sobre los modelos de vista, doble ejecución, acción de menos de 300 ms, recurso ausente y cambio de tema sin cambios de código
 
 ## 3. Adaptabilidad
 

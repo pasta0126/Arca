@@ -6,7 +6,10 @@ using Arca.Application.Feedback;
 using Arca.Application.Localization;
 using Arca.Application.Startup;
 using Arca.Application.Storage;
+using Arca.Testing;
 using Arca.UI.Confirmation;
+using Arca.UI.Lists;
+using Arca.UI.Notifications;
 using Arca.UI.Info;
 using Arca.UI.Startup;
 using Avalonia;
@@ -77,5 +80,21 @@ public sealed class ScreenshotTests
         var request = new ConfirmationRequest(
             "Dona de baixa la taquilla", "La taquilla 15 es donarà de baixa. Aquesta acció no es pot desfer.", "Dona de baixa", true, ["1 taquilla"]);
         Take(new ConfirmationWindow(new ConfirmationViewModel(request, _localizer)), "confirmation");
+    }
+
+    [AvaloniaFact]
+    public void Notifications_and_empty_state()
+    {
+        var center = new NotificationCenter(new FakeClock(DateTimeOffset.UtcNow), new ManualDelay());
+        center.Publish(NotificationKind.Success, "S'ha condonat 1 càrrec, per un total de 50,00 €.");
+        center.Publish(NotificationKind.Warning, "Càrrecs pendents de cursos anteriors: 2, per un total de 70,00 €.");
+        center.Publish(NotificationKind.Error, "Error inesperat. Referència 4F2A.", "Referència 4F2A · System.IOException");
+
+        var state = new ListStateViewModel(_localizer);
+        state.ShowEmpty("Encara no hi ha zones. Crea'n una per començar.", new EmptyStateAction("Afegeix la primera zona", new NoOpCommand()));
+        var grid = new Grid();
+        grid.Children.Add(new ListStateView(state));
+        grid.Children.Add(new NotificationHostView(center, _localizer));
+        Take(new Window { Width = 900, Height = 520, Content = grid, Title = "ARCA" }, "notifications");
     }
 }

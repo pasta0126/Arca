@@ -33,6 +33,10 @@
   <data name="Common.Label.CannotUndo" xml:space="preserve">
     <value>Aquesta acció no es pot desfer.</value>
   </data>
+  <data name="Common.Label.TechnicalDetails" xml:space="preserve">
+    <value>Referència {0} · {1}</value>
+    <comment>{0} log reference, {1} exception type</comment>
+  </data>
   <data name="Common.Label.CancelUnavailable" xml:space="preserve">
     <value>Ja no es pot cancel·lar: s'estan desant les dades.</value>
   </data>
