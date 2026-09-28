@@ -67,6 +67,10 @@ Fecha de pago y de devolución son fechas de calendario (`DateOnly`) con el relo
 ### D10. Feedback
 Resultado estructurado con recuentos e importes. Confirmación con su consecuencia en reversiones y operaciones en bloque, y estados vacíos con guía (sin cargos, sin morosos, sin fianzas por devolver), según los principios de UX transversal.
 
+### Puntos de enganche para otros cambios
+- **`claus`**: cuando se pierde una llave y el conserge decide cobrar la reposición, `claus` llama a `ChargeKeyReplacementHandler` con el alumno y el curso. Cobros no escucha el estado de la llave.
+- **`cursos-i-historial`**: la revisión de la deuda al cerrar curso lee `IChargeRepository.ListPendingAsync` o `PaymentStanding.Of`. Arrastrar la deuda es no hacer nada (sigue pendiente y avisa al asignar); condonarla usa `WaiveChargeHandler` o `WaiveChargesInBulkHandler`. Cerrar un curso no toca las fianzas.
+
 ## Risks / Trade-offs
 
 - **La generación en el manejador de asignación acopla cobros y asignaciones** → los ganchos ya son la frontera definida; cada implementación tiene pruebas con dobles y pruebas de integración de extremo a extremo.

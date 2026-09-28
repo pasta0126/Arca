@@ -74,8 +74,8 @@
 
 ## 9. Verificación transversal
 
-- [ ] 9.1 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core
-- [ ] 9.2 Prueba de privacidad: un error provocado con un motivo o datos de un alumno no deja rastro en el registro técnico
-- [ ] 9.3 Prueba automática de que todas las claves de recurso nuevas existen en catalán
-- [ ] 9.4 Prueba de extremo a extremo: alumno nuevo asignado, cargos generados, pago, baja, fianza por devolver, devolución y reactivación con fianza nueva
-- [ ] 9.5 Documentar los puntos de enganche para `claus` (cargo de reposición al perder una llave) y `cursos-i-historial` (revisión de la deuda pendiente al cerrar curso)
+- [x] 9.1 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core (prueba genérica `LayerReferenceTests`, que ya recorre el código de este cambio)
+- [x] 9.2 Prueba de privacidad: un error provocado con un motivo o datos de un alumno no deja rastro en el registro técnico (`EfChargesTests`, sobre una condonación en bloque que falla, además de la prueba genérica de `FileErrorLogTests`; los listados no llevan correo, identificador ni motivos: `PaymentQueryTests`)
+- [x] 9.3 Prueba automática de que todas las claves de recurso nuevas existen en catalán (`ResourceCoverageTests`, genérica, que ya comprueba los códigos de error y las claves literales de este cambio)
+- [x] 9.4 Prueba de extremo a extremo: alumno nuevo asignado, cargos generados, pago, baja, fianza por devolver, devolución y reactivación con fianza nueva
+- [x] 9.5 Documentar los puntos de enganche para `claus` (cargo de reposición al perder una llave) y `cursos-i-historial` (revisión de la deuda pendiente al cerrar curso) (en `design.md` y en los comentarios de `ChargeKeyReplacementHandler` e `IChargeRepository`)

@@ -11,7 +11,7 @@ public sealed record AssignmentHookContext(Assignment Assignment, OperationConte
 
 /// <summary>
 /// Called inside the same transaction that opens an assignment (assign, change, reassign), so nothing is left half done
-/// (alumnes-i-assignacions, D9). The charges of pagaments will hang here. If it throws, everything is undone.
+/// (alumnes-i-assignacions, D9). Implemented by pagaments (ChargeGenerationHandler: the fee and the deposit). If it throws, everything is undone.
 /// </summary>
 public interface IAssignmentOpenedHandler
 {
@@ -27,7 +27,7 @@ public interface IAssignmentClosedHandler
     Task HandleAsync(AssignmentHookContext context, CancellationToken ct);
 }
 
-/// <summary>Called inside the transaction that retires or reactivates a student. The deposit of pagaments will hang here.</summary>
+/// <summary>Called inside the transaction that retires or reactivates a student. Implemented by pagaments (DepositLifecycleHandler: the deposit).</summary>
 public interface IStudentLifecycleHandler
 {
     Task OnRetiredAsync(Student student, OperationContext operation, CancellationToken ct);

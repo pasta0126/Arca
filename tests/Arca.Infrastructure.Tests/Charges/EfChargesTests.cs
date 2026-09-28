@@ -340,6 +340,41 @@ public sealed class EfChargesTests : IDisposable
         }
     }
 
+    // --- Privacy ---
+
+    [Fact]
+    [Trait("spec", Spec + "/cobraments: Datos sensibles (sin rastro en el registro técnico)")]
+    public async Task A_failure_while_saving_a_charge_with_a_reason_and_a_name_leaves_no_trace_in_the_technical_log()
+    {
+        var store = await NewDatabaseAsync();
+        var year = await YearAsync(store);
+        var student = await StudentAsync(store, "Núria", "Garcia");
+        var fee = NewCharge(student, year, ChargeConcept.Fee);
+        await store.RunAsync(async ct =>
+        {
+            await store.Charges.AddAsync(fee, ct);
+            return Result<bool>.Success(true);
+        }, default);
+        var handler = new WaiveChargesInBulkHandler(store.Charges, new FailingEvents(store.ChargeEvents, allowed: 0), store, _clock);
+        var request = new WaiveChargesInBulkRequest([fee.Id], "Beca per a la Núria Garcia, correu nuria@example.com");
+        var plan = (await handler.AnalyzeAsync(request, null, default)).Value!;
+        var logs = _dir.File("logs");
+        Directory.CreateDirectory(logs);
+
+        var error = await Assert.ThrowsAsync<IOException>(() => handler.ApplyAsync(request, plan, null, default));
+        using (var log = new Arca.Infrastructure.Common.FileErrorLog(logs))
+        {
+            log.LogUnexpected(error, "WaiveChargesInBulk");
+        }
+
+        var text = string.Join("\n", Directory.GetFiles(logs, "arca-*.log").Select(File.ReadAllText));
+        Assert.NotEmpty(text);
+        foreach (var forbidden in new[] { "Núria", "Garcia", "Beca", "nuria@example.com" })
+        {
+            Assert.DoesNotContain(forbidden, text, StringComparison.Ordinal);
+        }
+    }
+
     // --- Migration ---
 
     [Fact]

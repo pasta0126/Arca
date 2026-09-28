@@ -17,6 +17,11 @@ namespace Arca.Application.Charges.ChargeKeyReplacement;
 /// Generates a key replacement charge only when the person decides to charge for it (pagaments): claus decides whether
 /// and when to call this; a lost key with no charge simply generates nothing. Several may be charged to the same
 /// student in the same year, each its own charge.
+/// <para>
+/// Hook point for <c>claus</c>: when a key is lost and the person decides to charge for the replacement, claus calls this
+/// use case with the student and the year. Nothing in pagaments listens to the state of a key, so claus needs no other
+/// change here.
+/// </para>
 /// </summary>
 public sealed class ChargeKeyReplacementHandler(
     IStudentRepository students, IAcademicYearRepository years, IConceptAmountRepository amounts, IChargeRepository charges,
