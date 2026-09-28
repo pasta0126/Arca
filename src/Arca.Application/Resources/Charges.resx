@@ -45,7 +45,151 @@
     <comment>{0} number of selected charges that no longer qualify</comment>
   </data>
   <data name="Charges.Warning.PriorDebt" xml:space="preserve">
-    <value>L'alumne té {0} càrrecs pendents de cursos anteriors, per un total de {1:C}.</value>
+    <value>Càrrecs pendents de cursos anteriors: {0}, per un total de {1:C}.</value>
     <comment>{0} number of pending charges, {1} total amount</comment>
+  </data>
+  <data name="Charges.Concept.Fee" xml:space="preserve">
+    <value>quota</value>
+  </data>
+  <data name="Charges.Concept.Deposit" xml:space="preserve">
+    <value>dipòsit de la taquilla</value>
+  </data>
+  <data name="Charges.Concept.KeyReplacementFee" xml:space="preserve">
+    <value>reposició de clau</value>
+  </data>
+  <data name="Charges.Status.Pending" xml:space="preserve">
+    <value>pendent</value>
+  </data>
+  <data name="Charges.Status.Paid" xml:space="preserve">
+    <value>pagat</value>
+  </data>
+  <data name="Charges.Status.Exempt" xml:space="preserve">
+    <value>exempt</value>
+  </data>
+  <data name="Charges.Status.Waived" xml:space="preserve">
+    <value>condonat</value>
+  </data>
+  <data name="Charges.Status.Voided" xml:space="preserve">
+    <value>anul·lat</value>
+  </data>
+  <data name="Charges.Result.Paid" xml:space="preserve">
+    <value>S'ha marcat com a pagat el càrrec de {0} de {1} ({2:C}).</value>
+    <comment>{0} concept, {1} student, {2} amount</comment>
+  </data>
+  <data name="Charges.Result.Exempted" xml:space="preserve">
+    <value>S'ha marcat com a exempt el càrrec de {0} de {1} ({2:C}).</value>
+    <comment>{0} concept, {1} student, {2} amount</comment>
+  </data>
+  <data name="Charges.Result.Waived" xml:space="preserve">
+    <value>S'ha condonat el càrrec de {0} de {1} ({2:C}).</value>
+    <comment>{0} concept, {1} student, {2} amount</comment>
+  </data>
+  <data name="Charges.Result.Reverted" xml:space="preserve">
+    <value>El càrrec de {0} de {1} ({2:C}) torna a ser pendent.</value>
+    <comment>{0} concept, {1} student, {2} amount</comment>
+  </data>
+  <data name="Charges.Result.Voided" xml:space="preserve">
+    <value>S'ha anul·lat el càrrec de {0} de {1} ({2:C}).</value>
+    <comment>{0} concept, {1} student, {2} amount</comment>
+  </data>
+  <data name="Charges.Result.AmountAdjusted" xml:space="preserve">
+    <value>S'ha canviat l'import del càrrec de {0} de {1}: ara és {2:C}.</value>
+    <comment>{0} concept, {1} student, {2} new amount</comment>
+  </data>
+  <data name="Charges.Result.KeyReplacementCharged" xml:space="preserve">
+    <value>S'ha afegit un càrrec de {0} a {1} ({2:C}).</value>
+    <comment>{0} concept, {1} student, {2} amount</comment>
+  </data>
+  <data name="Charges.Result.DepositReturned" xml:space="preserve">
+    <value>S'ha retornat el {0} de {1} ({2:C}).</value>
+    <comment>{0} concept, {1} student, {2} amount</comment>
+  </data>
+  <data name="Charges.Result.DepositReturnReverted" xml:space="preserve">
+    <value>La devolució del {0} de {1} ({2:C}) s'ha desfet: torna a estar per retornar.</value>
+    <comment>{0} concept, {1} student, {2} amount</comment>
+  </data>
+  <data name="Charges.Result.BulkWaivedOne" xml:space="preserve">
+    <value>S'ha condonat 1 càrrec, per un total de {1:C}.</value>
+    <comment>{0} count, {1} total amount</comment>
+  </data>
+  <data name="Charges.Result.BulkWaivedMany" xml:space="preserve">
+    <value>S'han condonat {0} càrrecs, per un total de {1:C}.</value>
+    <comment>{0} count, {1} total amount</comment>
+  </data>
+  <data name="Charges.Result.BulkReturnedOne" xml:space="preserve">
+    <value>S'ha retornat 1 dipòsit, per un total de {1:C}.</value>
+    <comment>{0} count, {1} total amount</comment>
+  </data>
+  <data name="Charges.Result.BulkReturnedMany" xml:space="preserve">
+    <value>S'han retornat {0} dipòsits, per un total de {1:C}.</value>
+    <comment>{0} count, {1} total amount</comment>
+  </data>
+  <data name="Charges.Label.RevertTitle" xml:space="preserve">
+    <value>Revertir el càrrec de {0} de {1}?</value>
+    <comment>{0} concept, {1} student</comment>
+  </data>
+  <data name="Charges.Label.RevertConsequence" xml:space="preserve">
+    <value>El càrrec, ara {0} ({1:C}), tornarà a ser pendent i tornarà a comptar com a deute. Cal indicar un motiu.</value>
+    <comment>{0} current status, {1} amount</comment>
+  </data>
+  <data name="Charges.Label.RevertConfirm" xml:space="preserve">
+    <value>Reverteix</value>
+  </data>
+  <data name="Charges.Label.VoidTitle" xml:space="preserve">
+    <value>Anul·lar el càrrec de {0} de {1}?</value>
+    <comment>{0} concept, {1} student</comment>
+  </data>
+  <data name="Charges.Label.VoidConsequence" xml:space="preserve">
+    <value>El càrrec ({0:C}) deixarà de comptar com a deute i no es podrà revertir. Cal indicar un motiu.</value>
+    <comment>{0} amount</comment>
+  </data>
+  <data name="Charges.Label.VoidConfirm" xml:space="preserve">
+    <value>Anul·la</value>
+  </data>
+  <data name="Charges.Label.BulkWaiveTitle" xml:space="preserve">
+    <value>Condonar {0} càrrecs?</value>
+    <comment>{0} count</comment>
+  </data>
+  <data name="Charges.Label.BulkWaiveConsequence" xml:space="preserve">
+    <value>Es condonaran {0} càrrecs, per un total de {1:C}. Deixaran de comptar com a deute i cadascun conservarà el seu historial. Cal indicar un motiu comú.</value>
+    <comment>{0} count, {1} total amount</comment>
+  </data>
+  <data name="Charges.Label.BulkWaiveConfirm" xml:space="preserve">
+    <value>Condona</value>
+  </data>
+  <data name="Charges.Label.BulkReturnTitle" xml:space="preserve">
+    <value>Marcar {0} dipòsits com a retornats?</value>
+    <comment>{0} count</comment>
+  </data>
+  <data name="Charges.Label.BulkReturnConsequence" xml:space="preserve">
+    <value>Es marcaran {0} dipòsits de la taquilla com a retornats, per un total de {1:C}, amb la mateixa data i nota. Si t'equivoques, es pot desfer un per un indicant un motiu.</value>
+    <comment>{0} count, {1} total amount</comment>
+  </data>
+  <data name="Charges.Label.BulkReturnConfirm" xml:space="preserve">
+    <value>Marca com a retornats</value>
+  </data>
+  <data name="Charges.Label.ClearFilters" xml:space="preserve">
+    <value>Neteja els filtres</value>
+  </data>
+  <data name="Charges.Label.DefineAmounts" xml:space="preserve">
+    <value>Defineix els imports</value>
+  </data>
+  <data name="Charges.Empty.NoCharges" xml:space="preserve">
+    <value>Aquest alumne encara no té càrrecs. Es generen en assignar-li una taquilla.</value>
+  </data>
+  <data name="Charges.Empty.NoDebt" xml:space="preserve">
+    <value>Cap alumne té pagaments pendents. Tot està al corrent.</value>
+  </data>
+  <data name="Charges.Empty.NoDebtResults" xml:space="preserve">
+    <value>Cap alumne amb pagaments pendents coincideix amb els filtres.</value>
+  </data>
+  <data name="Charges.Empty.NoDepositsDue" xml:space="preserve">
+    <value>No hi ha cap dipòsit per retornar. Apareixen quan un alumne amb el dipòsit pagat causa baixa.</value>
+  </data>
+  <data name="Charges.Empty.NoDepositsDueResults" xml:space="preserve">
+    <value>Cap dipòsit per retornar coincideix amb la cerca.</value>
+  </data>
+  <data name="Charges.Empty.AmountsNotDefined" xml:space="preserve">
+    <value>Encara no s'han definit els imports d'aquest curs. Cal definir-los abans d'assignar taquilles.</value>
   </data>
 </root>

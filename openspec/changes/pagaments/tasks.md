@@ -66,11 +66,11 @@
 
 ## 8. Feedback y guía al usuario
 
-- [ ] 8.1 Devolver el resultado estructurado con recuentos e importes en todos los casos de uso nuevos
-- [ ] 8.2 Preparar confirmaciones con su consecuencia: reversión de un pago, condonación en bloque y devolución en bloque
-- [ ] 8.3 Preparar los estados vacíos: alumno sin cargos, sin morosos, sin fianzas por devolver, importes sin definir
-- [ ] 8.4 Claves de recurso en catalán para todos los mensajes, incluidos los avisos de deuda anterior
-- [ ] 8.5 Pruebas de mensajes de resultado y de estados vacíos
+- [x] 8.1 Devolver el resultado estructurado con recuentos e importes en todos los casos de uso nuevos
+- [x] 8.2 Preparar confirmaciones con su consecuencia: reversión de un pago, condonación en bloque y devolución en bloque
+- [x] 8.3 Preparar los estados vacíos: alumno sin cargos, sin morosos, sin fianzas por devolver, importes sin definir
+- [x] 8.4 Claves de recurso en catalán para todos los mensajes, incluidos los avisos de deuda anterior
+- [x] 8.5 Pruebas de mensajes de resultado y de estados vacíos
 
 ## 9. Verificación transversal
 

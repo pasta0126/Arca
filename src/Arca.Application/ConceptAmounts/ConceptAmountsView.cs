@@ -12,6 +12,9 @@ namespace Arca.Application.ConceptAmounts;
 public sealed record ConceptAmountsView(
     Guid YearId, decimal? Fee, decimal? Deposit, decimal? KeyReplacementFee, bool IsEditable, bool IsProposed)
 {
+    /// <summary>Whether the amounts needed to assign a locker (the fee and the deposit) are defined for the year.</summary>
+    public bool IsComplete => Fee is not null && Deposit is not null;
+
     public static ConceptAmountsView Of(Guid yearId, IReadOnlyList<ConceptAmount> amounts, bool isEditable, bool isProposed) => new(
         yearId, AmountOf(amounts, ChargeConcept.Fee), AmountOf(amounts, ChargeConcept.Deposit), AmountOf(amounts, ChargeConcept.KeyReplacementFee),
         isEditable, isProposed);
