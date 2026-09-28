@@ -41,6 +41,11 @@ public sealed class UiPreferencesSession
 
     public void SetCompactLists(bool compact) => Update(_current with { CompactLists = compact });
 
+    /// <summary>Whether the navigation sidebar shows only its icons.</summary>
+    public bool SidebarCollapsed => _current.SidebarCollapsed;
+
+    public void SetSidebarCollapsed(bool collapsed) => Update(_current with { SidebarCollapsed = collapsed });
+
     void Update(UiPreferences next)
     {
         _current = next;

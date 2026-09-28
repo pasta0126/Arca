@@ -15,6 +15,7 @@ using Arca.Infrastructure.Common;
 using Arca.Infrastructure.Security;
 using Arca.Infrastructure.Storage;
 using Arca.UI.Access;
+using Arca.UI.Actions;
 using Arca.UI.Confirmation;
 using Arca.UI.Notifications;
 using Arca.UI.Preferences;
@@ -70,6 +71,7 @@ public static class AppStartup
             .AddSingleton(flows)
             .AddSingleton(security)
             .AddSingleton(preferences)
+            .AddSingleton(new ActionRegistry(localizer, UiPlatforms.Current))
             .AddSingleton<IClock>(clock)
             .AddSingleton<IDelay>(delay)
             .AddSingleton(log)

@@ -5,6 +5,7 @@ using Arca.Application;
 using Arca.Application.Feedback;
 using Arca.Application.Localization;
 using Arca.UI.Access;
+using Arca.UI.Actions;
 using Arca.UI.Notifications;
 using Arca.UI.Preferences;
 using Avalonia.Controls;
@@ -22,6 +23,8 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
     public SecurityViewModel Security => services.GetRequiredService<SecurityViewModel>();
 
     public UiPreferencesSession Preferences => services.GetRequiredService<UiPreferencesSession>();
+
+    public ActionRegistry Actions => services.GetRequiredService<ActionRegistry>();
 
     public NotificationCenter Notifications => services.GetRequiredService<NotificationCenter>();
 

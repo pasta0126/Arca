@@ -1,10 +1,10 @@
 ## 1. Marco de navegación
 
-- [ ] 1.1 Registro de secciones con identificador, título, icono, orden, pantalla raíz e indicador de atención, y prueba de que ninguna pantalla está en dos secciones (D1)
-- [ ] 1.2 Ventana principal con barra lateral colapsable, cabecera y zona de contenido, con estado de la barra recordado en ajustes locales
-- [ ] 1.3 Navegación con teclado por la barra y patrón común de pantalla con título, acciones, lista, filtros y detalle
-- [ ] 1.4 Reparto de las pantallas de dominio en las ocho secciones según el spec
-- [ ] 1.5 Pruebas: cambio de sección, colapsar y recordar, teclado y estados vacíos por sección
+- [x] 1.1 Registro de secciones con identificador, título, icono, orden, pantalla raíz e indicador de atención, y prueba de que ninguna pantalla está en dos secciones (D1)
+- [x] 1.2 Ventana principal con barra lateral colapsable, cabecera y zona de contenido, con estado de la barra recordado en ajustes locales
+- [x] 1.3 Navegación con teclado por la barra y patrón común de pantalla con título, acciones, lista, filtros y detalle
+- [x] 1.4 Reparto de las pantallas de dominio en las ocho secciones según el spec
+- [x] 1.5 Pruebas: cambio de sección, colapsar y recordar, teclado y estados vacíos por sección
 
 ## 2. Estado global y avisos
 

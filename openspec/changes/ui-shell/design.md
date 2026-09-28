@@ -64,3 +64,7 @@ Una migración de EF Core añade la fila de configuración del centro (nombre, l
 
 - Validación de la pantalla principal con los conserjes: el mapa es provisional y no altera los specs de navegación, búsqueda ni identidad; solo cambiaría la implementación registrada de Inicio.
 - Valores exactos de los recursos de tema para el modo oscuro: detalle de diseño visual sin efecto en los specs. El tema claro pastel por defecto ya está definido en `Arca.UI/Theme/ArcaPalette.cs`.
+
+## Cambios durante la implementación
+
+**2026-09-28 (grupo 1):** D1 dice que los atajos de navegación se construyen del registro de secciones. No se han añadido atajos de teclado para cambiar de sección: `ux-fonaments` fijó un conjunto cerrado de cinco atajos («fijos, no personalizables») y uno nuevo tendría que decidirse allí; la barra se maneja con Tab y flechas, y Intro abre la sección. Las secciones sin pantalla propia (todas menos Ajustes, que ya muestra la versión y la seguridad de los datos) muestran un marcador con la lista de lo que contendrán, en vez de un área en blanco, hasta que `pantalles-de-domini` y los grupos siguientes las sustituyan dándoles una raíz (`SectionDefinition.CreateRoot`). El registro es el único sitio que sabe qué pantalla va en qué sección y se niega a registrar una pantalla en dos o en una sección desconocida; el reparto está en `ShellCatalog`. El estado de la barra (plegada o no) se guarda en las preferencias locales de interfaz (`UiPreferences.SidebarCollapsed`). La cabecera queda como un hueco (`ShellView.HeaderSlot`) que llena el grupo 2.

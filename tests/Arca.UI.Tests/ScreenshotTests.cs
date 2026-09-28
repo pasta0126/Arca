@@ -8,6 +8,7 @@ using Arca.Application.Startup;
 using Arca.Application.Storage;
 using Arca.Testing;
 using Arca.UI.Actions;
+using Arca.UI.Shell;
 using Arca.UI.Confirmation;
 using Arca.UI.Lists;
 using Arca.UI.Notifications;
@@ -140,5 +141,29 @@ public sealed class ScreenshotTests
         }
 
         Take(new Window { Width = 700, Height = 360, Content = new VirtualizedListView<DemoStudent, Guid>(model), Title = "ARCA" }, "list");
+    }
+
+    [AvaloniaFact]
+    public void Shell_frame()
+    {
+        var registry = SectionRegistry.Compose(new Dictionary<string, Func<Control>>());
+        var preferences = new Arca.UI.Preferences.UiPreferencesSession(new EmptyPreferences());
+        var navigation = new NavigationViewModel(registry, preferences, s => SectionPlaceholder.Create(s, registry, _localizer));
+        navigation.Navigate("Students");
+        var shell = new ShellView(navigation, _localizer);
+        shell.HeaderSlot.Content = Arca.UI.Common.ThemedText.Title("ARCA");
+        Take(new Window { Width = 1024, Height = 640, Content = shell, Title = "ARCA" }, "shell");
+
+        var folded = new NavigationViewModel(registry, preferences, s => SectionPlaceholder.Create(s, registry, _localizer)) { IsSidebarCollapsed = true };
+        Take(new Window { Width = 1024, Height = 640, Content = new ShellView(folded, _localizer), Title = "ARCA" }, "shell-collapsed");
+    }
+
+    sealed class EmptyPreferences : Arca.Application.Preferences.IUiPreferencesStore
+    {
+        public Arca.Application.Preferences.UiPreferences Load() => new();
+
+        public void Save(Arca.Application.Preferences.UiPreferences preferences)
+        {
+        }
     }
 }

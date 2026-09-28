@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Shell.Section.Home" xml:space="preserve">
+    <value>Inici</value>
+  </data>
+  <data name="Shell.Section.Lockers" xml:space="preserve">
+    <value>Taquilles</value>
+  </data>
+  <data name="Shell.Section.Students" xml:space="preserve">
+    <value>Alumnes</value>
+  </data>
+  <data name="Shell.Section.Payments" xml:space="preserve">
+    <value>Cobraments</value>
+  </data>
+  <data name="Shell.Section.KeysAndIncidents" xml:space="preserve">
+    <value>Claus i incidències</value>
+  </data>
+  <data name="Shell.Section.Reports" xml:space="preserve">
+    <value>Informes</value>
+  </data>
+  <data name="Shell.Section.Course" xml:space="preserve">
+    <value>Curs</value>
+  </data>
+  <data name="Shell.Section.Settings" xml:space="preserve">
+    <value>Ajustos</value>
+  </data>
+  <data name="Shell.Screen.LockerMap" xml:space="preserve">
+    <value>Mapa de taquilles</value>
+  </data>
+  <data name="Shell.Screen.Lockers" xml:space="preserve">
+    <value>Taquilles</value>
+  </data>
+  <data name="Shell.Screen.Zones" xml:space="preserve">
+    <value>Zones</value>
+  </data>
+  <data name="Shell.Screen.LockerHistory" xml:space="preserve">
+    <value>Historial de taquilles</value>
+  </data>
+  <data name="Shell.Screen.Students" xml:space="preserve">
+    <value>Alumnes</value>
+  </data>
+  <data name="Shell.Screen.StudentImport" xml:space="preserve">
+    <value>Importació d'alumnes</value>
+  </data>
+  <data name="Shell.Screen.Assignments" xml:space="preserve">
+    <value>Assignacions</value>
+  </data>
+  <data name="Shell.Screen.Charges" xml:space="preserve">
+    <value>Càrrecs</value>
+  </data>
+  <data name="Shell.Screen.Debtors" xml:space="preserve">
+    <value>Pendents de pagament</value>
+  </data>
+  <data name="Shell.Screen.Deposits" xml:space="preserve">
+    <value>Dipòsits per retornar</value>
+  </data>
+  <data name="Shell.Screen.Keys" xml:space="preserve">
+    <value>Claus</value>
+  </data>
+  <data name="Shell.Screen.Incidents" xml:space="preserve">
+    <value>Incidències</value>
+  </data>
+  <data name="Shell.Screen.BulkMaintenance" xml:space="preserve">
+    <value>Manteniment en bloc</value>
+  </data>
+  <data name="Shell.Screen.Reports" xml:space="preserve">
+    <value>Informes</value>
+  </data>
+  <data name="Shell.Screen.Export" xml:space="preserve">
+    <value>Exportació</value>
+  </data>
+  <data name="Shell.Screen.CurrentYear" xml:space="preserve">
+    <value>Curs actual</value>
+  </data>
+  <data name="Shell.Screen.Amounts" xml:space="preserve">
+    <value>Imports</value>
+  </data>
+  <data name="Shell.Screen.YearClosing" xml:space="preserve">
+    <value>Tancament de curs</value>
+  </data>
+  <data name="Shell.Screen.DataRetention" xml:space="preserve">
+    <value>Conservació de dades</value>
+  </data>
+  <data name="Shell.Screen.Identity" xml:space="preserve">
+    <value>Identitat del centre</value>
+  </data>
+  <data name="Shell.Screen.Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="Shell.Screen.Registration" xml:space="preserve">
+    <value>Registre i avisos de versió</value>
+  </data>
+  <data name="Shell.Screen.Backup" xml:space="preserve">
+    <value>Còpia de seguretat i restauració</value>
+  </data>
+  <data name="Shell.Screen.Setup" xml:space="preserve">
+    <value>Configuració guiada</value>
+  </data>
+  <data name="Shell.Screen.IncidentReasons" xml:space="preserve">
+    <value>Motius d'incidència</value>
+  </data>
+  <data name="Shell.Screen.DataFolder" xml:space="preserve">
+    <value>Carpeta de dades</value>
+  </data>
+  <data name="Shell.Label.Sidebar" xml:space="preserve">
+    <value>Seccions</value>
+  </data>
+  <data name="Shell.Label.CollapseSidebar" xml:space="preserve">
+    <value>Redueix la barra lateral</value>
+  </data>
+  <data name="Shell.Label.ExpandSidebar" xml:space="preserve">
+    <value>Amplia la barra lateral</value>
+  </data>
+  <data name="Shell.Empty.SectionUnavailable" xml:space="preserve">
+    <value>Aquesta secció encara no és disponible en aquesta versió. Hi trobaràs:</value>
+  </data>
+</root>
