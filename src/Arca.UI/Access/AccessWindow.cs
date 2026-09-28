@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using Arca.UI.Common;
+using Material.Icons;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -103,11 +104,12 @@ public sealed class AccessWindow : Window
     /// </summary>
     static Grid WithRevealButton(TextBox box, AccessFormViewModel model)
     {
-        var eye = new Avalonia.Controls.Primitives.ToggleButton { Content = ThemedIcon.Create(ThemedIcon.Eye), VerticalAlignment = VerticalAlignment.Stretch };
+        var eye = new Avalonia.Controls.Primitives.ToggleButton { Content = ThemedIcon.Create(MaterialIconKind.Eye), VerticalAlignment = VerticalAlignment.Stretch };
         ToolTip.SetTip(eye, model.ShowPasswordLabel);
         eye.IsCheckedChanged += (_, _) =>
         {
             box.RevealPassword = eye.IsChecked == true;
+            eye.Content = ThemedIcon.Create(eye.IsChecked == true ? MaterialIconKind.EyeOff : MaterialIconKind.Eye); // shows what pressing it will do
             ToolTip.SetTip(eye, eye.IsChecked == true ? model.HidePasswordLabel : model.ShowPasswordLabel);
         };
         Grid.SetColumn(eye, 1);

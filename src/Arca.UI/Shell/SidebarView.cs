@@ -3,6 +3,7 @@
 
 using Arca.Application.Localization;
 using Arca.UI.Common;
+using Material.Icons;
 using Arca.UI.Theme;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -93,7 +94,7 @@ public sealed class SidebarView : UserControl
             ToolTip.SetTip(button, collapsed ? _localizer.Get(section.TitleKey) : null);
         }
 
-        _fold.Content = collapsed ? "»" : "«"; // a symbol; what it does is written in its tooltip
+        _fold.Content = ThemedIcon.Create(collapsed ? MaterialIconKind.ChevronDoubleRight : MaterialIconKind.ChevronDoubleLeft, 20);
         ToolTip.SetTip(_fold, _localizer.Get(collapsed ? "Shell.Label.ExpandSidebar" : "Shell.Label.CollapseSidebar"));
     }
 
