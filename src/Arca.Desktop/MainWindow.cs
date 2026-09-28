@@ -27,14 +27,21 @@ public sealed class MainWindow : Window
         WindowStateKeeper.Attach(this, runtime.Preferences);
         ShortcutDispatcher.Attach(this, runtime.Actions);
 
-        var registry = SectionRegistry.Compose(new Dictionary<string, Func<Avalonia.Controls.Control>>
-        {
-            [ShellCatalog.Settings] = () => SettingsRoot(runtime),
-        });
+        var state = runtime.GlobalState;
+        var registry = SectionRegistry.Compose(
+            new Dictionary<string, Func<Avalonia.Controls.Control>> { [ShellCatalog.Settings] = () => SettingsRoot(runtime) },
+            new Dictionary<string, Func<int>> { [ShellCatalog.Payments] = () => state.Current?.PendingCharges ?? 0 });
         var navigation = new NavigationViewModel(registry, runtime.Preferences, section => SectionPlaceholder.Create(section, registry, localizer));
         var shell = new ShellView(navigation, localizer, new NotificationHostView(runtime.Notifications, localizer));
-        shell.HeaderSlot.Content = ThemedText.Title(localizer.Get("App.Label.Title"));
+        var header = new StackPanel();
+        header.Children.Add(new HeaderView(state, localizer, localizer.Get("App.Label.Title")));
+        header.Children.Add(new NoticeBarView(new GlobalNoticesViewModel(state, navigation, localizer), localizer));
+        shell.HeaderSlot.Content = header;
         Content = shell;
+
+        // The frame reads the state when the application opens, and again after every write; it never asks on a timer.
+        state.Changed += (_, _) => navigation.RefreshAttention();
+        Opened += (_, _) => _ = state.RefreshAsync();
     }
 
     static ScreenView SettingsRoot(AppRuntime runtime)

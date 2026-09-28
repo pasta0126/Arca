@@ -118,4 +118,21 @@
   <data name="Shell.Empty.SectionUnavailable" xml:space="preserve">
     <value>Aquesta secció encara no és disponible en aquesta versió. Hi trobaràs:</value>
   </data>
+  <data name="Shell.Header.Year" xml:space="preserve">
+    <value>Curs {0}</value>
+    <comment>{0} name of the active year, such as 2026-2027</comment>
+  </data>
+  <data name="Shell.Header.NoYear" xml:space="preserve">
+    <value>Sense curs actiu</value>
+  </data>
+  <data name="Shell.Notice.NoActiveYear" xml:space="preserve">
+    <value>No hi ha cap curs actiu. Cal definir-ne un abans de poder assignar taquilles.</value>
+  </data>
+  <data name="Shell.Notice.GoToCourse" xml:space="preserve">
+    <value>Ves a Curs</value>
+  </data>
+  <data name="Shell.Label.Pending" xml:space="preserve">
+    <value>{0} pendents</value>
+    <comment>{0} number of things that need attention in a section</comment>
+  </data>
 </root>

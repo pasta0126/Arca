@@ -8,6 +8,7 @@ using Arca.UI.Access;
 using Arca.UI.Actions;
 using Arca.UI.Notifications;
 using Arca.UI.Preferences;
+using Arca.UI.Shell;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +24,8 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
     public SecurityViewModel Security => services.GetRequiredService<SecurityViewModel>();
 
     public UiPreferencesSession Preferences => services.GetRequiredService<UiPreferencesSession>();
+
+    public GlobalStateService GlobalState => services.GetRequiredService<GlobalStateService>();
 
     public ActionRegistry Actions => services.GetRequiredService<ActionRegistry>();
 

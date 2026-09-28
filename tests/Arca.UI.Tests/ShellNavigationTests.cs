@@ -214,7 +214,7 @@ public sealed class ShellNavigationTests
     {
         var navigation = Navigation();
         var (sidebar, _) = Show(navigation, _localizer);
-        var name = sidebar.ButtonOf("Lockers").GetVisualDescendants().OfType<TextBlock>().Single();
+        var name = sidebar.ButtonOf("Lockers").GetVisualDescendants().OfType<TextBlock>().Single(t => t.Text == "Taquilles");
         Assert.True(name.IsVisible);
         Assert.Null(ToolTip.GetTip(sidebar.ButtonOf("Lockers")));
 

@@ -28,6 +28,7 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
     readonly ResultNotifier _notifier;
     readonly ILocalizer _localizer;
     readonly IDelay _delay;
+    readonly Func<Task>? _afterSuccess;
 
     CancellationTokenSource? _running;
     bool _isRunning;
@@ -41,6 +42,7 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
     /// </param>
     /// <param name="successText">Message for a successful result, with its counts ("40 taquilles creades").</param>
     /// <param name="context">Name of the action, for the technical log.</param>
+    /// <param name="afterSuccess">Runs once a successful result has been reported: what the frame needs to refresh after a write, such as the global state.</param>
     public RunOnceCommand(
         Func<CancellationToken, IProgress<OperationProgress>, Task<Result<T>>> operation,
         Func<T, string> successText,
@@ -48,7 +50,8 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
         INotificationService notifications,
         ILocalizer localizer,
         IErrorLog log,
-        IDelay delay)
+        IDelay delay,
+        Func<Task>? afterSuccess = null)
     {
         _operation = operation;
         _successText = successText;
@@ -56,6 +59,7 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
         _notifier = new ResultNotifier(notifications, localizer, log);
         _localizer = localizer;
         _delay = delay;
+        _afterSuccess = afterSuccess;
     }
 
     public event EventHandler? CanExecuteChanged;
@@ -135,6 +139,10 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
             var progress = new SyncProgress(this);
             var result = await _operation(cancellation.Token, progress);
             _notifier.Notify(result, _successText);
+            if (result.IsSuccess && _afterSuccess is not null)
+            {
+                await _afterSuccess();
+            }
         }
         catch (OperationCanceledException)
         {

@@ -9,6 +9,7 @@ using Arca.Application.Storage;
 using Arca.Testing;
 using Arca.UI.Actions;
 using Arca.UI.Access;
+using Arca.Application.GlobalState;
 using Arca.UI.Shell;
 using Arca.UI.Confirmation;
 using Arca.UI.Lists;
@@ -178,5 +179,22 @@ public sealed class ScreenshotTests
             HidePasswordLabel = "Amaga la contrasenya",
         };
         Take(new AccessWindow(model), "password");
+    }
+
+    [AvaloniaFact]
+    public void Shell_with_the_state_of_the_application()
+    {
+        var registry = SectionRegistry.Compose(
+            new Dictionary<string, Func<Control>>(), new Dictionary<string, Func<int>> { [ShellCatalog.Payments] = () => 12 });
+        var navigation = new NavigationViewModel(registry, new Arca.UI.Preferences.UiPreferencesSession(new EmptyPreferences()), s => SectionPlaceholder.Create(s, registry, _localizer));
+        var state = new GlobalStateService(_ => Task.FromResult(Arca.Domain.Common.Result<GlobalState>.Success(new GlobalState(null, 12))),
+            new Arca.UI.Notifications.ResultNotifier(new Arca.Testing.RecordingNotifications(), _localizer, new Arca.Testing.RecordingErrorLog()));
+        state.RefreshAsync().GetAwaiter().GetResult();
+        var shell = new ShellView(navigation, _localizer);
+        var header = new StackPanel();
+        header.Children.Add(new HeaderView(state, _localizer, "ARCA"));
+        header.Children.Add(new NoticeBarView(new GlobalNoticesViewModel(state, navigation, _localizer), _localizer));
+        shell.HeaderSlot.Content = header;
+        Take(new Window { Width = 1024, Height = 640, Content = shell, Title = "ARCA" }, "shell-state");
     }
 }

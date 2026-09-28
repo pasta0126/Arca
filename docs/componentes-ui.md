@@ -59,7 +59,7 @@ var create = new RunOnceCommand<int>(
 button.Command = create;
 panel.Children.Add(new WorkIndicatorView(create, localizer));       // indicador, "120 de 300" y cancelar con su motivo
 ```
-Una operación solo es cancelable mientras informa `CanCancel: true` en su progreso.
+Una operación solo es cancelable mientras informa `CanCancel: true` en su progreso. Si escribe datos, pásele como último parámetro `afterSuccess: () => globalState.RefreshAsync()`: así la cabecera, los avisos y los indicadores de la barra lateral se ponen al día tras cada cambio (no hay sondeo).
 
 ### Acciones, atajos y menús — `ActionRegistry`, `AppAction`, `ActionControls`
 - El registro tiene las cinco acciones estándar (`StandardActions`): la pantalla les **engancha** su comportamiento y las

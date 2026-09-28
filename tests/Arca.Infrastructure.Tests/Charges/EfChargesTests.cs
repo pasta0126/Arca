@@ -5,6 +5,7 @@ using Arca.Application.Assignments;
 using Arca.Application.Assignments.AssignLocker;
 using Arca.Application.Charges;
 using Arca.Application.Charges.WaiveChargesInBulk;
+using Arca.Application.GlobalState;
 using Arca.Application.ConceptAmounts.SetConceptAmounts;
 using Arca.Application.Lockers.AddLocker;
 using Arca.Application.SchoolYears.CreateAcademicYear;
@@ -338,6 +339,30 @@ public sealed class EfChargesTests : IDisposable
         {
             Assert.Empty(await store.ChargeEvents.ListAsync(id, default));
         }
+    }
+
+    // --- Global state ---
+
+    [Fact]
+    [Trait("spec", "ui-shell/navegacio-i-cerca: Cabecera con el estado global (Curso activo)")]
+    public async Task The_global_state_reads_the_year_and_the_pending_charges_from_the_encrypted_database()
+    {
+        var store = await NewDatabaseAsync();
+        var handler = new GetGlobalStateHandler(store.Years, store.Charges);
+        var empty = (await handler.HandleAsync(default)).Value!;
+        Assert.False(empty.HasActiveYear);
+        Assert.Equal(0, empty.PendingCharges);
+
+        var year = await YearAsync(store);
+        await SetAmountsAsync(store, year);
+        var student = await StudentAsync(store, "Marta", "Puig");
+        Assert.True((await AssignAsync(store, student, await LockerAsync(store, 1, await ZoneAsync(store)))).IsSuccess);
+        SqliteConnection.ClearAllPools();
+
+        var state = (await new GetGlobalStateHandler(Open().Years, Open().Charges).HandleAsync(default)).Value!;
+
+        Assert.Equal("2026-2027", state.ActiveYear!.Name);
+        Assert.Equal(2, state.PendingCharges); // the fee and the deposit
     }
 
     // --- Privacy ---

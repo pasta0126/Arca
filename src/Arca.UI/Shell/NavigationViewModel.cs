@@ -37,6 +37,15 @@ public sealed class NavigationViewModel : ObservableObject
 
     public IReadOnlyList<SectionDefinition> Sections => _registry.Sections;
 
+    /// <summary>Raised when the counts of things that need attention may have changed, so the sidebar redraws its indicators.</summary>
+    public event EventHandler? AttentionChanged;
+
+    /// <summary>How many things need attention in a section: the count of its indicator, zero when there is nothing to show.</summary>
+    public int AttentionOf(string sectionId) => Math.Max(0, _registry.Find(sectionId)?.Attention?.Invoke() ?? 0);
+
+    /// <summary>Tells the sidebar to read the counts again, after the global state changed.</summary>
+    public void RefreshAttention() => AttentionChanged?.Invoke(this, EventArgs.Empty);
+
     public string CurrentSectionId => _currentId;
 
     /// <summary>The screen of the open section.</summary>

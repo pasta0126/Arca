@@ -22,7 +22,7 @@ public sealed class SidebarView : UserControl
     readonly NavigationViewModel _navigation;
     readonly ILocalizer _localizer;
     readonly StackPanel _items = new();
-    readonly Dictionary<string, (ToggleButton Button, TextBlock Name)> _buttons = [];
+    readonly Dictionary<string, (ToggleButton Button, TextBlock Name, Border Badge, TextBlock Count)> _buttons = [];
     readonly Button _fold;
 
     public SidebarView(NavigationViewModel navigation, ILocalizer localizer)
@@ -46,6 +46,7 @@ public sealed class SidebarView : UserControl
             .Themed(Border.BackgroundProperty, ArcaResourceKeys.Surface)
             .ThemedThickness(Border.PaddingProperty, ArcaResourceKeys.SpacingMedium);
 
+        navigation.AttentionChanged += (_, _) => Refresh();
         navigation.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(NavigationViewModel.CurrentSectionId) or nameof(NavigationViewModel.IsSidebarCollapsed))
@@ -68,9 +69,16 @@ public sealed class SidebarView : UserControl
         var name = new TextBlock { VerticalAlignment = VerticalAlignment.Center, Text = _localizer.Get(section.TitleKey) }
             .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.Text)
             .Themed(TextBlock.FontSizeProperty, ArcaResourceKeys.FontSizeBody);
+        var count = new TextBlock { VerticalAlignment = VerticalAlignment.Center }
+            .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.OnAccent)
+            .Themed(TextBlock.FontSizeProperty, ArcaResourceKeys.FontSizeSmall);
+        var badge = new Border { Child = count, CornerRadius = new Avalonia.CornerRadius(10), MinWidth = 20, IsVisible = false, VerticalAlignment = VerticalAlignment.Center }
+            .Themed(Border.BackgroundProperty, ArcaResourceKeys.Accent)
+            .ThemedThickness(Border.PaddingProperty, ArcaResourceKeys.SpacingSmall);
         var row = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
         row.Children.Add(SectionIcons.Create(section.Id));
         row.Children.Add(name);
+        row.Children.Add(badge);
 
         var button = new ToggleButton { Content = row, HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Left };
         var id = section.Id;
@@ -79,7 +87,7 @@ public sealed class SidebarView : UserControl
             _navigation.Navigate(id);
             Refresh(); // a click on the open section must not leave it unmarked
         };
-        _buttons[section.Id] = (button, name);
+        _buttons[section.Id] = (button, name, badge, count);
         return button;
     }
 
@@ -88,10 +96,15 @@ public sealed class SidebarView : UserControl
         var collapsed = _navigation.IsSidebarCollapsed;
         foreach (var section in _navigation.Sections)
         {
-            var (button, name) = _buttons[section.Id];
+            var (button, name, badge, count) = _buttons[section.Id];
+            var attention = _navigation.AttentionOf(section.Id);
             button.IsChecked = section.Id == _navigation.CurrentSectionId;
             name.IsVisible = !collapsed;
-            ToolTip.SetTip(button, collapsed ? _localizer.Get(section.TitleKey) : null);
+            badge.IsVisible = attention > 0; // nothing to attend to: no indicator at all
+            count.Text = attention.ToString(System.Globalization.CultureInfo.CurrentCulture);
+            var title = _localizer.Get(section.TitleKey);
+            var tip = attention > 0 ? $"{title} · {_localizer.Get("Shell.Label.Pending", attention)}" : title;
+            ToolTip.SetTip(button, collapsed || attention > 0 ? tip : null);
         }
 
         _fold.Content = ThemedIcon.Create(collapsed ? MaterialIconKind.ChevronDoubleRight : MaterialIconKind.ChevronDoubleLeft, 20);
