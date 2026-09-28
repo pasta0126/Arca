@@ -65,7 +65,7 @@ public sealed class PagamentsWorld
 
     public WaiveChargesInBulkHandler WaiveInBulk => new(Store.Charges, Store.ChargeEvents, Store, Clock);
 
-    public ReturnDepositsInBulkHandler ReturnDepositsInBulk => new(Store.Charges, Store.ChargeEvents, Store, Clock);
+    public ReturnDepositsInBulkHandler ReturnDepositsInBulk => new(Store.Charges, Store.ChargeEvents, Store.Students, Store, Clock);
 
     public GetStudentPaymentHandler StudentPayment => new(Store.Charges, Store.Students, Store.Years);
 

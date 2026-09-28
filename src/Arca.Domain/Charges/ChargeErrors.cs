@@ -32,6 +32,12 @@ public static class ChargeErrors
     /// <summary>The deposit of a student who is still in the school is not given back: only when they leave.</summary>
     public static readonly Error StudentStillActive = new("Charges.StudentStillActive");
 
+    /// <summary>A give-back cannot be undone while the student is back in the school: the deposit is only due back when they leave.</summary>
+    public static readonly Error ReturnStudentActive = new("Charges.ReturnStudentActive");
+
+    /// <summary>A give-back cannot be undone because the student already has another current deposit.</summary>
+    public static readonly Error CurrentDepositExists = new("Charges.CurrentDepositExists");
+
     /// <summary>The give-back note is longer than allowed. Args: {0} maximum length.</summary>
     public static Error NoteTooLong(int maximum) => new("Charges.NoteTooLong", Args: [maximum]);
 

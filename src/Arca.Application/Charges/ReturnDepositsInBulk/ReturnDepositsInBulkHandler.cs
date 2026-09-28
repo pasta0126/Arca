@@ -3,6 +3,7 @@
 
 using Arca.Application.Common;
 using Arca.Application.Feedback;
+using Arca.Application.Students;
 using Arca.Domain.Charges;
 using Arca.Domain.Common;
 
@@ -12,18 +13,27 @@ namespace Arca.Application.Charges.ReturnDepositsInBulk;
 /// Marks several deposits due back as given back with a common date and note, in two phases (pagaments, D6): the analysis
 /// shows how many and how much, and the confirmation revalidates and marks them all in one transaction, or none.
 /// </summary>
-public sealed class ReturnDepositsInBulkHandler(IChargeRepository charges, IChargeEventRepository events, IUnitOfWork unit, IClock clock)
+public sealed class ReturnDepositsInBulkHandler(
+    IChargeRepository charges, IChargeEventRepository events, IStudentRepository students, IUnitOfWork unit, IClock clock)
 {
     readonly BulkChargeEngine _engine = new(charges, events, unit);
 
-    static bool IsEligible(Charge charge) => charge.IsDueBack;
+    /// <summary>
+    /// Due back and the student has left, the same rule as returning one deposit. The student check normally cannot
+    /// disagree with the deposit status, but this keeps the two paths from ever differing.
+    /// </summary>
+    async Task<Func<Charge, bool>> EligibilityAsync(CancellationToken ct)
+    {
+        var active = (await students.ListAsync(ct)).Where(s => !s.IsRetired).Select(s => s.Id).ToHashSet();
+        return charge => charge.IsDueBack && !active.Contains(charge.StudentId);
+    }
 
     /// <summary>The preview. It can be cancelled: nothing has been saved.</summary>
     public async Task<Result<BulkChargePlan>> AnalyzeAsync(ReturnDepositsInBulkRequest request, IProgress<OperationProgress>? progress, CancellationToken ct)
     {
         var check = Charge.CheckReturn(request.ReturnedOn, request.Note, clock.Today);
         return check.IsSuccess
-            ? Result<BulkChargePlan>.Success(await _engine.AnalyzeAsync(request.ChargeIds, IsEligible, progress, ct))
+            ? Result<BulkChargePlan>.Success(await _engine.AnalyzeAsync(request.ChargeIds, await EligibilityAsync(ct), progress, ct))
             : Result<BulkChargePlan>.Failure(check.Error!);
     }
 
@@ -38,6 +48,6 @@ public sealed class ReturnDepositsInBulkHandler(IChargeRepository charges, IChar
         }
 
         var (today, now) = (clock.Today, clock.UtcNow);
-        return await _engine.ApplyAsync(request.ChargeIds, plan, IsEligible, c => c.MarkReturned(request.ReturnedOn, request.Note, today, now), progress, ct);
+        return await _engine.ApplyAsync(request.ChargeIds, plan, await EligibilityAsync(ct), c => c.MarkReturned(request.ReturnedOn, request.Note, today, now), progress, ct);
     }
 }

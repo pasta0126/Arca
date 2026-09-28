@@ -30,6 +30,12 @@
   <data name="Charges.Error.StudentStillActive" xml:space="preserve">
     <value>El dipòsit només es retorna quan l'alumne causa baixa.</value>
   </data>
+  <data name="Charges.Error.ReturnStudentActive" xml:space="preserve">
+    <value>No es pot desfer la devolució: l'alumne ha tornat al centre i el dipòsit només és per retornar quan causa baixa.</value>
+  </data>
+  <data name="Charges.Error.CurrentDepositExists" xml:space="preserve">
+    <value>No es pot desfer la devolució: l'alumne ja té un altre dipòsit vigent.</value>
+  </data>
   <data name="Charges.Error.NoteTooLong" xml:space="preserve">
     <value>La nota no pot tenir més de {0} caràcters.</value>
     <comment>{0} maximum length</comment>

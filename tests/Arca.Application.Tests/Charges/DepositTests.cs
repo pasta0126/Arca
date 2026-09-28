@@ -287,4 +287,42 @@ public sealed class DepositTests
         Assert.Equal(ChargeStatus.Voided, deposits.Single(d => d.Id == first).Status);
         Assert.Equal(ChargeStatus.Pending, deposits.Single(d => d.Id != first).Status);
     }
+
+    [Fact]
+    [Trait("spec", Spec + ": Corrección de una devolución (Devolución marcada por error)")]
+    public async Task A_return_cannot_be_undone_when_the_student_has_already_come_back()
+    {
+        var (world, _, studentId, _) = await AssignedAsync();
+        var id = DepositOf(world, studentId).Id;
+        await world.MarkPaid.HandleAsync(new MarkChargePaidRequest(id, null), default);
+        await RetireAsync(world, studentId);
+        await world.ReturnDeposit.HandleAsync(new MarkDepositReturnedRequest(id, null, null), default);
+        await ReactivateAsync(world, studentId);
+
+        var result = await world.RevertReturn.HandleAsync(new RevertDepositReturnRequest(id, "Error"), default);
+
+        Assert.Equal("Charges.ReturnStudentActive", result.Error!.Code);
+        Assert.Equal(DepositReturnStatus.Returned, world.Store.ChargeList.Single(c => c.Id == id).Return);
+    }
+
+    [Fact]
+    [Trait("spec", Spec + ": Corrección de una devolución (Devolución marcada por error)")]
+    public async Task A_return_cannot_be_undone_when_the_student_already_has_another_current_deposit()
+    {
+        var (world, zone, studentId, _) = await AssignedAsync();
+        var first = DepositOf(world, studentId).Id;
+        await world.MarkPaid.HandleAsync(new MarkChargePaidRequest(first, null), default);
+        await RetireAsync(world, studentId);
+        await world.ReturnDeposit.HandleAsync(new MarkDepositReturnedRequest(first, null, null), default);
+        await ReactivateAsync(world, studentId);
+        await world.AssignAsync(studentId, await world.LockerAsync(2, zone));
+        var second = DepositOf(world, studentId, c => c.Id != first);
+        await world.MarkPaid.HandleAsync(new MarkChargePaidRequest(second.Id, null), default);
+        await RetireAsync(world, studentId);
+
+        var result = await world.RevertReturn.HandleAsync(new RevertDepositReturnRequest(first, "Error"), default);
+
+        Assert.Equal("Charges.CurrentDepositExists", result.Error!.Code);
+        Assert.Equal(DepositReturnStatus.Returned, world.Store.ChargeList.Single(c => c.Id == first).Return);
+    }
 }

@@ -253,4 +253,22 @@ public sealed class BulkChargeTests
 
         Assert.All(ids, id => Assert.Equal(DepositReturnStatus.ToReturn, world.Store.ChargeList.Single(c => c.Id == id).Return));
     }
+
+    [Fact]
+    [Trait("spec", DepositSpec + ": Devolución de la fianza (Alumno que sigue en el centro)")]
+    public async Task A_deposit_due_back_of_a_student_who_is_active_is_never_returned_in_bulk()
+    {
+        var (world, _, zone) = await WorldAsync();
+        var ids = await DepositsDueBackAsync(world, zone, 2);
+        var deposit = world.Store.ChargeList.Single(c => c.Id == ids[0]);
+        // Forced state that the use cases prevent: due back, but the student is active again.
+        var student = await world.Store.Students.GetAsync(deposit.StudentId, default);
+        student!.Reactivate(world.Clock.UtcNow);
+        var request = new ReturnDepositsInBulkRequest(ids, null, null);
+
+        var plan = (await world.ReturnDepositsInBulk.AnalyzeAsync(request, null, default)).Value!;
+
+        Assert.Equal(ids[0], Assert.Single(plan.Ineligible));
+        Assert.Equal(DepositReturnStatus.ToReturn, deposit.Return);
+    }
 }
