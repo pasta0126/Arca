@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.UI.Common;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
@@ -27,6 +30,29 @@ public static class ArcaTheme
         var fluent = new FluentTheme();
         fluent.Palettes[ThemeVariant.Light] = Palette();
         return fluent;
+    }
+
+    /// <summary>
+    /// The keyboard focus ring (teclat-i-menus, Foco visible): a clear outline in the theme's focus colour around whatever
+    /// control has the focus, shown when it arrives by keyboard. It reads the colour from <see cref="ArcaResourceKeys.Focus"/>,
+    /// so another theme changes it without touching this code.
+    /// </summary>
+    public static Styles CreateStyles()
+    {
+        var ring = new FuncTemplate<Control>(() => new Border
+        {
+            BorderThickness = new Thickness(2),
+            CornerRadius = new CornerRadius(4),
+            IsHitTestVisible = false,
+        }.Themed(Border.BorderBrushProperty, ArcaResourceKeys.Focus));
+        // One style per kind of control: the Fluent theme sets its own focus visual on each of them, and a style for a
+        // specific type is the one that wins over it.
+        Style For<T>() where T : Control => new(x => x.OfType<T>()) { Setters = { new Setter(Control.FocusAdornerProperty, ring) } };
+        return
+        [
+            For<Button>(), For<Avalonia.Controls.Primitives.ToggleButton>(), For<TextBox>(), For<CheckBox>(), For<RadioButton>(),
+            For<ComboBox>(), For<ListBoxItem>(), For<TabItem>(), For<MenuItem>(), For<Slider>(),
+        ];
     }
 
     /// <summary>The named semantic resources (Arca.Brush.*) that the components consume.</summary>

@@ -52,4 +52,19 @@
   <data name="Common.Loading.Generic" xml:space="preserve">
     <value>Carregant…</value>
   </data>
+  <data name="Common.Action.Search" xml:space="preserve">
+    <value>Cerca</value>
+  </data>
+  <data name="Common.Action.New" xml:space="preserve">
+    <value>Nou</value>
+  </data>
+  <data name="Common.Action.Help" xml:space="preserve">
+    <value>Ajuda</value>
+  </data>
+  <data name="Common.Key.Enter" xml:space="preserve">
+    <value>Intro</value>
+  </data>
+  <data name="Common.Key.Escape" xml:space="preserve">
+    <value>Esc</value>
+  </data>
 </root>

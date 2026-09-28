@@ -22,6 +22,7 @@ public sealed class App : Avalonia.Application
         // One theme in v1: light, pastel and neutral, whatever the operating system's own setting is.
         RequestedThemeVariant = ArcaTheme.Variant;
         Styles.Add(ArcaTheme.CreateFluent());
+        Styles.Add(ArcaTheme.CreateStyles());
         Resources.MergedDictionaries.Add(ArcaTheme.CreateResources());
     }
 

@@ -26,12 +26,12 @@
 
 ## 4. Teclado y menús
 
-- [ ] 4.1 Registro único de acciones con nombre, atajo por sistema, disponibilidad y motivo (D11)
-- [ ] 4.2 Atajos fijos de buscar, nuevo, confirmar, cancelar y ayuda, con Control o Comando según el sistema
-- [ ] 4.3 Menús y descripciones emergentes que leen el atajo del registro
-- [ ] 4.4 Menú contextual construido de la misma lista de acciones que los botones, con las no disponibles deshabilitadas y su motivo, y apertura con la tecla de menú
-- [ ] 4.5 Orden de foco, foco visible con recurso de tema y devolución del foco al cerrar diálogos
-- [ ] 4.6 Pruebas: recorrido con Tab, atajos por sistema, atajo no aplicable, acción deshabilitada con motivo y foco tras un diálogo
+- [x] 4.1 Registro único de acciones con nombre, atajo por sistema, disponibilidad y motivo (D11)
+- [x] 4.2 Atajos fijos de buscar, nuevo, confirmar, cancelar y ayuda, con Control o Comando según el sistema
+- [x] 4.3 Menús y descripciones emergentes que leen el atajo del registro
+- [x] 4.4 Menú contextual construido de la misma lista de acciones que los botones, con las no disponibles deshabilitadas y su motivo, y apertura con la tecla de menú
+- [x] 4.5 Orden de foco, foco visible con recurso de tema y devolución del foco al cerrar diálogos
+- [x] 4.6 Pruebas: recorrido con Tab, atajos por sistema, atajo no aplicable, acción deshabilitada con motivo y foco tras un diálogo
 
 ## 5. Arrastrar y soltar
 

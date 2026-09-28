@@ -46,6 +46,15 @@ public sealed class DialogConfirmationService(Func<Window?> owner, ILocalizer lo
             return await closed.Task;
         }
 
-        return await window.ShowDialog<bool>(parent);
+        // The focus goes back to the control that asked, so the person carries on from where they were (teclat-i-menus).
+        var asker = parent.FocusManager?.GetFocusedElement() as Avalonia.Input.IInputElement;
+        try
+        {
+            return await window.ShowDialog<bool>(parent);
+        }
+        finally
+        {
+            asker?.Focus();
+        }
     }
 }

@@ -7,6 +7,7 @@ using Arca.Application.Localization;
 using Arca.Application.Startup;
 using Arca.Application.Storage;
 using Arca.Testing;
+using Arca.UI.Actions;
 using Arca.UI.Confirmation;
 using Arca.UI.Lists;
 using Arca.UI.Notifications;
@@ -96,5 +97,25 @@ public sealed class ScreenshotTests
         grid.Children.Add(new ListStateView(state));
         grid.Children.Add(new NotificationHostView(center, _localizer));
         Take(new Window { Width = 900, Height = 520, Content = grid, Title = "ARCA" }, "notifications");
+    }
+
+    [AvaloniaFact]
+    public void Focus_ring_and_actions()
+    {
+        var registry = new ActionRegistry(_localizer, UiPlatform.MacOS);
+        registry[StandardActions.Search].Attach(() => { });
+        var release = new AppAction("Release", "Allibera la taquilla");
+        release.Attach(() => { }, () => Availability.Unavailable("La taquilla no té cap alumne"));
+        var name = new TextBox { Text = "Marta", Width = 200 };
+        var search = ActionControls.Button(registry[StandardActions.Search]);
+        var disabled = ActionControls.Button(release);
+        var save = new Button { Content = "Desa", IsDefault = true };
+        var panel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 16, Margin = new Thickness(24), Children = { name, search, disabled, save } };
+        var window = new Window { Width = 700, Height = 120, Content = panel, Title = "ARCA" };
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+        search.Focus(Avalonia.Input.NavigationMethod.Tab);
+        Dispatcher.UIThread.RunJobs();
+        Take(window, "focus");
     }
 }
