@@ -16,6 +16,7 @@ public sealed class TestApp : Avalonia.Application
     {
         RequestedThemeVariant = Arca.UI.Theme.ArcaTheme.Variant;
         Styles.Add(Arca.UI.Theme.ArcaTheme.CreateFluent());
+        Styles.Add(Arca.UI.Theme.ArcaTheme.CreateStyles());
         Resources.MergedDictionaries.Add(Arca.UI.Theme.ArcaTheme.CreateResources());
     }
 }

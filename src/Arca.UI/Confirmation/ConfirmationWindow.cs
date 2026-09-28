@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.UI.Common;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -27,7 +28,7 @@ public sealed class ConfirmationWindow : Window
         _initialFocus = model.CancelHasInitialFocus ? CancelButton : ConfirmButton;
 
         var body = new StackPanel { Spacing = 12 };
-        body.Children.Add(new TextBlock { Text = model.Title, FontSize = 18, FontWeight = FontWeight.SemiBold, TextWrapping = TextWrapping.Wrap });
+        body.Children.Add(ThemedText.Title(model.Title));
         body.Children.Add(new TextBlock { Text = model.Consequence, TextWrapping = TextWrapping.Wrap });
         foreach (var line in model.Details)
         {

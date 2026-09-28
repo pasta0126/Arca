@@ -39,6 +39,8 @@ public sealed class AssignmentsWorld
 
     public AssignLockerHandler Assign => new(Students.Services, Store, Clock);
 
+    public Arca.Application.Assignments.CheckAssignmentTarget.CheckAssignmentTargetHandler CheckTarget => new(Students.Services, Clock);
+
     public ChangeStudentLockerHandler Change => new(Students.Services, Store, Clock);
 
     public ReleaseStudentLockerHandler Release => new(Students.Services, Store, Clock);

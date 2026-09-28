@@ -33,6 +33,10 @@
   <data name="Common.Label.CannotUndo" xml:space="preserve">
     <value>Aquesta acció no es pot desfer.</value>
   </data>
+  <data name="Common.Label.TechnicalDetails" xml:space="preserve">
+    <value>Referència {0} · {1}</value>
+    <comment>{0} log reference, {1} exception type</comment>
+  </data>
   <data name="Common.Label.CancelUnavailable" xml:space="preserve">
     <value>Ja no es pot cancel·lar: s'estan desant les dades.</value>
   </data>
@@ -47,5 +51,20 @@
   </data>
   <data name="Common.Loading.Generic" xml:space="preserve">
     <value>Carregant…</value>
+  </data>
+  <data name="Common.Action.Search" xml:space="preserve">
+    <value>Cerca</value>
+  </data>
+  <data name="Common.Action.New" xml:space="preserve">
+    <value>Nou</value>
+  </data>
+  <data name="Common.Action.Help" xml:space="preserve">
+    <value>Ajuda</value>
+  </data>
+  <data name="Common.Key.Enter" xml:space="preserve">
+    <value>Intro</value>
+  </data>
+  <data name="Common.Key.Escape" xml:space="preserve">
+    <value>Esc</value>
   </data>
 </root>

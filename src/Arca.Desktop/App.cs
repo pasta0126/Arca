@@ -22,6 +22,7 @@ public sealed class App : Avalonia.Application
         // One theme in v1: light, pastel and neutral, whatever the operating system's own setting is.
         RequestedThemeVariant = ArcaTheme.Variant;
         Styles.Add(ArcaTheme.CreateFluent());
+        Styles.Add(ArcaTheme.CreateStyles());
         Resources.MergedDictionaries.Add(ArcaTheme.CreateResources());
     }
 
@@ -70,7 +71,7 @@ public sealed class App : Avalonia.Application
             }
 
             var runtime = result.Value!;
-            var main = new MainWindow(runtime.Info, runtime.Localizer, runtime.Security);
+            var main = new MainWindow(runtime.Info, runtime.Localizer, runtime.Security, runtime.Preferences);
             runtime.SetMainWindow(main);
             main.Closed += async (_, _) =>
             {

@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using System.ComponentModel;
+using Arca.UI.Common;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -19,9 +20,9 @@ public sealed class SplashWindow : Window
     readonly TextBlock _stage;
     readonly StackPanel _error;
     readonly StackPanel _loading;
-    readonly TextBlock _errorTitle = new() { FontSize = 18, FontWeight = FontWeight.SemiBold, TextWrapping = TextWrapping.Wrap };
+    readonly TextBlock _errorTitle = ThemedText.Title(string.Empty);
     readonly TextBlock _message = new() { TextWrapping = TextWrapping.Wrap };
-    readonly TextBlock _reference = new() { Opacity = 0.7, FontSize = 12 };
+    readonly TextBlock _reference = ThemedText.Small(string.Empty, opacity: 0.7);
 
     public SplashWindow(SplashViewModel model)
     {
@@ -42,7 +43,7 @@ public sealed class SplashWindow : Window
             Spacing = 12,
             Children =
             {
-                new TextBlock { Text = model.Name, FontSize = 28, FontWeight = FontWeight.Bold },
+                ThemedText.Heading(model.Name),
                 _stage,
                 new ProgressBar { IsIndeterminate = true },
             },

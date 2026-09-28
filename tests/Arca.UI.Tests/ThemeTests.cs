@@ -64,13 +64,28 @@ public sealed class ThemeTests
     }
 
     [Fact]
-    public void The_theme_resources_define_every_named_semantic_brush()
+    [Trait("spec", "ux-fonaments/components-de-feedback: Componentes sin colores ni textos propios (contrato de recursos)")]
+    public void The_theme_resources_define_every_resource_of_the_contract_with_the_components()
     {
-        var light = (Avalonia.Controls.ResourceDictionary)ArcaTheme.CreateResources().ThemeDictionaries[ThemeVariant.Light];
+        var resources = ArcaTheme.CreateResources();
+        var light = (Avalonia.Controls.ResourceDictionary)resources.ThemeDictionaries[ThemeVariant.Light];
 
-        foreach (var name in new[] { "Background", "Surface", "Border", "Text", "TextSecondary", "Accent", "OnAccent", "Success", "Warning", "Error", "OnSemantic", "Focus" })
-        {
-            Assert.True(light.ContainsKey("Arca.Brush." + name), name);
-        }
+        Assert.All(ArcaResourceKeys.Brushes, key => Assert.True(light.ContainsKey(key), key));
+        Assert.All(ArcaResourceKeys.Metrics, key => Assert.True(resources.ContainsKey(key), key));
+        Assert.Equal(ArcaResourceKeys.All.Count, ArcaResourceKeys.All.Distinct().Count());
+    }
+
+    [Fact]
+    [Trait("spec", "ux-fonaments/components-de-feedback: Componentes sin colores ni textos propios (escala)")]
+    public void The_type_and_spacing_scales_grow_in_order()
+    {
+        var resources = ArcaTheme.CreateResources();
+        static double Size(Avalonia.Controls.ResourceDictionary r, string key) => (double)r[key]!;
+
+        Assert.True(Size(resources, ArcaResourceKeys.FontSizeSmall) < Size(resources, ArcaResourceKeys.FontSizeBody));
+        Assert.True(Size(resources, ArcaResourceKeys.FontSizeBody) < Size(resources, ArcaResourceKeys.FontSizeTitle));
+        Assert.True(Size(resources, ArcaResourceKeys.FontSizeTitle) < Size(resources, ArcaResourceKeys.FontSizeHeading));
+        Assert.True(Size(resources, ArcaResourceKeys.SpacingSmall) < Size(resources, ArcaResourceKeys.SpacingMedium));
+        Assert.True(Size(resources, ArcaResourceKeys.SpacingMedium) < Size(resources, ArcaResourceKeys.SpacingLarge));
     }
 }

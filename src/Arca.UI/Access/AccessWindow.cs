@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using System.ComponentModel;
+using Arca.UI.Common;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -18,7 +19,7 @@ public sealed class AccessWindow : Window
 {
     readonly AccessFormViewModel _model;
     readonly StackPanel _hints = new() { Spacing = 2 };
-    readonly TextBlock _error = new() { TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Firebrick, FontWeight = FontWeight.SemiBold };
+    readonly TextBlock _error = ThemedText.Error();
     readonly TextBlock _status = new() { TextWrapping = TextWrapping.Wrap, Opacity = 0.8 };
     readonly TextBlock _busy = new() { Opacity = 0.8 };
     readonly List<TextBox> _boxes = [];
@@ -49,17 +50,11 @@ public sealed class AccessWindow : Window
         buttons.Children.Add(PrimaryButton);
 
         var body = new StackPanel { Spacing = 12, Margin = new Thickness(24) };
-        body.Children.Add(new TextBlock { Text = model.Title, FontSize = 20, FontWeight = FontWeight.SemiBold, TextWrapping = TextWrapping.Wrap });
+        body.Children.Add(ThemedText.Title(model.Title));
         body.Children.Add(new TextBlock { Text = model.Intro, TextWrapping = TextWrapping.Wrap });
         if (model.Warning.Length > 0)
         {
-            body.Children.Add(new Border
-            {
-                BorderBrush = Brushes.DarkOrange,
-                BorderThickness = new Thickness(2, 0, 0, 0),
-                Padding = new Thickness(10, 4),
-                Child = new TextBlock { Text = model.Warning, TextWrapping = TextWrapping.Wrap },
-            });
+            body.Children.Add(ThemedText.WarningNote(model.Warning));
         }
 
         if (model.Secret is { } secret)
@@ -114,13 +109,7 @@ public sealed class AccessWindow : Window
             Children =
             {
                 new TextBlock { Text = secret.Label, Opacity = 0.8 },
-                new SelectableTextBlock
-                {
-                    Text = secret.Formatted,
-                    FontFamily = new FontFamily("Menlo, Consolas, monospace"),
-                    FontSize = 22,
-                    FontWeight = FontWeight.SemiBold,
-                },
+                ThemedText.Monospace(secret.Formatted),
                 new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Children = { copy, print } },
                 _status,
             },

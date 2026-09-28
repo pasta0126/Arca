@@ -7,6 +7,7 @@ using Arca.Application.Feedback;
 using Arca.Application.Localization;
 using Arca.Domain.Common;
 using Arca.UI.Common;
+using Arca.UI.Notifications;
 
 namespace Arca.UI.Commands;
 
@@ -17,16 +18,15 @@ namespace Arca.UI.Commands;
 /// success with what happened, warnings, a business error in plain language, or an unexpected error with a log reference.
 /// </summary>
 /// <typeparam name="T">The data the operation returns on success.</typeparam>
-public sealed class RunOnceCommand<T> : ObservableObject, ICommand
+public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
 {
     public static readonly TimeSpan BusyIndicatorDelay = TimeSpan.FromMilliseconds(300);
 
     readonly Func<CancellationToken, IProgress<OperationProgress>, Task<Result<T>>> _operation;
     readonly Func<T, string> _successText;
     readonly string _context;
-    readonly INotificationService _notifications;
+    readonly ResultNotifier _notifier;
     readonly ILocalizer _localizer;
-    readonly IErrorLog _log;
     readonly IDelay _delay;
 
     CancellationTokenSource? _running;
@@ -53,9 +53,8 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand
         _operation = operation;
         _successText = successText;
         _context = context;
-        _notifications = notifications;
+        _notifier = new ResultNotifier(notifications, localizer, log);
         _localizer = localizer;
-        _log = log;
         _delay = delay;
     }
 
@@ -68,6 +67,7 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand
         {
             if (Set(ref _isRunning, value))
             {
+                Raise(nameof(CancelDisabledReason));
                 CanExecuteChanged?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -83,8 +83,17 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand
     public bool CanCancel
     {
         get => _canCancel;
-        private set => Set(ref _canCancel, value);
+        private set
+        {
+            if (Set(ref _canCancel, value))
+            {
+                Raise(nameof(CancelDisabledReason));
+            }
+        }
     }
+
+    /// <summary>Why cancelling is not available while the action runs, or empty when it is available or nothing runs.</summary>
+    public string CancelDisabledReason => IsRunning && !CanCancel ? _localizer.Get("Common.Label.CancelUnavailable") : string.Empty;
 
     /// <summary>"120 de 300" while a long operation reports progress, otherwise empty.</summary>
     public string ProgressText
@@ -125,16 +134,15 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand
         {
             var progress = new SyncProgress(this);
             var result = await _operation(cancellation.Token, progress);
-            Publish(result);
+            _notifier.Notify(result, _successText);
         }
         catch (OperationCanceledException)
         {
-            _notifications.Publish(NotificationKind.Warning, _localizer.Get("Common.Result.Cancelled"));
+            _notifier.Cancelled();
         }
         catch (Exception e)
         {
-            var reference = _log.LogUnexpected(e, _context);
-            _notifications.Publish(NotificationKind.Error, _localizer.Message(CommonErrors.Unexpected(reference)));
+            _notifier.Unexpected(e, _context);
         }
         finally
         {
@@ -160,21 +168,6 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand
         catch (OperationCanceledException)
         {
             // The action finished first: no indicator, which is the point of the delay.
-        }
-    }
-
-    void Publish(Result<T> result)
-    {
-        if (!result.IsSuccess)
-        {
-            _notifications.Publish(NotificationKind.Error, _localizer.Message(result.Error!));
-            return;
-        }
-
-        _notifications.Publish(NotificationKind.Success, _successText(result.Value!));
-        foreach (var notice in result.Notices)
-        {
-            _notifications.Publish(NotificationKind.Warning, _localizer.Message(notice));
         }
     }
 

@@ -78,6 +78,27 @@ public sealed class LayerReferenceTests
         Assert.Empty(arca.Except(allowed));
     }
 
+    [Fact]
+    [Trait("spec", "ux-fonaments/design: D1 Biblioteca de componentes separada de las pantallas")]
+    public void The_component_library_uses_neither_the_domain_model_nor_infrastructure()
+    {
+        // Result, Error and Notice live in Domain.Common because every layer shares them; nothing else of the domain
+        // (entities, rules, repositories) may show up in a component, and infrastructure never does.
+        var offending = Directory
+            .EnumerateFiles(Path.Combine(RepositoryRoot(), "src", "Arca.UI"), "*.cs", SearchOption.AllDirectories)
+            .Where(f => !f.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+            .SelectMany(f => File.ReadLines(f).Select(line => (File: Path.GetFileName(f), Line: line.Trim())))
+            .Where(x => x.Line.StartsWith("using Arca.", StringComparison.Ordinal)
+                && (x.Line.StartsWith("using Arca.Infrastructure", StringComparison.Ordinal)
+                    || (x.Line.StartsWith("using Arca.Domain", StringComparison.Ordinal) && x.Line != "using Arca.Domain.Common;")))
+            .Select(x => x.File + ": " + x.Line)
+            .ToList();
+
+        Assert.Empty(offending);
+        Assert.DoesNotContain("Arca.Infrastructure", ReferencedProjects("Arca.UI"));
+        Assert.DoesNotContain("Arca.Domain", ReferencedProjects("Arca.UI"));
+    }
+
     static string[] ReferencedProjects(string project) =>
         ProjectFile(project).Descendants("ProjectReference")
             .Select(e => Path.GetFileNameWithoutExtension(((string?)e.Attribute("Include") ?? "").Replace('\\', '/')))

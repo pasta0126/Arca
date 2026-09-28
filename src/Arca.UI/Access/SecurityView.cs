@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using System.ComponentModel;
+using Arca.UI.Common;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -24,15 +25,9 @@ public sealed class SecurityView : UserControl
             Spacing = 10,
             Children =
             {
-                new TextBlock { Text = model.Title, FontSize = 20, FontWeight = FontWeight.SemiBold },
+                ThemedText.Title(model.Title),
                 new TextBlock { Text = model.Note, TextWrapping = TextWrapping.Wrap },
-                new Border
-                {
-                    BorderBrush = Brushes.DarkOrange,
-                    BorderThickness = new Thickness(2, 0, 0, 0),
-                    Padding = new Thickness(10, 4),
-                    Child = new TextBlock { Text = model.Warning, TextWrapping = TextWrapping.Wrap },
-                },
+                ThemedText.WarningNote(model.Warning),
                 new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Children = { ChangeButton, RegenerateButton } },
             },
         };
