@@ -4,6 +4,8 @@
 using Arca.Application.Common;
 using Arca.Application.Assignments;
 using Arca.Application.Catalog;
+using Arca.Application.Charges;
+using Arca.Application.ConceptAmounts;
 using Arca.Application.Enrollments;
 using Arca.Application.Lockers;
 using Arca.Application.Students;
@@ -12,6 +14,8 @@ using Arca.Application.Zones;
 using Arca.Domain.Common;
 using Arca.Domain.Assignments;
 using Arca.Domain.Catalog;
+using Arca.Domain.Charges;
+using Arca.Domain.ConceptAmounts;
 using Arca.Domain.Enrollments;
 using Arca.Domain.Lockers;
 using Arca.Domain.Students;
@@ -37,6 +41,10 @@ public sealed class InMemoryInventory : IUnitOfWork
         Catalog = new CatalogRepository(this);
         StudentEvents = new StudentEventRepository(this);
         Assignments = new AssignmentRepository(this);
+        ConceptAmounts = new ConceptAmountRepository(this);
+        ConceptAmountEvents = new ConceptAmountEventRepository(this);
+        Charges = new ChargeRepository(this);
+        ChargeEvents = new ChargeEventRepository(this);
     }
 
     public List<Zone> ZoneList { get; private set; } = [];
@@ -58,6 +66,14 @@ public sealed class InMemoryInventory : IUnitOfWork
     public List<HistoryEvent> StudentEventList { get; private set; } = [];
 
     public List<Assignment> AssignmentList { get; private set; } = [];
+
+    public List<ConceptAmount> ConceptAmountList { get; private set; } = [];
+
+    public List<HistoryEvent> ConceptAmountEventList { get; private set; } = [];
+
+    public List<Charge> ChargeList { get; private set; } = [];
+
+    public List<HistoryEvent> ChargeEventList { get; private set; } = [];
 
     /// <summary>The locker each student holds, until the assignments exist. A test sets it.</summary>
     public ConfigurableStudentLockers StudentLockers { get; } = new();
@@ -83,6 +99,14 @@ public sealed class InMemoryInventory : IUnitOfWork
 
     public IAssignmentRepository Assignments { get; }
 
+    public IConceptAmountRepository ConceptAmounts { get; }
+
+    public IConceptAmountEventRepository ConceptAmountEvents { get; }
+
+    public IChargeRepository Charges { get; }
+
+    public IChargeEventRepository ChargeEvents { get; }
+
     /// <summary>Which lockers a student holds. The real one comes with the assignments.</summary>
     public ConfigurableOccupancy Occupancy { get; } = new();
 
@@ -91,6 +115,21 @@ public sealed class InMemoryInventory : IUnitOfWork
 
     /// <summary>Lets this many events be saved and makes the next one fail: a failure in the middle of a bulk save.</summary>
     public int? EventsBeforeFailure { get; set; }
+
+    void FailIfScheduled()
+    {
+        if (FailOnNextEvent || EventsBeforeFailure == 0)
+        {
+            FailOnNextEvent = false;
+            EventsBeforeFailure = null;
+            throw new IOException("the disk failed while saving");
+        }
+
+        if (EventsBeforeFailure is > 0)
+        {
+            EventsBeforeFailure--;
+        }
+    }
 
     public async Task<Result<T>> RunAsync<T>(Func<CancellationToken, Task<Result<T>>> work, CancellationToken ct)
     {
@@ -104,6 +143,10 @@ public sealed class InMemoryInventory : IUnitOfWork
         var studentEvents = StudentEventList.ToList();
         var assignments = AssignmentList.Select(a => new Assignment(a.Id, a.StudentId, a.LockerId, a.YearId, a.StartedAtUtc, a.EndedAtUtc, a.CloseReason, a.CloseNote)).ToList();
         var years = YearList.Select(y => AcademicYear.Restore(y.Id, y.StartDate, y.EndDate, y.IsActive)).ToList();
+        var conceptAmounts = ConceptAmountList.Select(a => new ConceptAmount(a.Id, a.YearId, a.Concept, a.Amount)).ToList();
+        var conceptAmountEvents = ConceptAmountEventList.ToList();
+        var charges = ChargeList.Select(c => new Charge(c.Id, c.StudentId, c.Concept, c.YearId, c.Amount, c.Status, c.PaidOn, c.Reason, c.Return, c.ReturnedOn, c.ReturnNote)).ToList();
+        var chargeEvents = ChargeEventList.ToList();
         Result<T> result;
         try
         {
@@ -113,6 +156,8 @@ public sealed class InMemoryInventory : IUnitOfWork
         {
             (ZoneList, LockerList, EventList, YearList) = (zones, lockers, events, years);
             (StudentList, EnrollmentList, LevelList, GroupList, StudentEventList, AssignmentList) = (students, enrollments, levels, groups, studentEvents, assignments);
+            (ConceptAmountList, ConceptAmountEventList) = (conceptAmounts, conceptAmountEvents);
+            (ChargeList, ChargeEventList) = (charges, chargeEvents);
             throw;
         }
 
@@ -120,6 +165,8 @@ public sealed class InMemoryInventory : IUnitOfWork
         {
             (ZoneList, LockerList, EventList, YearList) = (zones, lockers, events, years);
             (StudentList, EnrollmentList, LevelList, GroupList, StudentEventList, AssignmentList) = (students, enrollments, levels, groups, studentEvents, assignments);
+            (ConceptAmountList, ConceptAmountEventList) = (conceptAmounts, conceptAmountEvents);
+            (ChargeList, ChargeEventList) = (charges, chargeEvents);
         }
 
         return result;
@@ -240,6 +287,69 @@ public sealed class InMemoryInventory : IUnitOfWork
         public Task UpdateAsync(Assignment assignment, CancellationToken ct) => Task.CompletedTask;
     }
 
+    sealed class ConceptAmountRepository(InMemoryInventory owner) : IConceptAmountRepository
+    {
+        public Task<IReadOnlyList<ConceptAmount>> ListByYearAsync(Guid yearId, CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<ConceptAmount>>([.. owner.ConceptAmountList.Where(a => a.YearId == yearId)]);
+
+        public Task AddAsync(ConceptAmount amount, CancellationToken ct)
+        {
+            owner.ConceptAmountList.Add(amount);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateAsync(ConceptAmount amount, CancellationToken ct) => Task.CompletedTask;
+    }
+
+    sealed class ConceptAmountEventRepository(InMemoryInventory owner) : IConceptAmountEventRepository
+    {
+        public Task AddAsync(HistoryEvent change, CancellationToken ct)
+        {
+            owner.ConceptAmountEventList.Add(change);
+            return Task.CompletedTask;
+        }
+
+        public Task<IReadOnlyList<HistoryEvent>> ListAsync(Guid conceptAmountId, CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<HistoryEvent>>(
+                [.. Enumerable.Reverse(owner.ConceptAmountEventList).Where(e => e.EntityId == conceptAmountId).OrderByDescending(e => e.OccurredAtUtc)]);
+    }
+
+    sealed class ChargeRepository(InMemoryInventory owner) : IChargeRepository
+    {
+        public Task<Charge?> GetAsync(Guid id, CancellationToken ct) => Task.FromResult(owner.ChargeList.FirstOrDefault(c => c.Id == id));
+
+        public Task<IReadOnlyList<Charge>> ListByStudentAsync(Guid studentId, CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<Charge>>([.. owner.ChargeList.Where(c => c.StudentId == studentId)]);
+
+        public Task<IReadOnlyList<Charge>> ListPendingAsync(CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<Charge>>([.. owner.ChargeList.Where(c => c.CountsAsDebt)]);
+
+        public Task<IReadOnlyList<Charge>> ListDepositsDueBackAsync(CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<Charge>>([.. owner.ChargeList.Where(c => c.IsDueBack)]);
+
+        public Task AddAsync(Charge charge, CancellationToken ct)
+        {
+            owner.ChargeList.Add(charge);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateAsync(Charge charge, CancellationToken ct) => Task.CompletedTask;
+    }
+
+    sealed class ChargeEventRepository(InMemoryInventory owner) : IChargeEventRepository
+    {
+        public Task AddAsync(HistoryEvent change, CancellationToken ct)
+        {
+            owner.FailIfScheduled();
+            owner.ChargeEventList.Add(change);
+            return Task.CompletedTask;
+        }
+
+        public Task<IReadOnlyList<HistoryEvent>> ListAsync(Guid chargeId, CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<HistoryEvent>>(
+                [.. Enumerable.Reverse(owner.ChargeEventList).Where(e => e.EntityId == chargeId).OrderByDescending(e => e.OccurredAtUtc)]);
+    }
+
     static Locker Copy(Locker l) =>
         new(l.Id, l.Number, l.ZoneId, l.Note, l.OutOfService, l.IsReserved, l.ReservationNote, l.RetiredAtUtc, l.ReservedForStudentId);
 
@@ -290,18 +400,7 @@ public sealed class InMemoryInventory : IUnitOfWork
     {
         public Task AddAsync(HistoryEvent change, CancellationToken ct)
         {
-            if (owner.FailOnNextEvent || owner.EventsBeforeFailure == 0)
-            {
-                owner.FailOnNextEvent = false;
-                owner.EventsBeforeFailure = null;
-                throw new IOException("the disk failed while saving");
-            }
-
-            if (owner.EventsBeforeFailure is > 0)
-            {
-                owner.EventsBeforeFailure--;
-            }
-
+            owner.FailIfScheduled();
             owner.EventList.Add(change);
             return Task.CompletedTask;
         }

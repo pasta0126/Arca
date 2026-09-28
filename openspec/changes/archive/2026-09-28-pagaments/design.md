@@ -67,6 +67,10 @@ Fecha de pago y de devolución son fechas de calendario (`DateOnly`) con el relo
 ### D10. Feedback
 Resultado estructurado con recuentos e importes. Confirmación con su consecuencia en reversiones y operaciones en bloque, y estados vacíos con guía (sin cargos, sin morosos, sin fianzas por devolver), según los principios de UX transversal.
 
+### Puntos de enganche para otros cambios
+- **`claus`**: cuando se pierde una llave y el conserge decide cobrar la reposición, `claus` llama a `ChargeKeyReplacementHandler` con el alumno y el curso. Cobros no escucha el estado de la llave.
+- **`cursos-i-historial`**: la revisión de la deuda al cerrar curso lee `IChargeRepository.ListPendingAsync` o `PaymentStanding.Of`. Arrastrar la deuda es no hacer nada (sigue pendiente y avisa al asignar); condonarla usa `WaiveChargeHandler` o `WaiveChargesInBulkHandler`. Cerrar un curso no toca las fianzas.
+
 ## Risks / Trade-offs
 
 - **La generación en el manejador de asignación acopla cobros y asignaciones** → los ganchos ya son la frontera definida; cada implementación tiene pruebas con dobles y pruebas de integración de extremo a extremo.
@@ -85,3 +89,7 @@ Una migración de EF Core crea las tablas de importes de conceptos, cargos, even
 ## Open Questions
 
 Ninguna pendiente. La lista de conceptos cerrada (cuota, fianza y reposición) se ha asumido a partir de lo indicado; si hubiera que admitir otros conceptos, sería un cambio de requisitos, no un detalle de implementación.
+
+## Cambios durante la implementación
+
+**2026-09-27 (grupo 3):** D4 decía que el manejador de apertura (`IAssignmentOpenedHandler`) rechaza la asignación completa cuando faltan los importes del curso. Al implementarlo, esa interfaz devuelve `Task` sin `Result`: la única forma de que un gancho "falle" es lanzando una excepción, que en toda la aplicación se reserva para fallos inesperados (disco, corrupción), no para una regla de negocio con su propio código y texto en catalán. Se ha implementado en su lugar como un **impedimento de `IAssignmentGuard`** (`ChargeGenerationGuard`, que también aporta el aviso de deuda anterior de D4): se comprueba antes de tocar nada, con el mismo mecanismo de bloqueo ya definido en `alumnes-i-assignacions` para «taquilla sin llave disponible». El resultado es el mismo que pedía D4 (no se asigna nada y se explica por qué) sin necesidad de lanzar ni capturar excepciones. Motivo anotado también porque toca `alumnes-i-assignacions` (ya fusionado, sin archivar): se ha añadido `ChargeGenerationHandler` como primera implementación real de `IAssignmentOpenedHandler`, lo que reveló que la prueba de arquitectura `Application_use_cases_return_a_result_instead_of_throwing` no tenía en cuenta los ganchos (su `HandleAsync` es `Task`, no `Task<Result<T>>`, por contrato de la interfaz); se ha ajustado esa prueba para excluir explícitamente `IAssignmentOpenedHandler`, `IAssignmentClosedHandler` e `ILockerRetiredHandler`.
