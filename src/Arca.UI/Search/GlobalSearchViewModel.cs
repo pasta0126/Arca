@@ -7,6 +7,7 @@ using Arca.Application.Search;
 using Arca.Domain.Common;
 using Arca.UI.Common;
 using Arca.UI.Notifications;
+using Arca.UI.Shell;
 
 namespace Arca.UI.Search;
 
@@ -324,15 +325,7 @@ public sealed class GlobalSearchViewModel : ObservableObject
 
     string LockerText(LockerHit l)
     {
-        var status = l.Status switch
-        {
-            LockerStatusView.Free => _localizer.Get("Shell.Search.Status.Free"),
-            LockerStatusView.Occupied => _localizer.Get("Shell.Search.Status.Occupied"),
-            LockerStatusView.Reserved => _localizer.Get("Shell.Search.Status.Reserved"),
-            LockerStatusView.Broken => _localizer.Get("Shell.Search.Status.Broken"),
-            LockerStatusView.Maintenance => _localizer.Get("Shell.Search.Status.Maintenance"),
-            _ => _localizer.Get("Shell.Search.Status.Retired"),
-        };
+        var status = LockerStatusPresentation.Text(l.Status, _localizer);
         var text = _localizer.Get("Shell.Search.Locker", l.Number, l.ZoneName, status);
         return l.StudentName is null ? text : _localizer.Get("Shell.Search.WithStudent", text, l.StudentName);
     }

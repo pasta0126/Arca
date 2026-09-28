@@ -33,6 +33,11 @@ public sealed class ThemeTests
         { "text on success", ArcaPalette.OnSemantic, ArcaPalette.Success },
         { "text on warning", ArcaPalette.OnSemantic, ArcaPalette.Warning },
         { "text on error", ArcaPalette.OnSemantic, ArcaPalette.Error },
+        { "text on free locker", ArcaPalette.OnSemantic, ArcaPalette.StatusFree },
+        { "text on occupied locker", ArcaPalette.OnSemantic, ArcaPalette.StatusOccupied },
+        { "text on reserved locker", ArcaPalette.OnSemantic, ArcaPalette.StatusReserved },
+        { "text on broken locker", ArcaPalette.OnSemantic, ArcaPalette.StatusBroken },
+        { "text on maintenance locker", ArcaPalette.OnSemantic, ArcaPalette.StatusMaintenance },
         { "error text on background", ArcaPalette.ErrorText, ArcaPalette.Background },
         { "error text on surface", ArcaPalette.ErrorText, ArcaPalette.Surface },
     };

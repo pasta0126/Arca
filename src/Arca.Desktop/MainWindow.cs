@@ -6,6 +6,7 @@ using Arca.UI.Actions;
 using Arca.UI.Common;
 using Arca.UI.Info;
 using Arca.UI.Layout;
+using Arca.UI.Map;
 using Arca.UI.Notifications;
 using Arca.UI.Search;
 using Arca.UI.Access;
@@ -29,16 +30,23 @@ public sealed class MainWindow : Window
         ShortcutDispatcher.Attach(this, runtime.Actions);
 
         var state = runtime.GlobalState;
+        var navigator = new SearchNavigator();
+        var notifier = new ResultNotifier(runtime.Notifications, localizer, runtime.ErrorLog);
+        var mapModel = new LockerMapViewModel(
+            runtime.LockerMap.HandleAsync, runtime.MapLocker.HandleAsync, runtime.Preferences, notifier, localizer);
+        var home = new LockerMapHomeScreen(mapModel, navigator, localizer);
         var registry = SectionRegistry.Compose(
             new Dictionary<string, Func<Avalonia.Controls.Control>> { [ShellCatalog.Settings] = () => SettingsRoot(runtime) },
-            new Dictionary<string, Func<int>> { [ShellCatalog.Payments] = () => state.Current?.PendingCharges ?? 0 });
+            new Dictionary<string, Func<int>> { [ShellCatalog.Payments] = () => state.Current?.PendingCharges ?? 0 },
+            home);
         var navigation = new NavigationViewModel(registry, runtime.Preferences, section => SectionPlaceholder.Create(section, registry, localizer));
+        navigator.Bind(navigation);
         var shell = new ShellView(navigation, localizer, new NotificationHostView(runtime.Notifications, localizer));
         var header = new StackPanel();
         var headerView = new HeaderView(state, localizer, localizer.Get("App.Label.Title"));
         var search = new GlobalSearchViewModel(
-            runtime.Search.HandleAsync, runtime.Delay, new ResultNotifier(runtime.Notifications, localizer, runtime.ErrorLog),
-            new SearchNavigator(navigation), localizer);
+            runtime.Search.HandleAsync, runtime.Delay, notifier,
+            navigator, localizer);
         var searchBox = new SearchBoxView(search, localizer);
         headerView.SearchSlot.Content = searchBox;
         runtime.Actions[StandardActions.Search].Attach(searchBox.FocusInput); // Control or Command + F, from any screen

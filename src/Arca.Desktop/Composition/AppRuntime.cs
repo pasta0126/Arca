@@ -4,6 +4,7 @@
 using Arca.Application;
 using Arca.Application.Common;
 using Arca.Application.Feedback;
+using Arca.Application.LockerMap;
 using Arca.Application.Search;
 using Arca.Application.Localization;
 using Arca.UI.Access;
@@ -28,6 +29,10 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
     public UiPreferencesSession Preferences => services.GetRequiredService<UiPreferencesSession>();
 
     public GlobalStateService GlobalState => services.GetRequiredService<GlobalStateService>();
+
+    public GetLockerMapHandler LockerMap => services.GetRequiredService<GetLockerMapHandler>();
+
+    public GetMapLockerHandler MapLocker => services.GetRequiredService<GetMapLockerHandler>();
 
     public GlobalSearchHandler Search => services.GetRequiredService<GlobalSearchHandler>();
 

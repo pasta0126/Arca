@@ -6,6 +6,7 @@ using Arca.Application;
 using Arca.Application.Common;
 using Arca.Application.Feedback;
 using Arca.Application.GlobalState;
+using Arca.Application.LockerMap;
 using Arca.Application.Search;
 using Arca.Application.Localization;
 using Arca.Application.Preferences;
@@ -80,6 +81,8 @@ public static class AppStartup
             .AddSingleton(security)
             .AddSingleton(preferences)
             .AddSingleton(globalState)
+            .AddSingleton(new GetLockerMapHandler(inventory.Zones, inventory.Lockers, inventory.Assignments, inventory.Students, inventory.Charges))
+            .AddSingleton(new GetMapLockerHandler(inventory.Lockers, inventory.Assignments, inventory.Students, inventory.Charges))
             .AddSingleton(new GlobalSearchHandler(
                 inventory.Students, inventory.Enrollments, inventory.Catalog, inventory.Years, inventory.Lockers, inventory.Zones,
                 inventory.Assignments, inventory.Charges))

@@ -213,4 +213,38 @@
   <data name="Shell.Search.Status.Retired" xml:space="preserve">
     <value>De baixa</value>
   </data>
+  <data name="Shell.Map.Empty" xml:space="preserve">
+    <value>No hi ha cap taquilla activa. Dona-les d'alta a la secció Taquilles per veure-les aquí.</value>
+  </data>
+  <data name="Shell.Map.GoToLockers" xml:space="preserve">
+    <value>Ves a Taquilles</value>
+  </data>
+  <data name="Shell.Map.AllZones" xml:space="preserve">
+    <value>Totes les zones</value>
+  </data>
+  <data name="Shell.Map.ClearFilters" xml:space="preserve">
+    <value>Neteja els filtres</value>
+  </data>
+  <data name="Shell.Map.Counter" xml:space="preserve">
+    <value>{0}: {1}</value>
+    <comment>{0} status word, {1} how many lockers</comment>
+  </data>
+  <data name="Shell.Map.ZoneSummary" xml:space="preserve">
+    <value>{0} taquilles, {1} lliures</value>
+    <comment>{0} lockers in the zone, {1} free</comment>
+  </data>
+  <data name="Shell.Map.CellTip" xml:space="preserve">
+    <value>Taquilla {0} · {1}</value>
+    <comment>{0} number, {1} status</comment>
+  </data>
+  <data name="Shell.Map.CellTipStudent" xml:space="preserve">
+    <value>{0} · {1}</value>
+    <comment>{0} the tip so far, {1} student name</comment>
+  </data>
+  <data name="Shell.Map.Debt" xml:space="preserve">
+    <value>Pendent de pagament</value>
+  </data>
+  <data name="Shell.Map.Zone" xml:space="preserve">
+    <value>Zona</value>
+  </data>
 </root>

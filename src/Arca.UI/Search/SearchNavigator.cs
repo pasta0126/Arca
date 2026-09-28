@@ -29,10 +29,23 @@ public sealed record SearchTarget(SearchTargetKind Kind, Guid Id = default, Guid
 /// section and leaves the request for the screen to take, because a screen is built the first time its section is opened and
 /// may not exist yet when the person chooses the result.
 /// </summary>
-public sealed class SearchNavigator(NavigationViewModel navigation) : ObservableObject
+public sealed class SearchNavigator : ObservableObject
 {
+    NavigationViewModel? _navigation;
     SearchTarget? _pending;
     Guid? _highlightedLocker;
+
+    public SearchNavigator()
+    {
+    }
+
+    public SearchNavigator(NavigationViewModel navigation) => Bind(navigation);
+
+    /// <summary>
+    /// Gives it the navigation it opens sections with. The start screen needs the navigator to exist before the navigation
+    /// does (the navigation is built from the sections, which include the start screen), so it is joined afterwards.
+    /// </summary>
+    public void Bind(NavigationViewModel navigation) => _navigation = navigation;
 
     /// <summary>Raised each time a result is opened, for a screen that is already showing to react.</summary>
     public event EventHandler<SearchTarget>? Requested;
@@ -58,7 +71,7 @@ public sealed class SearchNavigator(NavigationViewModel navigation) : Observable
         };
         HighlightedLocker = target.Kind == SearchTargetKind.Locker ? target.Id : null;
         _pending = target;
-        navigation.Navigate(section);
+        _navigation?.Navigate(section);
         Requested?.Invoke(this, target);
     }
 

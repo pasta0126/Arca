@@ -55,12 +55,24 @@ public sealed class SectionRegistry
     public SectionDefinition? SectionOf(string screenId) => _screens.TryGetValue(screenId, out var s) ? _sections[s.SectionId] : null;
 
     /// <summary>The same sections with the given roots and attention providers, for whoever composes the application.</summary>
-    public static SectionRegistry Compose(IReadOnlyDictionary<string, Func<Control>> roots, IReadOnlyDictionary<string, Func<int>>? attention = null) =>
-        new(
+    /// <param name="roots">The root screen of each section, by its name; a section without one shows what it will hold.</param>
+    /// <param name="attention">The count of each section's indicator.</param>
+    /// <param name="home">The screen of the Home section. Giving another one is the only thing needed to replace the start screen.</param>
+    public static SectionRegistry Compose(
+        IReadOnlyDictionary<string, Func<Control>> roots, IReadOnlyDictionary<string, Func<int>>? attention = null, IHomeScreen? home = null)
+    {
+        var all = roots.ToDictionary(r => r.Key, r => r.Value);
+        if (home is not null)
+        {
+            all[ShellCatalog.Home] = home.Create;
+        }
+
+        return new(
             ShellCatalog.Sections.Select(s => s with
             {
-                CreateRoot = roots.GetValueOrDefault(s.Id),
+                CreateRoot = all.GetValueOrDefault(s.Id),
                 Attention = attention?.GetValueOrDefault(s.Id),
             }),
             ShellCatalog.Screens);
+    }
 }

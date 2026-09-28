@@ -10,6 +10,7 @@ using Arca.Testing;
 using Arca.UI.Actions;
 using Arca.UI.Access;
 using Arca.Application.Search;
+using Arca.UI.Map;
 using Arca.UI.Search;
 using Arca.Application.GlobalState;
 using Arca.UI.Shell;
@@ -216,5 +217,31 @@ public sealed class ScreenshotTests
         model.Text = "garcia";
         delay.Elapse(GlobalSearchViewModel.Pause + TimeSpan.FromMilliseconds(1)); // the pause is over: the search runs
         Take(window, "search");
+    }
+
+    [AvaloniaFact]
+    public void Locker_map()
+    {
+        var random = new Random(7);
+        var zones = new List<Arca.Application.LockerMap.ZoneMap>();
+        for (var z = 1; z <= 2; z++)
+        {
+            var lockers = Enumerable.Range(1, 36).Select(i =>
+            {
+                var status = random.Next(10) switch { < 5 => LockerStatusView.Occupied, < 8 => LockerStatusView.Free, 8 => LockerStatusView.Reserved, _ => i % 2 == 0 ? LockerStatusView.Broken : LockerStatusView.Maintenance };
+                return new Arca.Application.LockerMap.MapLocker(Guid.NewGuid(), z * 100 + i, status, status == LockerStatusView.Occupied ? Guid.NewGuid() : null, status == LockerStatusView.Occupied ? "Marta Puig" : null, status == LockerStatusView.Occupied && random.Next(4) == 0);
+            }).ToList();
+            zones.Add(new Arca.Application.LockerMap.ZoneMap(Guid.NewGuid(), "Planta " + z, lockers, Arca.Application.LockerMap.GetLockerMapHandler.Count(lockers)));
+        }
+
+        var data = new Arca.Application.LockerMap.LockerMapData(zones, Arca.Application.LockerMap.GetLockerMapHandler.Count(zones.SelectMany(z => z.Lockers)));
+        var model = new LockerMapViewModel(_ => Task.FromResult(Arca.Domain.Common.Result<Arca.Application.LockerMap.LockerMapData>.Success(data)),
+            (_, _) => Task.FromResult(Arca.Domain.Common.Result<Arca.Application.LockerMap.MapLocker?>.Success(null)),
+            new Arca.UI.Preferences.UiPreferencesSession(new EmptyPreferences()),
+            new Arca.UI.Notifications.ResultNotifier(new Arca.Testing.RecordingNotifications(), _localizer, new Arca.Testing.RecordingErrorLog()), _localizer);
+        model.LoadAsync().GetAwaiter().GetResult();
+        model.Reveal(zones[0].Lockers[9].LockerId);
+        var view = new ScreenView("Mapa de taquilles", [], new LockerMapView(model, _localizer));
+        Take(new Window { Width = 1024, Height = 640, Content = view, Title = "ARCA" }, "map");
     }
 }

@@ -121,6 +121,11 @@ public static class ArcaTheme
         Brush(d, ArcaResourceKeys.OnSemantic, ArcaPalette.OnSemantic);
         Brush(d, ArcaResourceKeys.Focus, ArcaPalette.Focus);
         Brush(d, ArcaResourceKeys.ErrorText, ArcaPalette.ErrorText);
+        Brush(d, ArcaResourceKeys.StatusFree, ArcaPalette.StatusFree);
+        Brush(d, ArcaResourceKeys.StatusOccupied, ArcaPalette.StatusOccupied);
+        Brush(d, ArcaResourceKeys.StatusReserved, ArcaPalette.StatusReserved);
+        Brush(d, ArcaResourceKeys.StatusBroken, ArcaPalette.StatusBroken);
+        Brush(d, ArcaResourceKeys.StatusMaintenance, ArcaPalette.StatusMaintenance);
     }
 
     /// <summary>The default type and spacing scales. They do not depend on the theme variant.</summary>
