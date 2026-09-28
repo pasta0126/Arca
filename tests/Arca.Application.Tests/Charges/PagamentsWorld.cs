@@ -6,6 +6,10 @@ using Arca.Application.Charges;
 using Arca.Application.Charges.AdjustChargeAmount;
 using Arca.Application.Charges.ChargeKeyReplacement;
 using Arca.Application.Charges.MarkChargeExempt;
+using Arca.Application.Charges.GetLockerPayment;
+using Arca.Application.Charges.GetStudentPayment;
+using Arca.Application.Charges.ListDebtors;
+using Arca.Application.Charges.ListDepositsDueBack;
 using Arca.Application.Charges.MarkChargePaid;
 using Arca.Application.Charges.MarkDepositReturned;
 using Arca.Application.Charges.ReturnDepositsInBulk;
@@ -62,6 +66,14 @@ public sealed class PagamentsWorld
     public WaiveChargesInBulkHandler WaiveInBulk => new(Store.Charges, Store.ChargeEvents, Store, Clock);
 
     public ReturnDepositsInBulkHandler ReturnDepositsInBulk => new(Store.Charges, Store.ChargeEvents, Store, Clock);
+
+    public GetStudentPaymentHandler StudentPayment => new(Store.Charges, Store.Students, Store.Years);
+
+    public GetLockerPaymentHandler LockerPayment => new(Store.Assignments, Store.Charges, Store.Years);
+
+    public ListDebtorsHandler Debtors => new(Store.Charges, Store.Students, Store.Enrollments, Store.Catalog, Store.Years, Assignments.Students.StudentLockers, Store.Lockers);
+
+    public ListDepositsDueBackHandler DepositsDueBack => new(Store.Charges, Store.Students);
 
     public ChargeKeyReplacementHandler KeyReplacement => new(Store.Students, Store.Years, Store.ConceptAmounts, Store.Charges, Store.ChargeEvents, Store, Clock);
 

@@ -321,6 +321,12 @@ public sealed class InMemoryInventory : IUnitOfWork
         public Task<IReadOnlyList<Charge>> ListByStudentAsync(Guid studentId, CancellationToken ct) =>
             Task.FromResult<IReadOnlyList<Charge>>([.. owner.ChargeList.Where(c => c.StudentId == studentId)]);
 
+        public Task<IReadOnlyList<Charge>> ListPendingAsync(CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<Charge>>([.. owner.ChargeList.Where(c => c.CountsAsDebt)]);
+
+        public Task<IReadOnlyList<Charge>> ListDepositsDueBackAsync(CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<Charge>>([.. owner.ChargeList.Where(c => c.IsDueBack)]);
+
         public Task AddAsync(Charge charge, CancellationToken ct)
         {
             owner.ChargeList.Add(charge);

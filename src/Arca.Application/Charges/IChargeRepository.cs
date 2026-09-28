@@ -13,6 +13,12 @@ public interface IChargeRepository
     /// <summary>Every charge of a student, of any concept and year.</summary>
     Task<IReadOnlyList<Charge>> ListByStudentAsync(Guid studentId, CancellationToken ct);
 
+    /// <summary>Every pending charge of any student, concept and year: what the debtors query is built from.</summary>
+    Task<IReadOnlyList<Charge>> ListPendingAsync(CancellationToken ct);
+
+    /// <summary>Every deposit that is due back, of any student.</summary>
+    Task<IReadOnlyList<Charge>> ListDepositsDueBackAsync(CancellationToken ct);
+
     Task AddAsync(Charge charge, CancellationToken ct);
 
     /// <summary>Saves the changes made to a charge that was loaded from here.</summary>

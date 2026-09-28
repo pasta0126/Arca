@@ -48,12 +48,12 @@
 
 ## 6. Estado de pago y consultas
 
-- [ ] 6.1 Implementar la función pura del estado al corriente de un alumno, con desglose por concepto y curso y distinción de exención (D7)
-- [ ] 6.2 Implementar el estado de pago de una taquilla ocupada a partir de su alumno
-- [ ] 6.3 Consulta de morosos con filtros por curso, concepto, nivel, grupo y zona, totales, alumnos de baja marcados y orden por apellidos (D8)
-- [ ] 6.4 Consulta de fianzas por devolver con totales, ordenada por fecha de baja y sin las exentas
-- [ ] 6.5 Objetos de transferencia sin correo ni identificador, y motivos solo en la ficha del cargo
-- [ ] 6.6 Pruebas: al corriente, con deuda, sin cargos, todo exento, taquilla con alumno moroso y libre, filtros, alumno de baja con deuda, sin morosos y privacidad de los listados
+- [x] 6.1 Implementar la función pura del estado al corriente de un alumno, con desglose por concepto y curso y distinción de exención (D7)
+- [x] 6.2 Implementar el estado de pago de una taquilla ocupada a partir de su alumno
+- [x] 6.3 Consulta de morosos con filtros por curso, concepto, nivel, grupo y zona, totales, alumnos de baja marcados y orden por apellidos (D8)
+- [x] 6.4 Consulta de fianzas por devolver con totales, ordenada por fecha de baja y sin las exentas
+- [x] 6.5 Objetos de transferencia sin correo ni identificador, y motivos solo en la ficha del cargo
+- [x] 6.6 Pruebas: al corriente, con deuda, sin cargos, todo exento, taquilla con alumno moroso y libre, filtros, alumno de baja con deuda, sin morosos y privacidad de los listados
 
 ## 7. Persistencia
 
