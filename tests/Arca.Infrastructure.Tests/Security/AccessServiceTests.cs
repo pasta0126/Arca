@@ -32,7 +32,7 @@ public sealed class AccessServiceTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 12 caracteres en la primera ejecución (Contraseña válida)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseña válida)")]
     public void Creating_the_access_returns_the_key_the_recovery_key_and_the_key_file()
     {
         var result = Service().CreateAccess(Password, Password);
@@ -45,7 +45,43 @@ public sealed class AccessServiceTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 12 caracteres en la primera ejecución (No coinciden)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseña corta permitida)")]
+    public void A_six_character_password_creates_the_access_with_the_weakness_warning_and_opens_it_again()
+    {
+        using var dir = new TempDirectory();
+        var database = dir.File("arca.db");
+        var created = Service().CreateAccess("cotxe7", "cotxe7");
+
+        Assert.True(created.IsSuccess);
+        Assert.Contains(created.Notices, n => n.Code == "Keys.PasswordWeak");
+        using var access = created.Value!;
+        KeyFileStore.Write(database, access.KeyFile);
+        Assert.Equal(access.DataKey.ToArray(), Service().Unlock(database, "cotxe7").Value!.ToArray());
+    }
+
+    [Theory]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseñas ya creadas)")]
+    [InlineData("abc")]
+    [InlineData("123456")]
+    [InlineData(Password)]
+    public void Opening_never_checks_the_length_or_the_strength_of_the_password_that_was_created_earlier(string password)
+    {
+        // A password created under any earlier rule (even one that today's rules would refuse) has to keep opening the data.
+        using var dir = new TempDirectory();
+        var database = dir.File("arca.db");
+        var crypto = new NSecKeyCrypto();
+        var key = crypto.GenerateDataKey();
+        var file = KeyWrapping.Create(crypto, key, PasswordText.ToBytes(password), RecoveryKey.Generate(), _cost);
+        KeyFileStore.Write(database, file);
+
+        var opened = Service().Unlock(database, password);
+
+        Assert.True(opened.IsSuccess);
+        Assert.Equal(key.ToArray(), opened.Value!.ToArray());
+    }
+
+    [Fact]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (No coinciden)")]
     public void Different_confirmation_is_refused_and_creates_nothing()
     {
         var result = Service().CreateAccess(Password, Other);
@@ -55,7 +91,7 @@ public sealed class AccessServiceTests
     }
 
     [Theory]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 12 caracteres en la primera ejecución (Sin contraseña)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Sin contraseña)")]
     [InlineData(null, "Keys.PasswordRequired")]
     [InlineData("", "Keys.PasswordRequired")]
     [InlineData("curta", "Keys.PasswordTooShort")]
@@ -109,7 +145,7 @@ public sealed class AccessServiceTests
     }
 
     [Theory]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 12 caracteres en la primera ejecución (Caracteres libres)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Caracteres libres)")]
     [InlineData("la porta és tancada")]
     [InlineData("çaragossa i l·lucia")]
     public void Passwords_with_accents_and_special_letters_open_the_same_data(string password)

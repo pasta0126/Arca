@@ -6,14 +6,20 @@ using Arca.Domain.Common;
 namespace Arca.Application.Security;
 
 /// <summary>
-/// The rules for the centre password (acces-i-xifrat, D5): at least 12 characters of any kind and no composition
-/// rules, which push people to patterns like "Taquilla#1". Two simple barriers are added: a list of common passwords
-/// plus obvious repetitions and sequences are refused, and an orientative strength indicator warns without blocking.
-/// It needs no dependencies and reads nothing but the text it is given.
+/// The rules for the centre password (acces-i-xifrat, D5, relaxed by politica-de-contrasenya): at least 6 characters of
+/// any kind and no composition rules, which push people to patterns like "Taquilla#1". Two barriers are kept whatever the
+/// length: a list of common passwords plus obvious repetitions and sequences are refused. Everything else is a warning,
+/// never a block: a password shorter than the recommended 12 characters, a single word, only digits or very few different
+/// symbols is weak, and the person is told why it is and what a strong one looks like. It needs no dependencies and reads
+/// nothing but the text it is given.
 /// </summary>
 public static class PasswordPolicy
 {
-    public const int MinimumLength = 12;
+    /// <summary>The shortest password accepted, when it is created or changed. Opening the application never checks it.</summary>
+    public const int MinimumLength = 6;
+
+    /// <summary>Below this length a password is weak, however it is made: it is allowed, with a warning.</summary>
+    public const int RecommendedLength = 12;
 
     const int MinimumSequenceLength = 6;
     const int MaximumRepeatPeriod = 4;
@@ -40,7 +46,7 @@ public static class PasswordPolicy
             return Result<PasswordAssessment>.Failure(KeyErrors.PasswordTooCommon);
         }
 
-        var strength = Assess(folded);
+        var strength = Assess(folded, length);
         var assessment = new PasswordAssessment(length, strength);
         return strength == PasswordStrength.Weak
             ? Result<PasswordAssessment>.Success(assessment, new Notice("Keys.PasswordWeak"))
@@ -58,7 +64,7 @@ public static class PasswordPolicy
             || (stripped.Length > 0 && CommonPasswords.Contains(stripped));
     }
 
-    static PasswordStrength Assess(string folded)
+    static PasswordStrength Assess(string folded, int length)
     {
         var words = folded.Split([' ', '-', '_', '.', ','], StringSplitOptions.RemoveEmptyEntries);
         var compact = new string(folded.Where(c => !IsSeparator(c)).ToArray());
@@ -67,7 +73,7 @@ public static class PasswordPolicy
         var singleWord = words.Length <= 1 && stripped.All(char.IsLetter);
         var onlyDigits = compact.All(char.IsDigit);
         var fewSymbols = compact.Distinct().Count() <= 5;
-        if (singleWord || onlyDigits || fewSymbols)
+        if (length < RecommendedLength || singleWord || onlyDigits || fewSymbols)
         {
             return PasswordStrength.Weak;
         }

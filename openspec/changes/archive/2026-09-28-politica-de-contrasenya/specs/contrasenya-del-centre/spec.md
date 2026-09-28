@@ -26,7 +26,7 @@ El sistema SHALL exigir la contraseña del centro al crear la base de datos en l
 
 #### Scenario: Contador de longitud
 - **WHEN** el usuario escribe la contraseña
-- **THEN** ve cuántos caracteres lleva sobre el mínimo, por ejemplo "4 de 6"
+- **THEN** ve cuántos caracteres lleva junto al mínimo y al recomendado, por ejemplo "4 caracteres (mínimo 6, recomendado 12)"
 
 #### Scenario: Contraseña demasiado habitual
 - **WHEN** el usuario escribe una contraseña de la lista de contraseñas habituales, como "contrasenya1234", o una repetición o secuencia obvia, como "111111" o "qwerty"
