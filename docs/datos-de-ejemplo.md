@@ -27,7 +27,7 @@ Punto 10 de `docs/preparacion-desarrollo.md`. Define **qué datos ficticios** ne
 | `tiny` | Pruebas unitarias y de integración rápidas, y la base cifrada de ejemplo que se versiona (`arquitectura-base`, 3.5) | 20 en 3 zonas | 25 | 12 | Contiene un caso de cada situación relevante |
 | `demo` | **Demostración del hito 1** y pruebas de aceptación | 600 en 6 zonas | 900 | 520 | Centro de tamaño mediano, con todas las situaciones de la tabla siguiente |
 | `volume` | Pruebas de rendimiento | 1000 en 10 zonas | 2000 | 1400 | Tope de los volúmenes de las specs |
-| `empty-year` (más adelante) | Arranque de un curso nuevo | Como `demo` | Como `demo` | 0 | Para probar el curso en cierre y la importación de septiembre |
+| `new-year` (hecho, 2026-09-29) | Arranque de un curso nuevo: `build/run.sh --new-year` o `--profile new-year` en la herramienta | 600 en 6 zonas (más una zona desactivada), 5 reservadas, 15 averiadas y 10 en mantenimiento | 912 matriculados (incluye 6 parejas de homónimos) | 0 | Curso 2026-2027 activo con sus importes, nadie con taquilla y 60 alumnos con deuda del curso anterior para probar el aviso al asignar |
 
 **Por qué estas proporciones.** No todos los alumnos tienen taquilla: el número de taquillas no tiene por qué igualar al de alumnos. En `demo`, unas 520 de las 600 taquillas están ocupadas y unos 380 alumnos no tienen taquilla, lo que da material para el panel de "alumnos sin taquilla" y el arrastre.
 
@@ -56,7 +56,7 @@ Punto 10 de `docs/preparacion-desarrollo.md`. Define **qué datos ficticios** ne
 | Pati | 60 | 481 a 540 |
 | Annex | 60 | 541 a 600 |
 
-Además, una zona **desactivada** ("Antic magatzem") sin taquillas activas, para probar los filtros.
+Además, una zona **desactivada** ("Antic magatzem") sin taquillas activas, para probar los filtros (ya la genera la herramienta).
 
 | Situación de taquilla | Cantidad | Para qué sirve |
 |-----------------------|----------|----------------|
