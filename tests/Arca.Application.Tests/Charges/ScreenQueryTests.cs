@@ -7,7 +7,11 @@ using Arca.Application.ConceptAmounts.GetConceptAmountsHistory;
 using Arca.Application.Localization;
 using Arca.Application.SchoolYears.GetYearScreen;
 using Arca.Application.Lockers;
+using Arca.Application.Lockers.GetLockerScreen;
 using Arca.Application.Lockers.ListLockerRows;
+using Arca.Application.Zones.DeactivateZone;
+using Arca.Application.Zones.ListZoneRows;
+using Arca.Application.Lockers.ReserveLocker;
 using Arca.Application.Lockers.MarkLockerOutOfService;
 using Arca.Application.Lockers.RetireLocker;
 using Arca.Application.Search;
@@ -153,6 +157,83 @@ public sealed class ScreenQueryTests
 
         Assert.NotEmpty(catalog.Levels);
         Assert.Equal(catalog.Levels.Order(Arca.Domain.Common.TextComparer.Comparer), catalog.Levels);
+    }
+
+    // --- Lockers and zones: the reason of each operation ---
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/design: D2 Acciones como objetos compartidos (los motivos salen de Application)")]
+    public async Task A_locker_gives_the_reason_of_each_operation_from_the_domain_rules_themselves()
+    {
+        var world = await WorldAsync();
+        var zone = await world.ZoneAsync("Planta 1");
+        var free = await world.LockerAsync(1, zone);
+        var busy = await world.LockerAsync(2, zone);
+        var broken = await world.LockerAsync(3, zone);
+        var reserved = await world.LockerAsync(4, zone);
+        var retired = await world.LockerAsync(5, zone);
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, busy);
+        var inventory = world.Assignments.Inventory;
+        await inventory.MarkOutOfService.HandleAsync(new MarkLockerOutOfServiceRequest(broken, OutOfServiceKind.Broken), default);
+        await inventory.ReserveLocker.HandleAsync(new ReserveLockerRequest(reserved, "Professorat"), default);
+        await inventory.RetireLocker.HandleAsync(new RetireLockerRequest(retired), default);
+        var handler = new GetLockerScreenHandler(LockerRows(world), world.Store.Lockers, new Arca.Application.Assignments.AssignmentOccupancy(world.Store.Assignments, world.Store.Lockers), world.Clock);
+
+        async Task<LockerScreenDetail> Of(Guid id) => (await handler.HandleAsync(new GetLockerScreenRequest(id), default)).Value!;
+
+        var onFree = await Of(free);
+        Assert.Null(onFree.ReserveBlocked);
+        Assert.Null(onFree.RetireBlocked);
+        Assert.Null(onFree.BrokenBlocked);
+        Assert.Equal("Lockers.NotReserved", onFree.RemoveReservationBlocked!.Code);
+        Assert.Equal("Lockers.NotOutOfService", onFree.RestoreBlocked!.Code);
+
+        var onBusy = await Of(busy);
+        Assert.Equal("Lockers.NotFree", onBusy.ReserveBlocked!.Code);
+        Assert.Equal("Lockers.HasAssignment", onBusy.RetireBlocked!.Code);
+        Assert.Null(onBusy.BrokenBlocked); // allowed: the decision about the student comes next
+
+        var onBroken = await Of(broken);
+        Assert.Equal("Lockers.AlreadyOutOfService", onBroken.BrokenBlocked!.Code);
+        Assert.Null(onBroken.MaintenanceBlocked); // changing the kind is allowed
+        Assert.Null(onBroken.RestoreBlocked);
+
+        var onReserved = await Of(reserved);
+        Assert.Null(onReserved.RemoveReservationBlocked);
+        Assert.Equal("Lockers.HasReservation", onReserved.RetireBlocked!.Code);
+
+        var onRetired = await Of(retired);
+        Assert.Equal("Lockers.Retired", onRetired.EditBlocked!.Code);
+        Assert.Equal(LockerStatusView.Retired, onRetired.Row.Status);
+    }
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/pantalles-taquilles-i-zones: Vista de zonas")]
+    public async Task A_zone_gives_the_reason_it_cannot_be_deactivated_or_deleted_and_an_empty_one_can_be_both()
+    {
+        var world = await WorldAsync();
+        var used = await world.ZoneAsync("Planta 1");
+        var empty = await world.ZoneAsync("Planta 2");
+        var idle = await world.ZoneAsync("Planta 3");
+        await world.LockerAsync(1, used);
+        await world.Assignments.Inventory.DeactivateZone.HandleAsync(new DeactivateZoneRequest(idle), default);
+        var handler = new ListZoneRowsHandler(world.Store.Zones, world.Store.Lockers);
+
+        var rows = (await handler.HandleAsync(default)).Value!;
+
+        Assert.Equal(["Planta 1", "Planta 2", "Planta 3"], rows.Select(r => r.Name));
+        var first = rows[0];
+        Assert.Equal(1, first.ActiveLockers);
+        Assert.Equal("Zones.HasActiveLockers", first.DeactivationBlocked!.Code);
+        Assert.Equal("Zones.HasHistory", first.DeletionBlocked!.Code);
+        var second = rows.Single(r => r.Id == empty);
+        Assert.Null(second.DeactivationBlocked);
+        Assert.Null(second.DeletionBlocked);
+        var third = rows.Single(r => r.Id == idle);
+        Assert.False(third.IsActive);
+        Assert.Null(third.ReactivationBlocked);
+        Assert.Null(third.DeactivationBlocked); // it is already inactive: there is nothing to refuse
     }
 
     // --- Courses ---

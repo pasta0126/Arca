@@ -27,6 +27,7 @@ public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject
     readonly Func<CancellationToken, Task<Result<IReadOnlyList<TRow>>>> _query;
     readonly Func<TRow, TKey> _key;
     readonly Func<EmptyStateAction?>? _emptyAction;
+    readonly Func<IReadOnlyList<EmptyStateAction>>? _emptyActions;
     readonly Func<string?>? _emptyMessage;
     readonly ResultNotifier _notifier;
     readonly ILocalizer _localizer;
@@ -38,15 +39,18 @@ public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject
     /// <param name="query">The list query of Application. It is the only thing the screen asks for its rows.</param>
     /// <param name="emptyMessage">What to say when there is nothing yet, if the general text does not do; it may depend on the state of the data.</param>
     /// <param name="emptyAction">The main action offered under an empty list, such as creating the first one.</param>
+    /// <param name="emptyActions">Several actions to offer under an empty list, instead of one.</param>
     public ScreenListViewModel(
         IReadOnlyList<ListColumn<TRow>> columns, Func<TRow, TKey> key, Func<CancellationToken, Task<Result<IReadOnlyList<TRow>>>> query,
-        ILocalizer localizer, INotificationService notifications, IErrorLog log, Func<string?>? emptyMessage = null, Func<EmptyStateAction?>? emptyAction = null)
+        ILocalizer localizer, INotificationService notifications, IErrorLog log, Func<string?>? emptyMessage = null, Func<EmptyStateAction?>? emptyAction = null,
+        Func<IReadOnlyList<EmptyStateAction>>? emptyActions = null)
     {
         _key = key;
         _query = query;
         _localizer = localizer;
         _emptyMessage = emptyMessage;
         _emptyAction = emptyAction;
+        _emptyActions = emptyActions;
         _notifier = new ResultNotifier(notifications, localizer, log);
         List = new ListViewModel<TRow, TKey>(columns, key, localizer);
         State = new ListStateViewModel(localizer);
@@ -155,7 +159,14 @@ public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject
         }
         else if (List.TotalCount == 0)
         {
-            State.ShowEmpty(_emptyMessage?.Invoke(), _emptyAction?.Invoke());
+            if (_emptyActions is not null)
+            {
+                State.ShowEmpty(_emptyMessage?.Invoke(), _emptyActions());
+            }
+            else
+            {
+                State.ShowEmpty(_emptyMessage?.Invoke(), _emptyAction?.Invoke());
+            }
         }
         else
         {

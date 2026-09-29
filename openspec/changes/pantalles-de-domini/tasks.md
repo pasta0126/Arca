@@ -25,14 +25,14 @@
 
 ## 4. Sección Taquillas
 
-- [ ] 4.1 Vista de taquillas con lista virtualizada, filtros, contadores, incluir bajas y estados vacíos
-- [ ] 4.2 Detalle de taquilla con acciones, historial y no disponibles con su motivo
-- [ ] 4.3 Alta individual con número siguiente propuesto y alta por rangos con vista previa, conflictos y progreso
-- [ ] 4.4 Editar número y zona, reservar y quitar reserva
-- [ ] 4.5 Fuera de servicio con diálogo de decisión si está ocupada, y reparada
-- [ ] 4.6 Baja con confirmación
-- [ ] 4.7 Vista de zonas con crear, renombrar, desactivar, reactivar y eliminar
-- [ ] 4.8 Pruebas: lista y filtros con 300 taquillas, altas, decisión al averiar una ocupada y cancelarla, baja, zonas con restricciones y privacidad
+- [x] 4.1 Vista de taquillas con lista virtualizada, filtros, contadores, incluir bajas y estados vacíos
+- [x] 4.2 Detalle de taquilla con acciones, historial y no disponibles con su motivo
+- [x] 4.3 Alta individual con número siguiente propuesto y alta por rangos con vista previa, conflictos y progreso
+- [x] 4.4 Editar número y zona, reservar y quitar reserva
+- [x] 4.5 Fuera de servicio con diálogo de decisión si está ocupada, y reparada
+- [x] 4.6 Baja con confirmación
+- [x] 4.7 Vista de zonas con crear, renombrar, desactivar, reactivar y eliminar
+- [x] 4.8 Pruebas: lista y filtros con 300 taquillas, altas, decisión al averiar una ocupada y cancelarla, baja, zonas con restricciones y privacidad
 
 ## 5. Sección Alumnos
 

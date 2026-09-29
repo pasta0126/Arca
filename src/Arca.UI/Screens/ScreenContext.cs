@@ -13,4 +13,4 @@ namespace Arca.UI.Screens;
 /// </summary>
 public sealed record ScreenContext(
     ILocalizer Localizer, INotificationService Notifications, IErrorLog Log, IDelay Delay, IConfirmationService Confirmations,
-    IFormDialogs Forms, Func<Task> AfterWrite);
+    IFormDialogs Forms, Func<Task> AfterWrite, IChoiceDialogs? Choices = null);

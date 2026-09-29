@@ -10,9 +10,18 @@ using Arca.UI.Common;
 
 namespace Arca.UI.Screens;
 
-/// <summary>One field of a form: what it is called, what was written and the error Application gave for it, if any.</summary>
-public sealed class FormFieldModel(string id, string label) : ObservableObject
+/// <summary>One choice of a field that is picked from a list, such as a zone: the value it stands for and what the person reads.</summary>
+public sealed record FormOption(string Id, string Label);
+
+/// <summary>
+/// One field of a form: what it is called, what was written and the error Application gave for it, if any. A field with options is
+/// picked from them instead of typed, and its text is the identity of the option chosen.
+/// </summary>
+public sealed class FormFieldModel(string id, string label, IReadOnlyList<FormOption>? options = null) : ObservableObject
 {
+    /// <summary>What can be picked, or null for a field that is typed.</summary>
+    public IReadOnlyList<FormOption>? Options { get; } = options;
+
     string _text = string.Empty;
     string? _error;
 
@@ -67,7 +76,10 @@ public interface IFormModel : System.ComponentModel.INotifyPropertyChanged
 
     IWorkState Work { get; }
 
-    /// <summary>Raised once saving succeeded: the window closes.</summary>
+    /// <summary>Whether the window stays open after saving, to add several in a row. The close button then says so.</summary>
+    bool StaysOpen { get; }
+
+    /// <summary>Raised once saving succeeded: the window closes, unless the form stays open.</summary>
     event EventHandler? Succeeded;
 }
 
@@ -96,6 +108,15 @@ public sealed class FormViewModel<TResult> : ObservableObject, IFormModel
         IEnumerable<FormFieldModel> fields, Func<CancellationToken, Task<Result<TResult>>> save, Func<Error, string?> fieldOf,
         Func<TResult, string> successText, string context, INotificationService notifications, ILocalizer localizer, IErrorLog log, IDelay delay,
         string title, string saveLabel, Action<TResult>? saved = null, Func<Task>? afterSuccess = null)
+        : this(fields, (ct, _) => save(ct), fieldOf, successText, context, notifications, localizer, log, delay, title, saveLabel, saved, afterSuccess)
+    {
+    }
+
+    /// <param name="save">Saves what was written and reports its progress when it is long, as the run-once command does.</param>
+    public FormViewModel(
+        IEnumerable<FormFieldModel> fields, Func<CancellationToken, IProgress<OperationProgress>, Task<Result<TResult>>> save, Func<Error, string?> fieldOf,
+        Func<TResult, string> successText, string context, INotificationService notifications, ILocalizer localizer, IErrorLog log, IDelay delay,
+        string title, string saveLabel, Action<TResult>? saved = null, Func<Task>? afterSuccess = null)
     {
         Title = title;
         SaveLabel = saveLabel;
@@ -105,10 +126,10 @@ public sealed class FormViewModel<TResult> : ObservableObject, IFormModel
         _localizer = localizer;
         _saved = saved;
         Save = new RunOnceCommand<TResult>(
-            async (ct, _) =>
+            async (ct, progress) =>
             {
                 ClearErrors();
-                var result = await save(ct);
+                var result = await save(ct, progress);
                 if (result.IsSuccess)
                 {
                     _saved?.Invoke(result.Value!);
@@ -123,6 +144,9 @@ public sealed class FormViewModel<TResult> : ObservableObject, IFormModel
     public string Title { get; }
 
     public string SaveLabel { get; }
+
+    /// <summary>Set by the screen that offers to add several in a row.</summary>
+    public bool StaysOpen { get; set; }
 
     public IReadOnlyList<FormFieldModel> Fields { get; }
 

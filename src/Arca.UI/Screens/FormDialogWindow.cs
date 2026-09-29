@@ -67,7 +67,16 @@ public sealed class FormDialogWindow : Window
     /// <summary>The text box of each field, by the name of the field, so a test can write in it.</summary>
     public Dictionary<string, TextBox> Boxes { get; } = [];
 
-    void OnSucceeded(object? sender, EventArgs e) => Close(true);
+    /// <summary>The drop-down of each field that is picked from a list, by the name of the field.</summary>
+    public Dictionary<string, ComboBox> Choices { get; } = [];
+
+    void OnSucceeded(object? sender, EventArgs e)
+    {
+        if (!_model.StaysOpen)
+        {
+            Close(true);
+        }
+    }
 
     protected override void OnClosed(EventArgs e)
     {
@@ -78,7 +87,7 @@ public sealed class FormDialogWindow : Window
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
-        Boxes.Values.FirstOrDefault()?.Focus();
+        ((Control?)Boxes.Values.FirstOrDefault() ?? Choices.Values.FirstOrDefault())?.Focus();
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
@@ -95,15 +104,30 @@ public sealed class FormDialogWindow : Window
 
     StackPanel Row(FormFieldModel field)
     {
-        var box = new TextBox { PlaceholderText = field.Label };
-        box.Bind(TextBox.TextProperty, new Binding(nameof(FormFieldModel.Text)) { Source = field, Mode = BindingMode.TwoWay });
-        Boxes[field.Id] = box;
+        Control input;
+        if (field.Options is { } options)
+        {
+            var choice = new ComboBox { ItemsSource = options, HorizontalAlignment = HorizontalAlignment.Stretch };
+            choice.ItemTemplate = new Avalonia.Controls.Templates.FuncDataTemplate<FormOption>((o, _) => new TextBlock { Text = o?.Label });
+            choice.SelectedItem = options.FirstOrDefault(o => o.Id == field.Text);
+            choice.SelectionChanged += (_, _) => field.Text = (choice.SelectedItem as FormOption)?.Id ?? string.Empty;
+            Choices[field.Id] = choice;
+            input = choice;
+        }
+        else
+        {
+            var box = new TextBox { PlaceholderText = field.Label };
+            box.Bind(TextBox.TextProperty, new Binding(nameof(FormFieldModel.Text)) { Source = field, Mode = BindingMode.TwoWay });
+            Boxes[field.Id] = box;
+            input = box;
+        }
+
         var error = ThemedText.Error();
         error.Bind(TextBlock.TextProperty, new Binding(nameof(FormFieldModel.Error)) { Source = field });
         error.Bind(IsVisibleProperty, new Binding(nameof(FormFieldModel.HasError)) { Source = field });
         var row = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingSmall);
         row.Children.Add(new TextBlock { Text = field.Label }.Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.Text));
-        row.Children.Add(box);
+        row.Children.Add(input);
         row.Children.Add(error);
         return row;
     }

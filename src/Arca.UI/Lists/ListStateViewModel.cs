@@ -78,6 +78,10 @@ public sealed class ListStateViewModel(ILocalizer localizer) : ObservableObject
     public void ShowEmpty(string? message = null, EmptyStateAction? mainAction = null) =>
         Apply(ListViewState.Empty, message ?? localizer.Get("Common.Empty.Nothing"), mainAction is null ? [] : [mainAction]);
 
+    /// <summary>There is nothing yet and there are several ways to start: explain and offer each one.</summary>
+    public void ShowEmpty(string? message, IReadOnlyList<EmptyStateAction> actions) =>
+        Apply(ListViewState.Empty, message ?? localizer.Get("Common.Empty.Nothing"), actions);
+
     /// <summary>A filter left nothing: say so and offer to clear it.</summary>
     public void ShowNoResults(EmptyStateAction? clearFilter = null, string? message = null) =>
         Apply(ListViewState.NoResults, message ?? localizer.Get("Common.Empty.NoResults"), clearFilter is null ? [] : [clearFilter]);

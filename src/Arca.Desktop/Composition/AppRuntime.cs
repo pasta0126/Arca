@@ -9,6 +9,7 @@ using Arca.Application.Localization;
 using Arca.UI.Access;
 using Arca.UI.Actions;
 using Arca.UI.Course;
+using Arca.UI.Lockers;
 using Arca.UI.Map;
 using Arca.UI.Screens;
 using Arca.UI.Notifications;
@@ -35,6 +36,10 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
     public LockerHomeServices HomeServices => services.GetRequiredService<LockerHomeServices>();
 
     public CourseServices CourseServices => services.GetRequiredService<CourseServices>();
+
+    public LockerServices LockerServices => services.GetRequiredService<LockerServices>();
+
+    public IChoiceDialogs Choices => services.GetRequiredService<IChoiceDialogs>();
 
     public IFormDialogs Forms => services.GetRequiredService<IFormDialogs>();
 

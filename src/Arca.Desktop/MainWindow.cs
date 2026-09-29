@@ -7,6 +7,7 @@ using Arca.UI.Common;
 using Arca.UI.Course;
 using Arca.UI.Screens;
 using Arca.UI.Info;
+using Arca.UI.Lockers;
 using Arca.UI.Layout;
 using Arca.UI.Map;
 using Arca.UI.Notifications;
@@ -35,7 +36,7 @@ public sealed class MainWindow : Window
         var navigator = new SearchNavigator();
         var notifier = new ResultNotifier(runtime.Notifications, localizer, runtime.ErrorLog);
         var screenContext = new ScreenContext(
-            localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay, runtime.Confirmations, runtime.Forms, () => state.RefreshAsync());
+            localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay, runtime.Confirmations, runtime.Forms, () => state.RefreshAsync(), runtime.Choices);
         var homeModel = new LockerHomeModel(
             runtime.HomeServices, runtime.Preferences, notifier, runtime.Confirmations, localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay, state);
         var home = new LockerMapHomeScreen(homeModel, navigator, localizer);
@@ -43,6 +44,7 @@ public sealed class MainWindow : Window
             new Dictionary<string, Func<Avalonia.Controls.Control>>
             {
                 [ShellCatalog.Settings] = () => SettingsRoot(runtime),
+                [ShellCatalog.Lockers] = () => LockersSection.Create(runtime.LockerServices, screenContext, runtime.Actions[StandardActions.New]),
                 [ShellCatalog.Course] = () => CourseView.Create(
                     new CourseViewModel(runtime.CourseServices, screenContext, runtime.Actions[StandardActions.New]), localizer),
             },

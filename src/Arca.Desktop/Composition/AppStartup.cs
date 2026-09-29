@@ -84,6 +84,8 @@ public static class AppStartup
             .AddSingleton(globalState)
             .AddSingleton(LockerHomeComposition.Create(inventory, clock, localizer))
             .AddSingleton(CourseComposition.Create(inventory, clock, localizer))
+            .AddSingleton(LockersComposition.Create(inventory, clock, localizer))
+            .AddSingleton<IChoiceDialogs>(new WindowChoiceDialogs(() => windows.Current))
             .AddSingleton<IFormDialogs>(new WindowFormDialogs(() => windows.Current, localizer))
             .AddSingleton(new GlobalSearchHandler(
                 inventory.Students, inventory.Enrollments, inventory.Catalog, inventory.Years, inventory.Lockers, inventory.Zones,

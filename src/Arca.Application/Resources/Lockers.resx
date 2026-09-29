@@ -146,4 +146,142 @@
   <data name="Lockers.Result.RangeNotCreated" xml:space="preserve">
     <value>No s'ha creat cap taquilla.</value>
   </data>
+  <data name="Lockers.Action.New" xml:space="preserve">
+    <value>Nova taquilla</value>
+  </data>
+  <data name="Lockers.Action.NewRange" xml:space="preserve">
+    <value>Alta per rangs</value>
+  </data>
+  <data name="Lockers.Action.CheckRange" xml:space="preserve">
+    <value>Revisa el rang</value>
+  </data>
+  <data name="Lockers.Action.Edit" xml:space="preserve">
+    <value>Edita</value>
+  </data>
+  <data name="Lockers.Action.Reserve" xml:space="preserve">
+    <value>Reserva</value>
+  </data>
+  <data name="Lockers.Action.RemoveReservation" xml:space="preserve">
+    <value>Treu la reserva</value>
+  </data>
+  <data name="Lockers.Action.MarkBroken" xml:space="preserve">
+    <value>Marca com a avariada</value>
+  </data>
+  <data name="Lockers.Action.MarkMaintenance" xml:space="preserve">
+    <value>Posa en manteniment</value>
+  </data>
+  <data name="Lockers.Action.Restore" xml:space="preserve">
+    <value>Marca com a reparada</value>
+  </data>
+  <data name="Lockers.Action.Retire" xml:space="preserve">
+    <value>Dona de baixa</value>
+  </data>
+  <data name="Lockers.Action.History" xml:space="preserve">
+    <value>Historial</value>
+  </data>
+  <data name="Lockers.Label.Number" xml:space="preserve">
+    <value>Número</value>
+  </data>
+  <data name="Lockers.Label.Zone" xml:space="preserve">
+    <value>Zona</value>
+  </data>
+  <data name="Lockers.Label.Status" xml:space="preserve">
+    <value>Estat</value>
+  </data>
+  <data name="Lockers.Label.Student" xml:space="preserve">
+    <value>Alumne</value>
+  </data>
+  <data name="Lockers.Label.Debt" xml:space="preserve">
+    <value>Pagaments</value>
+  </data>
+  <data name="Lockers.Label.HasDebt" xml:space="preserve">
+    <value>Pendent de pagament</value>
+  </data>
+  <data name="Lockers.Label.Note" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="Lockers.Label.AllStatuses" xml:space="preserve">
+    <value>Tots els estats</value>
+  </data>
+  <data name="Lockers.Label.AllZones" xml:space="preserve">
+    <value>Totes les zones</value>
+  </data>
+  <data name="Lockers.Label.IncludeRetired" xml:space="preserve">
+    <value>Inclou les de baixa</value>
+  </data>
+  <data name="Lockers.Label.Counters" xml:space="preserve">
+    <value>{0} actives · {1} lliures · {2} ocupades · {3} reservades · {4} avariades · {5} en manteniment</value>
+  </data>
+  <data name="Lockers.Label.First" xml:space="preserve">
+    <value>Primer número</value>
+  </data>
+  <data name="Lockers.Label.Last" xml:space="preserve">
+    <value>Últim número</value>
+  </data>
+  <data name="Lockers.Label.ReservationNote" xml:space="preserve">
+    <value>Nota de la reserva (opcional)</value>
+  </data>
+  <data name="Lockers.Label.NoZoneTitle" xml:space="preserve">
+    <value>Cal una zona</value>
+  </data>
+  <data name="Lockers.Label.DecisionTitle" xml:space="preserve">
+    <value>Taquilla {0} fora de servei</value>
+  </data>
+  <data name="Lockers.Label.DecisionMessage" xml:space="preserve">
+    <value>La taquilla {1} està ocupada per {0}. Decideix què passa amb l'alumne: no es canvia res fins que ho decideixis.</value>
+  </data>
+  <data name="Lockers.Label.DecisionReassign" xml:space="preserve">
+    <value>Reassigna a una altra taquilla</value>
+  </data>
+  <data name="Lockers.Label.DecisionKeep" xml:space="preserve">
+    <value>Mantén l'assignació</value>
+  </data>
+  <data name="Lockers.Label.DecisionRelease" xml:space="preserve">
+    <value>Allibera la taquilla de l'alumne</value>
+  </data>
+  <data name="Lockers.Label.FreeOption" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="Lockers.Label.Target" xml:space="preserve">
+    <value>Taquilla de destinació</value>
+  </data>
+  <data name="Lockers.Label.WarningsTitle" xml:space="preserve">
+    <value>Avisos de la taquilla de destinació</value>
+  </data>
+  <data name="Lockers.Label.WarningsMessage" xml:space="preserve">
+    <value>La taquilla de destinació té avisos. Si continues, es faran igualment.</value>
+  </data>
+  <data name="Lockers.Label.WarningsConfirm" xml:space="preserve">
+    <value>Continua igualment</value>
+  </data>
+  <data name="Lockers.Label.LockerTitle" xml:space="preserve">
+    <value>Taquilla {0} · {1}</value>
+  </data>
+  <data name="Lockers.Label.StatusLine" xml:space="preserve">
+    <value>Estat: {0}</value>
+  </data>
+  <data name="Lockers.Label.StudentLine" xml:space="preserve">
+    <value>Alumne: {0}</value>
+  </data>
+  <data name="Lockers.Label.PaymentDebt" xml:space="preserve">
+    <value>Pagaments: té pagaments pendents</value>
+  </data>
+  <data name="Lockers.Label.PaymentUpToDate" xml:space="preserve">
+    <value>Pagaments: al corrent</value>
+  </data>
+  <data name="Lockers.Label.ReservationLine" xml:space="preserve">
+    <value>Reserva: {0}</value>
+  </data>
+  <data name="Lockers.Label.NoteLine" xml:space="preserve">
+    <value>Nota: {0}</value>
+  </data>
+  <data name="Lockers.Note.RangeConflicts" xml:space="preserve">
+    <value>Ja existeixen aquests números: {0}. No es crea cap taquilla fins que es resolgui.</value>
+  </data>
+  <data name="Lockers.Note.RangePreview" xml:space="preserve">
+    <value>Es crearan {0} taquilles a {1}.</value>
+  </data>
+  <data name="Lockers.Empty.PickLocker" xml:space="preserve">
+    <value>Tria una taquilla de la llista per veure'n el detall.</value>
+  </data>
 </root>
