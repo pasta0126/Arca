@@ -19,7 +19,7 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 | 12 | `configuracio-inicial` | Asistente guiado de primera configuración | redactado |
 | 13 | `ux-fonaments` | Sistema de diseño: adaptabilidad, colapsables, arrastrar y soltar, menús, componentes de feedback | redactado |
 | 14 | `ui-shell` | Navegación, búsqueda global, pantalla principal, tema e identidad del centro | redactado (pantalla principal provisional: mapa de taquillas por zona) |
-| 15 | `pantalles-de-domini` | Pantallas de dominio (curso e importes, zonas, taquillas, alumnos, cargos, y después el resto), solo las del hito 1 (Curso, Taquillas, Alumnos, Cobros); sin maquetas, interfaz decidida en las specs y a iterar | redactado |
+| 15 | `pantalles-de-domini` | Pantallas de dominio (curso e importes, zonas, taquillas, alumnos, cargos, y después el resto), solo las del hito 1 (Curso, Taquillas, Alumnos, Cobros); sin maquetas, interfaz decidida en las specs y a iterar | implementado (rama `change/pantalles-de-domini`, 41/41 tareas, apilada sobre `ui-shell`; pendiente de PR) |
 | 16 | `acces-i-xifrat` | Contraseña compartida del centro, clave de recuperación obligatoria, fichero de claves y copias (sustituye la clave interna de `arquitectura-base`) | redactado; va con `arquitectura-base` |
 
 ## Fuera de este repositorio

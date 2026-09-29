@@ -5,7 +5,7 @@
 - [x] 1.3 Enlace de acciones del registro a botones, menús y atajos con no disponibles y su motivo desde Application (D2)
 - [x] 1.4 Registro de las pantallas en las secciones Curso, Taquillas, Alumnos y Cobros (D7)
 - [x] 1.5 Prueba de arquitectura: los modelos de vista no dependen de Domain ni de Infrastructure
-- [ ] 1.6 Claves de recurso en catalán para todos los textos, con los términos del glosario (D8)
+- [x] 1.6 Claves de recurso en catalán para todos los textos, con los términos del glosario (D8)
 
 ## 2. Consultas de lectura
 
@@ -58,4 +58,4 @@
 
 - [x] 7.1 Resultados y errores de todas las operaciones mediante las notificaciones comunes y el indicador de trabajo
 - [x] 7.2 Protección contra doble ejecución en todos los guardados y operaciones
-- [ ] 7.3 Recorrido manual de las cuatro secciones con los datos de ejemplo en los tres sistemas y anotar los ajustes en los specs (D9)
+- [x] 7.3 Recorrido manual de las cuatro secciones con los datos de ejemplo en los tres sistemas y anotar los ajustes en los specs (D9)
