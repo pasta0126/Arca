@@ -319,10 +319,6 @@ public sealed class AccessFlows(
                 lines.Add(Text("Keys.Label.WeakExample"));
             }
         }
-        else if (check.Error!.Code == KeyErrors.PasswordTooCommon.Code)
-        {
-            lines.Add(localizer.Message(check.Error));
-        }
 
         return lines;
     }

@@ -161,7 +161,7 @@ public sealed class AccessFlowsTests : IDisposable
     }
 
     [Fact]
-    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Se establece al empezar)")]
+    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Se establece al empezar)")]
     public async Task First_run_asks_for_the_password_then_the_key_and_creates_the_data()
     {
         var (flows, presenter, _, access) = Build();
@@ -178,7 +178,7 @@ public sealed class AccessFlowsTests : IDisposable
     }
 
     [Fact]
-    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contador de longitud)")]
+    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Contador de longitud)")]
     public async Task The_password_form_counts_the_characters_against_the_minimum_as_they_are_typed()
     {
         var (flows, presenter, _, _) = Build();
@@ -196,8 +196,8 @@ public sealed class AccessFlowsTests : IDisposable
 
         await flows.CreateAsync(Database, CancellationToken.None);
 
-        Assert.Contains("0 caràcters (mínim 6, recomanat 12)", empty);
-        Assert.Contains("10 caràcters (mínim 6, recomanat 12)", nine);
+        Assert.Contains("0 caràcters (mínim 4, recomanat 12)", empty);
+        Assert.Contains("10 caràcters (mínim 4, recomanat 12)", nine);
     }
 
     [Fact]
@@ -239,8 +239,8 @@ public sealed class AccessFlowsTests : IDisposable
     }
 
     [Fact]
-    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseña corta permitida)")]
-    public async Task A_six_character_password_is_accepted_with_the_full_weakness_warning()
+    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Contraseña corta permitida)")]
+    public async Task A_short_password_is_accepted_with_the_full_weakness_warning()
     {
         var (flows, presenter, _, _) = Build();
         IReadOnlyList<string> hints = [];
@@ -256,7 +256,7 @@ public sealed class AccessFlowsTests : IDisposable
 
         await flows.CreateAsync(Database, CancellationToken.None);
 
-        Assert.Contains("6 caràcters (mínim 6, recomanat 12)", hints);
+        Assert.Contains("6 caràcters (mínim 4, recomanat 12)", hints);
         Assert.Contains("Fortalesa: fluixa", hints);
         Assert.Contains(hints, h => h.Contains("podria endevinar-la", StringComparison.Ordinal));
         Assert.Equal(2, presenter.Shown.Count); // the warning did not stop it: it went on to the key
@@ -286,9 +286,8 @@ public sealed class AccessFlowsTests : IDisposable
     }
 
     [Theory]
-    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Demasiado corta)")]
-    [InlineData("xyzzy", "xyzzy", "mínim 6 caràcters")]
-    [InlineData("contrasenya1234", "contrasenya1234", "massa habitual")]
+    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Demasiado corta)")]
+    [InlineData("xyz", "xyz", "mínim 4 caràcters")]
     [InlineData("riu cadira blau gos", "una altra cosa", "no coincideixen")]
     [InlineData("", "", "Cal escriure una contrasenya")]
     public async Task A_password_that_does_not_meet_the_rules_shows_why_and_creates_nothing(string password, string again, string expected)
@@ -601,7 +600,7 @@ public sealed class AccessFlowsTests : IDisposable
     [Theory]
     [Trait("spec", UnlockSpec + ": Cambiar la contraseña (Contraseña actual incorrecta)")]
     [InlineData("una altra contrasenya", "gat ratllat sota pluja", "no són correctes")]
-    [InlineData("riu cadira blau gos", "xyzzy", "mínim 6 caràcters")]
+    [InlineData("riu cadira blau gos", "xyz", "mínim 4 caràcters")]
     public async Task A_change_that_is_refused_says_why_and_leaves_the_password_as_it_was(string current, string next, string expected)
     {
         await FirstRunAsync(Password);

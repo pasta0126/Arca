@@ -11,7 +11,7 @@ public sealed class PasswordPolicyTests
     const string Spec = "acces-i-xifrat/contrasenya-del-centre";
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseña válida)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Contraseña válida)")]
     public void A_phrase_with_spaces_is_accepted_and_strong()
     {
         var result = PasswordPolicy.Check("riu cadira blau gos");
@@ -22,7 +22,7 @@ public sealed class PasswordPolicyTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Sin reglas de composición)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Sin reglas de composición)")]
     public void One_lowercase_word_of_12_letters_is_accepted_with_a_warning()
     {
         var result = PasswordPolicy.Check("insmonturiol");
@@ -33,9 +33,9 @@ public sealed class PasswordPolicyTests
     }
 
     [Theory]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Demasiado corta)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Demasiado corta)")]
     [InlineData("")]
-    [InlineData("curta")]
+    [InlineData("abc")]
     [InlineData("a1")]
     public void Too_short_or_empty_is_refused(string password)
     {
@@ -46,16 +46,17 @@ public sealed class PasswordPolicyTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Demasiado corta)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Demasiado corta)")]
     public void The_refusal_states_the_minimum_length()
     {
-        var error = PasswordPolicy.Check("curta").Error!;
+        var error = PasswordPolicy.Check("abc").Error!;
 
-        Assert.Equal(6, Assert.Single(error.Args));
+        Assert.Equal(4, Assert.Single(error.Args));
     }
 
     [Theory]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseña corta permitida)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Contraseña corta permitida)")]
+    [InlineData("cotx", 4)]
     [InlineData("cotxe7", 6)]
     [InlineData("onzecaracte", 11)]
     [InlineData("riu cadira", 10)]
@@ -82,37 +83,38 @@ public sealed class PasswordPolicyTests
     }
 
     [Theory]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseña demasiado habitual)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Contraseña demasiado habitual)")]
     [InlineData("123456")]
     [InlineData("111111")]
     [InlineData("qwerty")]
     [InlineData("abcdef")]
     [InlineData("secret1")]
-    public void Short_common_passwords_are_still_refused(string password)
+    public void Short_common_passwords_are_accepted_as_weak_with_the_warning(string password)
     {
         var result = PasswordPolicy.Check(password);
 
-        Assert.False(result.IsSuccess);
-        Assert.Equal("Keys.PasswordTooCommon", result.Error!.Code);
+        Assert.True(result.IsSuccess);
+        Assert.Equal(PasswordStrength.Weak, result.Value!.Strength);
+        Assert.Contains(result.Notices, n => n.Code == "Keys.PasswordWeak");
     }
 
     [Fact]
     [Trait("spec", Spec + ": Indicador de fortaleza y aviso de pérdida (El ejemplo no se puede usar)")]
-    public void The_example_of_the_warning_cannot_be_used_as_it_is()
+    public void The_example_of_the_warning_is_accepted_like_any_other_strong_password()
     {
-        Assert.Equal("Keys.PasswordTooCommon", PasswordPolicy.Check("lluna cotxe formatge radio").Error!.Code);
-        Assert.Equal("Keys.PasswordTooCommon", PasswordPolicy.Check("Lluna Cotxe Formatge Ràdio").Error!.Code);
+        Assert.Equal(PasswordStrength.Good, PasswordPolicy.Check("lluna cotxe formatge radio").Value!.Strength);
+        Assert.True(PasswordPolicy.Check("Lluna Cotxe Formatge Ràdio").IsSuccess);
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Sin contraseña)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Sin contraseña)")]
     public void No_password_is_refused()
     {
         Assert.Equal("Keys.PasswordRequired", PasswordPolicy.Check(null).Error!.Code);
     }
 
     [Theory]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseña demasiado habitual)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Contraseña demasiado habitual)")]
     [InlineData("contrasenya1234")]
     [InlineData("Contrasenya1234")]
     [InlineData("111111111111")]
@@ -122,16 +124,17 @@ public sealed class PasswordPolicyTests
     [InlineData("123456789012")]
     [InlineData("password123456")]
     [InlineData("Taquilla2026!!")]
-    public void Common_repeated_and_sequential_passwords_are_refused(string password)
+    public void Common_repeated_and_sequential_passwords_are_accepted_as_weak_with_the_warning(string password)
     {
         var result = PasswordPolicy.Check(password);
 
-        Assert.False(result.IsSuccess);
-        Assert.Equal("Keys.PasswordTooCommon", result.Error!.Code);
+        Assert.True(result.IsSuccess);
+        Assert.Equal(PasswordStrength.Weak, result.Value!.Strength);
+        Assert.Contains(result.Notices, n => n.Code == "Keys.PasswordWeak");
     }
 
     [Theory]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Caracteres libres)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Caracteres libres)")]
     [InlineData("la porta és tancada")]
     [InlineData("çaragossa i l·lucia")]
     [InlineData("ÀÉÍÒÚ àéíòú ñ ü")]
@@ -141,7 +144,7 @@ public sealed class PasswordPolicyTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contador de longitud)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Contador de longitud)")]
     public void The_length_is_counted_in_characters_after_normalisation()
     {
         Assert.Equal(19, PasswordPolicy.Check("riu cadira blau gos").Value!.Length);
@@ -164,7 +167,7 @@ public sealed class PasswordPolicyTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Caracteres libres)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Caracteres libres)")]
     public void Passwords_are_normalised_to_nfc_before_use()
     {
         var composed = PasswordText.ToBytes("açent i cadira");

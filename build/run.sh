@@ -10,7 +10,7 @@
 #                           tarda unos 20 segundos y la contraseña es la de prueba (ver abajo)
 #
 # Modo portable: los datos van en src/Arca.Desktop/bin/Debug/net10.0/data y no se toca la carpeta de usuario.
-# Contraseña de prueba que cumple la política: gat ratllat sota pluja
+# Contraseña de prueba que cumple la política: arca
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
