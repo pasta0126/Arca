@@ -258,7 +258,13 @@ public sealed class CourseViewModel : ObservableObject
     {
         var text = _context.Localizer;
         var loaded = await LoadDetailAsync(yearId, default);
-        if (!loaded.IsSuccess || loaded.Value is not { } detail)
+        if (!loaded.IsSuccess)
+        {
+            new Arca.UI.Notifications.ResultNotifier(_context.Notifications, text, _context.Log).Error(loaded.Error!); // never a click without an answer
+            return;
+        }
+
+        if (loaded.Value is not { } detail)
         {
             return;
         }

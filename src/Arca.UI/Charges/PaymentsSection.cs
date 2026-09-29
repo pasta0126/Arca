@@ -80,7 +80,14 @@ public static class PaymentsSection
             detail.Children.Add(ActionControls.Button(model.OpenCharges));
         }
 
-        model.Debtors.CurrentChanged += (_, _) => Rebuild();
+        model.Debtors.PropertyChanged += (_, _) => Rebuild(); // also when a reload brings new data for the student already chosen
+        model.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(DebtorsViewModel.Breakdown))
+            {
+                Rebuild();
+            }
+        };
         Rebuild();
         var screen = new ScreenView(localizer.Get("Shell.Screen.Debtors"), [], left, detail);
         screen.AttachedToVisualTree += (_, _) => _ = model.LoadAsync();

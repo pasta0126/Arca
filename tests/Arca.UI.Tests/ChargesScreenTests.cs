@@ -32,6 +32,7 @@ internal sealed class FakeChargeWorld
     public Error? KeyBlocked;
     public string? LastConcept = "unset";
     public DateOnly Today = new(2026, 9, 29);
+    public TaskCompletionSource? Gate;
 
     public static readonly Error Blocked = new("Charges.InvalidStatus");
 
@@ -59,11 +60,16 @@ internal sealed class FakeChargeWorld
             new AcademicYearSummary(YearBefore, "2025-2026", new DateOnly(2025, 9, 1), new DateOnly(2026, 6, 30), false)])),
         _ => Task.FromResult(Result<IReadOnlyList<ZoneRow>>.Success([])),
         _ => Task.FromResult(Result<StudentRowsListing>.Success(new StudentRowsListing([], new StudentCounters(0, 0, 0), StudentEmptyState.None))),
-        (id, _) =>
+        async (id, _) =>
         {
+            if (Gate is not null)
+            {
+                await Gate.Task;
+            }
+
             var pending = Lines.Where(l => l.Status == "Pending").Sum(l => l.Amount);
-            return Task.FromResult(Result<StudentChargesScreen>.Success(new StudentChargesScreen(
-                id, "Marta Puig", pending == 0, false, pending, [.. Lines], YearNow, "2026-2027", KeyBlocked, KeyAmount)));
+            return Result<StudentChargesScreen>.Success(new StudentChargesScreen(
+                id, "Marta Puig", pending == 0, false, pending, [.. Lines], YearNow, "2026-2027", KeyBlocked, KeyAmount));
         },
         (_, _) => Task.FromResult(Result<IReadOnlyList<string>>.Success(["Marcat com a pagat."])),
         (id, date, _) =>
@@ -459,5 +465,22 @@ public sealed class ChargesScreenTests
         Avalonia.Threading.Dispatcher.UIThread.RunJobs();
         ScreenshotTests.Take(window, "payments");
         window.Close();
+    }
+
+    [Fact]
+    [Trait("spec", Spec + ": Cargos de un alumno")]
+    public async Task A_load_that_arrives_after_the_student_was_cleared_does_not_show_their_charges()
+    {
+        _world.Line("Fee", "Pending", 50m);
+        var model = Charges();
+        _world.Gate = new TaskCompletionSource();
+
+        var late = model.ShowAsync(Guid.NewGuid()); // still loading...
+        await model.ShowAsync(null); // ...when the person chooses nobody
+        _world.Gate.SetResult();
+        await late;
+
+        Assert.Null(model.Screen);
+        Assert.Empty(model.Charges.List.Rows);
     }
 }

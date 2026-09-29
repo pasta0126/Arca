@@ -64,6 +64,7 @@ public sealed class LockersScreenTests
     int _refreshes;
     Guid _planZone;
     TaskCompletionSource? _gate;
+    bool _zoneFails;
 
     ZoneRow AddZone(string name, bool active = true, int lockers = 0, Error? deactivation = null, Error? deletion = null)
     {
@@ -129,6 +130,11 @@ public sealed class LockersScreenTests
         },
         (id, zone, _) =>
         {
+            if (_zoneFails)
+            {
+                return Task.FromResult(Result<string>.Failure(new Error("Lockers.ZoneUnavailable")));
+            }
+
             _calls.Add("zone");
             return Task.FromResult(Result<string>.Success("Zona canviada."));
         },
@@ -718,5 +724,33 @@ public sealed class LockersScreenTests
         Avalonia.Threading.Dispatcher.UIThread.RunJobs();
         ScreenshotTests.Take(window, "lockers");
         window.Close();
+    }
+
+    [Fact]
+    [Trait("spec", Spec + ": Editar número y zona")]
+    public async Task When_the_zone_fails_after_the_number_was_saved_the_list_is_refreshed_and_a_retry_does_not_repeat_the_number()
+    {
+        var zone = AddZone("Planta 1");
+        var other = AddZone("Planta 2");
+        var locker = AddLocker(1, zone);
+        var model = Model();
+        await model.LoadAsync();
+        await model.Detail.ShowAsync(true, locker.Id);
+        model.Detail.Actions.Single(a => a.Id == "Edit").Execute(null);
+        await Task.Delay(100);
+        var form = (FormViewModel<string>)_forms.Last;
+        form["Number"].Text = "5";
+        form["Zone"].Text = other.Id.ToString();
+        _zoneFails = true;
+        var before = _refreshes;
+
+        await form.Save.RunAsync();
+        Assert.Contains("number 5", _calls);
+        Assert.True(_refreshes > before); // the number did change, so the screen shows it
+
+        _zoneFails = false;
+        await form.Save.RunAsync();
+        Assert.Single(_calls, c => c == "number 5");
+        Assert.Contains("zone", _calls);
     }
 }

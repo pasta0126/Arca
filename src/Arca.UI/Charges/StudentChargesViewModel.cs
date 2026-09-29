@@ -89,6 +89,7 @@ public sealed class StudentChargesViewModel : ObservableObject
     public async Task ShowAsync(Guid? studentId)
     {
         _studentId = studentId;
+        _request++; // whatever was loading for the previous student is no longer wanted
         Detail.Clear();
         if (studentId is null)
         {
@@ -109,7 +110,7 @@ public sealed class StudentChargesViewModel : ObservableObject
         }
 
         var screen = await _services.StudentCharges(id, ct);
-        if (mine != _request)
+        if (mine != _request || _studentId != id)
         {
             return Result<IReadOnlyList<ChargeLine>>.Success([]);
         }

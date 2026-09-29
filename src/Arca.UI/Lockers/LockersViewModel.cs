@@ -413,6 +413,7 @@ public sealed class LockersViewModel : ObservableObject
         var zones = await ActiveZonesAsync() ?? [];
         var number = new FormFieldModel("Number", text.Get("Lockers.Label.Number")) { Text = row.Number.ToString(CultureInfo.InvariantCulture) };
         var zone = new FormFieldModel("Zone", text.Get("Lockers.Label.Zone"), zones) { Text = row.ZoneId.ToString() };
+        var currentNumber = row.Number;
         var form = new FormViewModel<string>(
             [number, zone],
             async ct =>
@@ -423,18 +424,26 @@ public sealed class LockersViewModel : ObservableObject
                 }
 
                 Result<string>? last = null;
-                if (value != row.Number)
+                if (value != currentNumber)
                 {
                     last = await _services.ChangeNumber(row.Id, value, ct);
                     if (!last.IsSuccess)
                     {
                         return last;
                     }
+
+                    currentNumber = value; // saved: a retry after a failure of the zone must not try the number again
                 }
 
                 if (zone.Text.Length > 0 && zone.Text != row.ZoneId.ToString())
                 {
-                    last = await _services.ChangeZone(row.Id, Guid.Parse(zone.Text), ct);
+                    var moved = await _services.ChangeZone(row.Id, Guid.Parse(zone.Text), ct);
+                    if (!moved.IsSuccess && last is not null)
+                    {
+                        await RefreshAsync(row.Id); // the number did change: the list and the detail show it
+                    }
+
+                    last = moved;
                 }
 
                 return last ?? Result<string>.Failure(new Error("Lockers.Unchanged"));

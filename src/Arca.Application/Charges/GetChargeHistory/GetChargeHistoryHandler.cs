@@ -44,7 +44,9 @@ public sealed class GetChargeHistoryHandler(IChargeRepository charges, IChargeEv
             ChargeEventTypes.Paid => localizer.Get("Charges.History.Paid", Date(after)),
             ChargeEventTypes.AmountAdjusted => localizer.Get("Charges.History.AmountAdjusted", Amount(before), Amount(after)),
             ChargeEventTypes.Exempted or ChargeEventTypes.Waived or ChargeEventTypes.Voided or ChargeEventTypes.Reverted =>
-                localizer.Get("Charges.History.StatusChanged", Status(before), Status(after)),
+                localizer.Get(
+                    "Charges.History.StatusChanged", Status(before),
+                    change.Type == ChargeEventTypes.Reverted ? new ChargeResultTexts(localizer).StatusName("Pending") : Status(after)), // a revert stores no state after: it is pending again
             _ => localizer.Get("History.Unknown", change.Type),
         };
         return change.Reason is { Length: > 0 } reason ? localizer.Get("Charges.History.WithReason", text, reason) : text;

@@ -427,4 +427,24 @@ public sealed class ScreenQueryTests
         Assert.Contains("a 55,00", lines[0].Text, StringComparison.Ordinal);
         Assert.Equal(lines.OrderByDescending(l => l.At), lines);
     }
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/pantalles-cobraments: Historial del cargo (Historial visible)")]
+    public async Task A_revert_in_the_history_says_the_charge_is_pending_again()
+    {
+        var world = await WorldAsync();
+        var zone = await world.ZoneAsync("Planta 1");
+        var locker = await world.LockerAsync(1, zone);
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, locker);
+        var fee = world.ChargesOf(student.Id).Single(c => c.Concept == Domain.ConceptAmounts.ChargeConcept.Fee);
+        await world.MarkPaid.HandleAsync(new MarkChargePaidRequest(fee.Id), default);
+        world.Clock.Advance(TimeSpan.FromHours(1));
+        await world.Revert.HandleAsync(new Arca.Application.Charges.RevertCharge.RevertChargeRequest(fee.Id, "Error"), default);
+        var handler = new GetChargeHistoryHandler(world.Store.Charges, world.Store.ChargeEvents, new ResxLocalizer());
+
+        var lines = (await handler.HandleAsync(new GetChargeHistoryRequest(fee.Id), default)).Value!;
+
+        Assert.Contains("de pagat a pendent", lines[0].Text, StringComparison.Ordinal);
+    }
 }

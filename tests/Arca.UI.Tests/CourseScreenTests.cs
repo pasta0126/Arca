@@ -49,6 +49,7 @@ public sealed class CourseScreenTests
     readonly List<SetConceptAmountsRequest> _saved = [];
     RecordingConfirmations _confirmations = new(true);
     int _refreshes;
+    bool _amountsFail;
 
     AcademicYearSummary AddYear(int start, bool active = false)
     {
@@ -95,6 +96,11 @@ public sealed class CourseScreenTests
         (id, _) =>
         {
             var year = _years.Single(y => y.Id == id);
+            if (_amountsFail)
+            {
+                return Task.FromResult(Result<ConceptAmountsView>.Failure(new Error("SchoolYears.NotFound")));
+            }
+
             if (_amounts.TryGetValue(id, out var own))
             {
                 return Task.FromResult(Result<ConceptAmountsView>.Success(new ConceptAmountsView(id, own.Fee, own.Deposit, own.Key, true, false)));
@@ -537,5 +543,20 @@ public sealed class CourseScreenTests
         Dispatcher.UIThread.RunJobs();
         ScreenshotTests.Take(window, "course");
         window.Close();
+    }
+
+    [Fact]
+    [Trait("spec", Spec + ": Feedback y doble ejecución en la sección Curso")]
+    public async Task Defining_amounts_that_cannot_be_read_says_so_instead_of_doing_nothing()
+    {
+        var year = AddYear(2026, active: true);
+        var model = Model();
+        _amountsFail = true;
+
+        await model.DefineAmountsAsync(year.Id);
+
+        Assert.Null(_forms.Last);
+        Assert.Single(_notifications.Published);
+        Assert.Equal(NotificationKind.Error, _notifications.Published[0].Kind);
     }
 }
