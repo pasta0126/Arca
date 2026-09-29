@@ -13,7 +13,7 @@ using Arca.Infrastructure.Storage;
 // The default folder is the one the portable application uses when it is run from a build (src/Arca.Desktop/bin/Debug/net10.0/data),
 // so `build/run.sh` opens it. Close ARCA before running this: it needs the database to itself.
 
-const string DefaultPassword = "arca";
+const string DefaultPassword = "demo";
 var options = args.Select((a, i) => (a, i)).Where(x => x.a.StartsWith("--", StringComparison.Ordinal)).ToDictionary(x => x.a, x => x.i + 1 < args.Length && !args[x.i + 1].StartsWith("--", StringComparison.Ordinal) ? args[x.i + 1] : string.Empty);
 var folder = Path.GetFullPath(options.GetValueOrDefault("--folder") is { Length: > 0 } given ? given : "src/Arca.Desktop/bin/Debug/net10.0/data");
 var password = options.GetValueOrDefault("--password") is { Length: > 0 } typed ? typed : DefaultPassword;
