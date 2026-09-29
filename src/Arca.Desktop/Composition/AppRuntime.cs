@@ -10,6 +10,7 @@ using Arca.UI.Access;
 using Arca.UI.Actions;
 using Arca.UI.Assigning;
 using Arca.UI.Charges;
+using Arca.UI.Identity;
 using Arca.UI.Course;
 using Arca.UI.Students;
 using Arca.UI.Lockers;
@@ -43,6 +44,17 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
     public LockerServices LockerServices => services.GetRequiredService<LockerServices>();
 
     public StudentServices StudentServices => services.GetRequiredService<StudentServices>();
+
+    public IdentityServices IdentityServices => services.GetRequiredService<IdentityServices>();
+
+    public CentreIdentityModel Identity => services.GetRequiredService<CentreIdentityModel>();
+
+    public ILogoPicker LogoPicker => services.GetRequiredService<ILogoPicker>();
+
+    /// <summary>Puts the theme on the running application. Set by the application once it has one.</summary>
+    public Arca.UI.Theme.ThemeManager? Theme { get; private set; }
+
+    public void SetTheme(Arca.UI.Theme.ThemeManager theme) => Theme = theme;
 
     public ChargeServices ChargeServices => services.GetRequiredService<ChargeServices>();
 

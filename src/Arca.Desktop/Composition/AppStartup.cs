@@ -23,6 +23,7 @@ using Arca.UI.Map;
 using Arca.UI.Confirmation;
 using Arca.UI.Notifications;
 using Arca.UI.Preferences;
+using Arca.UI.Identity;
 using Arca.UI.Screens;
 using Arca.UI.Shell;
 using Avalonia.Controls;
@@ -87,6 +88,9 @@ public static class AppStartup
             .AddSingleton(CourseComposition.Create(inventory, clock, localizer))
             .AddSingleton(LockersComposition.Create(inventory, clock, localizer))
             .AddSingleton(ChargesComposition.Create(inventory, clock, localizer))
+            .AddSingleton(IdentityComposition.Create(inventory))
+            .AddSingleton(new CentreIdentityModel())
+            .AddSingleton<ILogoPicker>(new WindowLogoPicker(() => windows.Current, localizer.Get("Identity.Label.PickLogoTitle")))
             .AddSingleton(studentWiring.Students)
             .AddSingleton(studentWiring.Pickers)
             .AddSingleton<IChoiceDialogs>(new WindowChoiceDialogs(() => windows.Current))

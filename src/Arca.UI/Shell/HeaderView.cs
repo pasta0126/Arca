@@ -17,12 +17,14 @@ public sealed class HeaderView : UserControl
 {
     readonly GlobalStateService _state;
     readonly ILocalizer _localizer;
+    readonly string _appName;
 
     /// <param name="centreName">The name shown: the centre's own once the identity exists, the name of the application until then.</param>
     public HeaderView(GlobalStateService state, ILocalizer localizer, string centreName)
     {
         _state = state;
         _localizer = localizer;
+        _appName = centreName;
         Logo = new ContentControl { VerticalAlignment = VerticalAlignment.Center };
         Name = ThemedText.Title(centreName);
         Name.VerticalAlignment = VerticalAlignment.Center;
@@ -56,6 +58,25 @@ public sealed class HeaderView : UserControl
 
         state.Changed += (_, _) => Refresh();
         Refresh();
+    }
+
+    /// <summary>
+    /// Makes the header show the identity of the centre (ui-shell, identitat-i-tema): its name, or the one of the application while it
+    /// has none, and its logo when it has one. It follows every save at once.
+    /// </summary>
+    public void ShowIdentity(Arca.UI.Identity.CentreIdentityModel identity)
+    {
+        void Update()
+        {
+            var view = identity.Current;
+            Name.Text = view.Name is { Length: > 0 } name ? name : _appName;
+            Logo.Content = view.Logo is { } bytes && Arca.UI.Identity.LogoImages.TryDecode(bytes) is { } bitmap
+                ? new Image { Source = bitmap, Height = 32, VerticalAlignment = VerticalAlignment.Center }
+                : null;
+        }
+
+        identity.Changed += (_, _) => Update();
+        Update();
     }
 
     /// <summary>The indicator of long work, shown while any action takes more than 300 ms.</summary>

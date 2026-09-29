@@ -6,6 +6,7 @@ using Arca.UI.Actions;
 using Arca.UI.Common;
 using Arca.UI.Course;
 using Arca.UI.Screens;
+using Arca.UI.Identity;
 using Arca.UI.Info;
 using Arca.UI.Assigning;
 using Arca.UI.Charges;
@@ -38,6 +39,8 @@ public sealed class MainWindow : Window
         var state = runtime.GlobalState;
         var navigator = new SearchNavigator();
         var notifier = new ResultNotifier(runtime.Notifications, localizer, runtime.ErrorLog);
+        var themeSettings = new ThemeSettingsViewModel(runtime.Preferences, runtime.Identity, (choice, accent) => runtime.Theme?.Apply(choice, accent));
+        themeSettings.ApplySaved(); // the theme chosen on this computer, with the accent of the centre
         var screenContext = new ScreenContext(
             localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay, runtime.Confirmations, runtime.Forms, () => state.RefreshAsync(), runtime.Choices);
         var homeModel = new LockerHomeModel(
@@ -48,7 +51,7 @@ public sealed class MainWindow : Window
         var registry = SectionRegistry.Compose(
             new Dictionary<string, Func<Avalonia.Controls.Control>>
             {
-                [ShellCatalog.Settings] = () => SettingsRoot(runtime),
+                [ShellCatalog.Settings] = () => SettingsRoot(runtime, themeSettings, screenContext),
                 [ShellCatalog.Lockers] = () => LockersSection.Create(runtime.LockerServices, screenContext, runtime.Actions[StandardActions.New], assignments),
                 [ShellCatalog.Students] = () => StudentsView.Create(
                     new StudentsViewModel(runtime.StudentServices, screenContext, assignments, runtime.Actions[StandardActions.New],
@@ -65,6 +68,7 @@ public sealed class MainWindow : Window
         var shell = new ShellView(navigation, localizer, new NotificationHostView(runtime.Notifications, localizer));
         var header = new StackPanel();
         var headerView = new HeaderView(state, localizer, localizer.Get("App.Label.Title"));
+        headerView.ShowIdentity(runtime.Identity);
         var search = new GlobalSearchViewModel(
             runtime.Search.HandleAsync, runtime.Delay, notifier,
             navigator, localizer);
@@ -81,15 +85,21 @@ public sealed class MainWindow : Window
         Opened += (_, _) => _ = state.RefreshAsync();
     }
 
-    static ScreenView SettingsRoot(AppRuntime runtime)
+    static ScreenView SettingsRoot(AppRuntime runtime, ThemeSettingsViewModel themeSettings, ScreenContext screenContext)
     {
         var localizer = runtime.Localizer;
         var security = new CollapsibleSectionViewModel("security", runtime.Security.Title, () => runtime.Security.Note, runtime.Preferences);
+        var identity = new IdentityViewModel(
+            runtime.IdentityServices, runtime.Identity, runtime.LogoPicker, localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay);
+        var identitySection = new CollapsibleSectionViewModel("identity", localizer.Get("Identity.Section.Identity"), () => string.Empty, runtime.Preferences);
+        var themeSection = new CollapsibleSectionViewModel("theme", localizer.Get("Identity.Section.Theme"), () => string.Empty, runtime.Preferences);
         var content = new StackPanel
         {
             Children =
             {
                 new InfoView(new InfoViewModel(runtime.Info, localizer)),
+                new CollapsibleSectionView(identitySection, IdentitySettingsView.Identity(identity, localizer)),
+                new CollapsibleSectionView(themeSection, IdentitySettingsView.Theme(themeSettings, localizer)),
                 new CollapsibleSectionView(security, new SecurityView(runtime.Security)),
             },
         };

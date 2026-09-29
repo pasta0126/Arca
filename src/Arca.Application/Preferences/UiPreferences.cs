@@ -19,8 +19,21 @@ public sealed record WindowBounds(int X, int Y, double Width, double Height, boo
 /// <param name="Sections">Whether each collapsible section is expanded, by its name; a section not listed uses its default.</param>
 /// <param name="CompactLists">Whether the lists of zones and lockers use the compact density.</param>
 /// <param name="SidebarCollapsed">Whether the navigation sidebar shows only its icons.</param>
+/// <summary>Which theme the person chose for this computer (ui-shell, Tema claro, oscuro o del sistema).</summary>
+public enum ThemeChoice
+{
+    /// <summary>Light, neutral and pastel: the default, whatever the operating system is set to.</summary>
+    Light,
+
+    Dark,
+
+    /// <summary>Whatever the operating system is using, following it when it changes.</summary>
+    System,
+}
+
 public sealed record UiPreferences(
-    WindowBounds? Window = null, IReadOnlyDictionary<string, bool>? Sections = null, bool CompactLists = false, bool SidebarCollapsed = false);
+    WindowBounds? Window = null, IReadOnlyDictionary<string, bool>? Sections = null, bool CompactLists = false, bool SidebarCollapsed = false,
+    ThemeChoice Theme = ThemeChoice.Light);
 
 /// <summary>Where the interface preferences are kept. Reading never fails: anything wrong gives the defaults.</summary>
 public interface IUiPreferencesStore

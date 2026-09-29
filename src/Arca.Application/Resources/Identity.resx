@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+    <data name="Identity.Error.NameRequired" xml:space="preserve">
+    <value>Escriu el nom del centre.</value>
+  </data>
+  <data name="Identity.Error.NameTooLong" xml:space="preserve">
+    <value>El nom del centre pot tenir com a màxim {0} caràcters.</value>
+  </data>
+  <data name="Identity.Error.LogoFormatNotSupported" xml:space="preserve">
+    <value>El logotip ha de ser un fitxer PNG o JPEG.</value>
+  </data>
+  <data name="Identity.Error.LogoTooLarge" xml:space="preserve">
+    <value>El logotip pesa massa: el màxim és {0} MB.</value>
+  </data>
+  <data name="Identity.Error.LogoUnreadable" xml:space="preserve">
+    <value>No s'ha pogut llegir la imatge. Tria un altre fitxer; el logotip actual no s'ha canviat.</value>
+  </data>
+  <data name="Identity.Error.AccentInvalid" xml:space="preserve">
+    <value>El color ha d'escriure's com a #RRGGBB, per exemple #A9C4D3.</value>
+  </data>
+  <data name="Identity.Result.Saved" xml:space="preserve">
+    <value>Identitat del centre desada.</value>
+  </data>
+  <data name="Identity.Label.Name" xml:space="preserve">
+    <value>Nom del centre</value>
+  </data>
+  <data name="Identity.Label.Accent" xml:space="preserve">
+    <value>Color d'accent</value>
+  </data>
+  <data name="Identity.Label.Preview" xml:space="preserve">
+    <value>Vista prèvia de la capçalera</value>
+  </data>
+  <data name="Identity.Label.PreviewButton" xml:space="preserve">
+    <value>Botó principal</value>
+  </data>
+  <data name="Identity.Action.ChooseLogo" xml:space="preserve">
+    <value>Tria un logotip…</value>
+  </data>
+  <data name="Identity.Action.RemoveLogo" xml:space="preserve">
+    <value>Treu el logotip</value>
+  </data>
+  <data name="Identity.Action.ResetAccent" xml:space="preserve">
+    <value>Restableix el color</value>
+  </data>
+  <data name="Identity.Reason.NoLogo" xml:space="preserve">
+    <value>El centre no té cap logotip.</value>
+  </data>
+  <data name="Identity.Theme.Light" xml:space="preserve">
+    <value>Clar (per defecte)</value>
+  </data>
+  <data name="Identity.Theme.Dark" xml:space="preserve">
+    <value>Fosc</value>
+  </data>
+  <data name="Identity.Theme.System" xml:space="preserve">
+    <value>El del sistema</value>
+  </data>
+  <data name="Identity.Section.Identity" xml:space="preserve">
+    <value>Identitat del centre</value>
+  </data>
+  <data name="Identity.Section.Theme" xml:space="preserve">
+    <value>Aspecte</value>
+  </data>
+  <data name="Identity.Label.PickLogoTitle" xml:space="preserve">
+    <value>Tria el logotip del centre</value>
+  </data>
+</root>

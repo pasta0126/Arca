@@ -18,7 +18,7 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 | 11 | `registre-i-actualitzacions` | Registro opcional de la instalación y aviso de versión nueva (software libre y gratuito, sin licencias) | redactado |
 | 12 | `configuracio-inicial` | Asistente guiado de primera configuración | redactado |
 | 13 | `ux-fonaments` | Sistema de diseño: adaptabilidad, colapsables, arrastrar y soltar, menús, componentes de feedback | redactado |
-| 14 | `ui-shell` | Navegación, búsqueda global, pantalla principal, tema e identidad del centro | redactado (pantalla principal provisional: mapa de taquillas por zona) |
+| 14 | `ui-shell` | Navegación, búsqueda global, pantalla principal, tema e identidad del centro | implementado y archivado (`2026-09-29-ui-shell`; pantalla principal provisional: mapa de taquillas por zona) |
 | 15 | `pantalles-de-domini` | Pantallas de dominio (curso e importes, zonas, taquillas, alumnos, cargos, y después el resto), solo las del hito 1 (Curso, Taquillas, Alumnos, Cobros); sin maquetas, interfaz decidida en las specs y a iterar | implementado y archivado (`2026-09-29-pantalles-de-domini`) |
 | 16 | `acces-i-xifrat` | Contraseña compartida del centro, clave de recuperación obligatoria, fichero de claves y copias (sustituye la clave interna de `arquitectura-base`) | redactado; va con `arquitectura-base` |
 

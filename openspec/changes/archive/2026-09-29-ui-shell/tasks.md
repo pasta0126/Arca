@@ -24,13 +24,13 @@
 
 ## 4. Identidad y tema
 
-- [ ] 4.1 Configuración del centro con nombre, logo y color en la base de datos y su caso de uso de guardado (D7)
-- [ ] 4.2 Validación del logo por firma de fichero, tamaño de hasta 1 MB y decodificación, con rechazo sin cambiar el actual
-- [ ] 4.3 Función pura de contraste que ajusta el acento y el texto para claro y oscuro (D8)
-- [ ] 4.4 Tema claro (pastel, por defecto), oscuro y del sistema como preferencia local aplicada sin reiniciar (el claro pastel por defecto ya existe desde `arquitectura-base`)
-- [ ] 4.5 Valores finales de los recursos con nombre de `ux-fonaments` para ambos temas, con estado por icono o texto además del color (D9)
-- [ ] 4.6 Vista previa de la identidad antes de aplicar y pantalla de arranque con la identidad de ARCA
-- [ ] 4.7 Pruebas: logo válido, formato y tamaño rechazados, imagen dañada, acentos extremos con contraste, tema del sistema que cambia y restauración de la copia con la identidad
+- [x] 4.1 Configuración del centro con nombre, logo y color en la base de datos y su caso de uso de guardado (D7)
+- [x] 4.2 Validación del logo por firma de fichero, tamaño de hasta 1 MB y decodificación, con rechazo sin cambiar el actual
+- [x] 4.3 Función pura de contraste que ajusta el acento y el texto para claro y oscuro (D8)
+- [x] 4.4 Tema claro (pastel, por defecto), oscuro y del sistema como preferencia local aplicada sin reiniciar (el claro pastel por defecto ya existe desde `arquitectura-base`)
+- [x] 4.5 Valores finales de los recursos con nombre de `ux-fonaments` para ambos temas, con estado por icono o texto además del color (D9)
+- [x] 4.6 Vista previa de la identidad antes de aplicar y pantalla de arranque con la identidad de ARCA
+- [x] 4.7 Pruebas: logo válido, formato y tamaño rechazados, imagen dañada, acentos extremos con contraste, tema del sistema que cambia y restauración de la copia con la identidad
 
 ## 5. Pantalla de inicio
 
@@ -46,7 +46,7 @@
 
 - [x] 6.1 Estados vacíos con guía en cada sección y en el mapa
 - [x] 6.2 Resultados y errores de identidad y búsqueda mediante las notificaciones comunes (la búsqueda y el mapa; la identidad llega con el grupo 4)
-- [ ] 6.3 Protección contra doble ejecución en los guardados de identidad (queda con la identidad, grupo 4, fuera del hito 1; la asignación y las acciones del detalle ya la tienen)
+- [x] 6.3 Protección contra doble ejecución en los guardados de identidad (queda con la identidad, grupo 4, fuera del hito 1; la asignación y las acciones del detalle ya la tienen)
 - [x] 6.4 Claves de recurso en catalán para todos los textos
 - [x] 6.5 Pruebas de mensajes, estados vacíos y doble ejecución
 
