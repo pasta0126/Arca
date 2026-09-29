@@ -58,6 +58,15 @@
   <data name="Common.Action.New" xml:space="preserve">
     <value>Nou</value>
   </data>
+  <data name="Common.Action.ClearFilter" xml:space="preserve">
+    <value>Neteja els filtres</value>
+  </data>
+  <data name="Common.Action.Save" xml:space="preserve">
+    <value>Desa</value>
+  </data>
+  <data name="Common.Form.FixErrors" xml:space="preserve">
+    <value>Revisa els camps marcats.</value>
+  </data>
   <data name="Common.Action.Help" xml:space="preserve">
     <value>Ajuda</value>
   </data>

@@ -1,10 +1,10 @@
 ## 1. Base común de pantallas
 
-- [ ] 1.1 Modelo de vista de lista (consulta, filtros, orden, selección por identidad) y de detalle (elemento, acciones, historial) reutilizables (D1)
-- [ ] 1.2 Modelo de formulario con errores por campo a partir de códigos estables, que conserva lo escrito y usa el comando de ejecución única (D3)
-- [ ] 1.3 Enlace de acciones del registro a botones, menús y atajos con no disponibles y su motivo desde Application (D2)
-- [ ] 1.4 Registro de las pantallas en las secciones Curso, Taquillas, Alumnos y Cobros (D7)
-- [ ] 1.5 Prueba de arquitectura: los modelos de vista no dependen de Domain ni de Infrastructure
+- [x] 1.1 Modelo de vista de lista (consulta, filtros, orden, selección por identidad) y de detalle (elemento, acciones, historial) reutilizables (D1)
+- [x] 1.2 Modelo de formulario con errores por campo a partir de códigos estables, que conserva lo escrito y usa el comando de ejecución única (D3)
+- [x] 1.3 Enlace de acciones del registro a botones, menús y atajos con no disponibles y su motivo desde Application (D2)
+- [x] 1.4 Registro de las pantallas en las secciones Curso, Taquillas, Alumnos y Cobros (D7)
+- [x] 1.5 Prueba de arquitectura: los modelos de vista no dependen de Domain ni de Infrastructure
 - [ ] 1.6 Claves de recurso en catalán para todos los textos, con los términos del glosario (D8)
 
 ## 2. Consultas de lectura
