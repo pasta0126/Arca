@@ -15,13 +15,13 @@
 
 ## 3. Sección Curso
 
-- [ ] 3.1 Lista de cursos con estado y curso activo destacado, y estado vacío
-- [ ] 3.2 Formulario de nuevo curso con nombre derivado y validación
-- [ ] 3.3 Activar y eliminar un curso con confirmación y con no disponibles y su motivo
-- [ ] 3.4 Detalle de solo lectura para cursos no activos
-- [ ] 3.5 Formulario de importes con propuesta heredada, validación y aviso de efecto, e historial de importes
-- [ ] 3.6 Aviso de curso activo sin importes con acceso directo
-- [ ] 3.7 Pruebas: crear, activar, eliminar, importes válidos y no válidos, coma decimal, curso sin importes y doble clic
+- [x] 3.1 Lista de cursos con estado y curso activo destacado, y estado vacío
+- [x] 3.2 Formulario de nuevo curso con nombre derivado y validación
+- [x] 3.3 Activar y eliminar un curso con confirmación y con no disponibles y su motivo
+- [x] 3.4 Detalle de solo lectura para cursos no activos
+- [x] 3.5 Formulario de importes con propuesta heredada, validación y aviso de efecto, e historial de importes
+- [x] 3.6 Aviso de curso activo sin importes con acceso directo
+- [x] 3.7 Pruebas: crear, activar, eliminar, importes válidos y no válidos, coma decimal, curso sin importes y doble clic
 
 ## 4. Sección Taquillas
 

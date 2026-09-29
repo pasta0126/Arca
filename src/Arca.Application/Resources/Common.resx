@@ -76,4 +76,10 @@
   <data name="Common.Key.Escape" xml:space="preserve">
     <value>Esc</value>
   </data>
+  <data name="Common.Error.DateInvalid" xml:space="preserve">
+    <value>Escriu una data vàlida, per exemple 01/09/2026.</value>
+  </data>
+  <data name="Common.Error.NumberInvalid" xml:space="preserve">
+    <value>Escriu un valor numèric, per exemple 50,50.</value>
+  </data>
 </root>

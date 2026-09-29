@@ -31,6 +31,6 @@ public sealed class GetConceptAmountsHandler(IAcademicYearRepository years, ICon
 
         var previous = (await years.ListAsync(ct)).Where(y => y.StartDate < year.StartDate).OrderByDescending(y => y.StartDate).FirstOrDefault();
         var proposed = previous is null ? [] : await amounts.ListByYearAsync(previous.Id, ct);
-        return Result<ConceptAmountsView>.Success(ConceptAmountsView.Of(year.Id, proposed, editable, isProposed: proposed.Count > 0));
+        return Result<ConceptAmountsView>.Success(ConceptAmountsView.Of(year.Id, proposed, editable, isProposed: proposed.Count > 0, proposedFrom: proposed.Count > 0 ? previous!.Name : null));
     }
 }

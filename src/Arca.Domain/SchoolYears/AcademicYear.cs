@@ -68,14 +68,18 @@ public sealed class AcademicYear
     /// </summary>
     public Result<AcademicYear> Activate(IEnumerable<AcademicYear> all)
     {
-        if (all.Any(y => y.IsActive && y.Id != Id))
+        var allowed = CheckCanActivate(all);
+        if (allowed.IsSuccess)
         {
-            return Result<AcademicYear>.Failure(SchoolYearErrors.AnotherActive);
+            IsActive = true;
         }
 
-        IsActive = true;
-        return Result<AcademicYear>.Success(this);
+        return allowed;
     }
+
+    /// <summary>Whether the year could be activated now, without changing anything: what a screen asks to enable or disable Activate.</summary>
+    public Result<AcademicYear> CheckCanActivate(IEnumerable<AcademicYear> all) =>
+        all.Any(y => y.IsActive && y.Id != Id) ? Result<AcademicYear>.Failure(SchoolYearErrors.AnotherActive) : Result<AcademicYear>.Success(this);
 
     /// <summary>Whether the year may be deleted: only one with no enrolments and no assignments.</summary>
     /// <param name="hasData">True if any enrolment or assignment belongs to the year.</param>

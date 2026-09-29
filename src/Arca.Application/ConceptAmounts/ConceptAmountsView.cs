@@ -10,14 +10,15 @@ namespace Arca.Application.ConceptAmounts;
 /// none is defined yet, or empty when there is no previous year either. Editable only while the year has not finished.
 /// </summary>
 public sealed record ConceptAmountsView(
-    Guid YearId, decimal? Fee, decimal? Deposit, decimal? KeyReplacementFee, bool IsEditable, bool IsProposed)
+    Guid YearId, decimal? Fee, decimal? Deposit, decimal? KeyReplacementFee, bool IsEditable, bool IsProposed, string? ProposedFrom = null)
 {
     /// <summary>Whether the amounts needed to assign a locker (the fee and the deposit) are defined for the year.</summary>
     public bool IsComplete => Fee is not null && Deposit is not null;
 
-    public static ConceptAmountsView Of(Guid yearId, IReadOnlyList<ConceptAmount> amounts, bool isEditable, bool isProposed) => new(
+    public static ConceptAmountsView Of(
+        Guid yearId, IReadOnlyList<ConceptAmount> amounts, bool isEditable, bool isProposed, string? proposedFrom = null) => new(
         yearId, AmountOf(amounts, ChargeConcept.Fee), AmountOf(amounts, ChargeConcept.Deposit), AmountOf(amounts, ChargeConcept.KeyReplacementFee),
-        isEditable, isProposed);
+        isEditable, isProposed, proposedFrom);
 
     static decimal? AmountOf(IReadOnlyList<ConceptAmount> amounts, ChargeConcept concept) =>
         amounts.FirstOrDefault(a => a.Concept == concept)?.Amount.Amount;

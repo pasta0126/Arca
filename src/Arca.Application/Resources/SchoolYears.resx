@@ -30,4 +30,41 @@
   <data name="SchoolYears.Error.NotFound" xml:space="preserve">
     <value>No s'ha trobat el curs.</value>
   </data>
+  <data name="SchoolYears.Result.Created" xml:space="preserve">
+    <value>Curs {0} creat.</value>
+    <comment>{0} year name</comment>
+  </data>
+  <data name="SchoolYears.Result.Activated" xml:space="preserve">
+    <value>Curs {0} activat.</value>
+    <comment>{0} year name</comment>
+  </data>
+  <data name="SchoolYears.Result.Deleted" xml:space="preserve">
+    <value>Curs {0} eliminat.</value>
+    <comment>{0} year name</comment>
+  </data>
+  <data name="SchoolYears.Label.ActivateTitle" xml:space="preserve">
+    <value>Activar el curs {0}</value>
+    <comment>{0} year name</comment>
+  </data>
+  <data name="SchoolYears.Label.ActivateConsequence" xml:space="preserve">
+    <value>A partir d'ara, les altes d'alumnes, les matrícules i les assignacions de taquilla es faran en el curs {0}.</value>
+    <comment>{0} year name</comment>
+  </data>
+  <data name="SchoolYears.Label.ActivateConfirm" xml:space="preserve">
+    <value>Activa el curs</value>
+  </data>
+  <data name="SchoolYears.Label.DeleteTitle" xml:space="preserve">
+    <value>Eliminar el curs {0}</value>
+    <comment>{0} year name</comment>
+  </data>
+  <data name="SchoolYears.Label.DeleteConsequence" xml:space="preserve">
+    <value>El curs {0} s'eliminarà i no es podrà recuperar. No té matrícules ni assignacions.</value>
+    <comment>{0} year name</comment>
+  </data>
+  <data name="SchoolYears.Label.DeleteConfirm" xml:space="preserve">
+    <value>Elimina el curs</value>
+  </data>
+  <data name="SchoolYears.Empty.NoYears" xml:space="preserve">
+    <value>Encara no hi ha cap curs. Cal un curs escolar per poder treballar: crea el primer.</value>
+  </data>
 </root>

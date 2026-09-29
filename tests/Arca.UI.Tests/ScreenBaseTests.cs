@@ -158,7 +158,7 @@ public sealed class ScreenBaseTests
     FormViewModel<int> Form(Func<Task<Result<int>>> save, Action<int>? saved = null) => new(
         [new FormFieldModel("start", "Inici"), new FormFieldModel("end", "Fi")], _ => save(),
         error => error.Code == "SchoolYears.DatesInvalid" ? "end" : null,
-        n => $"{n} desat", "SaveYear", _notifications, _localizer, _log, _delay, saved);
+        n => $"{n} desat", "SaveYear", _notifications, _localizer, _log, _delay, "Curs", "Desa", saved);
 
     [Fact]
     [Trait("spec", Spec + ": D3 Formularios: validar al guardar, sin perder lo escrito")]

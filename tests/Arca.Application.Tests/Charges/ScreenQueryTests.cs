@@ -3,6 +3,9 @@
 
 using System.Text.Json;
 using Arca.Application.Catalog.ListCatalog;
+using Arca.Application.ConceptAmounts.GetConceptAmountsHistory;
+using Arca.Application.Localization;
+using Arca.Application.SchoolYears.GetYearScreen;
 using Arca.Application.Lockers;
 using Arca.Application.Lockers.ListLockerRows;
 using Arca.Application.Lockers.MarkLockerOutOfService;
@@ -150,5 +153,71 @@ public sealed class ScreenQueryTests
 
         Assert.NotEmpty(catalog.Levels);
         Assert.Equal(catalog.Levels.Order(Arca.Domain.Common.TextComparer.Comparer), catalog.Levels);
+    }
+
+    // --- Courses ---
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/pantalles-curs-i-imports: Activar un curso, Eliminar un curso vacío, Aviso del efecto")]
+    public async Task A_year_says_why_it_cannot_be_activated_or_deleted_and_whether_it_has_charges_and_amounts()
+    {
+        var world = new PagamentsWorld();
+        var current = await world.YearAsync(2026);
+        var next = await world.YearAsync(2027);
+        var handler = new GetYearScreenHandler(world.Store.Years, world.Store.ConceptAmounts, world.Store.Charges, world.Clock);
+
+        var beforeAnything = (await handler.HandleAsync(new GetYearScreenRequest(next), default)).Value!;
+        Assert.Equal("SchoolYears.AnotherActive", beforeAnything.ActivationBlocked!.Code);
+        Assert.Null(beforeAnything.DeletionBlocked);
+        Assert.False(beforeAnything.HasAmounts);
+        Assert.False(beforeAnything.HasCharges);
+
+        await world.SetAmountsAsync(current, 50m, 20m, 10m);
+        var zone = await world.ZoneAsync("Planta 1");
+        var locker = await world.LockerAsync(1, zone);
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, locker);
+        world.Store.YearsWithData.Add(current); // the in-memory store does not derive it from the enrolments
+
+        var active = (await handler.HandleAsync(new GetYearScreenRequest(current), default)).Value!;
+        Assert.Null(active.ActivationBlocked); // the active year has nothing to activate
+        Assert.Equal("SchoolYears.HasData", active.DeletionBlocked!.Code);
+        Assert.True(active.HasAmounts);
+        Assert.True(active.HasCharges);
+        Assert.False(active.IsHistoric);
+    }
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/pantalles-curs-i-imports: Detalle del curso de solo lectura si no está activo")]
+    public async Task A_year_that_has_ended_is_historic_and_its_amounts_are_blocked()
+    {
+        var world = new PagamentsWorld();
+        await world.YearAsync(2026); // the first year of the system is the active one
+        var old = await world.YearAsync(2020);
+        var handler = new GetYearScreenHandler(world.Store.Years, world.Store.ConceptAmounts, world.Store.Charges, world.Clock);
+
+        var detail = (await handler.HandleAsync(new GetYearScreenRequest(old), default)).Value!;
+
+        Assert.True(detail.IsHistoric);
+        Assert.Equal("ConceptAmounts.YearFinished", detail.AmountsBlocked!.Code);
+    }
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/pantalles-curs-i-imports: Aviso del efecto de cambiar un importe (Historial de importes)")]
+    public async Task The_history_of_the_amounts_lists_each_definition_and_change_with_its_values_most_recent_first()
+    {
+        var world = new PagamentsWorld();
+        var year = await world.YearAsync(2026);
+        await world.SetAmountsAsync(year, 50m, 20m, 10m);
+        world.Clock.Advance(TimeSpan.FromHours(1));
+        await world.SetAmountsAsync(year, 55m, 20m, 10m);
+        var handler = new GetConceptAmountsHistoryHandler(world.Store.Years, world.Store.ConceptAmounts, world.Store.ConceptAmountEvents, new ResxLocalizer());
+
+        var lines = (await handler.HandleAsync(new GetConceptAmountsHistoryRequest(year), default)).Value!;
+
+        Assert.Equal(4, lines.Count); // three definitions and one change
+        Assert.Contains("de 50,00", lines[0].Text, StringComparison.Ordinal);
+        Assert.Contains("a 55,00", lines[0].Text, StringComparison.Ordinal);
+        Assert.Equal(lines.OrderByDescending(l => l.At), lines);
     }
 }

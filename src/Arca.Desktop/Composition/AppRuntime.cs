@@ -8,7 +8,9 @@ using Arca.Application.Search;
 using Arca.Application.Localization;
 using Arca.UI.Access;
 using Arca.UI.Actions;
+using Arca.UI.Course;
 using Arca.UI.Map;
+using Arca.UI.Screens;
 using Arca.UI.Notifications;
 using Arca.UI.Preferences;
 using Arca.UI.Shell;
@@ -31,6 +33,10 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
     public GlobalStateService GlobalState => services.GetRequiredService<GlobalStateService>();
 
     public LockerHomeServices HomeServices => services.GetRequiredService<LockerHomeServices>();
+
+    public CourseServices CourseServices => services.GetRequiredService<CourseServices>();
+
+    public IFormDialogs Forms => services.GetRequiredService<IFormDialogs>();
 
     public GlobalSearchHandler Search => services.GetRequiredService<GlobalSearchHandler>();
 

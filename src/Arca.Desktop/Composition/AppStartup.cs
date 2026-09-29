@@ -23,6 +23,7 @@ using Arca.UI.Map;
 using Arca.UI.Confirmation;
 using Arca.UI.Notifications;
 using Arca.UI.Preferences;
+using Arca.UI.Screens;
 using Arca.UI.Shell;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
@@ -82,6 +83,8 @@ public static class AppStartup
             .AddSingleton(preferences)
             .AddSingleton(globalState)
             .AddSingleton(LockerHomeComposition.Create(inventory, clock, localizer))
+            .AddSingleton(CourseComposition.Create(inventory, clock, localizer))
+            .AddSingleton<IFormDialogs>(new WindowFormDialogs(() => windows.Current, localizer))
             .AddSingleton(new GlobalSearchHandler(
                 inventory.Students, inventory.Enrollments, inventory.Catalog, inventory.Years, inventory.Lockers, inventory.Zones,
                 inventory.Assignments, inventory.Charges))

@@ -49,6 +49,28 @@ public sealed class FormFieldModel(string id, string label) : ObservableObject
     public bool HasError => _error is not null;
 }
 
+/// <summary>What a form window needs from the model of a form, whatever it returns on success.</summary>
+public interface IFormModel : System.ComponentModel.INotifyPropertyChanged
+{
+    string Title { get; }
+
+    string? Note { get; }
+
+    string? Summary { get; }
+
+    IReadOnlyList<FormFieldModel> Fields { get; }
+
+    /// <summary>The label of the button that saves.</summary>
+    string SaveLabel { get; }
+
+    System.Windows.Input.ICommand SaveCommand { get; }
+
+    IWorkState Work { get; }
+
+    /// <summary>Raised once saving succeeded: the window closes.</summary>
+    event EventHandler? Succeeded;
+}
+
 /// <summary>
 /// The model of a create or edit form (pantalles-de-domini, D3). It validates when saving, not on every key: the rules are those of
 /// Application, and the error it returns comes with a stable code that says which field it is about, so the message shows next to
@@ -57,13 +79,14 @@ public sealed class FormFieldModel(string id, string label) : ObservableObject
 /// common notifications.
 /// </summary>
 /// <typeparam name="TResult">What saving returns on success.</typeparam>
-public sealed class FormViewModel<TResult> : ObservableObject
+public sealed class FormViewModel<TResult> : ObservableObject, IFormModel
 {
     readonly Dictionary<string, FormFieldModel> _fields;
     readonly Func<Error, string?> _fieldOf;
     readonly ILocalizer _localizer;
     readonly Action<TResult>? _saved;
     string? _summary;
+    string? _note;
 
     /// <param name="fields">The fields, in the order they are shown.</param>
     /// <param name="save">Saves what was written. It reads the fields; it validates nothing itself.</param>
@@ -72,8 +95,10 @@ public sealed class FormViewModel<TResult> : ObservableObject
     public FormViewModel(
         IEnumerable<FormFieldModel> fields, Func<CancellationToken, Task<Result<TResult>>> save, Func<Error, string?> fieldOf,
         Func<TResult, string> successText, string context, INotificationService notifications, ILocalizer localizer, IErrorLog log, IDelay delay,
-        Action<TResult>? saved = null, Func<Task>? afterSuccess = null)
+        string title, string saveLabel, Action<TResult>? saved = null, Func<Task>? afterSuccess = null)
     {
+        Title = title;
+        SaveLabel = saveLabel;
         Fields = [.. fields];
         _fields = Fields.ToDictionary(f => f.Id);
         _fieldOf = fieldOf;
@@ -87,6 +112,7 @@ public sealed class FormViewModel<TResult> : ObservableObject
                 if (result.IsSuccess)
                 {
                     _saved?.Invoke(result.Value!);
+                    Succeeded?.Invoke(this, EventArgs.Empty);
                 }
 
                 return result;
@@ -94,7 +120,24 @@ public sealed class FormViewModel<TResult> : ObservableObject
             successText, context, notifications, localizer, log, delay, afterSuccess, ShowError);
     }
 
+    public string Title { get; }
+
+    public string SaveLabel { get; }
+
     public IReadOnlyList<FormFieldModel> Fields { get; }
+
+    public System.Windows.Input.ICommand SaveCommand => Save;
+
+    public IWorkState Work => Save;
+
+    public event EventHandler? Succeeded;
+
+    /// <summary>A line under the fields that explains something derived from what is written, such as the name of the course.</summary>
+    public string? Note
+    {
+        get => _note;
+        set => Set(ref _note, value);
+    }
 
     public FormFieldModel this[string id] => _fields[id];
 
@@ -129,8 +172,16 @@ public sealed class FormViewModel<TResult> : ObservableObject
         Summary = null;
     }
 
+    /// <summary>What a save answers when the person declined a confirmation on the way: nothing is reported, nothing was saved.</summary>
+    public static Error Cancelled { get; } = new("Common.Cancelled");
+
     bool ShowError(Error error)
     {
+        if (error == Cancelled)
+        {
+            return true;
+        }
+
         if (_fieldOf(error) is not { } id || !_fields.TryGetValue(id, out var field))
         {
             return false;

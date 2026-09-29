@@ -27,6 +27,9 @@ public interface IChargeRepository
     /// <summary>Every deposit that is due back, of any student.</summary>
     Task<IReadOnlyList<Charge>> ListDepositsDueBackAsync(CancellationToken ct);
 
+    /// <summary>Whether any charge, of any state, belongs to the year.</summary>
+    Task<bool> AnyInYearAsync(Guid yearId, CancellationToken ct);
+
     Task AddAsync(Charge charge, CancellationToken ct);
 
     /// <summary>Saves the changes made to a charge that was loaded from here.</summary>
