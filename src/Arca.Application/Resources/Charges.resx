@@ -198,4 +198,109 @@
   <data name="Charges.Empty.AmountsNotDefined" xml:space="preserve">
     <value>Encara no s'han definit els imports d'aquest curs. Cal definir-los abans d'assignar taquilles.</value>
   </data>
+  <data name="Charges.History.Created" xml:space="preserve">
+    <value>Càrrec creat per {0}.</value>
+  </data>
+  <data name="Charges.History.Paid" xml:space="preserve">
+    <value>Marcat com a pagat el {0}.</value>
+  </data>
+  <data name="Charges.History.AmountAdjusted" xml:space="preserve">
+    <value>Import canviat de {0} a {1}.</value>
+  </data>
+  <data name="Charges.History.StatusChanged" xml:space="preserve">
+    <value>Estat canviat de {0} a {1}.</value>
+  </data>
+  <data name="Charges.History.WithReason" xml:space="preserve">
+    <value>{0} Motiu: {1}</value>
+  </data>
+  <data name="Charges.Label.DebtLine" xml:space="preserve">
+    <value>{0} del curs {1}: {2}</value>
+  </data>
+  <data name="Charges.Label.Concept" xml:space="preserve">
+    <value>Concepte</value>
+  </data>
+  <data name="Charges.Label.Year" xml:space="preserve">
+    <value>Curs</value>
+  </data>
+  <data name="Charges.Label.Amount" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Charges.Label.Status" xml:space="preserve">
+    <value>Estat</value>
+  </data>
+  <data name="Charges.Label.PaidOn" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="Charges.Label.Reason" xml:space="preserve">
+    <value>Motiu</value>
+  </data>
+  <data name="Charges.Label.Pending" xml:space="preserve">
+    <value>Pendent</value>
+  </data>
+  <data name="Charges.Label.AllConcepts" xml:space="preserve">
+    <value>Tots els conceptes</value>
+  </data>
+  <data name="Charges.Label.AllYears" xml:space="preserve">
+    <value>Tots els cursos</value>
+  </data>
+  <data name="Charges.Label.Totals" xml:space="preserve">
+    <value>{0} alumnes · {1} pendents de pagament</value>
+  </data>
+  <data name="Charges.Label.SummaryUpToDate" xml:space="preserve">
+    <value>Està al corrent de pagament.</value>
+  </data>
+  <data name="Charges.Label.SummaryExempt" xml:space="preserve">
+    <value>Està al corrent: tots els càrrecs són exempts.</value>
+  </data>
+  <data name="Charges.Label.SummaryDebt" xml:space="preserve">
+    <value>Té pagaments pendents per un total de {0}.</value>
+  </data>
+  <data name="Charges.Label.KeyTitle" xml:space="preserve">
+    <value>Cobrar la reposició de clau a {0}</value>
+  </data>
+  <data name="Charges.Label.KeyConsequence" xml:space="preserve">
+    <value>Es crearà un càrrec pendent de {0} (import del curs {1}).</value>
+  </data>
+  <data name="Charges.Label.KeyConfirm" xml:space="preserve">
+    <value>Crea el càrrec</value>
+  </data>
+  <data name="Charges.Label.KeyNotDefinedTitle" xml:space="preserve">
+    <value>Falta l'import de la reposició</value>
+  </data>
+  <data name="Charges.Action.Pay" xml:space="preserve">
+    <value>Marca com a pagat</value>
+  </data>
+  <data name="Charges.Action.Exempt" xml:space="preserve">
+    <value>Marca com a exempt</value>
+  </data>
+  <data name="Charges.Action.Waive" xml:space="preserve">
+    <value>Condona</value>
+  </data>
+  <data name="Charges.Action.Void" xml:space="preserve">
+    <value>Anul·la</value>
+  </data>
+  <data name="Charges.Action.Adjust" xml:space="preserve">
+    <value>Canvia l'import</value>
+  </data>
+  <data name="Charges.Action.Revert" xml:space="preserve">
+    <value>Reverteix a pendent</value>
+  </data>
+  <data name="Charges.Action.History" xml:space="preserve">
+    <value>Historial del càrrec</value>
+  </data>
+  <data name="Charges.Action.KeyReplacement" xml:space="preserve">
+    <value>Cobra la reposició de clau</value>
+  </data>
+  <data name="Charges.Action.OpenCharges" xml:space="preserve">
+    <value>Veure els càrrecs</value>
+  </data>
+  <data name="Charges.Note.ReasonRequired" xml:space="preserve">
+    <value>El motiu és obligatori i pot tenir com a màxim 500 caràcters.</value>
+  </data>
+  <data name="Charges.Reason.PickStudent" xml:space="preserve">
+    <value>Tria un alumne de la llista.</value>
+  </data>
+  <data name="Charges.Empty.PickDebtor" xml:space="preserve">
+    <value>Tria un alumne de la llista per veure'n el desglossament del que deu.</value>
+  </data>
 </root>

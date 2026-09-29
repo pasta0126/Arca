@@ -20,12 +20,14 @@ public sealed class StudentDetailPanel : UserControl
     readonly StudentsViewModel _model;
     readonly ILocalizer _localizer;
     readonly StackPanel _body = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+    readonly Arca.UI.Charges.StudentChargesPanel _charges;
     int _tab;
 
     public StudentDetailPanel(StudentsViewModel model, ILocalizer localizer)
     {
         _model = model;
         _localizer = localizer;
+        _charges = new Arca.UI.Charges.StudentChargesPanel(model.Charges, localizer);
         model.Detail.PropertyChanged += (_, _) => Rebuild();
         model.PropertyChanged += (_, e) =>
         {
@@ -47,6 +49,14 @@ public sealed class StudentDetailPanel : UserControl
 
     void Rebuild()
     {
+        if (Tabs is not null)
+        {
+            foreach (var old in Tabs.Items.OfType<TabItem>())
+            {
+                old.Content = null; // the charges control is reused, and a control has one parent only
+            }
+        }
+
         _body.Children.Clear();
         ActionButtons = [];
         Tabs = null;
@@ -80,6 +90,7 @@ public sealed class StudentDetailPanel : UserControl
         var tabs = new TabControl { SelectedIndex = _tab };
         tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.Data"), Content = DataTab(detail) });
         tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.Locker"), Content = ListTab(_model.LockerLines, _model.LockerLinesLoaded) });
+        tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.Payments"), Content = _charges });
         tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.History"), Content = ListTab(_model.Detail.History, _model.Detail.HistoryLoaded) });
         tabs.SelectionChanged += async (_, e) =>
         {
@@ -93,13 +104,30 @@ public sealed class StudentDetailPanel : UserControl
             {
                 await _model.LoadLockerLinesAsync();
             }
-            else if (_tab == 2 && !_model.Detail.HistoryLoaded)
+            else if (_tab == 2)
+            {
+                await _model.LoadChargesAsync();
+            }
+            else if (_tab == 3 && !_model.Detail.HistoryLoaded)
             {
                 await _model.Detail.LoadHistoryAsync();
             }
         };
         Tabs = tabs;
         _body.Children.Add(tabs);
+        // A tab that stays open while another student is chosen loads for the new one.
+        if (_tab == 1 && !_model.LockerLinesLoaded)
+        {
+            _ = _model.LoadLockerLinesAsync();
+        }
+        else if (_tab == 2 && _model.Charges.Screen?.StudentId != detail.Student.Id)
+        {
+            _ = _model.LoadChargesAsync();
+        }
+        else if (_tab == 3 && !_model.Detail.HistoryLoaded)
+        {
+            _ = _model.Detail.LoadHistoryAsync();
+        }
     }
 
     StackPanel DataTab(Application.Students.GetStudentScreen.StudentScreenDetail detail)

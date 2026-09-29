@@ -38,7 +38,7 @@
 
 - [x] 5.1 Lista con búsqueda, filtros, incluir bajas, recuento y estados vacíos, y aviso sin curso activo
 - [x] 5.2 Formulario de alta manual con catálogo de nivel y grupo, valores nuevos y aviso de posible duplicado
-- [ ] 5.3 Ficha con cabecera de estado y pestañas Datos, Taquilla, Cobros e Historial cargadas al abrirlas (D4)
+- [x] 5.3 Ficha con cabecera de estado y pestañas Datos, Taquilla, Cobros e Historial cargadas al abrirlas (D4)
 - [x] 5.4 Edición de datos, baja con motivo y reactivación
 - [x] 5.5 Selectores compartidos de zona y taquilla y de alumno sin taquilla (D5)
 - [x] 5.6 Asignar desde el alumno, desde la taquilla y arrastrando, con avisos e impedimentos, cambiar y liberar
@@ -46,13 +46,13 @@
 
 ## 6. Sección Cobros
 
-- [ ] 6.1 Consulta de pendientes con filtros, totales, desglose y estado vacío positivo
-- [ ] 6.2 Cargos de un alumno con resumen de estado, y su pestaña en la ficha reutilizando el mismo modelo (D7)
-- [ ] 6.3 Acciones de pagar, exento, condonar, anular, cambiar importe y revertir con formularios y motivos
-- [ ] 6.4 Historial del cargo de solo lectura
-- [ ] 6.5 Cobrar reposición de llave con confirmación
-- [ ] 6.6 Diálogo de aviso de deuda al asignar
-- [ ] 6.7 Pruebas: pagar con fecha, fecha futura, motivo obligatorio, revertir, anulado sin acciones, sin cargos, alumno de baja con deuda, privacidad y doble clic
+- [x] 6.1 Consulta de pendientes con filtros, totales, desglose y estado vacío positivo
+- [x] 6.2 Cargos de un alumno con resumen de estado, y su pestaña en la ficha reutilizando el mismo modelo (D7)
+- [x] 6.3 Acciones de pagar, exento, condonar, anular, cambiar importe y revertir con formularios y motivos
+- [x] 6.4 Historial del cargo de solo lectura
+- [x] 6.5 Cobrar reposición de llave con confirmación
+- [x] 6.6 Diálogo de aviso de deuda al asignar
+- [x] 6.7 Pruebas: pagar con fecha, fecha futura, motivo obligatorio, revertir, anulado sin acciones, sin cargos, alumno de baja con deuda, privacidad y doble clic
 
 ## 7. Feedback y verificación
 

@@ -15,6 +15,10 @@ using Arca.Application.Lockers.ReserveLocker;
 using Arca.Application.Lockers.MarkLockerOutOfService;
 using Arca.Application.Lockers.RetireLocker;
 using Arca.Application.Search;
+using Arca.Application.Charges.GetChargeHistory;
+using Arca.Application.Charges.GetStudentChargesScreen;
+using Arca.Application.Charges.MarkChargePaid;
+using Arca.Application.Charges.VoidCharge;
 using Arca.Application.Students.GetStudentScreen;
 using Arca.Application.Students.ListStudentRows;
 using Arca.Application.Students.RetireStudent;
@@ -291,6 +295,71 @@ public sealed class ScreenQueryTests
 
         Assert.Equal("SchoolYears.NoActiveYear", detail.AssignBlocked!.Code);
         Assert.Equal("SchoolYears.NoActiveYear", detail.ChangeBlocked!.Code);
+    }
+
+    // --- Charges: the reason of each operation and the history ---
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/pantalles-cobraments: Operaciones sobre un cargo; Cargos de un alumno")]
+    public async Task The_charges_of_a_student_give_the_reason_each_operation_is_refused_and_their_standing()
+    {
+        var world = await WorldAsync();
+        var zone = await world.ZoneAsync("Planta 1");
+        var locker = await world.LockerAsync(1, zone);
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, locker);
+        var fee = world.ChargesOf(student.Id).Single(c => c.Concept == Domain.ConceptAmounts.ChargeConcept.Fee);
+        var deposit = world.ChargesOf(student.Id).Single(c => c.Concept == Domain.ConceptAmounts.ChargeConcept.Deposit);
+        await world.MarkPaid.HandleAsync(new MarkChargePaidRequest(fee.Id), default);
+        await world.Void.HandleAsync(new VoidChargeRequest(deposit.Id, "Duplicat"), default);
+        var previous = await world.YearAsync(2025);
+        var prior = await world.SeedChargeAsync(student.Id, Domain.ConceptAmounts.ChargeConcept.Fee, previous, 45m);
+        var handler = new GetStudentChargesScreenHandler(world.Store.Charges, world.Store.Students, world.Store.Years, world.Store.ConceptAmounts, world.Clock);
+
+        var screen = (await handler.HandleAsync(new GetStudentChargesScreenRequest(student.Id), default)).Value!;
+
+        Assert.False(screen.UpToDate);
+        Assert.Equal(45m, screen.PendingTotal);
+        Assert.Equal(10m, screen.KeyReplacementAmount);
+        Assert.Equal("2026-2027", screen.ActiveYearName);
+        var paid = screen.Lines.Single(l => l.Id == fee.Id);
+        Assert.Equal("Paid", paid.Status);
+        Assert.Equal("Charges.InvalidStatus", paid.PayBlocked!.Code);
+        Assert.Null(paid.RevertBlocked);
+        var voided = screen.Lines.Single(l => l.Id == deposit.Id);
+        Assert.NotNull(voided.RevertBlocked);
+        Assert.NotNull(voided.VoidBlocked);
+        var old = screen.Lines.Single(l => l.Id == prior.Id);
+        Assert.False(old.IsActiveYear);
+        Assert.Null(old.PayBlocked); // charges of previous years are managed like the active one
+        Assert.Null(old.VoidBlocked);
+        Assert.Equal(prior.Id, screen.Lines[^1].Id); // the active year first, the previous ones after
+    }
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/pantalles-cobraments: Historial del cargo (Historial visible)")]
+    public async Task The_history_of_a_charge_lists_each_change_with_its_states_reason_and_amounts_most_recent_first()
+    {
+        var world = await WorldAsync();
+        var zone = await world.ZoneAsync("Planta 1");
+        var locker = await world.LockerAsync(1, zone);
+        var student = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.AssignAsync(student.Id, locker);
+        var fee = world.ChargesOf(student.Id).Single(c => c.Concept == Domain.ConceptAmounts.ChargeConcept.Fee);
+        world.Clock.Advance(TimeSpan.FromHours(1));
+        await world.Adjust.HandleAsync(new Arca.Application.Charges.AdjustChargeAmount.AdjustChargeAmountRequest(fee.Id, 40m, "Descompte"), default);
+        world.Clock.Advance(TimeSpan.FromHours(1));
+        await world.MarkPaid.HandleAsync(new MarkChargePaidRequest(fee.Id), default);
+        var handler = new GetChargeHistoryHandler(world.Store.Charges, world.Store.ChargeEvents, new ResxLocalizer());
+
+        var lines = (await handler.HandleAsync(new GetChargeHistoryRequest(fee.Id), default)).Value!;
+
+        Assert.Equal(3, lines.Count); // created, amount adjusted, paid
+        Assert.Contains("pagat", lines[0].Text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("de 50,00", lines[1].Text, StringComparison.Ordinal);
+        Assert.Contains("a 40,00", lines[1].Text, StringComparison.Ordinal);
+        Assert.Contains("Motiu: Descompte", lines[1].Text, StringComparison.Ordinal);
+        Assert.Contains("50,00", lines[2].Text, StringComparison.Ordinal);
     }
 
     // --- Courses ---

@@ -21,7 +21,8 @@ public sealed record AssignmentPickerServices(
     Func<Guid, Guid, CancellationToken, Task<Result<AssignmentTargetCheck>>> CheckTarget,
     Func<AssignLockerRequest, CancellationToken, Task<Result<AssignLockerResult>>> Assign,
     Func<AssignLockerRequest, CancellationToken, Task<Result<AssignLockerResult>>> Change,
-    Func<CancellationToken, Task<Result<StudentRowsListing>>> ListStudents);
+    Func<CancellationToken, Task<Result<StudentRowsListing>>> ListStudents,
+    Func<Guid, CancellationToken, Task<IReadOnlyList<string>>> DebtLines);
 
 /// <summary>
 /// The two selectors that assign a locker (pantalles-de-domini, D5), shared by the Students and Lockers sections and by every way
@@ -106,7 +107,7 @@ public sealed class AssignmentDialogs(AssignmentPickerServices services, ScreenC
                 }
 
                 var intent = new AssignmentIntent(studentId, lockerId);
-                var done = await AssignFlow.RunAsync(isChange ? services.Change : services.Assign, intent, context.Confirmations, text, ct);
+                var done = await AssignFlow.RunAsync(isChange ? services.Change : services.Assign, intent, context.Confirmations, text, ct, debtDetails: services.DebtLines);
                 return done ?? Result<AssignLockerResult>.Failure(FormViewModel<AssignLockerResult>.Cancelled);
             },
             error => error.Code.StartsWith("Assignments.", StringComparison.Ordinal) || error.Code.StartsWith("Lockers.", StringComparison.Ordinal) ? "Locker" : null,
@@ -196,7 +197,7 @@ public sealed class AssignmentDialogs(AssignmentPickerServices services, ScreenC
                     return Result<AssignLockerResult>.Failure(new Error("Students.NotFound"));
                 }
 
-                var done = await AssignFlow.RunAsync(services.Assign, new AssignmentIntent(studentId, lockerId), context.Confirmations, text, ct);
+                var done = await AssignFlow.RunAsync(services.Assign, new AssignmentIntent(studentId, lockerId), context.Confirmations, text, ct, debtDetails: services.DebtLines);
                 return done ?? Result<AssignLockerResult>.Failure(FormViewModel<AssignLockerResult>.Cancelled);
             },
             error => error.Code.StartsWith("Assignments.", StringComparison.Ordinal) || error.Code.StartsWith("Students.", StringComparison.Ordinal) ? "Student" : null,

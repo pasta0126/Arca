@@ -21,6 +21,7 @@ public sealed class AssignLockerInteraction
 {
     readonly Func<AssignLockerRequest, CancellationToken, Task<Result<AssignLockerResult>>> _assign;
     readonly IConfirmationService _confirmations;
+    readonly Func<Guid, CancellationToken, Task<IReadOnlyList<string>>>? _debtDetails;
     readonly ILocalizer _localizer;
     readonly RunOnceCommand<AssignLockerResult> _command;
     AssignmentIntent? _pending;
@@ -31,9 +32,11 @@ public sealed class AssignLockerInteraction
     public AssignLockerInteraction(
         Func<AssignLockerRequest, CancellationToken, Task<Result<AssignLockerResult>>> assign,
         IConfirmationService confirmations, ILocalizer localizer, INotificationService notifications, IErrorLog log, IDelay delay,
-        Func<AssignmentRow, string>? successText = null, Func<AssignmentIntent, Task>? afterAssigned = null)
+        Func<AssignmentRow, string>? successText = null, Func<AssignmentIntent, Task>? afterAssigned = null,
+        Func<Guid, CancellationToken, Task<IReadOnlyList<string>>>? debtDetails = null)
     {
         _assign = assign;
+        _debtDetails = debtDetails;
         _confirmations = confirmations;
         _localizer = localizer;
         var texts = new AssignmentResultTexts(localizer);
@@ -63,6 +66,6 @@ public sealed class AssignLockerInteraction
     Task<Result<AssignLockerResult>> RunAsync(CancellationToken ct, IProgress<OperationProgress> progress)
     {
         var intent = _pending!;
-        return AssignFlow.RunAsync(_assign, intent, _confirmations, _localizer, ct, throwIfDeclined: true)!;
+        return AssignFlow.RunAsync(_assign, intent, _confirmations, _localizer, ct, throwIfDeclined: true, debtDetails: _debtDetails)!;
     }
 }

@@ -8,6 +8,7 @@ using Arca.UI.Course;
 using Arca.UI.Screens;
 using Arca.UI.Info;
 using Arca.UI.Assigning;
+using Arca.UI.Charges;
 using Arca.UI.Lockers;
 using Arca.UI.Students;
 using Arca.UI.Layout;
@@ -51,7 +52,9 @@ public sealed class MainWindow : Window
                 [ShellCatalog.Lockers] = () => LockersSection.Create(runtime.LockerServices, screenContext, runtime.Actions[StandardActions.New], assignments),
                 [ShellCatalog.Students] = () => StudentsView.Create(
                     new StudentsViewModel(runtime.StudentServices, screenContext, assignments, runtime.Actions[StandardActions.New],
-                        () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course))), localizer),
+                        () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)),
+                        new StudentChargesViewModel(runtime.ChargeServices, screenContext, () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)))), localizer),
+                [ShellCatalog.Payments] = () => PaymentsSection.Create(runtime.ChargeServices, screenContext, () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course))),
                 [ShellCatalog.Course] = () => CourseView.Create(
                     new CourseViewModel(runtime.CourseServices, screenContext, runtime.Actions[StandardActions.New]), localizer),
             },

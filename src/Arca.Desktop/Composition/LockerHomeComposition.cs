@@ -71,6 +71,7 @@ static class LockerHomeComposition
                 (locker, ct) => Said(reserve.HandleAsync(new ReserveLockerRequest(locker), ct), lockersText.LockerReserved),
                 (locker, ct) => Said(removeReservation.HandleAsync(new RemoveLockerReservationRequest(locker), ct), lockersText.ReservationRemoved),
                 (locker, ct) => Said(outOfService.HandleAsync(new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Broken), ct), done => lockersText.OutOfService(done.Locker)),
-                (locker, ct) => Said(restore.HandleAsync(new RestoreLockerServiceRequest(locker), ct), lockersText.ServiceRestored)));
+                (locker, ct) => Said(restore.HandleAsync(new RestoreLockerServiceRequest(locker), ct), lockersText.ServiceRestored)),
+            ChargesComposition.DebtLines(store, clock, localizer));
     }
 }

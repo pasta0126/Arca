@@ -152,7 +152,7 @@ public sealed class DetailViewModel<TKey, TDetail> : ObservableObject
         }
     }
 
-    void Clear()
+    public void Clear()
     {
         Detail = null;
         Actions = [];

@@ -92,7 +92,8 @@ static class StudentsComposition
             (student, locker, ct) => new CheckAssignmentTargetHandler(services, clock).HandleAsync(new CheckAssignmentTargetRequest(student, locker), ct),
             assign.HandleAsync,
             (request, ct) => changeLocker.HandleAsync(new ChangeStudentLockerRequest(request.StudentId, request.LockerId, request.ConfirmWarnings), ct),
-            listStudents.HandleAsync);
+            listStudents.HandleAsync,
+            ChargesComposition.DebtLines(store, clock, localizer));
         return (students, pickers);
     }
 }

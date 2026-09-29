@@ -15,11 +15,13 @@ namespace Arca.UI.Assigning;
 /// </summary>
 public static class AssignFlow
 {
+    /// <param name="debtDetails">The debt of the student by concept and year, in words, added to the warnings so the person sees what they are confirming.</param>
     /// <param name="throwIfDeclined">Declining the warnings throws a cancellation, which the run-once command reports as cancelled. Otherwise the answer is null.</param>
     /// <returns>The result, or null when the person declined the warnings and nothing was assigned.</returns>
     public static async Task<Result<AssignLockerResult>?> RunAsync(
         Func<AssignLockerRequest, CancellationToken, Task<Result<AssignLockerResult>>> assign, AssignmentIntent intent,
-        IConfirmationService confirmations, ILocalizer localizer, CancellationToken ct, bool throwIfDeclined = false)
+        IConfirmationService confirmations, ILocalizer localizer, CancellationToken ct, bool throwIfDeclined = false,
+        Func<Guid, CancellationToken, Task<IReadOnlyList<string>>>? debtDetails = null)
     {
         var first = await assign(new AssignLockerRequest(intent.StudentId, intent.LockerId), ct);
         if (!first.IsSuccess || !first.Value!.NeedsConfirmation)
@@ -32,7 +34,7 @@ public static class AssignFlow
             localizer.Get("Assignments.Label.ConfirmWarningsConsequence"),
             localizer.Get("Assignments.Label.ConfirmWarningsConfirm"),
             Destructive: false,
-            Details: [.. first.Value.Warnings.Select(localizer.Message)]);
+            Details: [.. first.Value.Warnings.Select(localizer.Message), .. debtDetails is null ? [] : await debtDetails(intent.StudentId, ct)]);
         if (!await confirmations.ConfirmAsync(request, ct))
         {
             return throwIfDeclined ? throw new OperationCanceledException() : null; // the person decided not to: nothing was assigned

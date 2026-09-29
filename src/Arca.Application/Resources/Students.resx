@@ -254,4 +254,7 @@
   <data name="Students.Empty.NoStudentsList" xml:space="preserve">
     <value>Encara no hi ha cap alumne donat d'alta en aquest curs. Pots donar-ne d'alta un a mà; la importació des de secretaria arribarà més endavant.</value>
   </data>
+  <data name="Students.Tab.Payments" xml:space="preserve">
+    <value>Cobraments</value>
+  </data>
 </root>

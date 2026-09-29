@@ -191,7 +191,8 @@ public sealed class StudentsScreenTests
             return Task.FromResult(Result<AssignLockerResult>.Success(new AssignLockerResult(
                 new AssignmentRow(Guid.NewGuid(), request.StudentId, "Marta Puig", request.LockerId, 9, "Planta 1", "2026-2027", DateTimeOffset.UtcNow, null, null, null), [])));
         },
-        _ => Task.FromResult(Result<StudentRowsListing>.Success(new StudentRowsListing([.. _students], new StudentCounters(0, 0, 0), StudentEmptyState.None))));
+        _ => Task.FromResult(Result<StudentRowsListing>.Success(new StudentRowsListing([.. _students], new StudentCounters(0, 0, 0), StudentEmptyState.None))),
+        (_, _) => Task.FromResult<IReadOnlyList<string>>(["Quota del curs 2025-2026: 50,00 €"]));
 
     ScreenContext Context() => new(
         _localizer, _notifications, _log, _delay, _confirmations, _forms, () =>
@@ -206,7 +207,8 @@ public sealed class StudentsScreenTests
         {
             _courseOpened++;
             return Task.CompletedTask;
-        });
+        },
+        new Arca.UI.Charges.StudentChargesViewModel(new FakeChargeWorld().Services(), Context(), () => Task.CompletedTask));
 
     // --- The list ---
 
@@ -571,7 +573,9 @@ public sealed class StudentsScreenTests
         var declining = new AssignmentDialogs(Pickers(), Context());
         await declining.ChooseLockerForAsync(Guid.NewGuid(), "Marta Puig", isChange: false);
         await ((FormViewModel<AssignLockerResult>)_forms.Last).Save.RunAsync();
-        Assert.Contains("Càrrecs pendents", _confirmations.Asked.Single().Details!.Single(), StringComparison.Ordinal);
+        var details = _confirmations.Asked.Single().Details!;
+        Assert.Contains("Càrrecs pendents", details[0], StringComparison.Ordinal);
+        Assert.Contains("Quota del curs 2025-2026", details[1], StringComparison.Ordinal); // the breakdown of the debt by concept and year
         Assert.DoesNotContain($"assign {locker.Id} True", _calls);
         Assert.Empty(_notifications.Published); // declining is not an error
 

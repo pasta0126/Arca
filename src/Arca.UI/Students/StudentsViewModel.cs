@@ -15,6 +15,7 @@ using Arca.Application.Students.ReactivateStudent;
 using Arca.Domain.Common;
 using Arca.UI.Actions;
 using Arca.UI.Assigning;
+using Arca.UI.Charges;
 using Arca.UI.Commands;
 using Arca.UI.Common;
 using Arca.UI.Lists;
@@ -47,8 +48,11 @@ public sealed class StudentsViewModel : ObservableObject
     IReadOnlyList<string> _lockerLines = [];
     bool _lockerLinesLoaded;
 
-    public StudentsViewModel(StudentServices services, ScreenContext context, AssignmentDialogs assign, AppAction standardNew, Func<Task> openCourse)
+    public StudentsViewModel(
+        StudentServices services, ScreenContext context, AssignmentDialogs assign, AppAction standardNew, Func<Task> openCourse, StudentChargesViewModel charges)
     {
+        Charges = charges;
+        charges.Changed += (_, _) => _ = RefreshAfterChargesAsync();
         _services = services;
         _context = context;
         _assign = assign;
@@ -85,6 +89,24 @@ public sealed class StudentsViewModel : ObservableObject
     public AppAction NewStudent { get; }
 
     public AppAction StandardNew { get; }
+
+    /// <summary>The charges of the student chosen, shown in the Payments tab of the record with the same model the Payments section uses.</summary>
+    public StudentChargesViewModel Charges { get; }
+
+    async Task RefreshAfterChargesAsync()
+    {
+        if (Students.TryGetSelectedKey(out var id))
+        {
+            await RefreshAsync(id); // the header of the record shows the state of payment
+        }
+    }
+
+    /// <summary>Fetches the charges of the student, when the person opens the Payments tab.</summary>
+    public async Task LoadChargesAsync()
+    {
+        var has = Students.TryGetSelectedKey(out var id);
+        await Charges.ShowAsync(has ? id : null);
+    }
 
     public IReadOnlyList<AppAction> MainActions => [NewStudent];
 
