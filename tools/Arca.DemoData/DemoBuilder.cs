@@ -32,10 +32,23 @@ namespace Arca.DemoData;
 /// 520 lockers in use, a mix of paid, exempt and pending charges, some debt of the previous year, some students who left with
 /// their deposit to return, and lockers reserved, broken and under maintenance. The same seed gives the same centre.
 /// </summary>
-sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random)
+/// <summary>What the generated centre is like: <see cref="Demo"/> is a centre in the middle of the year, <see cref="NewYear"/> one that has just started it.</summary>
+enum DemoProfile
 {
+    /// <summary>Students with lockers, payments, debts and leavers, as in the middle of the school year.</summary>
+    Demo,
+
+    /// <summary>The first day of a new school year: the year active with its amounts, the zones and lockers set up, the students enrolled and nobody assigned yet; some carry debt of the year before.</summary>
+    NewYear,
+}
+
+sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoProfile profile = DemoProfile.Demo)
+{
+    const int Namesakes = 6;
+
     const int StudentCount = 900;
     const int InitiallyAssigned = 540;
+    const int DebtorsOfTheYearBefore = 60;
     const int Retired = 20;
     const int Reserved = 5;
     const int Broken = 15;
@@ -62,6 +75,9 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random)
         // Zones and lockers.
         say("Zones i taquilles…");
         var zoneHandler = new CreateZoneHandler(store.Zones, store);
+        var oldStore = (await zoneHandler.HandleAsync(new CreateZoneRequest("Antic magatzem"), default)).Value!; // a zone that is no longer used, to try the filters
+        await new Arca.Application.Zones.DeactivateZone.DeactivateZoneHandler(store.Zones, store.Lockers, store)
+            .HandleAsync(new Arca.Application.Zones.DeactivateZone.DeactivateZoneRequest(oldStore.Id), default);
         var rangeHandler = new CreateLockerRangeHandler(store.Lockers, store.Zones, store.Events, store, clock);
         var lockerIds = new List<Guid>();
         var next = 1;
@@ -116,6 +132,25 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random)
             var group = Names.Groups[i / Names.Levels.Length % (level.Contains("Batxillerat", StringComparison.Ordinal) ? 2 : 4)];
             var added = await add.HandleAsync(new AddStudentRequest(first, last, email, level, group, ConfirmNewValues: true), default);
             students.Add(added.Value!.Student!.Id);
+        }
+
+        // Namesakes: the same name and surnames on different people, which a real centre has and the forms warn about.
+        for (var i = 0; i < Namesakes; i++)
+        {
+            var first = Names.First[i];
+            var last = Names.Last[i] + " " + Names.Last[i + 1];
+            for (var copy = 0; copy < 2; copy++)
+            {
+                var level = Names.Levels[(i + copy * 2) % Names.Levels.Length];
+                var added = await add.HandleAsync(new AddStudentRequest(first, last, $"{Slug(first)}.{Slug(last)}.h{copy}@test.cat", level, "A", ConfirmNewValues: true), default);
+                students.Add(added.Value!.Student!.Id);
+            }
+        }
+
+        if (profile == DemoProfile.NewYear)
+        {
+            await FinishNewYearAsync(store, clock, students, previous.Id, say);
+            return;
         }
 
         // Assignments, which generate the fee and the deposit of each student.
@@ -185,6 +220,27 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random)
         var withDebt = map.Zones.SelectMany(z => z.Lockers).Count(l => l.HasDebt);
         say($"Fet: {map.Counters.Active} taquilles ({map.Counters.Free} lliures, {map.Counters.Occupied} ocupades, {map.Counters.Reserved} reservades, {map.Counters.Broken} avariades, {map.Counters.Maintenance} en manteniment), " +
             $"{withDebt} amb deute, {state.PendingCharges} càrrecs pendents, curs {state.ActiveYear!.Name}.");
+    }
+
+    /// <summary>The new year at its start: nobody has a locker yet, but some students still owe the year before, so the warning shows when they are assigned.</summary>
+    async Task FinishNewYearAsync(EfInventory store, SystemClock clock, List<Guid> students, Guid previousYear, Action<string> say)
+    {
+        say("Deute del curs anterior…");
+        await store.RunAsync(async ct =>
+        {
+            foreach (var student in students.OrderBy(_ => random.Next()).Take(DebtorsOfTheYearBefore))
+            {
+                var old = Charge.Create(Guid.NewGuid(), student, ChargeConcept.Fee, previousYear, Money.FromCents(4500), clock.UtcNow);
+                await store.Charges.AddAsync(old.Charge, ct);
+                await store.ChargeEvents.AddAsync(old.Event, ct);
+            }
+
+            return Result<bool>.Success(true);
+        }, default);
+        var map = (await new Arca.Application.LockerMap.GetLockerMapHandler(store.Zones, store.Lockers, store.Assignments, store.Students, store.Charges).HandleAsync(default)).Value!;
+        var state = (await new Arca.Application.GlobalState.GetGlobalStateHandler(store.Years, store.Charges).HandleAsync(default)).Value!;
+        say($"Fet: curs {state.ActiveYear!.Name} nou, {map.Counters.Active} taquilles ({map.Counters.Free} lliures, {map.Counters.Reserved} reservades, {map.Counters.Broken} avariades, " +
+            $"{map.Counters.Maintenance} en manteniment), {students.Count} alumnes matriculats sense taquilla, {state.PendingCharges} càrrecs pendents del curs anterior.");
     }
 
     static string Slug(string text) =>

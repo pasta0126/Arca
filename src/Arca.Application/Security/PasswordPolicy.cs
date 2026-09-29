@@ -16,7 +16,7 @@ namespace Arca.Application.Security;
 public static class PasswordPolicy
 {
     /// <summary>The shortest password accepted, when it is created or changed. Opening the application never checks it.</summary>
-    public const int MinimumLength = 6;
+    public const int MinimumLength = 4;
 
     /// <summary>Below this length a password is weak, however it is made: it is allowed, with a warning.</summary>
     public const int RecommendedLength = 12;
@@ -41,11 +41,6 @@ public static class PasswordPolicy
         }
 
         var folded = PasswordText.Fold(password);
-        if (IsCommon(folded))
-        {
-            return Result<PasswordAssessment>.Failure(KeyErrors.PasswordTooCommon);
-        }
-
         var strength = Assess(folded, length);
         var assessment = new PasswordAssessment(length, strength);
         return strength == PasswordStrength.Weak
@@ -73,7 +68,7 @@ public static class PasswordPolicy
         var singleWord = words.Length <= 1 && stripped.All(char.IsLetter);
         var onlyDigits = compact.All(char.IsDigit);
         var fewSymbols = compact.Distinct().Count() <= 5;
-        if (length < RecommendedLength || singleWord || onlyDigits || fewSymbols)
+        if (length < RecommendedLength || singleWord || onlyDigits || fewSymbols || IsCommon(folded))
         {
             return PasswordStrength.Weak;
         }

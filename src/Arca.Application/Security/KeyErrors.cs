@@ -29,9 +29,6 @@ public static class KeyErrors
     /// <summary>Shorter than the minimum. Args: {0} minimum length.</summary>
     public static Error PasswordTooShort(int minimum) => new("Keys.PasswordTooShort", Args: [minimum]);
 
-    /// <summary>In the list of common passwords, or an obvious repetition or sequence.</summary>
-    public static readonly Error PasswordTooCommon = new("Keys.PasswordTooCommon");
-
     /// <summary>The two passwords typed are different.</summary>
     public static readonly Error PasswordMismatch = new("Keys.PasswordMismatch");
 

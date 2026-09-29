@@ -32,7 +32,7 @@ public sealed class AccessServiceTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseña válida)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Contraseña válida)")]
     public void Creating_the_access_returns_the_key_the_recovery_key_and_the_key_file()
     {
         var result = Service().CreateAccess(Password, Password);
@@ -45,8 +45,8 @@ public sealed class AccessServiceTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseña corta permitida)")]
-    public void A_six_character_password_creates_the_access_with_the_weakness_warning_and_opens_it_again()
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Contraseña corta permitida)")]
+    public void A_short_password_creates_the_access_with_the_weakness_warning_and_opens_it_again()
     {
         using var dir = new TempDirectory();
         var database = dir.File("arca.db");
@@ -60,7 +60,7 @@ public sealed class AccessServiceTests
     }
 
     [Theory]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseñas ya creadas)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Contraseñas ya creadas)")]
     [InlineData("abc")]
     [InlineData("123456")]
     [InlineData(Password)]
@@ -81,7 +81,7 @@ public sealed class AccessServiceTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (No coinciden)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (No coinciden)")]
     public void Different_confirmation_is_refused_and_creates_nothing()
     {
         var result = Service().CreateAccess(Password, Other);
@@ -91,11 +91,10 @@ public sealed class AccessServiceTests
     }
 
     [Theory]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Sin contraseña)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Sin contraseña)")]
     [InlineData(null, "Keys.PasswordRequired")]
     [InlineData("", "Keys.PasswordRequired")]
-    [InlineData("curta", "Keys.PasswordTooShort")]
-    [InlineData("contrasenya1234", "Keys.PasswordTooCommon")]
+    [InlineData("abc", "Keys.PasswordTooShort")]
     public void A_password_that_does_not_meet_the_rules_creates_nothing(string? password, string code)
     {
         Assert.Equal(code, Service().CreateAccess(password, password).Error!.Code);
@@ -145,7 +144,7 @@ public sealed class AccessServiceTests
     }
 
     [Theory]
-    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Caracteres libres)")]
+    [Trait("spec", Spec + ": Contraseña obligatoria de al menos 4 caracteres en la primera ejecución (Caracteres libres)")]
     [InlineData("la porta és tancada")]
     [InlineData("çaragossa i l·lucia")]
     public void Passwords_with_accents_and_special_letters_open_the_same_data(string password)
@@ -203,8 +202,7 @@ public sealed class AccessServiceTests
 
     [Theory]
     [Trait("spec", Spec + ": Cambiar la contraseña (Nueva contraseña que no cumple los requisitos)")]
-    [InlineData("curta", "curta", "Keys.PasswordTooShort")]
-    [InlineData("contrasenya1234", "contrasenya1234", "Keys.PasswordTooCommon")]
+    [InlineData("abc", "abc", "Keys.PasswordTooShort")]
     [InlineData("gat ratllat sota pluja", "una altra cosa ben diferent", "Keys.PasswordMismatch")]
     public void A_new_password_that_does_not_meet_the_rules_changes_nothing(string newPassword, string confirmation, string code)
     {

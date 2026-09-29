@@ -169,7 +169,7 @@ public sealed class RecoveryAccessTests
         var database = dir.File("arca.db");
         var (_, recovery) = Setup(database);
 
-        Assert.Equal("Keys.PasswordTooShort", Service().PrepareReset(database, recovery, "curta", "curta").Error!.Code);
+        Assert.Equal("Keys.PasswordTooShort", Service().PrepareReset(database, recovery, "abc", "abc").Error!.Code);
         Assert.Equal("Keys.PasswordMismatch", Service().PrepareReset(database, recovery, Other, Password).Error!.Code);
     }
 

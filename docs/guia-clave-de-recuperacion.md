@@ -37,7 +37,7 @@ Desde la sección «Seguretat de les dades»:
 
 ## Buenas prácticas para la contraseña
 
-- Mejor una frase de varias palabras sin relación (`riu cadira blau gos`) que una palabra con símbolos. ARCA acepta desde 6 caracteres y rechaza las contraseñas muy habituales, pero **avisa de que una contraseña es débil si tiene menos de 12 caracteres**, es una sola palabra o solo dígitos: si alguien consigue el fichero de datos, una contraseña débil se puede adivinar. La clave de recuperación, en cambio, es siempre fuerte.
+- Mejor una frase de varias palabras sin relación (`riu cadira blau gos`) que una palabra con símbolos. ARCA acepta desde 4 caracteres y no rechaza ninguna, pero **avisa de que una contraseña es débil si tiene menos de 12 caracteres**, es una sola palabra, solo dígitos o una de las más habituales: si alguien consigue el fichero de datos, una contraseña débil se puede adivinar. La clave de recuperación, en cambio, es siempre fuerte.
 - No la apuntes en un papel pegado al monitor: quien lo vea podrá abrir los datos.
 - Cámbiala si sospechas que la conoce alguien que no debería.
 

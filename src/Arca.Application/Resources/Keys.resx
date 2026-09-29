@@ -29,9 +29,6 @@
     <value>La contrasenya és massa curta: ha de tenir com a mínim {0} caràcters.</value>
     <comment>{0} minimum length</comment>
   </data>
-  <data name="Keys.Error.PasswordTooCommon" xml:space="preserve">
-    <value>Aquesta contrasenya és massa habitual o massa previsible. Tria'n una altra, per exemple diverses paraules sense relació.</value>
-  </data>
   <data name="Keys.Error.PasswordMismatch" xml:space="preserve">
     <value>Les dues contrasenyes no coincideixen. Escriu-les de nou.</value>
   </data>
@@ -174,7 +171,7 @@
     <value>Una contrasenya forta té 12 o més caràcters i diverses paraules sense relació.</value>
   </data>
   <data name="Keys.Label.WeakExample" xml:space="preserve">
-    <value>Exemple: «lluna cotxe formatge radio». Inventa'n una de pròpia: aquesta no es pot fer servir tal qual.</value>
+    <value>Exemple: «lluna cotxe formatge radio». Inventa'n una de pròpia, que només recordis tu.</value>
   </data>
   <data name="Keys.Label.StrengthWeak" xml:space="preserve">
     <value>Fortalesa: fluixa</value>
