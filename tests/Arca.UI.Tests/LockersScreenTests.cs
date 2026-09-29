@@ -196,7 +196,7 @@ public sealed class LockersScreenTests
         }, _choices);
 
     LockersViewModel Model(Func<Task>? openNewZone = null) =>
-        new(Services(), Context(), new ActionRegistry(_localizer, UiPlatform.Windows)[StandardActions.New], openNewZone ?? (() => Task.CompletedTask));
+        new(Services(), Context(), new ActionRegistry(_localizer, UiPlatform.Windows)[StandardActions.New], openNewZone ?? (() => Task.CompletedTask), new Arca.UI.Assigning.AssignmentDialogs(null!, Context()));
 
     ZonesViewModel Zones() => new(Services(), Context(), () => Task.CompletedTask);
 
@@ -312,7 +312,7 @@ public sealed class LockersScreenTests
         await model.LoadAsync();
 
         await model.Detail.ShowAsync(true, free.Id);
-        Assert.Equal(["Edit", "Reserve", "RemoveReservation", "MarkBroken", "MarkMaintenance", "Restore", "Retire"], model.Detail.Actions.Select(a => a.Id));
+        Assert.Equal(["Assign", "Edit", "Reserve", "RemoveReservation", "MarkBroken", "MarkMaintenance", "Restore", "Retire"], model.Detail.Actions.Select(a => a.Id));
         Assert.True(model.Detail.Actions.Single(a => a.Id == "Reserve").IsAvailable);
         Assert.False(model.Detail.Actions.Single(a => a.Id == "Restore").IsAvailable);
 

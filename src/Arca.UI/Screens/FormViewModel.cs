@@ -19,8 +19,14 @@ public sealed record FormOption(string Id, string Label);
 /// </summary>
 public sealed class FormFieldModel(string id, string label, IReadOnlyList<FormOption>? options = null) : ObservableObject
 {
-    /// <summary>What can be picked, or null for a field that is typed.</summary>
-    public IReadOnlyList<FormOption>? Options { get; } = options;
+    IReadOnlyList<FormOption>? _options = options;
+
+    /// <summary>What can be picked, or null for a field that is typed. It can change while the form is open, such as the lockers of the zone chosen.</summary>
+    public IReadOnlyList<FormOption>? Options
+    {
+        get => _options;
+        set => Set(ref _options, value);
+    }
 
     string _text = string.Empty;
     string? _error;

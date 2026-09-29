@@ -8,7 +8,9 @@ using Arca.Application.Search;
 using Arca.Application.Localization;
 using Arca.UI.Access;
 using Arca.UI.Actions;
+using Arca.UI.Assigning;
 using Arca.UI.Course;
+using Arca.UI.Students;
 using Arca.UI.Lockers;
 using Arca.UI.Map;
 using Arca.UI.Screens;
@@ -38,6 +40,10 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
     public CourseServices CourseServices => services.GetRequiredService<CourseServices>();
 
     public LockerServices LockerServices => services.GetRequiredService<LockerServices>();
+
+    public StudentServices StudentServices => services.GetRequiredService<StudentServices>();
+
+    public AssignmentPickerServices Pickers => services.GetRequiredService<AssignmentPickerServices>();
 
     public IChoiceDialogs Choices => services.GetRequiredService<IChoiceDialogs>();
 

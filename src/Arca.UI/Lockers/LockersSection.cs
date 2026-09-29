@@ -12,7 +12,7 @@ namespace Arca.UI.Lockers;
 /// <summary>Builds the Lockers section: the Lockers and Zones views as tabs, with Lockers first.</summary>
 public static class LockersSection
 {
-    public static Control Create(LockerServices services, ScreenContext context, AppAction standardNew)
+    public static Control Create(LockerServices services, ScreenContext context, AppAction standardNew, Arca.UI.Assigning.AssignmentDialogs assign)
     {
         var localizer = context.Localizer;
         ZonesViewModel? zones = null;
@@ -22,7 +22,7 @@ public static class LockersSection
         {
             section!.Open("Zones");
             return zones!.NewZoneAsync();
-        });
+        }, assign);
         zones = new ZonesViewModel(services, context, () => lockers.LoadAsync());
         section = new SectionScreens(
             ShellCatalog.Lockers,

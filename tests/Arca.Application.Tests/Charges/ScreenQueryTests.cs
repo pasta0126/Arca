@@ -15,6 +15,7 @@ using Arca.Application.Lockers.ReserveLocker;
 using Arca.Application.Lockers.MarkLockerOutOfService;
 using Arca.Application.Lockers.RetireLocker;
 using Arca.Application.Search;
+using Arca.Application.Students.GetStudentScreen;
 using Arca.Application.Students.ListStudentRows;
 using Arca.Application.Students.RetireStudent;
 using Arca.Domain.Lockers;
@@ -234,6 +235,62 @@ public sealed class ScreenQueryTests
         Assert.False(third.IsActive);
         Assert.Null(third.ReactivationBlocked);
         Assert.Null(third.DeactivationBlocked); // it is already inactive: there is nothing to refuse
+    }
+
+    // --- Students: the reason of each operation ---
+
+    GetStudentScreenHandler StudentScreen(PagamentsWorld world) => new(
+        world.Store.Students, world.Store.Enrollments, world.Store.Catalog, world.Store.Years, world.Assignments.Students.StudentLockers,
+        world.Store.Charges, world.Clock);
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/pantalles-alumnes-i-assignacions: Ficha del alumno; Asignar; Cambiar y liberar; Dar de baja y reactivar")]
+    public async Task A_student_gives_the_reason_each_operation_is_refused_with_their_locker_and_debt()
+    {
+        var world = await WorldAsync();
+        var zone = await world.ZoneAsync("Planta 1");
+        var locker = await world.LockerAsync(7, zone);
+        var without = await world.StudentAsync("Pau", "Alsina", "pau@example.com");
+        var with = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        var gone = await world.StudentAsync("Oriol", "Zamora", "oriol@example.com");
+        await world.AssignAsync(with.Id, locker);
+        await world.Assignments.Students.Retire.HandleAsync(new RetireStudentRequest(gone.Id, "Ha marxat"), default);
+        async Task<StudentScreenDetail> Of(Guid id) => (await StudentScreen(world).HandleAsync(new GetStudentScreenRequest(id), default)).Value!;
+
+        var idle = await Of(without.Id);
+        Assert.Null(idle.AssignBlocked);
+        Assert.Null(idle.RetireBlocked);
+        Assert.Equal("Assignments.NoAssignment", idle.ChangeBlocked!.Code);
+        Assert.Equal("Assignments.NoAssignment", idle.ReleaseBlocked!.Code);
+        Assert.Equal("Students.AlreadyActive", idle.ReactivateBlocked!.Code);
+        Assert.False(idle.HasDebt);
+
+        var holder = await Of(with.Id);
+        Assert.Equal("Assignments.StudentHasLocker", holder.AssignBlocked!.Code);
+        Assert.Null(holder.ChangeBlocked);
+        Assert.Null(holder.ReleaseBlocked);
+        Assert.Equal(locker, holder.LockerId);
+        Assert.True(holder.HasDebt);
+
+        var retired = await Of(gone.Id);
+        Assert.Equal("Students.AlreadyRetired", retired.RetireBlocked!.Code);
+        Assert.Null(retired.ReactivateBlocked);
+        Assert.Equal("Assignments.StudentRetired", retired.AssignBlocked!.Code);
+    }
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/pantalles-alumnes-i-assignacions: Alumnos sin curso activo")]
+    public async Task Without_an_active_year_assigning_and_reactivating_are_refused_for_that_reason()
+    {
+        var world = new PagamentsWorld();
+        var year = await world.YearAsync(2026);
+        var student = await world.StudentAsync("Pau", "Alsina", "pau@example.com");
+        await world.Store.Years.RemoveAsync((await world.Store.Years.GetAsync(year, default))!, default); // no year is active any more
+
+        var detail = (await StudentScreen(world).HandleAsync(new GetStudentScreenRequest(student.Id), default)).Value!;
+
+        Assert.Equal("SchoolYears.NoActiveYear", detail.AssignBlocked!.Code);
+        Assert.Equal("SchoolYears.NoActiveYear", detail.ChangeBlocked!.Code);
     }
 
     // --- Courses ---

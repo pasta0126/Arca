@@ -82,4 +82,7 @@
   <data name="Common.Error.NumberInvalid" xml:space="preserve">
     <value>Escriu un valor numèric, per exemple 50,50.</value>
   </data>
+  <data name="Common.Label.Close" xml:space="preserve">
+    <value>Tanca</value>
+  </data>
 </root>

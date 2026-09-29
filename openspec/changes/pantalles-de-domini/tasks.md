@@ -36,13 +36,13 @@
 
 ## 5. Sección Alumnos
 
-- [ ] 5.1 Lista con búsqueda, filtros, incluir bajas, recuento y estados vacíos, y aviso sin curso activo
-- [ ] 5.2 Formulario de alta manual con catálogo de nivel y grupo, valores nuevos y aviso de posible duplicado
+- [x] 5.1 Lista con búsqueda, filtros, incluir bajas, recuento y estados vacíos, y aviso sin curso activo
+- [x] 5.2 Formulario de alta manual con catálogo de nivel y grupo, valores nuevos y aviso de posible duplicado
 - [ ] 5.3 Ficha con cabecera de estado y pestañas Datos, Taquilla, Cobros e Historial cargadas al abrirlas (D4)
-- [ ] 5.4 Edición de datos, baja con motivo y reactivación
-- [ ] 5.5 Selectores compartidos de zona y taquilla y de alumno sin taquilla (D5)
-- [ ] 5.6 Asignar desde el alumno, desde la taquilla y arrastrando, con avisos e impedimentos, cambiar y liberar
-- [ ] 5.7 Pruebas: búsqueda con acentos, alta y duplicado, baja que libera taquilla, asignar por las tres vías, aviso de deuda, sin taquillas libres, sin curso activo y doble clic
+- [x] 5.4 Edición de datos, baja con motivo y reactivación
+- [x] 5.5 Selectores compartidos de zona y taquilla y de alumno sin taquilla (D5)
+- [x] 5.6 Asignar desde el alumno, desde la taquilla y arrastrando, con avisos e impedimentos, cambiar y liberar
+- [x] 5.7 Pruebas: búsqueda con acentos, alta y duplicado, baja que libera taquilla, asignar por las tres vías, aviso de deuda, sin taquillas libres, sin curso activo y doble clic
 
 ## 6. Sección Cobros
 

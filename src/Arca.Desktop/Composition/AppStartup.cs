@@ -75,6 +75,7 @@ public static class AppStartup
         var globalState = new GlobalStateService(
             new GetGlobalStateHandler(inventory.Years, inventory.Charges).HandleAsync, new ResultNotifier(notifications, localizer, log));
         var security = new SecurityViewModel(settingsFlows, session.DatabasePath, notifications, localizer, log);
+        var studentWiring = StudentsComposition.Create(inventory, clock, localizer);
         var services = new ServiceCollection()
             .AddSingleton<ILocalizer>(localizer)
             .AddSingleton(access)
@@ -85,6 +86,8 @@ public static class AppStartup
             .AddSingleton(LockerHomeComposition.Create(inventory, clock, localizer))
             .AddSingleton(CourseComposition.Create(inventory, clock, localizer))
             .AddSingleton(LockersComposition.Create(inventory, clock, localizer))
+            .AddSingleton(studentWiring.Students)
+            .AddSingleton(studentWiring.Pickers)
             .AddSingleton<IChoiceDialogs>(new WindowChoiceDialogs(() => windows.Current))
             .AddSingleton<IFormDialogs>(new WindowFormDialogs(() => windows.Current, localizer))
             .AddSingleton(new GlobalSearchHandler(

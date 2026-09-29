@@ -12,6 +12,7 @@ using Arca.Application.Search;
 using Arca.Application.Zones.ListZoneRows;
 using Arca.Domain.Common;
 using Arca.UI.Actions;
+using Arca.UI.Assigning;
 using Arca.UI.Commands;
 using Arca.UI.Common;
 using Arca.UI.Lists;
@@ -30,6 +31,7 @@ public sealed class LockersViewModel : ObservableObject
 {
     readonly LockerServices _services;
     readonly ScreenContext _context;
+    readonly AssignmentDialogs _assign;
     LockerCounters _counters = new(0, 0, 0, 0, 0, 0);
     LockerEmptyState _emptyState;
     IReadOnlyList<FormOption> _zoneOptions = [];
@@ -38,9 +40,10 @@ public sealed class LockersViewModel : ObservableObject
     string _numberFilter = string.Empty;
     bool _includeRetired;
 
-    public LockersViewModel(LockerServices services, ScreenContext context, AppAction standardNew, Func<Task> openNewZone)
+    public LockersViewModel(LockerServices services, ScreenContext context, AppAction standardNew, Func<Task> openNewZone, AssignmentDialogs assign)
     {
         _services = services;
+        _assign = assign;
         _context = context;
         OpenNewZone = openNewZone;
         StandardNew = standardNew;
@@ -247,6 +250,7 @@ public sealed class LockersViewModel : ObservableObject
             return [];
         }
 
+        actions.Add("Assign", "Lockers.Action.Assign", () => _ = AssignAsync(row), () => detail.ReserveBlocked); // it is free exactly when it can be reserved
         actions.Add("Edit", "Lockers.Action.Edit", () => _ = EditAsync(detail), () => detail.EditBlocked);
         actions.Add("Reserve", "Lockers.Action.Reserve", () => _ = ReserveAsync(row), () => detail.ReserveBlocked);
         actions.Add("RemoveReservation", "Lockers.Action.RemoveReservation",
@@ -256,6 +260,12 @@ public sealed class LockersViewModel : ObservableObject
         actions.Add("Restore", "Lockers.Action.Restore", () => _ = RunAsync(ct => _services.Restore(row.Id, ct), "RestoreLocker", row.Id), () => detail.RestoreBlocked);
         actions.Add("Retire", "Lockers.Action.Retire", () => _ = RetireAsync(row), () => detail.RetireBlocked);
         return actions.Actions;
+    }
+
+    async Task AssignAsync(LockerListRow row)
+    {
+        await _assign.ChooseStudentForAsync(row.Id, row.Number, row.ZoneName);
+        await RefreshAsync(row.Id); // the detail shows the student the locker has now
     }
 
     Task RunAsync(Func<CancellationToken, Task<Result<string>>> operation, string name, Guid? select) =>

@@ -60,26 +60,9 @@ public sealed class AssignLockerInteraction
         await _command.RunAsync();
     }
 
-    async Task<Result<AssignLockerResult>> RunAsync(CancellationToken ct, IProgress<OperationProgress> progress)
+    Task<Result<AssignLockerResult>> RunAsync(CancellationToken ct, IProgress<OperationProgress> progress)
     {
         var intent = _pending!;
-        var first = await _assign(new AssignLockerRequest(intent.StudentId, intent.LockerId), ct);
-        if (!first.IsSuccess || !first.Value!.NeedsConfirmation)
-        {
-            return first;
-        }
-
-        var request = new ConfirmationRequest(
-            _localizer.Get("Assignments.Label.ConfirmWarningsTitle"),
-            _localizer.Get("Assignments.Label.ConfirmWarningsConsequence"),
-            _localizer.Get("Assignments.Label.ConfirmWarningsConfirm"),
-            Destructive: false,
-            Details: [.. first.Value.Warnings.Select(_localizer.Message)]);
-        if (!await _confirmations.ConfirmAsync(request, ct))
-        {
-            throw new OperationCanceledException(); // the person decided not to: it says nothing was assigned
-        }
-
-        return await _assign(new AssignLockerRequest(intent.StudentId, intent.LockerId, ConfirmWarnings: true), ct);
+        return AssignFlow.RunAsync(_assign, intent, _confirmations, _localizer, ct, throwIfDeclined: true)!;
     }
 }

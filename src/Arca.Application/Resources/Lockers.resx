@@ -284,4 +284,7 @@
   <data name="Lockers.Empty.PickLocker" xml:space="preserve">
     <value>Tria una taquilla de la llista per veure'n el detall.</value>
   </data>
+  <data name="Lockers.Action.Assign" xml:space="preserve">
+    <value>Assigna</value>
+  </data>
 </root>

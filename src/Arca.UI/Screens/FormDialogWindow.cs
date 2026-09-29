@@ -110,7 +110,25 @@ public sealed class FormDialogWindow : Window
             var choice = new ComboBox { ItemsSource = options, HorizontalAlignment = HorizontalAlignment.Stretch };
             choice.ItemTemplate = new Avalonia.Controls.Templates.FuncDataTemplate<FormOption>((o, _) => new TextBlock { Text = o?.Label });
             choice.SelectedItem = options.FirstOrDefault(o => o.Id == field.Text);
-            choice.SelectionChanged += (_, _) => field.Text = (choice.SelectedItem as FormOption)?.Id ?? string.Empty;
+            choice.SelectionChanged += (_, _) =>
+            {
+                if (choice.SelectedItem is FormOption picked)
+                {
+                    field.Text = picked.Id;
+                }
+            };
+            field.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(FormFieldModel.Options))
+                {
+                    choice.ItemsSource = field.Options;
+                    choice.SelectedItem = field.Options?.FirstOrDefault(o => o.Id == field.Text);
+                }
+                else if (e.PropertyName == nameof(FormFieldModel.Text) && (choice.SelectedItem as FormOption)?.Id != field.Text)
+                {
+                    choice.SelectedItem = field.Options?.FirstOrDefault(o => o.Id == field.Text);
+                }
+            };
             Choices[field.Id] = choice;
             input = choice;
         }
