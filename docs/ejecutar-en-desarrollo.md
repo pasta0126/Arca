@@ -6,7 +6,21 @@ La aplicación pide la contraseña del centro cada vez que se abre (`acces-i-xif
 
 Para desarrollar, usa una contraseña de prueba que cumpla la política (por ejemplo `gat ratllat sota pluja`) y guarda la clave de recuperación que se muestra. Las pruebas y la futura herramienta de datos de ejemplo definen sus propias contraseñas en sus proyectos.
 
-## Ejemplo (macOS y Linux)
+## Un solo comando (macOS y Linux)
+
+Desde la raíz del repositorio, en la terminal de VS Code:
+
+```bash
+build/run.sh            # compila y abre ARCA en modo portable
+build/run.sh --reset    # igual, pero borra antes los datos de desarrollo (vuelve a pedir contraseña y clave)
+build/run.sh --demo     # crea antes una base con datos ficticios y la abre (contraseña: gat ratllat sota pluja)
+```
+
+La opción `--demo` usa `tools/Arca.DemoData`, que rellena la base llamando a los casos de uso reales: 6 zonas y 600 taquillas (50 libres, 520 ocupadas, 5 reservadas, 15 avariadas y 10 en mantenimiento), 900 alumnos en 20 grupos, cobros pagados, exentos y pendientes, deuda del curso anterior y 20 bajas con la fianza por devolver. Los nombres son inventados y los correos usan `test.cat`. La misma semilla da siempre los mismos datos (`--seed`). También se puede lanzar suelta: `dotnet run --project tools/Arca.DemoData -- --folder <carpeta> [--password <texto>] [--force]`. **Cierra ARCA antes**: necesita la base para ella sola.
+
+Los datos quedan en `src/Arca.Desktop/bin/Debug/net10.0/data`. Es lo mismo que el ejemplo de abajo, en un script.
+
+## Ejemplo paso a paso (macOS y Linux)
 
 ```bash
 dotnet build src/Arca.Desktop

@@ -35,6 +35,13 @@ public static class ArcaPalette
     public const string Error = "#E8B0AA";
     public const string OnSemantic = "#2B2A26";
 
+    // Status of a locker on the map, each with the dark text of OnSemantic on top; the status is also told by an icon and a word
+    public const string StatusFree = "#BFDCC6";
+    public const string StatusOccupied = "#B9CFDD";
+    public const string StatusReserved = "#D6C9E3";
+    public const string StatusBroken = "#E8B0AA";
+    public const string StatusMaintenance = "#EBD59E";
+
     // Text of a validation error shown on the page background
     public const string ErrorText = "#9B3B34";
 

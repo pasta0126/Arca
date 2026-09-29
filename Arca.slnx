@@ -6,6 +6,9 @@
     <Project Path="src/Arca.Infrastructure/Arca.Infrastructure.csproj" />
     <Project Path="src/Arca.UI/Arca.UI.csproj" />
   </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/Arca.DemoData/Arca.DemoData.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Arca.Application.Tests/Arca.Application.Tests.csproj" />
     <Project Path="tests/Arca.Architecture.Tests/Arca.Architecture.Tests.csproj" />

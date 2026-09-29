@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Arca.Infrastructure\Arca.Infrastructure.csproj" />
     <ProjectReference Include="..\Arca.UI\Arca.UI.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- The end-to-end test builds the start screen over a real database with the composition of the application -->
+    <InternalsVisibleTo Include="Arca.UI.Tests" />
+  </ItemGroup>
 </Project>

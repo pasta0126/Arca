@@ -83,6 +83,8 @@ Documento para entregar a la persona profesional del derecho que revise ARCA. Re
 21. La distribución de **binarios sin firma de código** (por coste) genera avisos del sistema. ¿Hay implicaciones legales, aparte de la información al usuario?
 22. Si en el futuro hay **ingresos por servicios**, ¿qué forma jurídica o alta se necesita (autónomo, asociación, fundación) y cómo afecta a la titularidad del software?
 
+23. **Iconos (Material Design Icons, Pictogrammers)**: la aplicación los incluye a través de un paquete MIT. ¿La licencia de los dibujos (Pictogrammers Free License, y Apache-2.0 en los derivados de Google) es compatible con distribuir el binario bajo GPL-3.0-o-posterior y exige algún aviso concreto en `THIRD-PARTY-NOTICES.md`?
+
 ### F. Documentos que redactaría la persona profesional
 
 - Aviso de privacidad del registro de instalaciones.

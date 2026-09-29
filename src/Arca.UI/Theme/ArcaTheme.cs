@@ -33,7 +33,8 @@ public static class ArcaTheme
     }
 
     /// <summary>
-    /// The keyboard focus ring (teclat-i-menus, Foco visible): a clear outline in the theme's focus colour around whatever
+    /// The styles every application must add next to the theme: the templates of the icons, and the keyboard focus ring.
+    /// The focus ring (teclat-i-menus, Foco visible): a clear outline in the theme's focus colour around whatever
     /// control has the focus, shown when it arrives by keyboard. It reads the colour from <see cref="ArcaResourceKeys.Focus"/>,
     /// so another theme changes it without touching this code.
     /// </summary>
@@ -50,6 +51,7 @@ public static class ArcaTheme
         Style For<T>() where T : Control => new(x => x.OfType<T>()) { Setters = { new Setter(Control.FocusAdornerProperty, ring) } };
         return
         [
+            new Material.Icons.Avalonia.MaterialIconStyles(null),
             For<Button>(), For<Avalonia.Controls.Primitives.ToggleButton>(), For<TextBox>(), For<CheckBox>(), For<RadioButton>(),
             For<ComboBox>(), For<ListBoxItem>(), For<TabItem>(), For<MenuItem>(), For<Slider>(),
         ];
@@ -119,6 +121,11 @@ public static class ArcaTheme
         Brush(d, ArcaResourceKeys.OnSemantic, ArcaPalette.OnSemantic);
         Brush(d, ArcaResourceKeys.Focus, ArcaPalette.Focus);
         Brush(d, ArcaResourceKeys.ErrorText, ArcaPalette.ErrorText);
+        Brush(d, ArcaResourceKeys.StatusFree, ArcaPalette.StatusFree);
+        Brush(d, ArcaResourceKeys.StatusOccupied, ArcaPalette.StatusOccupied);
+        Brush(d, ArcaResourceKeys.StatusReserved, ArcaPalette.StatusReserved);
+        Brush(d, ArcaResourceKeys.StatusBroken, ArcaPalette.StatusBroken);
+        Brush(d, ArcaResourceKeys.StatusMaintenance, ArcaPalette.StatusMaintenance);
     }
 
     /// <summary>The default type and spacing scales. They do not depend on the theme variant.</summary>

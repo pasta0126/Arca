@@ -61,7 +61,7 @@ public sealed class ComponentUsageExamplesTests
             (_, _) => Task.FromResult(Result<int>.Success(40)), n => $"{n} taquilles creades", "CreateLockerRange", center, localizer, log, delay);
         var searchBox = new TextBox();
         var runs = 0;
-        using var search = registry[StandardActions.Search].Attach(() => { runs++; searchBox.Focus(); });
+        var search = registry[StandardActions.Search].Attach(() => { runs++; searchBox.Focus(); });
         var section = new CollapsibleSectionViewModel("filters", "Filtres", () => "Cap filtre actiu", preferences);
 
         var window = new Window
@@ -95,6 +95,10 @@ public sealed class ComponentUsageExamplesTests
         section.Toggle();
 
         Assert.Equal("40 taquilles creades", Assert.Single(center.Visible).Text);
+
+        // A screen that goes away lets go of its actions; the views bound to them settle before the test ends.
+        search.Dispose();
+        Dispatcher.UIThread.RunJobs();
         Assert.False(new UiPreferencesSession(store).IsSectionExpanded("filters", true));
         Assert.Equal("0 de 2", zones.SelectionText);
     }

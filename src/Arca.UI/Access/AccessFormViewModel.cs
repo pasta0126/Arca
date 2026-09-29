@@ -59,6 +59,12 @@ public sealed class AccessFormViewModel : ObservableObject
     /// <summary>Text of a second button (for example "I forgot my password"); empty for none.</summary>
     public string SecondaryLabel { get; init; } = string.Empty;
 
+    /// <summary>The tooltip of the eye button that shows the typed password.</summary>
+    public string ShowPasswordLabel { get; init; } = string.Empty;
+
+    /// <summary>The tooltip of the eye button while the password is shown.</summary>
+    public string HidePasswordLabel { get; init; } = string.Empty;
+
     public SecretDisplay? Secret { get; init; }
 
     public IKeySink? Sink { get; set; }

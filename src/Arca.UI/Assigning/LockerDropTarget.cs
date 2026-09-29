@@ -54,14 +54,17 @@ public static class LockerDropTarget
     {
         if (feedback is null)
         {
-            cell.ClearValue(Border.BorderBrushProperty);
-            cell.ClearValue(Border.BorderThicknessProperty);
+            cell.ClearValue(Border.BorderBrushProperty); // the thickness stays, so the destination does not move when the outline goes
             ToolTip.SetTip(cell, null);
             return;
         }
 
         cell.Themed(Border.BorderBrushProperty, feedback.State == DropTargetState.Valid ? ArcaResourceKeys.Success : ArcaResourceKeys.Error);
-        cell.BorderThickness = new Thickness(3);
+        if (cell.BorderThickness == default)
+        {
+            cell.BorderThickness = new Thickness(3);
+        }
+
         ToolTip.SetTip(cell, feedback.Reason);
     }
 }

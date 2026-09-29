@@ -27,6 +27,13 @@ public static class ArcaResourceKeys
     /// <summary>The text of a validation or failure message shown on the page itself (not on a coloured card).</summary>
     public const string ErrorText = "Arca.Brush.ErrorText";
 
+    // The status of a locker on the map. They never carry the meaning alone: an icon and a word go with them.
+    public const string StatusFree = "Arca.Brush.StatusFree";
+    public const string StatusOccupied = "Arca.Brush.StatusOccupied";
+    public const string StatusReserved = "Arca.Brush.StatusReserved";
+    public const string StatusBroken = "Arca.Brush.StatusBroken";
+    public const string StatusMaintenance = "Arca.Brush.StatusMaintenance";
+
     // Type: one family and a short scale of sizes.
     public const string FontFamilyText = "Arca.FontFamily.Text";
 
@@ -44,7 +51,7 @@ public static class ArcaResourceKeys
 
     /// <summary>Colours that change with the theme variant.</summary>
     public static IReadOnlyList<string> Brushes { get; } =
-        [Background, Surface, Border, Text, TextSecondary, Accent, OnAccent, Success, Warning, Error, OnSemantic, Focus, ErrorText];
+        [Background, Surface, Border, Text, TextSecondary, Accent, OnAccent, Success, Warning, Error, OnSemantic, Focus, ErrorText, StatusFree, StatusOccupied, StatusReserved, StatusBroken, StatusMaintenance];
 
     /// <summary>Type and spacing, which do not change with the variant.</summary>
     public static IReadOnlyList<string> Metrics { get; } =

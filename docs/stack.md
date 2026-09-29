@@ -60,6 +60,7 @@ Notas:
 | MVVM | CommunityToolkit.Mvvm | Última estable, *a confirmar* | Generadores de código para propiedades y comandos. |
 | Tablas | `Avalonia.Controls.DataGrid` (MIT) | 12.1.2 (confirmado en el spike) | Orden con `DataGridCollectionView` y selección múltiple funcionan. **No** TreeDataGrid, que es de pago. |
 | Rejilla virtualizada (mapa de taquillas) | `Avalonia.Controls.ItemsRepeater` (MIT, paquete aparte) | 12.0.0 (confirmado en el spike) | Avalonia 12 no la incluye. Con 300 taquillas se crean solo las visibles (113 de 300). |
+| Iconos | `Material.Icons.Avalonia` (MIT) con el juego Material Design Icons de Pictogrammers (más de 7000 iconos) | 3.0.2 (fijada, depende de Avalonia 12.0.0 o superior) | Se elige por `MaterialIconKind` con `ThemedIcon.Create`, en el color de texto del tema; ningún icono se dibuja a mano. Los estilos van en `ArcaTheme.CreateStyles()`. **Licencia de los iconos**: el paquete es MIT, pero los dibujos son de Pictogrammers (licencia propia, permisiva y gratuita también para uso comercial) y en parte de Google (Apache-2.0); no se ha revisado el texto exacto y va en la revisión legal (`docs/legal/dossier-revision-legal.md`). Alternativa si hiciera falta: Lucide (ISC). |
 | Inyección de dependencias | Microsoft.Extensions.DependencyInjection | Alineada con .NET 10 | Sin contenedor de terceros. |
 
 ## Datos y cifrado

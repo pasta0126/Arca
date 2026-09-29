@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Shell.Section.Home" xml:space="preserve">
+    <value>Inici</value>
+  </data>
+  <data name="Shell.Section.Lockers" xml:space="preserve">
+    <value>Taquilles</value>
+  </data>
+  <data name="Shell.Section.Students" xml:space="preserve">
+    <value>Alumnes</value>
+  </data>
+  <data name="Shell.Section.Payments" xml:space="preserve">
+    <value>Cobraments</value>
+  </data>
+  <data name="Shell.Section.KeysAndIncidents" xml:space="preserve">
+    <value>Claus i incidències</value>
+  </data>
+  <data name="Shell.Section.Reports" xml:space="preserve">
+    <value>Informes</value>
+  </data>
+  <data name="Shell.Section.Course" xml:space="preserve">
+    <value>Curs</value>
+  </data>
+  <data name="Shell.Section.Settings" xml:space="preserve">
+    <value>Ajustos</value>
+  </data>
+  <data name="Shell.Screen.LockerMap" xml:space="preserve">
+    <value>Mapa de taquilles</value>
+  </data>
+  <data name="Shell.Screen.Lockers" xml:space="preserve">
+    <value>Taquilles</value>
+  </data>
+  <data name="Shell.Screen.Zones" xml:space="preserve">
+    <value>Zones</value>
+  </data>
+  <data name="Shell.Screen.LockerHistory" xml:space="preserve">
+    <value>Historial de taquilles</value>
+  </data>
+  <data name="Shell.Screen.Students" xml:space="preserve">
+    <value>Alumnes</value>
+  </data>
+  <data name="Shell.Screen.StudentImport" xml:space="preserve">
+    <value>Importació d'alumnes</value>
+  </data>
+  <data name="Shell.Screen.Assignments" xml:space="preserve">
+    <value>Assignacions</value>
+  </data>
+  <data name="Shell.Screen.Charges" xml:space="preserve">
+    <value>Càrrecs</value>
+  </data>
+  <data name="Shell.Screen.Debtors" xml:space="preserve">
+    <value>Pendents de pagament</value>
+  </data>
+  <data name="Shell.Screen.Deposits" xml:space="preserve">
+    <value>Dipòsits per retornar</value>
+  </data>
+  <data name="Shell.Screen.Keys" xml:space="preserve">
+    <value>Claus</value>
+  </data>
+  <data name="Shell.Screen.Incidents" xml:space="preserve">
+    <value>Incidències</value>
+  </data>
+  <data name="Shell.Screen.BulkMaintenance" xml:space="preserve">
+    <value>Manteniment en bloc</value>
+  </data>
+  <data name="Shell.Screen.Reports" xml:space="preserve">
+    <value>Informes</value>
+  </data>
+  <data name="Shell.Screen.Export" xml:space="preserve">
+    <value>Exportació</value>
+  </data>
+  <data name="Shell.Screen.CurrentYear" xml:space="preserve">
+    <value>Curs actual</value>
+  </data>
+  <data name="Shell.Screen.Amounts" xml:space="preserve">
+    <value>Imports</value>
+  </data>
+  <data name="Shell.Screen.YearClosing" xml:space="preserve">
+    <value>Tancament de curs</value>
+  </data>
+  <data name="Shell.Screen.DataRetention" xml:space="preserve">
+    <value>Conservació de dades</value>
+  </data>
+  <data name="Shell.Screen.Identity" xml:space="preserve">
+    <value>Identitat del centre</value>
+  </data>
+  <data name="Shell.Screen.Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="Shell.Screen.Registration" xml:space="preserve">
+    <value>Registre i avisos de versió</value>
+  </data>
+  <data name="Shell.Screen.Backup" xml:space="preserve">
+    <value>Còpia de seguretat i restauració</value>
+  </data>
+  <data name="Shell.Screen.Setup" xml:space="preserve">
+    <value>Configuració guiada</value>
+  </data>
+  <data name="Shell.Screen.IncidentReasons" xml:space="preserve">
+    <value>Motius d'incidència</value>
+  </data>
+  <data name="Shell.Screen.DataFolder" xml:space="preserve">
+    <value>Carpeta de dades</value>
+  </data>
+  <data name="Shell.Label.Sidebar" xml:space="preserve">
+    <value>Seccions</value>
+  </data>
+  <data name="Shell.Label.CollapseSidebar" xml:space="preserve">
+    <value>Redueix la barra lateral</value>
+  </data>
+  <data name="Shell.Label.ExpandSidebar" xml:space="preserve">
+    <value>Amplia la barra lateral</value>
+  </data>
+  <data name="Shell.Empty.SectionUnavailable" xml:space="preserve">
+    <value>Aquesta secció encara no és disponible en aquesta versió. Hi trobaràs:</value>
+  </data>
+  <data name="Shell.Header.Year" xml:space="preserve">
+    <value>Curs {0}</value>
+    <comment>{0} name of the active year, such as 2026-2027</comment>
+  </data>
+  <data name="Shell.Header.NoYear" xml:space="preserve">
+    <value>Sense curs actiu</value>
+  </data>
+  <data name="Shell.Notice.NoActiveYear" xml:space="preserve">
+    <value>No hi ha cap curs actiu. Cal definir-ne un abans de poder assignar taquilles.</value>
+  </data>
+  <data name="Shell.Notice.GoToCourse" xml:space="preserve">
+    <value>Ves a Curs</value>
+  </data>
+  <data name="Shell.Label.Pending" xml:space="preserve">
+    <value>{0} pendents</value>
+    <comment>{0} number of things that need attention in a section</comment>
+  </data>
+  <data name="Shell.Search.Placeholder" xml:space="preserve">
+    <value>Cerca alumnes, taquilles i grups</value>
+  </data>
+  <data name="Shell.Search.Students" xml:space="preserve">
+    <value>Alumnes</value>
+  </data>
+  <data name="Shell.Search.Lockers" xml:space="preserve">
+    <value>Taquilles</value>
+  </data>
+  <data name="Shell.Search.Groups" xml:space="preserve">
+    <value>Grups</value>
+  </data>
+  <data name="Shell.Search.Searching" xml:space="preserve">
+    <value>Cercant…</value>
+  </data>
+  <data name="Shell.Search.Empty" xml:space="preserve">
+    <value>Cap resultat per «{0}». Revisa el que has escrit.</value>
+    <comment>{0} the text typed</comment>
+  </data>
+  <data name="Shell.Search.IncludeRetired" xml:space="preserve">
+    <value>Inclou alumnes de baixa</value>
+  </data>
+  <data name="Shell.Search.EmptyRetired" xml:space="preserve">
+    <value>{0} alumnes de baixa coincideixen. Marca «Inclou alumnes de baixa» per veure'ls.</value>
+    <comment>{0} number of students who left that match</comment>
+  </data>
+  <data name="Shell.Search.SeeAll" xml:space="preserve">
+    <value>Veure els {0}</value>
+    <comment>{0} total results of this kind</comment>
+  </data>
+  <data name="Shell.Search.Student" xml:space="preserve">
+    <value>{0} · {1}</value>
+    <comment>{0} name, {1} details</comment>
+  </data>
+  <data name="Shell.Search.Locker" xml:space="preserve">
+    <value>Taquilla {0} · {1} · {2}</value>
+    <comment>{0} number, {1} zone, {2} status</comment>
+  </data>
+  <data name="Shell.Search.WithStudent" xml:space="preserve">
+    <value>{0} · {1}</value>
+    <comment>{0} locker text, {1} student</comment>
+  </data>
+  <data name="Shell.Search.Group" xml:space="preserve">
+    <value>{0} {1} · {2} alumnes</value>
+    <comment>{0} level, {1} group, {2} students</comment>
+  </data>
+  <data name="Shell.Search.Retired" xml:space="preserve">
+    <value>de baixa</value>
+  </data>
+  <data name="Shell.Search.Debt" xml:space="preserve">
+    <value>Pendent de pagament ({0:C})</value>
+    <comment>{0} amount</comment>
+  </data>
+  <data name="Shell.Search.UpToDate" xml:space="preserve">
+    <value>Al corrent</value>
+  </data>
+  <data name="Shell.Search.LockerNumber" xml:space="preserve">
+    <value>Taquilla {0}</value>
+    <comment>{0} number</comment>
+  </data>
+  <data name="Shell.Search.Status.Free" xml:space="preserve">
+    <value>Lliure</value>
+  </data>
+  <data name="Shell.Search.Status.Occupied" xml:space="preserve">
+    <value>Ocupada</value>
+  </data>
+  <data name="Shell.Search.Status.Reserved" xml:space="preserve">
+    <value>Reservada</value>
+  </data>
+  <data name="Shell.Search.Status.Broken" xml:space="preserve">
+    <value>Avariada</value>
+  </data>
+  <data name="Shell.Search.Status.Maintenance" xml:space="preserve">
+    <value>En manteniment</value>
+  </data>
+  <data name="Shell.Search.Status.Retired" xml:space="preserve">
+    <value>De baixa</value>
+  </data>
+  <data name="Shell.Map.Empty" xml:space="preserve">
+    <value>No hi ha cap taquilla activa. Dona-les d'alta a la secció Taquilles per veure-les aquí.</value>
+  </data>
+  <data name="Shell.Map.GoToLockers" xml:space="preserve">
+    <value>Ves a Taquilles</value>
+  </data>
+  <data name="Shell.Map.AllZones" xml:space="preserve">
+    <value>Totes les zones</value>
+  </data>
+  <data name="Shell.Map.ClearFilters" xml:space="preserve">
+    <value>Neteja els filtres</value>
+  </data>
+  <data name="Shell.Map.Counter" xml:space="preserve">
+    <value>{0}: {1}</value>
+    <comment>{0} status word, {1} how many lockers</comment>
+  </data>
+  <data name="Shell.Map.ZoneSummary" xml:space="preserve">
+    <value>{0} taquilles, {1} lliures</value>
+    <comment>{0} lockers in the zone, {1} free</comment>
+  </data>
+  <data name="Shell.Map.CellTip" xml:space="preserve">
+    <value>Taquilla {0} · {1}</value>
+    <comment>{0} number, {1} status</comment>
+  </data>
+  <data name="Shell.Map.CellTipStudent" xml:space="preserve">
+    <value>{0} · {1}</value>
+    <comment>{0} the tip so far, {1} student name</comment>
+  </data>
+  <data name="Shell.Map.Debt" xml:space="preserve">
+    <value>Pendent de pagament</value>
+  </data>
+  <data name="Shell.Map.Zone" xml:space="preserve">
+    <value>Zona</value>
+  </data>
+  <data name="Shell.Students.Title" xml:space="preserve">
+    <value>Alumnes sense taquilla</value>
+  </data>
+  <data name="Shell.Students.Count" xml:space="preserve">
+    <value>{0} alumnes sense taquilla</value>
+    <comment>{0} how many</comment>
+  </data>
+  <data name="Shell.Students.Search" xml:space="preserve">
+    <value>Cerca entre els alumnes sense taquilla</value>
+  </data>
+  <data name="Shell.Students.NoYear" xml:space="preserve">
+    <value>No hi ha cap curs actiu. Cal activar-ne un abans d'assignar taquilles.</value>
+  </data>
+  <data name="Shell.Students.AllHaveLocker" xml:space="preserve">
+    <value>Tots els alumnes actius tenen taquilla. Bon treball!</value>
+  </data>
+  <data name="Shell.Students.Menu.Assign" xml:space="preserve">
+    <value>Assigna a la taquilla seleccionada</value>
+  </data>
+  <data name="Shell.Detail.Title" xml:space="preserve">
+    <value>Detall de la taquilla</value>
+  </data>
+  <data name="Shell.Detail.Nothing" xml:space="preserve">
+    <value>Tria una taquilla del mapa per veure'n el detall.</value>
+  </data>
+  <data name="Shell.Detail.Student" xml:space="preserve">
+    <value>Alumne</value>
+  </data>
+  <data name="Shell.Detail.Group" xml:space="preserve">
+    <value>Nivell i grup</value>
+  </data>
+  <data name="Shell.Detail.Payment" xml:space="preserve">
+    <value>Pagament</value>
+  </data>
+  <data name="Shell.Detail.UpToDate" xml:space="preserve">
+    <value>Al corrent</value>
+  </data>
+  <data name="Shell.Detail.Owes" xml:space="preserve">
+    <value>Pendent de pagament: {0:C}</value>
+    <comment>{0} amount</comment>
+  </data>
+  <data name="Shell.Detail.Note" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="Shell.Detail.NoStudent" xml:space="preserve">
+    <value>Cap alumne</value>
+  </data>
+  <data name="Shell.Action.Assign" xml:space="preserve">
+    <value>Assigna l'alumne seleccionat</value>
+  </data>
+  <data name="Shell.Action.Change" xml:space="preserve">
+    <value>Canvia de taquilla</value>
+  </data>
+  <data name="Shell.Action.Release" xml:space="preserve">
+    <value>Allibera</value>
+  </data>
+  <data name="Shell.Action.Reserve" xml:space="preserve">
+    <value>Reserva</value>
+  </data>
+  <data name="Shell.Action.RemoveReservation" xml:space="preserve">
+    <value>Treu la reserva</value>
+  </data>
+  <data name="Shell.Action.MarkBroken" xml:space="preserve">
+    <value>Marca com a avariada</value>
+  </data>
+  <data name="Shell.Action.Restore" xml:space="preserve">
+    <value>Torna-la a posar en servei</value>
+  </data>
+  <data name="Shell.Reason.NoYear" xml:space="preserve">
+    <value>No hi ha cap curs actiu.</value>
+  </data>
+  <data name="Shell.Reason.PickStudent" xml:space="preserve">
+    <value>Tria primer un alumne al panell d'alumnes sense taquilla.</value>
+  </data>
+  <data name="Shell.Reason.Occupied" xml:space="preserve">
+    <value>La taquilla ja té un alumne.</value>
+  </data>
+  <data name="Shell.Reason.NoStudent" xml:space="preserve">
+    <value>La taquilla no té cap alumne.</value>
+  </data>
+  <data name="Shell.Reason.NotReserved" xml:space="preserve">
+    <value>La taquilla no està reservada.</value>
+  </data>
+  <data name="Shell.Reason.Reserved" xml:space="preserve">
+    <value>La taquilla està reservada: treu-ne primer la reserva.</value>
+  </data>
+  <data name="Shell.Reason.OutOfService" xml:space="preserve">
+    <value>La taquilla és fora de servei.</value>
+  </data>
+  <data name="Shell.Reason.ReleaseFirst" xml:space="preserve">
+    <value>Allibera primer la taquilla.</value>
+  </data>
+  <data name="Shell.Reason.InService" xml:space="preserve">
+    <value>La taquilla ja és en servei.</value>
+  </data>
+  <data name="Shell.Pick.Banner" xml:space="preserve">
+    <value>Tria una taquilla lliure per a {0}.</value>
+    <comment>{0} student name</comment>
+  </data>
+  <data name="Shell.Pick.Cancel" xml:space="preserve">
+    <value>Cancel·la el canvi</value>
+  </data>
+  <data name="Shell.Students.PickFreeLocker" xml:space="preserve">
+    <value>Tria una taquilla lliure al mapa.</value>
+  </data>
+</root>

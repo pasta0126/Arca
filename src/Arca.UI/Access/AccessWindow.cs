@@ -3,6 +3,7 @@
 
 using System.ComponentModel;
 using Arca.UI.Common;
+using Material.Icons;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -74,7 +75,7 @@ public sealed class AccessWindow : Window
                 }
             };
             _boxes.Add(box);
-            body.Children.Add(new StackPanel { Spacing = 4, Children = { new TextBlock { Text = field.Label }, box } });
+            body.Children.Add(new StackPanel { Spacing = 4, Children = { new TextBlock { Text = field.Label }, field.IsSecret ? WithRevealButton(box, model) : box } });
         }
 
         body.Children.Add(_hints);
@@ -96,6 +97,27 @@ public sealed class AccessWindow : Window
 
     /// <summary>The text boxes, in the order of the model's fields.</summary>
     public IReadOnlyList<TextBox> Boxes => _boxes;
+
+    /// <summary>
+    /// A password box with a small eye button beside it that shows what was typed while it is pressed in, and hides it again
+    /// when pressed once more. The text is hidden every time the window opens, and the button is reachable with the keyboard.
+    /// </summary>
+    static Grid WithRevealButton(TextBox box, AccessFormViewModel model)
+    {
+        var eye = new Avalonia.Controls.Primitives.ToggleButton { Content = ThemedIcon.Create(MaterialIconKind.Eye), VerticalAlignment = VerticalAlignment.Stretch };
+        ToolTip.SetTip(eye, model.ShowPasswordLabel);
+        eye.IsCheckedChanged += (_, _) =>
+        {
+            box.RevealPassword = eye.IsChecked == true;
+            eye.Content = ThemedIcon.Create(eye.IsChecked == true ? MaterialIconKind.EyeOff : MaterialIconKind.Eye); // shows what pressing it will do
+            ToolTip.SetTip(eye, eye.IsChecked == true ? model.HidePasswordLabel : model.ShowPasswordLabel);
+        };
+        Grid.SetColumn(eye, 1);
+        var row = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+        row.Children.Add(box);
+        row.Children.Add(eye);
+        return row;
+    }
 
     StackPanel BuildSecret(SecretDisplay secret)
     {

@@ -18,7 +18,9 @@ public sealed record WindowBounds(int X, int Y, double Width, double Height, boo
 /// <param name="Window">The last position and size of the main window, or null if never saved.</param>
 /// <param name="Sections">Whether each collapsible section is expanded, by its name; a section not listed uses its default.</param>
 /// <param name="CompactLists">Whether the lists of zones and lockers use the compact density.</param>
-public sealed record UiPreferences(WindowBounds? Window = null, IReadOnlyDictionary<string, bool>? Sections = null, bool CompactLists = false);
+/// <param name="SidebarCollapsed">Whether the navigation sidebar shows only its icons.</param>
+public sealed record UiPreferences(
+    WindowBounds? Window = null, IReadOnlyDictionary<string, bool>? Sections = null, bool CompactLists = false, bool SidebarCollapsed = false);
 
 /// <summary>Where the interface preferences are kept. Reading never fails: anything wrong gives the defaults.</summary>
 public interface IUiPreferencesStore

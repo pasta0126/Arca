@@ -5,6 +5,8 @@ using System.Reflection;
 using Arca.Application;
 using Arca.Application.Common;
 using Arca.Application.Feedback;
+using Arca.Application.GlobalState;
+using Arca.Application.Search;
 using Arca.Application.Localization;
 using Arca.Application.Preferences;
 using Arca.Application.Security;
@@ -12,12 +14,16 @@ using Arca.Application.Startup;
 using Arca.Application.Storage;
 using Arca.Domain.Common;
 using Arca.Infrastructure.Common;
+using Arca.Infrastructure.Inventory;
 using Arca.Infrastructure.Security;
 using Arca.Infrastructure.Storage;
 using Arca.UI.Access;
+using Arca.UI.Actions;
+using Arca.UI.Map;
 using Arca.UI.Confirmation;
 using Arca.UI.Notifications;
 using Arca.UI.Preferences;
+using Arca.UI.Shell;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -63,6 +69,10 @@ public static class AppStartup
             CreateDatabase);
         var preferences = new UiPreferencesSession(
             new LocalUiPreferencesStore(new LocalSettingsStore(DataLocations.Resolve(PlatformContext.Current()).SettingsFile)));
+        // The data the frame shows (the year and what needs attention): read from the open database, asked when it starts and after each write.
+        var inventory = new EfInventory(session.CreateContext);
+        var globalState = new GlobalStateService(
+            new GetGlobalStateHandler(inventory.Years, inventory.Charges).HandleAsync, new ResultNotifier(notifications, localizer, log));
         var security = new SecurityViewModel(settingsFlows, session.DatabasePath, notifications, localizer, log);
         var services = new ServiceCollection()
             .AddSingleton<ILocalizer>(localizer)
@@ -70,6 +80,12 @@ public static class AppStartup
             .AddSingleton(flows)
             .AddSingleton(security)
             .AddSingleton(preferences)
+            .AddSingleton(globalState)
+            .AddSingleton(LockerHomeComposition.Create(inventory, clock, localizer))
+            .AddSingleton(new GlobalSearchHandler(
+                inventory.Students, inventory.Enrollments, inventory.Catalog, inventory.Years, inventory.Lockers, inventory.Zones,
+                inventory.Assignments, inventory.Charges))
+            .AddSingleton(new ActionRegistry(localizer, UiPlatforms.Current))
             .AddSingleton<IClock>(clock)
             .AddSingleton<IDelay>(delay)
             .AddSingleton(log)

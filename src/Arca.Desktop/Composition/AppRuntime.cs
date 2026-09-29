@@ -2,11 +2,16 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using Arca.Application;
+using Arca.Application.Common;
 using Arca.Application.Feedback;
+using Arca.Application.Search;
 using Arca.Application.Localization;
 using Arca.UI.Access;
+using Arca.UI.Actions;
+using Arca.UI.Map;
 using Arca.UI.Notifications;
 using Arca.UI.Preferences;
+using Arca.UI.Shell;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +27,18 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
     public SecurityViewModel Security => services.GetRequiredService<SecurityViewModel>();
 
     public UiPreferencesSession Preferences => services.GetRequiredService<UiPreferencesSession>();
+
+    public GlobalStateService GlobalState => services.GetRequiredService<GlobalStateService>();
+
+    public LockerHomeServices HomeServices => services.GetRequiredService<LockerHomeServices>();
+
+    public GlobalSearchHandler Search => services.GetRequiredService<GlobalSearchHandler>();
+
+    public IDelay Delay => services.GetRequiredService<IDelay>();
+
+    public IErrorLog ErrorLog => services.GetRequiredService<IErrorLog>();
+
+    public ActionRegistry Actions => services.GetRequiredService<ActionRegistry>();
 
     public NotificationCenter Notifications => services.GetRequiredService<NotificationCenter>();
 

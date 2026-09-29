@@ -63,6 +63,12 @@
   <data name="Keys.Warning.RestoreAdoptsPassword" xml:space="preserve">
     <value>En restaurar aquesta còpia, la contrasenya del centre passarà a ser la que tenia la còpia. Les dades actuals es guardaran en una còpia prèvia.</value>
   </data>
+  <data name="Keys.Label.ShowPassword" xml:space="preserve">
+    <value>Mostra la contrasenya</value>
+  </data>
+  <data name="Keys.Label.HidePassword" xml:space="preserve">
+    <value>Amaga la contrasenya</value>
+  </data>
   <data name="Keys.Label.PasswordField" xml:space="preserve">
     <value>Contrasenya</value>
   </data>
