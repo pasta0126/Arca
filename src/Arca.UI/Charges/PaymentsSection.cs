@@ -46,7 +46,7 @@ public static class PaymentsSection
         var zone = Filter(() => model.ZoneOptions, () => model.ZoneFilter, v => model.ZoneFilter = v, model, nameof(DebtorsViewModel.ZoneOptions));
         var level = Filter(() => model.LevelOptions, () => model.LevelFilter, v => model.LevelFilter = v, model, nameof(DebtorsViewModel.LevelOptions));
         var group = Filter(() => model.GroupOptions, () => model.GroupFilter, v => model.GroupFilter = v, model, nameof(DebtorsViewModel.GroupOptions));
-        var filters = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        var filters = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         foreach (var box in new[] { year, concept, zone, level, group })
         {
             filters.Children.Add(box);

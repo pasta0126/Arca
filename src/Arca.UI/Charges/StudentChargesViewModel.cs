@@ -28,6 +28,7 @@ public sealed class StudentChargesViewModel : ObservableObject
     readonly ScreenContext _context;
     readonly Func<Task> _openCourse;
     readonly ChargeResultTexts _texts;
+    readonly OneAtATime _once = new();
     StudentChargesScreen? _screen;
     Guid? _studentId;
     int _request;
@@ -258,8 +259,8 @@ public sealed class StudentChargesViewModel : ObservableObject
             return;
         }
 
-        await new RunOnceCommand<string>(
+        await _once.RunAsync("KeyReplacement", () => new RunOnceCommand<string>(
             (ct, _) => _services.ChargeKeyReplacement(screen.StudentId, yearId, ct), sentence => sentence, "ChargeKeyReplacement", _context.Notifications, text,
-            _context.Log, _context.Delay, () => RefreshAsync()).RunAsync();
+            _context.Log, _context.Delay, () => RefreshAsync()).RunAsync());
     }
 }

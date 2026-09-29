@@ -32,6 +32,7 @@ public sealed class LockersViewModel : ObservableObject
     readonly LockerServices _services;
     readonly ScreenContext _context;
     readonly AssignmentDialogs _assign;
+    readonly OneAtATime _once = new();
     LockerCounters _counters = new(0, 0, 0, 0, 0, 0);
     LockerEmptyState _emptyState;
     IReadOnlyList<FormOption> _zoneOptions = [];
@@ -58,7 +59,7 @@ public sealed class LockersViewModel : ObservableObject
                 new ListColumn<LockerListRow>("zone", text.Get("Lockers.Label.Zone"), r => r.ZoneName, Width: 2),
                 new ListColumn<LockerListRow>("status", text.Get("Lockers.Label.Status"), r => LockerStatusPresentation.Text(r.Status, text), r => r.Status.ToString(), Width: 2),
                 new ListColumn<LockerListRow>("student", text.Get("Lockers.Label.Student"), r => r.StudentName ?? string.Empty, Width: 3),
-                new ListColumn<LockerListRow>("debt", text.Get("Lockers.Label.Debt"), r => r.HasDebt ? text.Get("Lockers.Label.HasDebt") : string.Empty, Width: 2),
+                new ListColumn<LockerListRow>("debt", text.Get("Lockers.Label.Debt"), r => r.HasDebt ? text.Get("Lockers.Label.HasDebt") : string.Empty, Width: 3),
                 new ListColumn<LockerListRow>("note", text.Get("Lockers.Label.Note"), r => r.ReservationNote ?? r.Note ?? string.Empty, Width: 3),
             ],
             r => r.Id, LoadRowsAsync, text, context.Notifications, context.Log,
@@ -269,7 +270,7 @@ public sealed class LockersViewModel : ObservableObject
     }
 
     Task RunAsync(Func<CancellationToken, Task<Result<string>>> operation, string name, Guid? select) =>
-        new RunOnceCommand<string>((ct, _) => operation(ct), sentence => sentence, name, _context.Notifications, _context.Localizer, _context.Log, _context.Delay, () => RefreshAsync(select)).RunAsync();
+        _once.RunAsync(name, () => new RunOnceCommand<string>((ct, _) => operation(ct), sentence => sentence, name, _context.Notifications, _context.Localizer, _context.Log, _context.Delay, () => RefreshAsync(select)).RunAsync());
 
     async Task RetireAsync(LockerListRow row)
     {
@@ -461,9 +462,9 @@ public sealed class LockersViewModel : ObservableObject
         var row = detail.Row;
         if (row.Status != LockerStatusView.Occupied)
         {
-            await new RunOnceCommand<OutOfServiceView>(
+            await _once.RunAsync("OutOfService", () => new RunOnceCommand<OutOfServiceView>(
                 (ct, _) => _services.OutOfService(row.Id, kind, null, null, false, ct), v => v.Sentence ?? string.Empty, "MarkLockerOutOfService",
-                _context.Notifications, _context.Localizer, _context.Log, _context.Delay, () => RefreshAsync(row.Id)).RunAsync();
+                _context.Notifications, _context.Localizer, _context.Log, _context.Delay, () => RefreshAsync(row.Id)).RunAsync());
             return;
         }
 
@@ -490,9 +491,9 @@ public sealed class LockersViewModel : ObservableObject
             return;
         }
 
-        await new RunOnceCommand<OutOfServiceView>(
+        await _once.RunAsync("OutOfService", () => new RunOnceCommand<OutOfServiceView>(
             (ct, _) => _services.OutOfService(row.Id, kind, decision, null, false, ct), v => v.Sentence ?? string.Empty, "MarkLockerOutOfService",
-            _context.Notifications, text, _context.Log, _context.Delay, () => RefreshAsync(row.Id)).RunAsync();
+            _context.Notifications, text, _context.Log, _context.Delay, () => RefreshAsync(row.Id)).RunAsync());
     }
 
     async Task ReassignAsync(LockerListRow row, OutOfServiceKindView kind)

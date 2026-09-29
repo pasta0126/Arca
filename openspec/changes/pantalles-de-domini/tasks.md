@@ -56,6 +56,6 @@
 
 ## 7. Feedback y verificación
 
-- [ ] 7.1 Resultados y errores de todas las operaciones mediante las notificaciones comunes y el indicador de trabajo
-- [ ] 7.2 Protección contra doble ejecución en todos los guardados y operaciones
+- [x] 7.1 Resultados y errores de todas las operaciones mediante las notificaciones comunes y el indicador de trabajo
+- [x] 7.2 Protección contra doble ejecución en todos los guardados y operaciones
 - [ ] 7.3 Recorrido manual de las cuatro secciones con los datos de ejemplo en los tres sistemas y anotar los ajustes en los specs (D9)

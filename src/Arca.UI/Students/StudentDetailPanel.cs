@@ -6,6 +6,8 @@ using Arca.UI.Actions;
 using Arca.UI.Common;
 using Arca.UI.Theme;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Styling;
 using Avalonia.Layout;
 
 namespace Arca.UI.Students;
@@ -75,7 +77,7 @@ public sealed class StudentDetailPanel : UserControl
             ? _localizer.Get("Students.Label.PaymentLineDebt", _localizer.Format(Arca.Domain.Common.Money.FromCents((long)Math.Round(detail.PendingTotal * 100))))
             : _localizer.Get("Students.Label.PaymentLineUpToDate")));
 
-        var actions = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        var actions = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         var buttons = new List<Button>();
         foreach (var action in _model.Detail.Actions)
         {
@@ -88,6 +90,7 @@ public sealed class StudentDetailPanel : UserControl
         _body.Children.Add(actions);
 
         var tabs = new TabControl { SelectedIndex = _tab };
+        tabs.Styles.Add(new Style(x => x.OfType<TabItem>()) { Setters = { new Setter(TemplatedControl.FontSizeProperty, 14.0) } });
         tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.Data"), Content = DataTab(detail) });
         tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.Locker"), Content = ListTab(_model.LockerLines, _model.LockerLinesLoaded) });
         tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.Payments"), Content = _charges });

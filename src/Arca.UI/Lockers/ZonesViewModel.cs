@@ -22,6 +22,7 @@ public sealed class ZonesViewModel : ObservableObject
 {
     readonly LockerServices _services;
     readonly ScreenContext _context;
+    readonly OneAtATime _once = new();
 
     public ZonesViewModel(LockerServices services, ScreenContext context, Func<Task> afterChange)
     {
@@ -105,7 +106,7 @@ public sealed class ZonesViewModel : ObservableObject
     }
 
     Task RunAsync(Func<CancellationToken, Task<Result<string>>> operation, string name, Guid? select) =>
-        new RunOnceCommand<string>((ct, _) => operation(ct), sentence => sentence, name, _context.Notifications, _context.Localizer, _context.Log, _context.Delay, () => RefreshAsync(select)).RunAsync();
+        _once.RunAsync(name, () => new RunOnceCommand<string>((ct, _) => operation(ct), sentence => sentence, name, _context.Notifications, _context.Localizer, _context.Log, _context.Delay, () => RefreshAsync(select)).RunAsync());
 
     async Task DeleteAsync(ZoneRow zone)
     {

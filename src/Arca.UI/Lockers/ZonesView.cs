@@ -59,7 +59,7 @@ public sealed class ZoneDetailPanel : UserControl
         _body.Children.Add(ThemedText.Title(zone.Name + " · " + _model.StateOf(zone)));
         _body.Children.Add(new TextBlock { Text = _localizer.Get("Zones.Label.ActiveLockersLine", zone.ActiveLockers) }
             .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.Text));
-        var actions = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        var actions = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         var buttons = new List<Button>();
         foreach (var action in _model.Detail.Actions)
         {

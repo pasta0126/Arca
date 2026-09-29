@@ -623,4 +623,22 @@ public sealed class StudentsScreenTests
 
         Assert.Contains($"assign {locker.Id} False", _calls);
     }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    public async Task Screenshot_of_the_students_section()
+    {
+        AddStudent("Marta", "Puig", locker: 5, debt: true);
+        AddStudent("Pau", "Alsina");
+        AddStudent("Núria", "García", "2n ESO", "B", locker: 12);
+        var model = Model();
+        var screen = StudentsView.Create(model, _localizer);
+        var window = new Avalonia.Controls.Window { Content = screen, Width = 1200, Height = 700 };
+        window.Show();
+        await model.LoadAsync();
+        model.Students.Select(model.Students.List.Rows[2]);
+        await Task.Delay(200);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+        ScreenshotTests.Take(window, "students");
+        window.Close();
+    }
 }

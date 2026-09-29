@@ -30,6 +30,7 @@ public sealed class CourseViewModel : ObservableObject
     readonly CourseServices _services;
     readonly ScreenContext _context;
     readonly YearTexts _texts;
+    readonly OneAtATime _once = new();
     AcademicYearSummary? _activeMissingAmounts;
 
     public CourseViewModel(CourseServices services, ScreenContext context, AppAction newAction)
@@ -179,7 +180,7 @@ public sealed class CourseViewModel : ObservableObject
             return;
         }
 
-        await Run(ct => _services.Activate(year.Id, ct), _texts.Activated, "ActivateYear", () => RefreshAsync(year.Id)).RunAsync();
+        await _once.RunAsync("Activate", () => Run(ct => _services.Activate(year.Id, ct), _texts.Activated, "ActivateYear", () => RefreshAsync(year.Id)).RunAsync());
     }
 
     async Task DeleteAsync(AcademicYearSummary year)
@@ -189,12 +190,12 @@ public sealed class CourseViewModel : ObservableObject
             return;
         }
 
-        await Run(ct => _services.Delete(year.Id, ct), _ => _texts.Deleted(year.Name), "DeleteYear", async () =>
+        await _once.RunAsync("Delete", () => Run(ct => _services.Delete(year.Id, ct), _ => _texts.Deleted(year.Name), "DeleteYear", async () =>
         {
             Years.Select(null);
             await Detail.ShowAsync(false, Guid.Empty);
             await RefreshAsync();
-        }).RunAsync();
+        }).RunAsync());
     }
 
     // --- Forms ---

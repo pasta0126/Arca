@@ -37,7 +37,7 @@ public sealed class SectionScreens : UserControl
         }
 
         _entries = entries;
-        var tabs = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        var tabs = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Avalonia.Thickness(24, 12, 24, 0) }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
         foreach (var entry in entries)
         {
             var button = new Button { Content = localizer.Get(ShellCatalog.Screens.First(s => s.Id == entry.ScreenId).TitleKey) };

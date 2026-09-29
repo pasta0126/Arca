@@ -67,7 +67,7 @@ public sealed class StudentChargesPanel : UserControl
         }
 
         _detail.Children.Add(ThemedText.Title(ConceptNames.Of(_localizer, line.Concept) + " · " + line.YearName));
-        var actions = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        var actions = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         var buttons = new List<Button>();
         foreach (var action in _model.Detail.Actions)
         {

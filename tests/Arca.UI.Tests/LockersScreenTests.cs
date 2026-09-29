@@ -63,6 +63,7 @@ public sealed class LockersScreenTests
     LockerEmptyState _emptyState = LockerEmptyState.None;
     int _refreshes;
     Guid _planZone;
+    TaskCompletionSource? _gate;
 
     ZoneRow AddZone(string name, bool active = true, int lockers = 0, Error? deactivation = null, Error? deletion = null)
     {
@@ -146,10 +147,15 @@ public sealed class LockersScreenTests
             _calls.Add($"out {kind} {decision} {target is not null} {confirm}");
             return Task.FromResult(Result<OutOfServiceView>.Success(new OutOfServiceView("Fora de servei.", [], [])));
         },
-        (id, _) =>
+        async (id, _) =>
         {
+            if (_gate is not null)
+            {
+                await _gate.Task;
+            }
+
             _calls.Add("restore");
-            return Task.FromResult(Result<string>.Success("Reparada."));
+            return Result<string>.Success("Reparada.");
         },
         (id, _) =>
         {
@@ -167,10 +173,15 @@ public sealed class LockersScreenTests
             return Task.FromResult(Result<string>.Success($"Zona {name} creada."));
         },
         (id, name, _) => Task.FromResult(Result<string>.Success("Zona reanomenada.")),
-        (id, _) =>
+        async (id, _) =>
         {
+            if (_gate is not null)
+            {
+                await _gate.Task;
+            }
+
             _calls.Add("deactivate zone");
-            return Task.FromResult(Result<string>.Success("Zona desactivada."));
+            return Result<string>.Success("Zona desactivada.");
         },
         (id, _) => Task.FromResult(Result<string>.Success("Zona reactivada.")),
         (id, _) =>
@@ -643,5 +654,69 @@ public sealed class LockersScreenTests
         Assert.True(_confirmations.Asked.Single().Destructive);
         Assert.Contains("delete zone", _calls);
         Assert.Empty(model.Zones.List.Rows);
+    }
+
+    // --- Double execution ---
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/tasks: 7.2 Protección contra doble ejecución en todos los guardados y operaciones")]
+    public async Task Pressing_an_action_of_a_detail_twice_at_once_acts_once_and_notifies_once()
+    {
+        var zone = AddZone("Planta 1");
+        var broken = AddLocker(1, zone, LockerStatusView.Broken);
+        var model = Model();
+        await model.LoadAsync();
+        await model.Detail.ShowAsync(true, broken.Id);
+        _gate = new TaskCompletionSource();
+
+        var restore = model.Detail.Actions.Single(a => a.Id == "Restore");
+        restore.Execute(null);
+        restore.Execute(null); // the second click while the first is still going
+        _gate.SetResult();
+        await Task.Delay(150);
+
+        Assert.Single(_calls, c => c == "restore");
+        Assert.Single(_notifications.Published);
+    }
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/tasks: 7.2 Protección contra doble ejecución en todos los guardados y operaciones")]
+    public async Task Pressing_a_zone_operation_twice_at_once_acts_once()
+    {
+        var zone = AddZone("Planta 1");
+        var model = Zones();
+        await model.LoadAsync();
+        await model.Detail.ShowAsync(true, zone.Id);
+        _gate = new TaskCompletionSource();
+
+        var deactivate = model.Detail.Actions.Single(a => a.Id == "Deactivate");
+        deactivate.Execute(null);
+        deactivate.Execute(null);
+        _gate.SetResult();
+        await Task.Delay(150);
+
+        Assert.Single(_calls, c => c == "deactivate zone");
+    }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    public async Task Screenshot_of_the_lockers_section()
+    {
+        var zone = AddZone("Planta 1");
+        AddZone("Planta 2");
+        for (var i = 1; i <= 24; i++)
+        {
+            AddLocker(i, zone, i % 4 == 0 ? LockerStatusView.Occupied : i == 7 ? LockerStatusView.Broken : LockerStatusView.Free, i % 4 == 0 ? "Alumne " + i : null, debt: i == 8);
+        }
+
+        var model = Model();
+        var screen = Arca.UI.Lockers.LockersView.Create(model, _localizer);
+        var window = new Avalonia.Controls.Window { Content = screen, Width = 1200, Height = 700 };
+        window.Show();
+        await model.LoadAsync();
+        model.Lockers.Select(model.Lockers.List.Rows[7]);
+        await Task.Delay(200);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+        ScreenshotTests.Take(window, "lockers");
+        window.Close();
     }
 }

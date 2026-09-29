@@ -520,4 +520,22 @@ public sealed class CourseScreenTests
         Assert.Equal(_localizer.Format(new DateOnly(2026, 1, 1)), window.Boxes["EndDate"].Text);
         window.Close();
     }
+
+    [AvaloniaFact]
+    public async Task Screenshot_of_the_course_section()
+    {
+        AddYear(2025);
+        var active = AddYear(2026, active: true);
+        _amounts[active.Id] = (50m, 20m, 10m);
+        var model = Model();
+        var screen = CourseView.Create(model, _localizer);
+        var window = new Window { Content = screen, Width = 1100, Height = 620 };
+        window.Show();
+        await model.LoadAsync();
+        model.Years.Select(model.Years.List.Rows[0]);
+        await Task.Delay(200);
+        Dispatcher.UIThread.RunJobs();
+        ScreenshotTests.Take(window, "course");
+        window.Close();
+    }
 }

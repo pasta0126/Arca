@@ -35,6 +35,7 @@ public sealed class StudentsViewModel : ObservableObject
     readonly ScreenContext _context;
     readonly AssignmentDialogs _assign;
     readonly StudentResultTexts _texts;
+    readonly OneAtATime _once = new();
     readonly Func<Task> _openCourse;
     StudentCounters _counters = new(0, 0, 0);
     StudentEmptyState _emptyState;
@@ -351,9 +352,9 @@ public sealed class StudentsViewModel : ObservableObject
             return;
         }
 
-        await new RunOnceCommand<string>(
+        await _once.RunAsync("Release", () => new RunOnceCommand<string>(
             (ct, _) => _services.Release(student.Id, ct), sentence => sentence, "ReleaseStudentLocker", _context.Notifications, _context.Localizer,
-            _context.Log, _context.Delay, () => RefreshAsync(student.Id)).RunAsync();
+            _context.Log, _context.Delay, () => RefreshAsync(student.Id)).RunAsync());
     }
 
     // --- Forms ---

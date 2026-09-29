@@ -235,4 +235,26 @@ public sealed class ScreenBaseTests
 
         Assert.Throws<ArgumentException>(() => new SectionScreens("Lockers", [new("Students", () => new TextBlock())], _localizer));
     }
+
+    // --- The indicator of work ---
+
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/tasks: 7.1 Resultados y errores mediante las notificaciones comunes y el indicador de trabajo")]
+    public async Task A_long_action_switches_the_shared_indicator_on_after_300_ms_and_off_when_it_ends_and_a_short_one_never_does()
+    {
+        var gate = new TaskCompletionSource<Result<int>>();
+        var command = new Arca.UI.Commands.RunOnceCommand<int>(
+            (_, _) => gate.Task, n => $"{n}", "Long", _notifications, _localizer, _log, _delay);
+
+        var baseline = Arca.UI.Commands.WorkHub.Shared.Running; // other tests may have left the shared hub busy
+        var running = command.RunAsync();
+        Assert.Equal(baseline, Arca.UI.Commands.WorkHub.Shared.Running); // not before 300 ms: quick actions do not flicker
+        _delay.Elapse(TimeSpan.FromMilliseconds(301));
+        await Task.Yield();
+        Assert.Equal(baseline + 1, Arca.UI.Commands.WorkHub.Shared.Running);
+
+        gate.SetResult(Result<int>.Success(1));
+        await running;
+        Assert.Equal(baseline, Arca.UI.Commands.WorkHub.Shared.Running);
+    }
 }

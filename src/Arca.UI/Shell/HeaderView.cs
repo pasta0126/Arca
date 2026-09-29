@@ -38,6 +38,18 @@ public sealed class HeaderView : UserControl
         bar.Children.Add(Year);
         DockPanel.SetDock(left, Dock.Left);
         bar.Children.Add(left);
+        var working = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center, IsVisible = false }
+            .Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        working.Children.Add(new ProgressBar { IsIndeterminate = true, MinWidth = 72, VerticalAlignment = VerticalAlignment.Center });
+        working.Children.Add(new TextBlock { Text = localizer.Get("Common.Label.Working"), VerticalAlignment = VerticalAlignment.Center }
+            .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.TextSecondary));
+        WorkingIndicator = working;
+        void OnWork(object? sender, System.ComponentModel.PropertyChangedEventArgs e) =>
+            Avalonia.Threading.Dispatcher.UIThread.Post(() => working.IsVisible = Commands.WorkHub.Shared.IsBusy);
+        AttachedToVisualTree += (_, _) => Commands.WorkHub.Shared.PropertyChanged += OnWork; // only while the header is on screen
+        DetachedFromVisualTree += (_, _) => Commands.WorkHub.Shared.PropertyChanged -= OnWork;
+        DockPanel.SetDock(working, Dock.Right);
+        bar.Children.Add(working);
         SearchSlot = new ContentControl { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
         bar.Children.Add(SearchSlot);
         Content = bar;
@@ -45,6 +57,9 @@ public sealed class HeaderView : UserControl
         state.Changed += (_, _) => Refresh();
         Refresh();
     }
+
+    /// <summary>The indicator of long work, shown while any action takes more than 300 ms.</summary>
+    public StackPanel WorkingIndicator { get; }
 
     /// <summary>Where the logo of the centre goes, once the centre has one.</summary>
     public ContentControl Logo { get; }

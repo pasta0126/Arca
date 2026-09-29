@@ -445,4 +445,19 @@ public sealed class ChargesScreenTests
         Assert.False(model.KeyReplacement.IsAvailable);
         Assert.Contains("curs actiu", model.KeyReplacement.UnavailableReason, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    public async Task Screenshot_of_the_payments_section()
+    {
+        _world.Debtors.AddRange([Debtor("Pau", "Alsina", 50m), Debtor("Marta", "Puig", 70m), Debtor("Oriol", "Zamora", 20m, retired: true)]);
+        _world.Line("Fee", "Paid", 50m);
+        _world.Line("Deposit", "Pending", 20m, current: false);
+        var section = PaymentsSection.Create(_world.Services(), Context(), () => Task.CompletedTask);
+        var window = new Avalonia.Controls.Window { Content = section, Width = 1200, Height = 700 };
+        window.Show();
+        await Task.Delay(300);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+        ScreenshotTests.Take(window, "payments");
+        window.Close();
+    }
 }

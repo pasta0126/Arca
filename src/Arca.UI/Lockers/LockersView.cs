@@ -27,7 +27,7 @@ public static class LockersView
             if (e.PropertyName == nameof(LockersViewModel.ZoneOptions))
             {
                 zone.ItemsSource = model.ZoneOptions;
-                zone.SelectedItem = model.ZoneOptions.FirstOrDefault(o => o.Id == model.ZoneFilter) ?? model.ZoneOptions[0];
+                zone.SelectedItem = model.ZoneOptions.FirstOrDefault(o => o.Id == model.ZoneFilter) ?? (model.ZoneOptions.Count > 0 ? model.ZoneOptions[0] : null);
             }
 
             if (e.PropertyName == nameof(LockersViewModel.ZoneFilter))
@@ -44,7 +44,7 @@ public static class LockersView
         number.TextChanged += (_, _) => model.NumberFilter = number.Text ?? string.Empty;
         var retired = new CheckBox { Content = localizer.Get("Lockers.Label.IncludeRetired") };
         retired.IsCheckedChanged += (_, _) => model.IncludeRetired = retired.IsChecked == true;
-        var filters = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        var filters = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         filters.Children.Add(zone);
         filters.Children.Add(status);
         filters.Children.Add(number);
@@ -74,7 +74,7 @@ public static class LockersView
     {
         var box = new ComboBox { ItemsSource = options, MinWidth = 150 };
         box.ItemTemplate = new Avalonia.Controls.Templates.FuncDataTemplate<FormOption>((o, _) => new TextBlock { Text = o?.Label });
-        box.SelectedItem = options.FirstOrDefault(o => o.Id == current()) ?? options[0];
+        box.SelectedItem = options.FirstOrDefault(o => o.Id == current()) ?? (options.Count > 0 ? options[0] : null);
         box.SelectionChanged += (_, _) =>
         {
             if (box.SelectedItem is FormOption option)

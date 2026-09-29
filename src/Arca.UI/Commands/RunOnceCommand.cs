@@ -34,6 +34,7 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
     CancellationTokenSource? _running;
     bool _isRunning;
     bool _showBusyIndicator;
+    bool _inHub;
     bool _canCancel;
     string _progressText = string.Empty;
 
@@ -164,6 +165,12 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
         {
             await indicator.CancelAsync();
             ShowBusyIndicator = false;
+            if (_inHub)
+            {
+                _inHub = false;
+                WorkHub.Shared.Leave();
+            }
+
             CanCancel = false;
             ProgressText = string.Empty;
             _running = null;
@@ -179,6 +186,8 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
             if (IsRunning)
             {
                 ShowBusyIndicator = true;
+                WorkHub.Shared.Enter();
+                _inHub = true;
             }
         }
         catch (OperationCanceledException)

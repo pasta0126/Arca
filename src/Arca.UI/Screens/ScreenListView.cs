@@ -45,9 +45,18 @@ public sealed class ScreenListView<TRow, TKey> : UserControl
         model.PropertyChanged += (_, _) => Show();
         model.List.PropertyChanged += (_, _) => Show();
 
-        var bar = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        // The search and the filters wrap onto a second line when the list is narrow, so none is ever cut off.
+        var bar = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         bar.Children.Add(Search);
-        if (filters is not null)
+        if (filters is Panel panel)
+        {
+            foreach (var child in panel.Children.ToList())
+            {
+                panel.Children.Remove(child);
+                bar.Children.Add(child);
+            }
+        }
+        else if (filters is not null)
         {
             bar.Children.Add(filters);
         }

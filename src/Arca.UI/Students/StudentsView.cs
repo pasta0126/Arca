@@ -28,11 +28,11 @@ public static class StudentsView
             {
                 case nameof(StudentsViewModel.LevelOptions):
                     level.ItemsSource = model.LevelOptions;
-                    level.SelectedItem = model.LevelOptions.FirstOrDefault(o => o.Id == model.LevelFilter) ?? model.LevelOptions[0];
+                    level.SelectedItem = model.LevelOptions.FirstOrDefault(o => o.Id == model.LevelFilter) ?? (model.LevelOptions.Count > 0 ? model.LevelOptions[0] : null);
                     break;
                 case nameof(StudentsViewModel.GroupOptions):
                     group.ItemsSource = model.GroupOptions;
-                    group.SelectedItem = model.GroupOptions.FirstOrDefault(o => o.Id == model.GroupFilter) ?? model.GroupOptions[0];
+                    group.SelectedItem = model.GroupOptions.FirstOrDefault(o => o.Id == model.GroupFilter) ?? (model.GroupOptions.Count > 0 ? model.GroupOptions[0] : null);
                     break;
                 case nameof(StudentsViewModel.LevelFilter):
                     level.SelectedItem = model.LevelOptions.FirstOrDefault(o => o.Id == model.LevelFilter);
@@ -49,7 +49,7 @@ public static class StudentsView
         };
         var retired = new CheckBox { Content = localizer.Get("Students.Label.IncludeRetired") };
         retired.IsCheckedChanged += (_, _) => model.IncludeRetired = retired.IsChecked == true;
-        var filters = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        var filters = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         filters.Children.Add(level);
         filters.Children.Add(group);
         filters.Children.Add(locker);
@@ -78,7 +78,7 @@ public static class StudentsView
     {
         var box = new ComboBox { ItemsSource = options, MinWidth = 140 };
         box.ItemTemplate = new Avalonia.Controls.Templates.FuncDataTemplate<FormOption>((o, _) => new TextBlock { Text = o?.Label });
-        box.SelectedItem = options.FirstOrDefault(o => o.Id == current()) ?? options[0];
+        box.SelectedItem = options.FirstOrDefault(o => o.Id == current()) ?? (options.Count > 0 ? options[0] : null);
         box.SelectionChanged += (_, _) =>
         {
             if (box.SelectedItem is FormOption option)

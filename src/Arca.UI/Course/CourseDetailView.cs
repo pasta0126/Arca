@@ -63,10 +63,11 @@ public sealed class CourseDetailView : UserControl
         foreach (var (concept, value) in new[] { ("Fee", amounts.Fee), ("Deposit", amounts.Deposit), ("KeyReplacementFee", amounts.KeyReplacementFee) })
         {
             var shown = amounts.IsProposed || value is null ? _localizer.Get("Course.Label.NotDefined") : _localizer.Format(Arca.Domain.Common.Money.FromCents((long)(value.Value * 100)));
-            _body.Children.Add(Line(_localizer.Get("Course.Label.AmountLine", ConceptNames.Of(_localizer, concept), shown)));
+            var name = ConceptNames.Of(_localizer, concept);
+            _body.Children.Add(Line(_localizer.Get("Course.Label.AmountLine", char.ToUpper(name[0], _localizer.Culture) + name[1..], shown)));
         }
 
-        var actions = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        var actions = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         var buttons = new List<Button>();
         foreach (var action in _model.Detail.Actions)
         {

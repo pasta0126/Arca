@@ -68,7 +68,7 @@ public sealed class LockerDetailPanel : UserControl
             _body.Children.Add(Line(_localizer.Get("Lockers.Label.NoteLine", note)));
         }
 
-        var actions = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+        var actions = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         var buttons = new List<Button>();
         foreach (var action in _model.Detail.Actions)
         {

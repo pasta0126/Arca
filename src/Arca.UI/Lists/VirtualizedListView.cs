@@ -132,7 +132,7 @@ public sealed class VirtualizedListView<TRow, TKey> : UserControl
         grid.Children.Add(check);
         for (var i = 0; i < _model.Columns.Count; i++)
         {
-            var text = new TextBlock { Text = _model.Columns[i].Text(row), VerticalAlignment = VerticalAlignment.Center, TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis }
+            var text = new TextBlock { Text = _model.Columns[i].Text(row), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 4), TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis }
                 .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.Text)
                 .Themed(TextBlock.FontSizeProperty, ArcaResourceKeys.FontSizeBody);
             Grid.SetColumn(text, i + 1);
