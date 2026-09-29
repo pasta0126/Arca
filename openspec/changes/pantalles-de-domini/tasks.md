@@ -10,7 +10,7 @@
 ## 2. Consultas de lectura
 
 - [x] 2.1 Revisar las consultas existentes frente a las listas del cambio y añadir las que falten, sin reglas nuevas (D6)
-- [ ] 2.2 Objetos de transferencia de listas sin correo ni identificador, y consulta aparte para el formulario de edición del alumno
+- [x] 2.2 Objetos de transferencia de listas sin correo; la ficha y su formulario de edición leen al alumno con la consulta de uno solo
 - [x] 2.3 Pruebas de cada consulta con datos de ejemplo y con privacidad
 
 ## 3. Sección Curso

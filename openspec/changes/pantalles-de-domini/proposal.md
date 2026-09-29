@@ -24,7 +24,7 @@ Ningún cambio especifica las pantallas concretas de dominio (hallazgo del hito 
 
 - **Código:** proyecto de pantallas de la aplicación (vistas y modelos de vista de Avalonia), que consume los casos de uso ya definidos. No toca Domain, Application ni Infrastructure, salvo consultas de lectura que falten para las listas (se anotan en `design.md`).
 - **Dependencias:** `ux-fonaments` (componentes) y `ui-shell` (marco y registro de secciones) deben existir antes; los casos de uso de `taquilles-i-zones`, `alumnes-i-assignacions` y `pagaments` también.
-- **RGPD:** las pantallas muestran nombre, apellidos, nivel, grupo y estado de pago de menores solo en pantalla; el correo y el identificador no aparecen en listas, detalle ni búsquedas, y solo el formulario de alta y edición los pide, como campos opcionales. Nada se exporta ni sale del equipo.
+- **RGPD:** las pantallas muestran nombre, apellidos, nivel, grupo y estado de pago de menores solo en pantalla; el correo (obligatorio, identifica al alumno) no aparece en listas ni búsquedas y solo se ve en la pestaña Datos de la ficha y en los formularios de alta y edición. Nada se exporta ni sale del equipo.
 
 ## Fuera de alcance
 
