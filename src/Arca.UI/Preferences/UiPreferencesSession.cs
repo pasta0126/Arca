@@ -46,6 +46,11 @@ public sealed class UiPreferencesSession
 
     public void SetSidebarCollapsed(bool collapsed) => Update(_current with { SidebarCollapsed = collapsed });
 
+    /// <summary>The theme chosen on this computer. A saved value that means nothing gives the light one.</summary>
+    public ThemeChoice Theme => Enum.IsDefined(_current.Theme) ? _current.Theme : ThemeChoice.Light;
+
+    public void SetTheme(ThemeChoice theme) => Update(_current with { Theme = theme });
+
     void Update(UiPreferences next)
     {
         _current = next;

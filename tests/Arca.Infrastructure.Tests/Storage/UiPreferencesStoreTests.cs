@@ -69,7 +69,7 @@ public sealed class UiPreferencesStoreTests
         var properties = typeof(UiPreferences).GetProperties().Concat(typeof(WindowBounds).GetProperties()).Select(p => p.Name);
 
         Assert.Equal(
-            ["CompactLists", "Height", "IsMaximized", "Sections", "SidebarCollapsed", "Width", "Window", "X", "Y"],
+            ["CompactLists", "Height", "IsMaximized", "Sections", "SidebarCollapsed", "Theme", "Width", "Window", "X", "Y"],
             properties.Order(StringComparer.Ordinal).ToArray());
     }
 

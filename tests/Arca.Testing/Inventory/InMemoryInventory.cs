@@ -45,6 +45,7 @@ public sealed class InMemoryInventory : IUnitOfWork
         ConceptAmountEvents = new ConceptAmountEventRepository(this);
         Charges = new ChargeRepository(this);
         ChargeEvents = new ChargeEventRepository(this);
+        Identity = new IdentityRepository(this);
     }
 
     public List<Zone> ZoneList { get; private set; } = [];
@@ -106,6 +107,11 @@ public sealed class InMemoryInventory : IUnitOfWork
     public IChargeRepository Charges { get; }
 
     public IChargeEventRepository ChargeEvents { get; }
+
+    public Arca.Application.Identity.ICentreIdentityRepository Identity { get; }
+
+    /// <summary>The identity of the centre, once defined.</summary>
+    public Arca.Domain.Identity.CentreIdentity? StoredIdentity { get; set; }
 
     /// <summary>Which lockers a student holds. The real one comes with the assignments.</summary>
     public ConfigurableOccupancy Occupancy { get; } = new();
@@ -285,6 +291,19 @@ public sealed class InMemoryInventory : IUnitOfWork
         }
 
         public Task UpdateAsync(Assignment assignment, CancellationToken ct) => Task.CompletedTask;
+    }
+
+    sealed class IdentityRepository(InMemoryInventory owner) : Arca.Application.Identity.ICentreIdentityRepository
+    {
+        public Task<Arca.Domain.Identity.CentreIdentity?> GetAsync(CancellationToken ct) => Task.FromResult(owner.StoredIdentity);
+
+        public Task AddAsync(Arca.Domain.Identity.CentreIdentity identity, CancellationToken ct)
+        {
+            owner.StoredIdentity = identity;
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateAsync(Arca.Domain.Identity.CentreIdentity identity, CancellationToken ct) => Task.CompletedTask;
     }
 
     sealed class ConceptAmountRepository(InMemoryInventory owner) : IConceptAmountRepository

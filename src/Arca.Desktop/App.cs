@@ -17,13 +17,13 @@ namespace Arca.Desktop;
 
 public sealed class App : Avalonia.Application
 {
+    /// <summary>Puts the theme and the accent of the centre on the application; the settings change it at once.</summary>
+    public static ThemeManager? Theme { get; private set; }
+
     public override void Initialize()
     {
         // One theme in v1: light, pastel and neutral, whatever the operating system's own setting is.
-        RequestedThemeVariant = ArcaTheme.Variant;
-        Styles.Add(ArcaTheme.CreateFluent());
-        Styles.Add(ArcaTheme.CreateStyles());
-        Resources.MergedDictionaries.Add(ArcaTheme.CreateResources());
+        Theme = new ThemeManager(this);
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -71,6 +71,16 @@ public sealed class App : Avalonia.Application
             }
 
             var runtime = result.Value!;
+            if (Theme is not null)
+            {
+                runtime.SetTheme(Theme);
+            }
+
+            if ((await runtime.IdentityServices.Get(default)) is { IsSuccess: true } identity)
+            {
+                runtime.Identity.Set(identity.Value!); // before the window, so it opens with the name, the logo and the accent of the centre
+            }
+
             var main = new MainWindow(runtime);
             runtime.SetMainWindow(main);
             main.Closed += async (_, _) =>

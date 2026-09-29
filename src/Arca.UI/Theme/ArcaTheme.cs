@@ -14,7 +14,7 @@ namespace Arca.UI.Theme;
 /// <summary>
 /// Turns the palette into Avalonia resources. It gives the Fluent theme the pastel palette, so every standard
 /// control picks up the look, and adds the named semantic resources that the components use (arquitectura-base
-/// feedback and ux-fonaments). v1 has one theme: light, pastel and neutral.
+/// feedback and ux-fonaments). It has a light theme, pastel and neutral, which is the default, and a dark one; the accent of the centre is put on either.
 /// </summary>
 public static class ArcaTheme
 {
@@ -25,11 +25,19 @@ public static class ArcaTheme
     /// The Fluent theme with the pastel palette. The palette must be given to the theme itself: brushes defined inside
     /// Fluent resolve their colours in Fluent's own scope, so overriding colours in the application resources has no effect.
     /// </summary>
-    public static FluentTheme CreateFluent()
+    public static FluentTheme CreateFluent(string? accent = null)
     {
         var fluent = new FluentTheme();
-        fluent.Palettes[ThemeVariant.Light] = Palette();
+        fluent.Palettes[ThemeVariant.Light] = Palette(Colors(accent, dark: false));
+        fluent.Palettes[ThemeVariant.Dark] = Palette(Colors(accent, dark: true));
         return fluent;
+    }
+
+    /// <summary>The colours of a theme with the accent of the centre on top: the default accent when there is none.</summary>
+    public static PaletteColors Colors(string? accent, bool dark)
+    {
+        var theme = dark ? PaletteColors.Dark : PaletteColors.Light;
+        return accent is null ? theme : theme.WithAccent(AccentTheme.For(accent, theme, dark));
     }
 
     /// <summary>
@@ -58,74 +66,77 @@ public static class ArcaTheme
     }
 
     /// <summary>The named semantic resources (Arca.Brush.*) that the components consume.</summary>
-    public static ResourceDictionary CreateResources()
+    public static ResourceDictionary CreateResources(string? accent = null)
     {
         var light = new ResourceDictionary();
-        Named(light);
+        Named(light, Colors(accent, dark: false));
+        var dark = new ResourceDictionary();
+        Named(dark, Colors(accent, dark: true));
 
         var root = new ResourceDictionary();
         root.ThemeDictionaries[ThemeVariant.Light] = light;
+        root.ThemeDictionaries[ThemeVariant.Dark] = dark;
         Metrics(root);
         return root;
     }
 
-    static ColorPaletteResources Palette()
+    static ColorPaletteResources Palette(PaletteColors c)
     {
-        static Color C(string hex) => Color.Parse(hex);
+        static Color H(string hex) => Color.Parse(hex);
         return new ColorPaletteResources
         {
-            Accent = C(ArcaPalette.Accent),
-            RegionColor = C(ArcaPalette.Background),
-            AltHigh = C(ArcaPalette.SurfaceRaised),
-            AltMediumHigh = C(ArcaPalette.Surface),
-            AltMedium = C(ArcaPalette.Surface),
-            AltMediumLow = C(ArcaPalette.SurfaceHover),
-            AltLow = C(ArcaPalette.SurfaceHover),
-            BaseHigh = C(ArcaPalette.Text),
-            BaseMediumHigh = C(ArcaPalette.Text),
-            BaseMedium = C(ArcaPalette.TextSecondary),
-            BaseMediumLow = C(ArcaPalette.TextSecondary),
-            BaseLow = C(ArcaPalette.Border),
-            ChromeLow = C(ArcaPalette.SurfaceHover),
-            ChromeMediumLow = C(ArcaPalette.SurfaceHover),
-            ChromeMedium = C(ArcaPalette.SurfacePressed),
-            ChromeHigh = C(ArcaPalette.Border),
-            ChromeAltLow = C(ArcaPalette.Surface),
-            ChromeDisabledLow = C(ArcaPalette.Surface),
-            ChromeDisabledHigh = C(ArcaPalette.Border),
-            ChromeGray = C(ArcaPalette.TextSecondary),
-            ChromeBlackHigh = C(ArcaPalette.Text),
-            ChromeBlackMedium = C(ArcaPalette.TextSecondary),
-            ChromeBlackMediumLow = C(ArcaPalette.TextSecondary),
-            ChromeBlackLow = C(ArcaPalette.Border),
-            ChromeWhite = C(ArcaPalette.OnAccent), // used as the text on accent buttons: dark, because the accent is pastel
-            ListLow = C(ArcaPalette.SurfaceHover),
-            ListMedium = C(ArcaPalette.SurfacePressed),
-            ErrorText = C(ArcaPalette.ErrorText),
+            Accent = H(c.Accent),
+            RegionColor = H(c.Background),
+            AltHigh = H(c.SurfaceRaised),
+            AltMediumHigh = H(c.Surface),
+            AltMedium = H(c.Surface),
+            AltMediumLow = H(c.SurfaceHover),
+            AltLow = H(c.SurfaceHover),
+            BaseHigh = H(c.Text),
+            BaseMediumHigh = H(c.Text),
+            BaseMedium = H(c.TextSecondary),
+            BaseMediumLow = H(c.TextSecondary),
+            BaseLow = H(c.Border),
+            ChromeLow = H(c.SurfaceHover),
+            ChromeMediumLow = H(c.SurfaceHover),
+            ChromeMedium = H(c.SurfacePressed),
+            ChromeHigh = H(c.Border),
+            ChromeAltLow = H(c.Surface),
+            ChromeDisabledLow = H(c.Surface),
+            ChromeDisabledHigh = H(c.Border),
+            ChromeGray = H(c.TextSecondary),
+            ChromeBlackHigh = H(c.Text),
+            ChromeBlackMedium = H(c.TextSecondary),
+            ChromeBlackMediumLow = H(c.TextSecondary),
+            ChromeBlackLow = H(c.Border),
+            ChromeWhite = H(c.OnAccent), // used as the text on accent buttons: dark, because the accent is pastel
+            ListLow = H(c.SurfaceHover),
+            ListMedium = H(c.SurfacePressed),
+            ErrorText = H(c.ErrorText),
         };
     }
 
     /// <summary>Named resources the components consume: semantic colours, never a raw colour in a component.</summary>
-    static void Named(ResourceDictionary d)
+    static void Named(ResourceDictionary d, PaletteColors c)
     {
-        Brush(d, ArcaResourceKeys.Background, ArcaPalette.Background);
-        Brush(d, ArcaResourceKeys.Surface, ArcaPalette.Surface);
-        Brush(d, ArcaResourceKeys.Border, ArcaPalette.Border);
-        Brush(d, ArcaResourceKeys.Text, ArcaPalette.Text);
-        Brush(d, ArcaResourceKeys.TextSecondary, ArcaPalette.TextSecondary);
-        Brush(d, ArcaResourceKeys.Accent, ArcaPalette.Accent);
-        Brush(d, ArcaResourceKeys.OnAccent, ArcaPalette.OnAccent);
-        Brush(d, ArcaResourceKeys.Success, ArcaPalette.Success);
-        Brush(d, ArcaResourceKeys.Warning, ArcaPalette.Warning);
-        Brush(d, ArcaResourceKeys.Error, ArcaPalette.Error);
-        Brush(d, ArcaResourceKeys.OnSemantic, ArcaPalette.OnSemantic);
-        Brush(d, ArcaResourceKeys.Focus, ArcaPalette.Focus);
-        Brush(d, ArcaResourceKeys.ErrorText, ArcaPalette.ErrorText);
-        Brush(d, ArcaResourceKeys.StatusFree, ArcaPalette.StatusFree);
-        Brush(d, ArcaResourceKeys.StatusOccupied, ArcaPalette.StatusOccupied);
-        Brush(d, ArcaResourceKeys.StatusReserved, ArcaPalette.StatusReserved);
-        Brush(d, ArcaResourceKeys.StatusBroken, ArcaPalette.StatusBroken);
-        Brush(d, ArcaResourceKeys.StatusMaintenance, ArcaPalette.StatusMaintenance);
+        Brush(d, ArcaResourceKeys.Background, c.Background);
+        Brush(d, ArcaResourceKeys.Surface, c.Surface);
+        Brush(d, ArcaResourceKeys.Border, c.Border);
+        Brush(d, ArcaResourceKeys.Text, c.Text);
+        Brush(d, ArcaResourceKeys.TextSecondary, c.TextSecondary);
+        Brush(d, ArcaResourceKeys.Accent, c.Accent);
+        Brush(d, ArcaResourceKeys.OnAccent, c.OnAccent);
+        Brush(d, ArcaResourceKeys.Success, c.Success);
+        Brush(d, ArcaResourceKeys.Warning, c.Warning);
+        Brush(d, ArcaResourceKeys.Error, c.Error);
+        Brush(d, ArcaResourceKeys.OnSemantic, c.OnSemantic);
+        Brush(d, ArcaResourceKeys.Focus, c.Focus);
+        Brush(d, ArcaResourceKeys.ErrorText, c.ErrorText);
+        Brush(d, ArcaResourceKeys.StatusFree, c.StatusFree);
+        Brush(d, ArcaResourceKeys.StatusOccupied, c.StatusOccupied);
+        Brush(d, ArcaResourceKeys.StatusReserved, c.StatusReserved);
+        Brush(d, ArcaResourceKeys.StatusBroken, c.StatusBroken);
+        Brush(d, ArcaResourceKeys.StatusMaintenance, c.StatusMaintenance);
     }
 
     /// <summary>The default type and spacing scales. They do not depend on the theme variant.</summary>
