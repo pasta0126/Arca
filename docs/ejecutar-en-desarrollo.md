@@ -2,7 +2,7 @@
 
 ## Contraseña y primera ejecución
 
-La aplicación pide la contraseña del centro cada vez que se abre (`acces-i-xifrat`). Si la base de datos no existe, la primera ejecución pide una contraseña de al menos 12 caracteres, muestra la clave de recuperación y pide confirmarla escribiendo dos grupos antes de crear la base en la carpeta de datos. **No hay ninguna llave ni contraseña por defecto**: las variables `ARCA_DEV_DB_KEY` y `ARCA_DEV_CREATE` que existían hasta ahora ya no existen.
+La aplicación pide la contraseña del centro cada vez que se abre (`acces-i-xifrat`). Si la base de datos no existe, la primera ejecución pide una contraseña de al menos 6 caracteres (avisa si es débil, sobre todo por debajo de 12), muestra la clave de recuperación y pide confirmarla escribiendo dos grupos antes de crear la base en la carpeta de datos. **No hay ninguna llave ni contraseña por defecto**: las variables `ARCA_DEV_DB_KEY` y `ARCA_DEV_CREATE` que existían hasta ahora ya no existen.
 
 Para desarrollar, usa una contraseña de prueba que cumpla la política (por ejemplo `gat ratllat sota pluja`) y guarda la clave de recuperación que se muestra. Las pruebas y la futura herramienta de datos de ejemplo definen sus propias contraseñas en sus proyectos.
 

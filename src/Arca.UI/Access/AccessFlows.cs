@@ -301,7 +301,7 @@ public sealed class AccessFlows(
 
     List<string> PasswordHints(string password)
     {
-        var lines = new List<string> { Text("Keys.Label.LengthCounter", PasswordText.Length(password), Minimum) };
+        var lines = new List<string> { Text("Keys.Label.LengthCounter", PasswordText.Length(password), Minimum, PasswordPolicy.RecommendedLength) };
         var check = PasswordPolicy.Check(password);
         if (check.IsSuccess)
         {
@@ -312,6 +312,12 @@ public sealed class AccessFlows(
                 _ => "Keys.Label.StrengthGood",
             }));
             lines.AddRange(check.Notices.Select(localizer.Message));
+            if (check.Value.Strength == PasswordStrength.Weak)
+            {
+                // What the risk is, what a strong one looks like and an example of it: the person decides, well informed.
+                lines.Add(Text("Keys.Label.WeakCriteria"));
+                lines.Add(Text("Keys.Label.WeakExample"));
+            }
         }
         else if (check.Error!.Code == KeyErrors.PasswordTooCommon.Code)
         {

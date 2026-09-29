@@ -161,7 +161,7 @@ public sealed class AccessFlowsTests : IDisposable
     }
 
     [Fact]
-    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 12 caracteres en la primera ejecución (Se establece al empezar)")]
+    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Se establece al empezar)")]
     public async Task First_run_asks_for_the_password_then_the_key_and_creates_the_data()
     {
         var (flows, presenter, _, access) = Build();
@@ -178,7 +178,7 @@ public sealed class AccessFlowsTests : IDisposable
     }
 
     [Fact]
-    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 12 caracteres en la primera ejecución (Contador de longitud)")]
+    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contador de longitud)")]
     public async Task The_password_form_counts_the_characters_against_the_minimum_as_they_are_typed()
     {
         var (flows, presenter, _, _) = Build();
@@ -196,8 +196,8 @@ public sealed class AccessFlowsTests : IDisposable
 
         await flows.CreateAsync(Database, CancellationToken.None);
 
-        Assert.Contains("0 de 12 caràcters", empty);
-        Assert.Contains("10 de 12 caràcters", nine);
+        Assert.Contains("0 caràcters (mínim 6, recomanat 12)", empty);
+        Assert.Contains("10 caràcters (mínim 6, recomanat 12)", nine);
     }
 
     [Fact]
@@ -232,13 +232,62 @@ public sealed class AccessFlowsTests : IDisposable
         await flows.CreateAsync(Database, CancellationToken.None);
 
         Assert.Contains("Fortalesa: fluixa", hints);
-        Assert.Contains(hints, h => h.Contains("diverses paraules", StringComparison.Ordinal));
+        Assert.Contains(hints, h => h.Contains("podria endevinar-la", StringComparison.Ordinal)); // the risk
+        Assert.Contains(hints, h => h.Contains("12 o més caràcters i diverses paraules", StringComparison.Ordinal)); // the criteria
+        Assert.Contains(hints, h => h.Contains("lluna cotxe formatge radio", StringComparison.Ordinal)); // the example
         Assert.Equal(2, presenter.Shown.Count); // it went on to the key
     }
 
+    [Fact]
+    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Contraseña corta permitida)")]
+    public async Task A_six_character_password_is_accepted_with_the_full_weakness_warning()
+    {
+        var (flows, presenter, _, _) = Build();
+        IReadOnlyList<string> hints = [];
+        presenter.Form(
+            f =>
+            {
+                f.Fields[0].Text = "cotxe7";
+                f.Fields[1].Text = "cotxe7";
+                hints = f.Hints;
+                return f.SubmitAsync();
+            });
+        presenter.Form(Cancel());
+
+        await flows.CreateAsync(Database, CancellationToken.None);
+
+        Assert.Contains("6 caràcters (mínim 6, recomanat 12)", hints);
+        Assert.Contains("Fortalesa: fluixa", hints);
+        Assert.Contains(hints, h => h.Contains("podria endevinar-la", StringComparison.Ordinal));
+        Assert.Equal(2, presenter.Shown.Count); // the warning did not stop it: it went on to the key
+    }
+
+    [Fact]
+    [Trait("spec", UnlockSpec + ": Indicador de fortaleza y aviso de pérdida (Contraseña no débil)")]
+    public async Task A_strong_password_gets_no_weakness_warning_at_all()
+    {
+        var (flows, presenter, _, _) = Build();
+        IReadOnlyList<string> hints = [];
+        presenter.Form(
+            f =>
+            {
+                f.Fields[0].Text = "riu cadira blau gos";
+                f.Fields[1].Text = "riu cadira blau gos";
+                hints = f.Hints;
+                return f.SubmitAsync();
+            });
+        presenter.Form(Cancel());
+
+        await flows.CreateAsync(Database, CancellationToken.None);
+
+        Assert.DoesNotContain("Fortalesa: fluixa", hints);
+        Assert.DoesNotContain(hints, h => h.Contains("podria endevinar-la", StringComparison.Ordinal));
+        Assert.DoesNotContain(hints, h => h.Contains("lluna cotxe", StringComparison.Ordinal));
+    }
+
     [Theory]
-    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 12 caracteres en la primera ejecución (Demasiado corta)")]
-    [InlineData("xyzzy", "xyzzy", "mínim 12 caràcters")]
+    [Trait("spec", UnlockSpec + ": Contraseña obligatoria de al menos 6 caracteres en la primera ejecución (Demasiado corta)")]
+    [InlineData("xyzzy", "xyzzy", "mínim 6 caràcters")]
     [InlineData("contrasenya1234", "contrasenya1234", "massa habitual")]
     [InlineData("riu cadira blau gos", "una altra cosa", "no coincideixen")]
     [InlineData("", "", "Cal escriure una contrasenya")]
@@ -552,7 +601,7 @@ public sealed class AccessFlowsTests : IDisposable
     [Theory]
     [Trait("spec", UnlockSpec + ": Cambiar la contraseña (Contraseña actual incorrecta)")]
     [InlineData("una altra contrasenya", "gat ratllat sota pluja", "no són correctes")]
-    [InlineData("riu cadira blau gos", "xyzzy", "mínim 12 caràcters")]
+    [InlineData("riu cadira blau gos", "xyzzy", "mínim 6 caràcters")]
     public async Task A_change_that_is_refused_says_why_and_leaves_the_password_as_it_was(string current, string next, string expected)
     {
         await FirstRunAsync(Password);

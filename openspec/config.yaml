@@ -143,7 +143,7 @@ context: |
   ## Còpies de seguretat i seguretat
   - Còpies estrictament manuals (botons Fer còpia / Restaurar). Cap còpia ni recordatori
     automàtic. Verificar/fer còpia abans de migrar l'esquema.
-  - BBDD xifrada amb una clau aleatòria protegida per la contrasenya compartida del centre (mínim 12 caràcters de qualsevol tipus, sense regles de composició, i llista de contrasenyes habituals rebutjades; es defineix a la primera execució i es demana en obrir) i una clau de recuperació obligatòria que es mostra una vegada (canvi `acces-i-xifrat`). Sense secrets al codi. Sense contrasenya ni clau de recuperació, les dades són irrecuperables: el mantenedor no custodia cap clau ni pot recuperar dades dels centres.
+  - BBDD xifrada amb una clau aleatòria protegida per la contrasenya compartida del centre (mínim 6 caràcters de qualsevol tipus, sense regles de composició, i llista de contrasenyes habituals rebutjades; menys de 12 caràcters és feble i s'avisa amb el risc, els criteris i un exemple, sense impedir continuar (canvi `politica-de-contrasenya`); es defineix a la primera execució i es demana en obrir) i una clau de recuperació obligatòria que es mostra una vegada (canvi `acces-i-xifrat`). Sense secrets al codi. Sense contrasenya ni clau de recuperació, les dades són irrecuperables: el mantenedor no custodia cap clau ni pot recuperar dades dels centres.
   - RGPD: dades de menors; recollir el mínim imprescindible.
 
   ## Llicència, registre i actualitzacions
