@@ -21,6 +21,13 @@ public sealed class LockerConfirmations(ILocalizer localizer)
         localizer.Get("Lockers.Label.RetireConfirm"),
         Destructive: true);
 
+    /// <summary>The same confirmation for a screen that knows the locker by its number and zone.</summary>
+    public ConfirmationRequest ForRetire(int number, string zoneName) => new(
+        localizer.Get("Lockers.Label.RetireTitle", number),
+        localizer.Get("Lockers.Label.RetireConsequence", number, zoneName),
+        localizer.Get("Lockers.Label.RetireConfirm"),
+        Destructive: true);
+
     /// <summary>Creating a range says how many lockers will be created and where.</summary>
     public ConfirmationRequest ForRange(CreateLockerRangePlan plan) => new(
         localizer.Get("Lockers.Label.RangeTitle"),

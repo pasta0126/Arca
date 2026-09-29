@@ -37,7 +37,7 @@ public sealed class ScreenshotTests
 {
     static readonly ILocalizer _localizer = new ResxLocalizer();
 
-    static void Take(Window window, string name)
+    internal static void Take(Window window, string name)
     {
         var folder = Environment.GetEnvironmentVariable("ARCA_SCREENSHOT");
         Assert.SkipWhen(folder is null, "Set ARCA_SCREENSHOT=<folder> to render screenshots");

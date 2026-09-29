@@ -29,10 +29,12 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
     readonly ILocalizer _localizer;
     readonly IDelay _delay;
     readonly Func<Task>? _afterSuccess;
+    readonly Func<Error, bool>? _handleError;
 
     CancellationTokenSource? _running;
     bool _isRunning;
     bool _showBusyIndicator;
+    bool _inHub;
     bool _canCancel;
     string _progressText = string.Empty;
 
@@ -43,6 +45,7 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
     /// <param name="successText">Message for a successful result, with its counts ("40 taquilles creades").</param>
     /// <param name="context">Name of the action, for the technical log.</param>
     /// <param name="afterSuccess">Runs once a successful result has been reported: what the frame needs to refresh after a write, such as the global state.</param>
+    /// <param name="handleError">Lets the screen show a business error itself, next to the field it is about; returning true means it did and no notification is published.</param>
     public RunOnceCommand(
         Func<CancellationToken, IProgress<OperationProgress>, Task<Result<T>>> operation,
         Func<T, string> successText,
@@ -51,7 +54,8 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
         ILocalizer localizer,
         IErrorLog log,
         IDelay delay,
-        Func<Task>? afterSuccess = null)
+        Func<Task>? afterSuccess = null,
+        Func<Error, bool>? handleError = null)
     {
         _operation = operation;
         _successText = successText;
@@ -60,6 +64,7 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
         _localizer = localizer;
         _delay = delay;
         _afterSuccess = afterSuccess;
+        _handleError = handleError;
     }
 
     public event EventHandler? CanExecuteChanged;
@@ -138,7 +143,11 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
         {
             var progress = new SyncProgress(this);
             var result = await _operation(cancellation.Token, progress);
-            _notifier.Notify(result, _successText);
+            if (result.IsSuccess || _handleError?.Invoke(result.Error!) != true)
+            {
+                _notifier.Notify(result, _successText);
+            }
+
             if (result.IsSuccess && _afterSuccess is not null)
             {
                 await _afterSuccess();
@@ -156,6 +165,12 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
         {
             await indicator.CancelAsync();
             ShowBusyIndicator = false;
+            if (_inHub)
+            {
+                _inHub = false;
+                WorkHub.Shared.Leave();
+            }
+
             CanCancel = false;
             ProgressText = string.Empty;
             _running = null;
@@ -171,6 +186,8 @@ public sealed class RunOnceCommand<T> : ObservableObject, ICommand, IWorkState
             if (IsRunning)
             {
                 ShowBusyIndicator = true;
+                WorkHub.Shared.Enter();
+                _inHub = true;
             }
         }
         catch (OperationCanceledException)

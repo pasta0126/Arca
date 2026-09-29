@@ -31,13 +31,16 @@ namespace Arca.Desktop.Composition;
 /// </summary>
 static class LockerHomeComposition
 {
+    /// <summary>The assignment services with the hooks of payments, the same wherever an assignment is opened or closed.</summary>
+    internal static AssignmentServices Services(EfInventory store, IClock clock) => new(
+        store.Assignments, store.Students, store.Lockers, store.Zones, store.Enrollments, store.Years, store.StudentEvents, store.Events,
+        [new ChargeGenerationGuard(store.ConceptAmounts, store.Charges)],
+        [new ChargeGenerationHandler(store.ConceptAmounts, store.Charges, store.ChargeEvents, clock)], []);
+
     public static LockerHomeServices Create(EfInventory store, IClock clock, ILocalizer localizer)
     {
         var occupancy = new AssignmentOccupancy(store.Assignments, store.Lockers);
-        var services = new AssignmentServices(
-            store.Assignments, store.Students, store.Lockers, store.Zones, store.Enrollments, store.Years, store.StudentEvents, store.Events,
-            [new ChargeGenerationGuard(store.ConceptAmounts, store.Charges)],
-            [new ChargeGenerationHandler(store.ConceptAmounts, store.Charges, store.ChargeEvents, clock)], []);
+        var services = Services(store, clock);
         var assign = new AssignLockerHandler(services, store, clock);
         var change = new ChangeStudentLockerHandler(services, store, clock);
         var release = new ReleaseStudentLockerHandler(services, store, clock);
@@ -68,6 +71,7 @@ static class LockerHomeComposition
                 (locker, ct) => Said(reserve.HandleAsync(new ReserveLockerRequest(locker), ct), lockersText.LockerReserved),
                 (locker, ct) => Said(removeReservation.HandleAsync(new RemoveLockerReservationRequest(locker), ct), lockersText.ReservationRemoved),
                 (locker, ct) => Said(outOfService.HandleAsync(new MarkLockerOutOfServiceRequest(locker, OutOfServiceKind.Broken), ct), done => lockersText.OutOfService(done.Locker)),
-                (locker, ct) => Said(restore.HandleAsync(new RestoreLockerServiceRequest(locker), ct), lockersText.ServiceRestored)));
+                (locker, ct) => Said(restore.HandleAsync(new RestoreLockerServiceRequest(locker), ct), lockersText.ServiceRestored)),
+            ChargesComposition.DebtLines(store, clock, localizer));
     }
 }

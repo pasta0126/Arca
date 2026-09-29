@@ -89,4 +89,172 @@
   <data name="Students.Empty.NoResults" xml:space="preserve">
     <value>Cap alumne compleix els filtres.</value>
   </data>
+  <data name="Students.Action.New" xml:space="preserve">
+    <value>Nou alumne</value>
+  </data>
+  <data name="Students.Action.Edit" xml:space="preserve">
+    <value>Edita</value>
+  </data>
+  <data name="Students.Action.Assign" xml:space="preserve">
+    <value>Assigna una taquilla</value>
+  </data>
+  <data name="Students.Action.Change" xml:space="preserve">
+    <value>Canvia de taquilla</value>
+  </data>
+  <data name="Students.Action.Release" xml:space="preserve">
+    <value>Allibera la taquilla</value>
+  </data>
+  <data name="Students.Action.Retire" xml:space="preserve">
+    <value>Dona de baixa</value>
+  </data>
+  <data name="Students.Action.Reactivate" xml:space="preserve">
+    <value>Reactiva</value>
+  </data>
+  <data name="Students.Action.GoToCourse" xml:space="preserve">
+    <value>Ves a Curs</value>
+  </data>
+  <data name="Students.Reason.NoYear" xml:space="preserve">
+    <value>Cal un curs actiu: activa'n un a la secció Curs.</value>
+  </data>
+  <data name="Students.Label.LastName" xml:space="preserve">
+    <value>Cognoms</value>
+  </data>
+  <data name="Students.Label.FirstName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="Students.Label.Level" xml:space="preserve">
+    <value>Nivell</value>
+  </data>
+  <data name="Students.Label.Group" xml:space="preserve">
+    <value>Grup</value>
+  </data>
+  <data name="Students.Label.Locker" xml:space="preserve">
+    <value>Taquilla</value>
+  </data>
+  <data name="Students.Label.Payment" xml:space="preserve">
+    <value>Pagaments</value>
+  </data>
+  <data name="Students.Label.State" xml:space="preserve">
+    <value>Estat</value>
+  </data>
+  <data name="Students.Label.Email" xml:space="preserve">
+    <value>Correu electrònic</value>
+  </data>
+  <data name="Students.Label.Reason" xml:space="preserve">
+    <value>Motiu de la baixa</value>
+  </data>
+  <data name="Students.State.Active" xml:space="preserve">
+    <value>Actiu</value>
+  </data>
+  <data name="Students.State.Retired" xml:space="preserve">
+    <value>De baixa</value>
+  </data>
+  <data name="Students.Label.AllLevels" xml:space="preserve">
+    <value>Tots els nivells</value>
+  </data>
+  <data name="Students.Label.AllGroups" xml:space="preserve">
+    <value>Tots els grups</value>
+  </data>
+  <data name="Students.Label.AnyLocker" xml:space="preserve">
+    <value>Amb o sense taquilla</value>
+  </data>
+  <data name="Students.Label.WithLocker" xml:space="preserve">
+    <value>Amb taquilla</value>
+  </data>
+  <data name="Students.Label.WithoutLocker" xml:space="preserve">
+    <value>Sense taquilla</value>
+  </data>
+  <data name="Students.Label.IncludeRetired" xml:space="preserve">
+    <value>Inclou les baixes</value>
+  </data>
+  <data name="Students.Label.Counters" xml:space="preserve">
+    <value>{0} actius · {1} amb taquilla · {2} sense taquilla</value>
+  </data>
+  <data name="Students.Label.PaymentDebt" xml:space="preserve">
+    <value>Pendent: {0}</value>
+  </data>
+  <data name="Students.Label.PaymentUpToDate" xml:space="preserve">
+    <value>Al corrent</value>
+  </data>
+  <data name="Students.Label.LockerLine" xml:space="preserve">
+    <value>Taquilla: {0}</value>
+  </data>
+  <data name="Students.Label.NoLockerLine" xml:space="preserve">
+    <value>Sense taquilla</value>
+  </data>
+  <data name="Students.Label.PaymentLineDebt" xml:space="preserve">
+    <value>Pagaments: pendent {0}</value>
+  </data>
+  <data name="Students.Label.PaymentLineUpToDate" xml:space="preserve">
+    <value>Pagaments: al corrent</value>
+  </data>
+  <data name="Students.Label.NameLine" xml:space="preserve">
+    <value>Nom: {0} {1}</value>
+  </data>
+  <data name="Students.Label.LevelLine" xml:space="preserve">
+    <value>Nivell i grup del curs actiu: {0} {1}</value>
+  </data>
+  <data name="Students.Label.EmailLine" xml:space="preserve">
+    <value>Correu electrònic: {0}</value>
+  </data>
+  <data name="Students.Label.RetirementLine" xml:space="preserve">
+    <value>Motiu de la baixa: {0}</value>
+  </data>
+  <data name="Students.Label.NewValuesTitle" xml:space="preserve">
+    <value>Valors nous al catàleg</value>
+  </data>
+  <data name="Students.Label.NewValuesConsequence" xml:space="preserve">
+    <value>Aquests valors no existeixen encara. Si continues, s'afegiran al catàleg.</value>
+  </data>
+  <data name="Students.Label.NewValuesConfirm" xml:space="preserve">
+    <value>Afegeix-los i continua</value>
+  </data>
+  <data name="Students.Label.NewLevel" xml:space="preserve">
+    <value>Nivell nou: {0}</value>
+  </data>
+  <data name="Students.Label.NewGroup" xml:space="preserve">
+    <value>Grup nou: {0}</value>
+  </data>
+  <data name="Students.Label.NamesakeTitle" xml:space="preserve">
+    <value>Ja hi ha un alumne amb aquest nom</value>
+  </data>
+  <data name="Students.Label.NamesakeConsequence" xml:space="preserve">
+    <value>Ja existeix {0} ({1} {2}). Confirma que és una altra persona per continuar.</value>
+  </data>
+  <data name="Students.Label.NamesakeConfirm" xml:space="preserve">
+    <value>És una altra persona</value>
+  </data>
+  <data name="Students.Note.Catalog" xml:space="preserve">
+    <value>Nivells existents: {0}. Grups existents: {1}. Pots escriure'n un de nou.</value>
+  </data>
+  <data name="Students.Tab.Data" xml:space="preserve">
+    <value>Dades</value>
+  </data>
+  <data name="Students.Tab.Locker" xml:space="preserve">
+    <value>Taquilla</value>
+  </data>
+  <data name="Students.Tab.History" xml:space="preserve">
+    <value>Historial</value>
+  </data>
+  <data name="Students.Empty.NoYear" xml:space="preserve">
+    <value>No hi ha cap curs actiu. Activa un curs a la secció Curs per poder donar d'alta alumnes i assignar taquilles.</value>
+  </data>
+  <data name="Students.Empty.PickStudent" xml:space="preserve">
+    <value>Tria un alumne de la llista per veure'n la fitxa.</value>
+  </data>
+  <data name="Students.Empty.NoHistory" xml:space="preserve">
+    <value>Encara no hi ha res per mostrar.</value>
+  </data>
+  <data name="Students.Label.AssignmentCurrent" xml:space="preserve">
+    <value>Taquilla {0} · {1} · curs {2}: des del {3}</value>
+  </data>
+  <data name="Students.Label.AssignmentPast" xml:space="preserve">
+    <value>Taquilla {0} · {1} · curs {2}: del {3} al {4}</value>
+  </data>
+  <data name="Students.Empty.NoStudentsList" xml:space="preserve">
+    <value>Encara no hi ha cap alumne donat d'alta en aquest curs. Pots donar-ne d'alta un a mà; la importació des de secretaria arribarà més endavant.</value>
+  </data>
+  <data name="Students.Tab.Payments" xml:space="preserve">
+    <value>Cobraments</value>
+  </data>
 </root>

@@ -23,6 +23,7 @@ using Arca.UI.Map;
 using Arca.UI.Confirmation;
 using Arca.UI.Notifications;
 using Arca.UI.Preferences;
+using Arca.UI.Screens;
 using Arca.UI.Shell;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,6 +75,7 @@ public static class AppStartup
         var globalState = new GlobalStateService(
             new GetGlobalStateHandler(inventory.Years, inventory.Charges).HandleAsync, new ResultNotifier(notifications, localizer, log));
         var security = new SecurityViewModel(settingsFlows, session.DatabasePath, notifications, localizer, log);
+        var studentWiring = StudentsComposition.Create(inventory, clock, localizer);
         var services = new ServiceCollection()
             .AddSingleton<ILocalizer>(localizer)
             .AddSingleton(access)
@@ -82,6 +84,13 @@ public static class AppStartup
             .AddSingleton(preferences)
             .AddSingleton(globalState)
             .AddSingleton(LockerHomeComposition.Create(inventory, clock, localizer))
+            .AddSingleton(CourseComposition.Create(inventory, clock, localizer))
+            .AddSingleton(LockersComposition.Create(inventory, clock, localizer))
+            .AddSingleton(ChargesComposition.Create(inventory, clock, localizer))
+            .AddSingleton(studentWiring.Students)
+            .AddSingleton(studentWiring.Pickers)
+            .AddSingleton<IChoiceDialogs>(new WindowChoiceDialogs(() => windows.Current))
+            .AddSingleton<IFormDialogs>(new WindowFormDialogs(() => windows.Current, localizer))
             .AddSingleton(new GlobalSearchHandler(
                 inventory.Students, inventory.Enrollments, inventory.Catalog, inventory.Years, inventory.Lockers, inventory.Zones,
                 inventory.Assignments, inventory.Charges))

@@ -14,4 +14,24 @@
   <data name="ConceptAmounts.Error.NotDefined" xml:space="preserve">
     <value>Cal definir els imports d'aquest curs abans de continuar.</value>
   </data>
+  <data name="ConceptAmounts.History.Created" xml:space="preserve">
+    <value>{0}: definit a {1}.</value>
+  </data>
+  <data name="ConceptAmounts.History.Changed" xml:space="preserve">
+    <value>{0}: de {1} a {2}.</value>
+  </data>
+  <data name="ConceptAmounts.Result.Saved" xml:space="preserve">
+    <value>Imports del curs {0} desats.</value>
+    <comment>{0} year name</comment>
+  </data>
+  <data name="ConceptAmounts.Label.ChangeTitle" xml:space="preserve">
+    <value>Canviar els imports del curs {0}</value>
+    <comment>{0} year name</comment>
+  </data>
+  <data name="ConceptAmounts.Label.ChangeConsequence" xml:space="preserve">
+    <value>Aquest curs ja té càrrecs generats. El canvi només afectarà els càrrecs que es generin a partir d'ara; els existents es queden amb el seu import.</value>
+  </data>
+  <data name="ConceptAmounts.Label.ChangeConfirm" xml:space="preserve">
+    <value>Desa els imports</value>
+  </data>
 </root>

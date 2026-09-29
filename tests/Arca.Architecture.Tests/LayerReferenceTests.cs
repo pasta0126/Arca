@@ -99,6 +99,22 @@ public sealed class LayerReferenceTests
         Assert.DoesNotContain("Arca.Domain", ReferencedProjects("Arca.UI"));
     }
 
+    [Fact]
+    [Trait("spec", "pantalles-de-domini/design: Riesgos, las reglas se filtran a las vistas")]
+    public void The_view_models_of_the_domain_screens_reach_the_data_only_through_application()
+    {
+        // The screens live in Arca.UI/Screens: the model of a screen may know Result and Error, and nothing else of the domain.
+        var screens = Path.Combine(RepositoryRoot(), "src", "Arca.UI", "Screens");
+        var offending = Directory.EnumerateFiles(screens, "*.cs", SearchOption.AllDirectories)
+            .SelectMany(f => File.ReadLines(f).Select(line => (File: Path.GetFileName(f), Line: line.Trim())))
+            .Where(x => x.Line.StartsWith("using Arca.Domain", StringComparison.Ordinal) && x.Line != "using Arca.Domain.Common;"
+                || x.Line.StartsWith("using Arca.Infrastructure", StringComparison.Ordinal))
+            .Select(x => x.File + ": " + x.Line)
+            .ToList();
+
+        Assert.Empty(offending);
+    }
+
     static string[] ReferencedProjects(string project) =>
         ProjectFile(project).Descendants("ProjectReference")
             .Select(e => Path.GetFileNameWithoutExtension(((string?)e.Attribute("Include") ?? "").Replace('\\', '/')))

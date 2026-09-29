@@ -28,7 +28,8 @@ public sealed record LockerHomeServices(
     Func<Guid, Guid, CancellationToken, Task<Result<AssignmentTargetCheck>>> CheckTarget,
     Func<AssignLockerRequest, CancellationToken, Task<Result<AssignLockerResult>>> Assign,
     Func<AssignLockerRequest, CancellationToken, Task<Result<AssignLockerResult>>> Change,
-    LockerOperations Operations);
+    LockerOperations Operations,
+    Func<Guid, CancellationToken, Task<IReadOnlyList<string>>>? DebtLines = null);
 
 /// <summary>
 /// The start screen without any window: the map, the detail of the chosen locker, the panel of students without a locker and
@@ -50,8 +51,8 @@ public sealed class LockerHomeModel
         Students = new StudentsWithoutLockerViewModel(services.LoadStudentsWithoutLocker, notifier, localizer);
 
         var texts = new AssignmentResultTexts(localizer);
-        var assign = new AssignLockerInteraction(services.Assign, confirmations, localizer, notifications, log, delay, afterAssigned: AfterAssignedAsync);
-        var change = new AssignLockerInteraction(services.Change, confirmations, localizer, notifications, log, delay, texts.Changed, AfterAssignedAsync);
+        var assign = new AssignLockerInteraction(services.Assign, confirmations, localizer, notifications, log, delay, afterAssigned: AfterAssignedAsync, debtDetails: services.DebtLines);
+        var change = new AssignLockerInteraction(services.Change, confirmations, localizer, notifications, log, delay, texts.Changed, AfterAssignedAsync, services.DebtLines);
         Drop = new AssignmentDropViewModel(services.CheckTarget, assign, localizer);
         Map.OnPicked = change.AssignAsync;
         Detail = new LockerDetailViewModel(new LockerDetailContext(

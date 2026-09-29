@@ -1,8 +1,9 @@
-## Purpose
+# pantalles-alumnes-i-assignacions Specification
 
+## Purpose
 Definir la interfaz de la sección Alumnos en el hito 1: lista con búsqueda y filtros, alta manual, ficha del alumno, baja y reactivación, y el flujo de asignar, cambiar y liberar taquilla, sobre las reglas de `alumnes-i-assignacions`.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Lista de alumnos con búsqueda y filtros
 El sistema SHALL mostrar en la sección Alumnos una lista virtualizada de los alumnos activos del curso activo, ordenada por apellidos, con columnas de apellidos y nombre, nivel, grupo, taquilla y estado de pago, con búsqueda por texto sin distinguir mayúsculas ni acentos y filtros por nivel, grupo y estado de asignación, y con opción de incluir las bajas.
@@ -47,7 +48,7 @@ El sistema SHALL indicar en la sección Alumnos, cuando no hay curso activo, que
 - **THEN** ve el aviso con la acción de ir a Curso y las altas y asignaciones deshabilitadas con su motivo
 
 ### Requirement: Alta manual de un alumno
-El sistema SHALL ofrecer la acción Nuevo alumno con un formulario de nombre y apellidos obligatorios, nivel y grupo tomados del catálogo con la posibilidad de escribir un valor nuevo, y correo e identificador opcionales, que crea la ficha y la matrícula del curso activo y valida al guardar.
+El sistema SHALL ofrecer la acción Nuevo alumno con un formulario de nombre y apellidos obligatorios, nivel y grupo tomados del catálogo con la posibilidad de escribir un valor nuevo, y correo obligatorio, que crea la ficha y la matrícula del curso activo y valida al guardar.
 
 #### Scenario: Alta correcta
 - **WHEN** el usuario guarda un alumno con nombre, apellidos, nivel y grupo
@@ -65,9 +66,9 @@ El sistema SHALL ofrecer la acción Nuevo alumno con un formulario de nombre y a
 - **WHEN** ya existe un alumno con el mismo nombre y apellidos
 - **THEN** el formulario avisa, muestra al alumno existente y pide confirmar que se trata de otra persona
 
-#### Scenario: Datos de reconocimiento opcionales
-- **WHEN** el usuario deja vacíos el correo y el identificador
-- **THEN** el alta se completa sin ellos y el formulario indica para qué sirven y que nunca se muestran en listados
+#### Scenario: Correo obligatorio y único
+- **WHEN** el usuario deja vacío el correo, lo escribe mal formado o ya pertenece a otro alumno
+- **THEN** el campo se marca con el error correspondiente sin perder lo escrito, y el formulario indica que el correo identifica al alumno y que nunca se muestra en listados
 
 ### Requirement: Ficha del alumno
 El sistema SHALL mostrar al seleccionar un alumno su ficha con pestañas Datos, Taquilla, Cobros e Historial, con el estado de asignación y de pago siempre visibles en la cabecera de la ficha.
@@ -78,7 +79,7 @@ El sistema SHALL mostrar al seleccionar un alumno su ficha con pestañas Datos, 
 
 #### Scenario: Pestaña Datos
 - **WHEN** el usuario abre Datos
-- **THEN** ve nombre, apellidos, nivel y grupo del curso activo, y el correo y el identificador solo aquí y solo si existen
+- **THEN** ve nombre, apellidos, nivel y grupo del curso activo, y el correo, que solo se muestra aquí
 
 #### Scenario: Pestaña Historial
 - **WHEN** el usuario abre Historial
@@ -89,7 +90,7 @@ El sistema SHALL mostrar al seleccionar un alumno su ficha con pestañas Datos, 
 - **THEN** ve los cargos del alumno con las mismas acciones que en la sección Cobros
 
 ### Requirement: Editar los datos del alumno
-El sistema SHALL permitir editar el nombre, los apellidos, el correo, el identificador, el nivel y el grupo desde la pestaña Datos, con validación al guardar y sin cerrar el formulario si hay errores.
+El sistema SHALL permitir editar el nombre, los apellidos, el correo, el nivel y el grupo desde la pestaña Datos, con validación al guardar y sin cerrar el formulario si hay errores.
 
 #### Scenario: Corregir un apellido
 - **WHEN** el usuario corrige un apellido y guarda

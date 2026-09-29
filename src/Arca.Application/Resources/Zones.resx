@@ -44,4 +44,52 @@
   <data name="Zones.Result.Deleted" xml:space="preserve">
     <value>S'ha eliminat la zona.</value>
   </data>
+  <data name="Zones.Action.New" xml:space="preserve">
+    <value>Nova zona</value>
+  </data>
+  <data name="Zones.Action.Rename" xml:space="preserve">
+    <value>Canvia el nom</value>
+  </data>
+  <data name="Zones.Action.Deactivate" xml:space="preserve">
+    <value>Desactiva</value>
+  </data>
+  <data name="Zones.Action.Reactivate" xml:space="preserve">
+    <value>Reactiva</value>
+  </data>
+  <data name="Zones.Action.Delete" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="Zones.Label.Name" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="Zones.Label.State" xml:space="preserve">
+    <value>Estat</value>
+  </data>
+  <data name="Zones.Label.ActiveLockers" xml:space="preserve">
+    <value>Taquilles actives</value>
+  </data>
+  <data name="Zones.Label.ActiveLockersLine" xml:space="preserve">
+    <value>Taquilles actives: {0}</value>
+  </data>
+  <data name="Zones.Label.DeleteTitle" xml:space="preserve">
+    <value>Eliminar la zona {0}</value>
+  </data>
+  <data name="Zones.Label.DeleteConsequence" xml:space="preserve">
+    <value>La zona {0} s'eliminarà i no es podrà recuperar. Mai no ha tingut cap taquilla.</value>
+  </data>
+  <data name="Zones.Label.DeleteConfirm" xml:space="preserve">
+    <value>Elimina la zona</value>
+  </data>
+  <data name="Zones.State.Active" xml:space="preserve">
+    <value>Activa</value>
+  </data>
+  <data name="Zones.State.Inactive" xml:space="preserve">
+    <value>Inactiva</value>
+  </data>
+  <data name="Zones.Empty.NoZones" xml:space="preserve">
+    <value>Encara no hi ha cap zona. Crea'n una per poder donar d'alta taquilles.</value>
+  </data>
+  <data name="Zones.Empty.PickZone" xml:space="preserve">
+    <value>Tria una zona de la llista per veure'n el detall.</value>
+  </data>
 </root>

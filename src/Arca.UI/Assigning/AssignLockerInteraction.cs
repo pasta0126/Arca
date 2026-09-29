@@ -21,6 +21,7 @@ public sealed class AssignLockerInteraction
 {
     readonly Func<AssignLockerRequest, CancellationToken, Task<Result<AssignLockerResult>>> _assign;
     readonly IConfirmationService _confirmations;
+    readonly Func<Guid, CancellationToken, Task<IReadOnlyList<string>>>? _debtDetails;
     readonly ILocalizer _localizer;
     readonly RunOnceCommand<AssignLockerResult> _command;
     AssignmentIntent? _pending;
@@ -31,9 +32,11 @@ public sealed class AssignLockerInteraction
     public AssignLockerInteraction(
         Func<AssignLockerRequest, CancellationToken, Task<Result<AssignLockerResult>>> assign,
         IConfirmationService confirmations, ILocalizer localizer, INotificationService notifications, IErrorLog log, IDelay delay,
-        Func<AssignmentRow, string>? successText = null, Func<AssignmentIntent, Task>? afterAssigned = null)
+        Func<AssignmentRow, string>? successText = null, Func<AssignmentIntent, Task>? afterAssigned = null,
+        Func<Guid, CancellationToken, Task<IReadOnlyList<string>>>? debtDetails = null)
     {
         _assign = assign;
+        _debtDetails = debtDetails;
         _confirmations = confirmations;
         _localizer = localizer;
         var texts = new AssignmentResultTexts(localizer);
@@ -60,26 +63,9 @@ public sealed class AssignLockerInteraction
         await _command.RunAsync();
     }
 
-    async Task<Result<AssignLockerResult>> RunAsync(CancellationToken ct, IProgress<OperationProgress> progress)
+    Task<Result<AssignLockerResult>> RunAsync(CancellationToken ct, IProgress<OperationProgress> progress)
     {
         var intent = _pending!;
-        var first = await _assign(new AssignLockerRequest(intent.StudentId, intent.LockerId), ct);
-        if (!first.IsSuccess || !first.Value!.NeedsConfirmation)
-        {
-            return first;
-        }
-
-        var request = new ConfirmationRequest(
-            _localizer.Get("Assignments.Label.ConfirmWarningsTitle"),
-            _localizer.Get("Assignments.Label.ConfirmWarningsConsequence"),
-            _localizer.Get("Assignments.Label.ConfirmWarningsConfirm"),
-            Destructive: false,
-            Details: [.. first.Value.Warnings.Select(_localizer.Message)]);
-        if (!await _confirmations.ConfirmAsync(request, ct))
-        {
-            throw new OperationCanceledException(); // the person decided not to: it says nothing was assigned
-        }
-
-        return await _assign(new AssignLockerRequest(intent.StudentId, intent.LockerId, ConfirmWarnings: true), ct);
+        return AssignFlow.RunAsync(_assign, intent, _confirmations, _localizer, ct, throwIfDeclined: true, debtDetails: _debtDetails)!;
     }
 }

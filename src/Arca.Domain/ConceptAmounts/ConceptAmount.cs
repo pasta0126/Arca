@@ -37,7 +37,7 @@ public sealed class ConceptAmount
     /// <summary>Defines the amount of a concept for a year. Greater than zero, exact cents, up to the maximum.</summary>
     public static Result<ConceptAmountCreated> Create(Guid id, Guid yearId, ChargeConcept concept, decimal amount, DateTimeOffset now)
     {
-        var validated = ValidateAmount(amount);
+        var validated = ValidateAmount(concept, amount);
         if (!validated.IsSuccess)
         {
             return Result<ConceptAmountCreated>.Failure(validated.Error!);
@@ -51,7 +51,7 @@ public sealed class ConceptAmount
     /// <summary>Changes the amount. The caller decides whether it is worth calling: an identical amount is not rejected here.</summary>
     public Result<HistoryEvent> ChangeAmount(decimal amount, DateTimeOffset now)
     {
-        var validated = ValidateAmount(amount);
+        var validated = ValidateAmount(Concept, amount);
         if (!validated.IsSuccess)
         {
             return Result<HistoryEvent>.Failure(validated.Error!);
@@ -62,10 +62,10 @@ public sealed class ConceptAmount
         return Result<HistoryEvent>.Success(new HistoryEvent(Id, ConceptAmountEventTypes.Changed, now, Json(before), Json(Amount)));
     }
 
-    static Result<Money> ValidateAmount(decimal amount) =>
+    static Result<Money> ValidateAmount(ChargeConcept concept, decimal amount) =>
         Money.TryFromDecimalInRange(amount, MaximumAmount, out var money)
             ? Result<Money>.Success(money)
-            : Result<Money>.Failure(ConceptAmountErrors.AmountInvalid(MaximumAmount));
+            : Result<Money>.Failure(ConceptAmountErrors.AmountInvalid(MaximumAmount, concept));
 
     static string Json(Money amount) => JsonSerializer.Serialize(new { amount = amount.Amount }, _json);
 }

@@ -82,4 +82,28 @@
   <data name="Assignments.Label.ConfirmWarningsConfirm" xml:space="preserve">
     <value>Assigna igualment</value>
   </data>
+  <data name="Assignments.Label.PickerTitle" xml:space="preserve">
+    <value>Taquilla per a {0}</value>
+  </data>
+  <data name="Assignments.Label.PickerConfirm" xml:space="preserve">
+    <value>Confirma l'assignació</value>
+  </data>
+  <data name="Assignments.Label.ZoneOption" xml:space="preserve">
+    <value>{0} ({1} lliures)</value>
+  </data>
+  <data name="Assignments.Label.LockerOption" xml:space="preserve">
+    <value>Taquilla {0}</value>
+  </data>
+  <data name="Assignments.Label.StudentOption" xml:space="preserve">
+    <value>{0}, {1} · {2} {3}</value>
+  </data>
+  <data name="Assignments.Label.StudentPickerTitle" xml:space="preserve">
+    <value>Assigna la taquilla {0} · {1}</value>
+  </data>
+  <data name="Assignments.Empty.NoFreeLockers" xml:space="preserve">
+    <value>No queda cap taquilla lliure. Cal donar d'alta taquilles noves o alliberar-ne alguna.</value>
+  </data>
+  <data name="Assignments.Empty.NoStudentsFound" xml:space="preserve">
+    <value>Cap alumne sense taquilla coincideix amb la cerca.</value>
+  </data>
 </root>

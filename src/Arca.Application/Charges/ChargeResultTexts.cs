@@ -48,6 +48,17 @@ public sealed class ChargeResultTexts(ILocalizer localizer)
         _ => string.Empty,
     };
 
+    /// <summary>The same by the stable name of the status ("Paid"), for screens that cannot use the domain type.</summary>
+    public string StatusName(string status) => status switch
+    {
+        "Pending" => localizer.Get("Charges.Status.Pending"),
+        "Paid" => localizer.Get("Charges.Status.Paid"),
+        "Exempt" => localizer.Get("Charges.Status.Exempt"),
+        "Waived" => localizer.Get("Charges.Status.Waived"),
+        "Voided" => localizer.Get("Charges.Status.Voided"),
+        _ => string.Empty,
+    };
+
     /// <summary>The name of a status of a charge, in the plain words of the interface.</summary>
     public string StatusName(ChargeStatus status) => status switch
     {

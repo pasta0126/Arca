@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+    <data name="Course.Label.Name" xml:space="preserve">
+    <value>Curs</value>
+  </data>
+  <data name="Course.Label.Start" xml:space="preserve">
+    <value>Inici</value>
+  </data>
+  <data name="Course.Label.End" xml:space="preserve">
+    <value>Fi</value>
+  </data>
+  <data name="Course.Label.State" xml:space="preserve">
+    <value>Estat</value>
+  </data>
+  <data name="Course.Label.StartYear" xml:space="preserve">
+    <value>Any d'inici</value>
+  </data>
+  <data name="Course.Label.Dates" xml:space="preserve">
+    <value>De {0} a {1}</value>
+  </data>
+  <data name="Course.Label.Amounts" xml:space="preserve">
+    <value>Imports</value>
+  </data>
+  <data name="Course.Label.NotDefined" xml:space="preserve">
+    <value>sense definir</value>
+  </data>
+  <data name="Course.Label.AmountLine" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="Course.State.Active" xml:space="preserve">
+    <value>Actiu</value>
+  </data>
+  <data name="Course.State.Inactive" xml:space="preserve">
+    <value>Inactiu</value>
+  </data>
+  <data name="Course.Action.New" xml:space="preserve">
+    <value>Nou curs</value>
+  </data>
+  <data name="Course.Action.Activate" xml:space="preserve">
+    <value>Activa el curs</value>
+  </data>
+  <data name="Course.Action.Delete" xml:space="preserve">
+    <value>Elimina el curs</value>
+  </data>
+  <data name="Course.Action.DefineAmounts" xml:space="preserve">
+    <value>Defineix els imports</value>
+  </data>
+  <data name="Course.Action.AmountsHistory" xml:space="preserve">
+    <value>Historial d'imports</value>
+  </data>
+  <data name="Course.Note.DerivedName" xml:space="preserve">
+    <value>Nom del curs: {0}</value>
+  </data>
+  <data name="Course.Note.ProposedFrom" xml:space="preserve">
+    <value>Imports proposats a partir del curs {0}. No es desaran fins que els confirmis.</value>
+  </data>
+  <data name="Course.Note.AmountRange" xml:space="preserve">
+    <value>Cada import ha de ser més gran que zero i com a màxim 9.999,99 €, amb dos decimals com a màxim.</value>
+  </data>
+  <data name="Course.Note.Historic" xml:space="preserve">
+    <value>Aquest és un curs històric: es mostra només per consultar-lo.</value>
+  </data>
+  <data name="Course.Notice.MissingAmounts" xml:space="preserve">
+    <value>El curs {0} no té els imports definits. Sense ells no es generen càrrecs en assignar una taquilla.</value>
+  </data>
+  <data name="Course.Empty.PickYear" xml:space="preserve">
+    <value>Tria un curs de la llista per veure'n el detall.</value>
+  </data>
+  <data name="Course.Empty.NoHistory" xml:space="preserve">
+    <value>Aquest curs encara no té canvis d'import.</value>
+  </data>
+</root>

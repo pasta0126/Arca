@@ -25,6 +25,9 @@ sealed class EfChargeRepository(EfInventory owner) : IChargeRepository
             .Where(c => c.Concept == ChargeConcept.Deposit && c.Status == ChargeStatus.Paid && c.Return == DepositReturnStatus.ToReturn)
             .ToListAsync(ct));
 
+    public Task<bool> AnyInYearAsync(Guid yearId, CancellationToken ct) =>
+        owner.UseAsync(context => context.Set<Charge>().AnyAsync(c => c.YearId == yearId, ct));
+
     public Task AddAsync(Charge charge, CancellationToken ct) => owner.WriteAsync(async context =>
     {
         context.Set<Charge>().Add(charge);

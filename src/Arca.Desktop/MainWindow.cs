@@ -4,7 +4,13 @@
 using Arca.Desktop.Composition;
 using Arca.UI.Actions;
 using Arca.UI.Common;
+using Arca.UI.Course;
+using Arca.UI.Screens;
 using Arca.UI.Info;
+using Arca.UI.Assigning;
+using Arca.UI.Charges;
+using Arca.UI.Lockers;
+using Arca.UI.Students;
 using Arca.UI.Layout;
 using Arca.UI.Map;
 using Arca.UI.Notifications;
@@ -32,14 +38,29 @@ public sealed class MainWindow : Window
         var state = runtime.GlobalState;
         var navigator = new SearchNavigator();
         var notifier = new ResultNotifier(runtime.Notifications, localizer, runtime.ErrorLog);
+        var screenContext = new ScreenContext(
+            localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay, runtime.Confirmations, runtime.Forms, () => state.RefreshAsync(), runtime.Choices);
         var homeModel = new LockerHomeModel(
             runtime.HomeServices, runtime.Preferences, notifier, runtime.Confirmations, localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay, state);
         var home = new LockerMapHomeScreen(homeModel, navigator, localizer);
+        NavigationViewModel? navigation = null;
+        var assignments = new AssignmentDialogs(runtime.Pickers, screenContext);
         var registry = SectionRegistry.Compose(
-            new Dictionary<string, Func<Avalonia.Controls.Control>> { [ShellCatalog.Settings] = () => SettingsRoot(runtime) },
+            new Dictionary<string, Func<Avalonia.Controls.Control>>
+            {
+                [ShellCatalog.Settings] = () => SettingsRoot(runtime),
+                [ShellCatalog.Lockers] = () => LockersSection.Create(runtime.LockerServices, screenContext, runtime.Actions[StandardActions.New], assignments),
+                [ShellCatalog.Students] = () => StudentsView.Create(
+                    new StudentsViewModel(runtime.StudentServices, screenContext, assignments, runtime.Actions[StandardActions.New],
+                        () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)),
+                        new StudentChargesViewModel(runtime.ChargeServices, screenContext, () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)))), localizer),
+                [ShellCatalog.Payments] = () => PaymentsSection.Create(runtime.ChargeServices, screenContext, () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course))),
+                [ShellCatalog.Course] = () => CourseView.Create(
+                    new CourseViewModel(runtime.CourseServices, screenContext, runtime.Actions[StandardActions.New]), localizer),
+            },
             new Dictionary<string, Func<int>> { [ShellCatalog.Payments] = () => state.Current?.PendingCharges ?? 0 },
             home);
-        var navigation = new NavigationViewModel(registry, runtime.Preferences, section => SectionPlaceholder.Create(section, registry, localizer));
+        navigation = new NavigationViewModel(registry, runtime.Preferences, section => SectionPlaceholder.Create(section, registry, localizer));
         navigator.Bind(navigation);
         var shell = new ShellView(navigation, localizer, new NotificationHostView(runtime.Notifications, localizer));
         var header = new StackPanel();

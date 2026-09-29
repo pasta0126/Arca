@@ -24,13 +24,16 @@ public sealed class VirtualizedListView<TRow, TKey> : UserControl
     const double CheckColumnWidth = 40;
 
     readonly ListViewModel<TRow, TKey> _model;
+    readonly double _checkWidth;
     readonly TextBlock _count;
     readonly ListBox _list;
     readonly Grid _header;
 
-    public VirtualizedListView(ListViewModel<TRow, TKey> model)
+    /// <param name="showMarks">Whether each row has a check box for marking it. A list whose rows are only chosen to see their detail has none.</param>
+    public VirtualizedListView(ListViewModel<TRow, TKey> model, bool showMarks = true)
     {
         _model = model;
+        _checkWidth = showMarks ? CheckColumnWidth : 0;
         _header = BuildHeader();
         _count = new TextBlock()
             .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.TextSecondary)
@@ -67,6 +70,7 @@ public sealed class VirtualizedListView<TRow, TKey> : UserControl
             _count.Text = model.SelectionText;
         };
         _count.Text = model.SelectionText;
+        _count.IsVisible = showMarks;
     }
 
     /// <summary>The list control, so a screen or a test can reach the rows and the focus.</summary>
@@ -95,7 +99,7 @@ public sealed class VirtualizedListView<TRow, TKey> : UserControl
     {
         if (grid.ColumnDefinitions.Count == 0)
         {
-            grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(CheckColumnWidth)));
+            grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(_checkWidth)));
             foreach (var column in _model.Columns)
             {
                 grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(column.Width, GridUnitType.Star)));
@@ -117,18 +121,18 @@ public sealed class VirtualizedListView<TRow, TKey> : UserControl
     Grid Row(TRow row)
     {
         var grid = new Grid();
-        grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(CheckColumnWidth)));
+        grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(_checkWidth)));
         foreach (var column in _model.Columns)
         {
             grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(column.Width, GridUnitType.Star)));
         }
 
-        var check = new CheckBox { IsChecked = _model.IsSelected(row), IsTabStop = false };
+        var check = new CheckBox { IsChecked = _model.IsSelected(row), IsTabStop = false, IsVisible = _checkWidth > 0 };
         check.IsCheckedChanged += (_, _) => _model.SetSelected(row, check.IsChecked == true);
         grid.Children.Add(check);
         for (var i = 0; i < _model.Columns.Count; i++)
         {
-            var text = new TextBlock { Text = _model.Columns[i].Text(row), VerticalAlignment = VerticalAlignment.Center, TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis }
+            var text = new TextBlock { Text = _model.Columns[i].Text(row), VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 4), TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis }
                 .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.Text)
                 .Themed(TextBlock.FontSizeProperty, ArcaResourceKeys.FontSizeBody);
             Grid.SetColumn(text, i + 1);
