@@ -2,7 +2,6 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using Arca.Application.Assignments.AssignLocker;
-using Arca.Application.LockerMap;
 using Arca.Application.Localization;
 using Arca.Application.Preferences;
 using Arca.Application.Search;
@@ -39,8 +38,6 @@ public sealed class StartScreenRaceTests
 
     static readonly Guid _a = Guid.NewGuid();
     static readonly Guid _b = Guid.NewGuid();
-
-    static LockerDetail Detail(Guid id, int number) => new(id, number, "Planta 1", LockerStatusView.Free, null, null, null, null, null, null, false, 0m);
 
     [Fact]
     [Trait("spec", "ui-shell/navegacio-i-cerca: Búsqueda sin bloquear (Escritura rápida)")]

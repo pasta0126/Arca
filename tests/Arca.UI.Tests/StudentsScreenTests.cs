@@ -124,7 +124,6 @@ public sealed class StudentsScreenTests
         _ => Task.FromResult(Result<CatalogListing>.Success(new CatalogListing(["1r ESO", "2n ESO"], ["A", "B"]))),
         (id, _) => Task.FromResult(Result<StudentScreenDetail>.Success(_details[id])),
         (_, _) => Task.FromResult(Result<IReadOnlyList<string>>.Success(["alta"])),
-        (_, _) => Task.FromResult(Result<IReadOnlyList<string>>.Success(["Taquilla 5"])),
         (request, _) =>
         {
             if (string.IsNullOrWhiteSpace(request.FirstName))

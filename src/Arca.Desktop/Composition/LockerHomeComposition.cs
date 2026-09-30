@@ -8,7 +8,6 @@ using Arca.Application.Assignments.CheckAssignmentTarget;
 using Arca.Application.Assignments.ReleaseStudentLocker;
 using Arca.Application.Charges;
 using Arca.Application.Common;
-using Arca.Application.LockerMap;
 using Arca.Application.Localization;
 using Arca.Application.Lockers;
 using Arca.Application.Lockers.MarkLockerOutOfService;

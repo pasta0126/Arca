@@ -3,7 +3,6 @@
 
 using Arca.Application.Assignments.CheckAssignmentTarget;
 using Arca.Application.Assignments.AssignLocker;
-using Arca.Application.LockerMap;
 using Arca.Application.Localization;
 using Arca.Application.Preferences;
 using Arca.Application.Search;
@@ -104,8 +103,7 @@ public sealed class StartScreenPrivacyTests
         var forbidden = new[] { "Email", "Dni", "Identifier", "Nif" };
         var types = new[]
         {
-            typeof(StudentHit), typeof(LockerHit), typeof(GroupHit), typeof(GlobalSearchResult), typeof(MapLocker), typeof(ZoneMap),
-            typeof(LockerMapData), typeof(LockerDetail), typeof(Arca.Application.Lockers.ListLockerRows.LockerListRow), typeof(StudentRow), typeof(AssignmentTargetCheck),
+            typeof(StudentHit), typeof(LockerHit), typeof(GroupHit), typeof(GlobalSearchResult), typeof(Arca.Application.Lockers.ListLockerRows.LockerListRow), typeof(StudentRow), typeof(AssignmentTargetCheck),
         };
 
         foreach (var type in types)

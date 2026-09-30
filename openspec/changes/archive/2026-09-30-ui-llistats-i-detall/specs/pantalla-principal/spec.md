@@ -15,6 +15,14 @@ El sistema SHALL registrar la pantalla de la sección Inicio como una pieza sust
 - **WHEN** no hay curso activo
 - **THEN** Inicio lo indica y ofrece ir a Curso
 
+#### Scenario: Centro sin configurar
+- **WHEN** hay curso activo pero ninguna taquilla ni ningún alumno
+- **THEN** Inicio explica qué hacer primero y ofrece abrir las zonas y abrir los alumnos
+
+#### Scenario: Filtro ya puesto
+- **WHEN** el usuario pulsa un recuento de Inicio
+- **THEN** se abre la sección con ese filtro puesto, sin la búsqueda ni los demás filtros, y se ve como etiqueta que se puede quitar
+
 ### Requirement: Pantalla provisional a validar
 El sistema SHALL tratar la pantalla de Inicio como una propuesta inicial y SHALL mantenerse en el registro de decisiones abiertas hasta validarla con los conserjes.
 

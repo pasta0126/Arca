@@ -4,7 +4,6 @@
 using Arca.Application.Assignments;
 using Arca.Application.ConceptAmounts.SetConceptAmounts;
 using Arca.Application.GlobalState;
-using Arca.Application.LockerMap;
 using Arca.Application.Localization;
 using Arca.Application.Lockers.AddLocker;
 using Arca.Application.SchoolYears.CreateAcademicYear;

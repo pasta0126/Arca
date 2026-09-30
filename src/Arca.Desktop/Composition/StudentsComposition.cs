@@ -66,15 +66,6 @@ static class StudentsComposition
                     ? Result<IReadOnlyList<string>>.Success([.. history.Value!.Select(e => $"{localizer.Format(e.At)}: {e.Text}")])
                     : Result<IReadOnlyList<string>>.Failure(history.Error!);
             },
-            async (id, ct) =>
-            {
-                var rows = await new GetStudentAssignmentsHandler(services).HandleAsync(new GetStudentAssignmentsRequest(id), ct);
-                return rows.IsSuccess
-                    ? Result<IReadOnlyList<string>>.Success([.. rows.Value!.Select(r => r.IsCurrent
-                        ? localizer.Get("Students.Label.AssignmentCurrent", r.LockerNumber, r.ZoneName, r.YearName, localizer.Format(r.StartedAtUtc))
-                        : localizer.Get("Students.Label.AssignmentPast", r.LockerNumber, r.ZoneName, r.YearName, localizer.Format(r.StartedAtUtc), localizer.Format(r.EndedAtUtc!.Value)))])
-                    : Result<IReadOnlyList<string>>.Failure(rows.Error!);
-            },
             add.HandleAsync,
             edit.HandleAsync,
             change.HandleAsync,

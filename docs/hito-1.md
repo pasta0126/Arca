@@ -33,7 +33,7 @@ El hito está terminado cuando este guion se completa sin ayuda técnica, con el
 - Asignación, cambio y liberación, reserva, y decisiones al averiar una taquilla ocupada.
 - **Cobros básicos**: importes por curso, cuota y dipòsit generados al asignar, marcar pagado, exento o condonado, deuda de cursos anteriores con aviso, estado de pago.
 - Componentes de UI mínimos (feedback, atajos, arrastrar y soltar, lista virtualizada).
-- Marco de la aplicación, **búsqueda global básica** (alumno y taquilla) y **mapa de taquillas** como pantalla de inicio.
+- Marco de la aplicación, **búsqueda global básica** (alumno y taquilla) y **mapa de taquillas** (vista Mapa de Taquillas; Inicio es un resumen provisional con recuentos que abren las secciones filtradas).
 - Paquete **portable** para ejecutarlo en los equipos de los conserjes.
 - Herramienta de desarrollo con **datos ficticios** reproducibles (`docs/datos-de-ejemplo.md`).
 

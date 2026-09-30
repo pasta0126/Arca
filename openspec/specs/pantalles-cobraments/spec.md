@@ -5,46 +5,16 @@ Definir la interfaz de la sección Cobros en el hito 1: los cargos de un alumno 
 
 ## Requirements
 
-### Requirement: Organización de la sección Cobros
-El sistema SHALL organizar la sección Cobros con la consulta de morosos como vista inicial y una búsqueda de alumno que abre sus cargos, y SHALL mostrar los cargos de un alumno también desde su ficha en Alumnos.
-
-#### Scenario: Abrir la sección
-- **WHEN** el usuario abre Cobros
-- **THEN** ve los morosos con sus totales y un cuadro para buscar un alumno
-
-#### Scenario: Desde la ficha
-- **WHEN** el usuario abre la pestaña Cobros de la ficha de un alumno
-- **THEN** ve los mismos cargos y acciones que en la sección Cobros
-
-### Requirement: Consulta de morosos
-El sistema SHALL mostrar los alumnos con cargos pendientes en una lista ordenada por apellidos con nombre, nivel, grupo, taquilla, importe pendiente y marca de baja, con filtros por curso, concepto, nivel, grupo y zona, y con el número de alumnos y el importe total según los filtros.
-
-#### Scenario: Lista por defecto
-- **WHEN** el usuario abre la consulta
-- **THEN** ve los alumnos con deuda, sus importes y los totales
-
-#### Scenario: Desglose
-- **WHEN** el usuario selecciona un alumno
-- **THEN** ve el desglose de su deuda por concepto, curso e importe
-
-#### Scenario: Sin morosos
-- **WHEN** no hay ningún cargo pendiente
-- **THEN** se muestra un mensaje positivo en lugar de una lista vacía
-
-#### Scenario: Alumno de baja con deuda
-- **WHEN** un alumno de baja tiene cargos pendientes
-- **THEN** aparece marcado como de baja
-
-#### Scenario: Privacidad
-- **WHEN** se muestra la lista o el desglose
-- **THEN** no aparecen el correo ni el identificador
-
 ### Requirement: Nomenclatura visible de la deuda
-El sistema SHALL usar en la interfaz «Pendents de pagament» y nunca «morosos», siguiendo `docs/glosario.md`.
+El sistema SHALL usar en la interfaz «Pendents de pagament» y nunca «morosos», siguiendo `docs/glosario.md`, en el filtro de la lista de Alumnos, en la ficha y en los indicadores.
 
 #### Scenario: Título de la vista
-- **WHEN** el usuario abre la consulta
-- **THEN** el título y las etiquetas usan la expresión del glosario
+- **WHEN** el usuario abre los filtros de Alumnos
+- **THEN** el filtro de deuda usa la expresión del glosario
+
+#### Scenario: Ficha
+- **WHEN** el usuario abre la ficha de un alumno con cargos pendientes
+- **THEN** los títulos y etiquetas usan la expresión del glosario
 
 ### Requirement: Cargos de un alumno
 El sistema SHALL mostrar los cargos de un alumno de cualquier curso en una lista con concepto, curso, importe, estado con texto, fecha y motivo cuando existan, ordenados por curso descendente, y con un resumen que indique si el alumno está al corriente o cuánto debe.

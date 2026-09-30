@@ -219,9 +219,9 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
             await retire.HandleAsync(new RetireStudentRequest(student, "Trasllat a un altre centre"), default);
         }
 
-        var map = (await new Arca.Application.LockerMap.GetLockerMapHandler(store.Zones, store.Lockers, store.Assignments, store.Students, store.Charges).HandleAsync(default)).Value!;
+        var map = (await new Arca.Application.Lockers.ListLockerRows.ListLockerRowsHandler(store.Lockers, store.Zones, store.Assignments, store.Students, store.Charges).HandleAsync(default)).Value!;
         var state = (await new Arca.Application.GlobalState.GetGlobalStateHandler(store.Years, store.Charges).HandleAsync(default)).Value!;
-        var withDebt = map.Zones.SelectMany(z => z.Lockers).Count(l => l.HasDebt);
+        var withDebt = map.Rows.Count(r => r.HasDebt);
         say($"Fet: {map.Counters.Active} taquilles ({map.Counters.Free} lliures, {map.Counters.Occupied} ocupades, {map.Counters.Reserved} reservades, {map.Counters.Broken} avariades, {map.Counters.Maintenance} en manteniment), " +
             $"{withDebt} amb deute, {state.PendingCharges} càrrecs pendents, curs {state.ActiveYear!.Name}.");
     }
@@ -241,7 +241,7 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
 
             return Result<bool>.Success(true);
         }, default);
-        var map = (await new Arca.Application.LockerMap.GetLockerMapHandler(store.Zones, store.Lockers, store.Assignments, store.Students, store.Charges).HandleAsync(default)).Value!;
+        var map = (await new Arca.Application.Lockers.ListLockerRows.ListLockerRowsHandler(store.Lockers, store.Zones, store.Assignments, store.Students, store.Charges).HandleAsync(default)).Value!;
         var state = (await new Arca.Application.GlobalState.GetGlobalStateHandler(store.Years, store.Charges).HandleAsync(default)).Value!;
         say($"Fet: curs {state.ActiveYear!.Name} nou, {map.Counters.Active} taquilles ({map.Counters.Free} lliures, {map.Counters.Reserved} reservades, {map.Counters.Broken} avariades, " +
             $"{map.Counters.Maintenance} en manteniment), {students.Count} alumnes matriculats sense taquilla, {state.PendingCharges} càrrecs pendents del curs anterior.");

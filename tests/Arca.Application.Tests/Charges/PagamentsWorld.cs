@@ -15,7 +15,6 @@ using Arca.Application.Charges.MarkDepositReturned;
 using Arca.Application.Charges.ReturnDepositsInBulk;
 using Arca.Application.Charges.RevertDepositReturn;
 using Arca.Application.Charges.WaiveChargesInBulk;
-using Arca.Application.LockerMap;
 using Arca.Application.Search;
 using Arca.Application.Charges.RevertCharge;
 using Arca.Application.Charges.VoidCharge;
@@ -76,12 +75,6 @@ public sealed class PagamentsWorld
     public ListDebtorsHandler Debtors => new(Store.Charges, Store.Students, Store.Enrollments, Store.Catalog, Store.Years, Assignments.Students.StudentLockers, Store.Lockers);
 
     public ListDepositsDueBackHandler DepositsDueBack => new(Store.Charges, Store.Students);
-
-    public GetLockerMapHandler LockerMap => new(Store.Zones, Store.Lockers, Store.Assignments, Store.Students, Store.Charges);
-
-    public GetLockerDetailHandler LockerDetail => new(Store.Lockers, Store.Zones, Store.Assignments, Store.Students, Store.Enrollments, Store.Catalog, Store.Years, Store.Charges);
-
-    public GetMapLockerHandler MapLocker => new(Store.Lockers, Store.Assignments, Store.Students, Store.Charges);
 
     public GlobalSearchHandler Search => new(Store.Students, Store.Enrollments, Store.Catalog, Store.Years, Store.Lockers, Store.Zones, Store.Assignments, Store.Charges);
 

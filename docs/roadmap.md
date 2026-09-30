@@ -18,7 +18,7 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 | 11 | `registre-i-actualitzacions` | Registro opcional de la instalación y aviso de versión nueva (software libre y gratuito, sin licencias) | redactado |
 | 12 | `configuracio-inicial` | Asistente guiado de primera configuración | redactado |
 | 13 | `ux-fonaments` | Sistema de diseño: adaptabilidad, colapsables, arrastrar y soltar, menús, componentes de feedback | redactado |
-| 14 | `ui-shell` | Navegación, búsqueda global, pantalla principal, tema e identidad del centro | implementado y archivado (`2026-09-29-ui-shell`; pantalla principal provisional: mapa de taquillas por zona) |
+| 14 | `ui-shell` | Navegación, búsqueda global, pantalla principal, tema e identidad del centro | implementado y archivado (`2026-09-29-ui-shell`); el mapa pasó a Taquillas y Inicio a un resumen mínimo con `ui-llistats-i-detall` |
 | 15 | `pantalles-de-domini` | Pantallas de dominio (curso e importes, zonas, taquillas, alumnos, cargos, y después el resto), solo las del hito 1 (Curso, Taquillas, Alumnos, Cobros); sin maquetas, interfaz decidida en las specs y a iterar | implementado y archivado (`2026-09-29-pantalles-de-domini`) |
 | 16 | `acces-i-xifrat` | Contraseña compartida del centro, clave de recuperación obligatoria, fichero de claves y copias (sustituye la clave interna de `arquitectura-base`) | redactado; va con `arquitectura-base` |
 
@@ -26,7 +26,7 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 - Servidor de registro y avisos de versión: otro proyecto. Aquí solo el cliente y su contrato público (`docs/registro-de-instalaciones.md`).
 
 ## Decisiones abiertas
-- Pantalla principal: el mapa de taquillas por zona es una propuesta provisional y sustituible; validar con los conserjes.
+- Pantalla principal: el mapa está en Taquillas y Inicio es un resumen provisional (después, tarjetas de filtros en `filtres-i-targetes`); validar con los conserjes.
 - Alojamiento, dominio y correos del servidor de registro.
 
 ## Backlog v2 o posterior (fuera de v1)

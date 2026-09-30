@@ -47,8 +47,6 @@ public sealed class StudentsViewModel : ObservableObject
     string _paymentFilter = string.Empty;
     bool _includeRetired;
     IReadOnlyList<StudentListRow> _all = [];
-    IReadOnlyList<string> _lockerLines = [];
-    bool _lockerLinesLoaded;
 
     public StudentsViewModel(
         StudentServices services, ScreenContext context, AssignmentDialogs assign, AppAction standardNew, Func<Task> openCourse, StudentChargesViewModel charges)
@@ -345,9 +343,6 @@ public sealed class StudentsViewModel : ObservableObject
     async Task<Result<StudentScreenDetail?>> LoadDetailAsync(Guid id, CancellationToken ct)
     {
         var detail = await _services.Detail(id, ct);
-        _lockerLines = [];
-        _lockerLinesLoaded = false;
-        Raise(nameof(LockerLines));
         return detail.IsSuccess ? Result<StudentScreenDetail?>.Success(detail.Value) : Result<StudentScreenDetail?>.Failure(detail.Error!);
     }
 
@@ -357,29 +352,6 @@ public sealed class StudentsViewModel : ObservableObject
         var charges = Charges.ShowAsync(has ? id : null); // the pending charges are open in the record, so they load with it
         await Detail.ShowAsync(has, id);
         await charges;
-    }
-
-    /// <summary>The lockers the student has had, the most recent first, once the Locker tab asked for them.</summary>
-    public IReadOnlyList<string> LockerLines => _lockerLines;
-
-    public bool LockerLinesLoaded => _lockerLinesLoaded;
-
-    /// <summary>Fetches the lockers of the student, when the person opens the Locker tab.</summary>
-    public async Task LoadLockerLinesAsync()
-    {
-        if (!Students.TryGetSelectedKey(out var id))
-        {
-            return;
-        }
-
-        var lines = await _services.LockerHistory(id, default);
-        if (lines.IsSuccess)
-        {
-            _lockerLines = lines.Value!;
-            _lockerLinesLoaded = true;
-            Raise(nameof(LockerLines));
-            Raise(nameof(LockerLinesLoaded));
-        }
     }
 
     async Task RefreshAsync(Guid? select = null)

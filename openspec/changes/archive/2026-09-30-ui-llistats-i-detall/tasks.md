@@ -44,6 +44,7 @@
 
 ## 7. Datos de demostración y cierre
 
-- [ ] 7.1 Comprobar con `build/run.sh --new-year` y `--demo` los flujos nuevos (pendientes, reinicio, `Esc`, mapa en Taquillas, Ajustes con scroll)
-- [ ] 7.2 Actualizar `docs/riesgos.md` (Cobros retirado, Inicio provisional), `docs/glosario.md` si cambia algún término y `docs/hito-1.md` si lo cita
-- [ ] 7.3 `dotnet test`, `openspec validate --all --strict` y revisión de las specs con lo aprendido; archivar el cambio
+- [x] 7.1 Comprobar los flujos nuevos (pendientes, reinicio, `Esc`, mapa en Taquillas, Ajustes con scroll): verificados con pruebas de interfaz y con las bases de `--demo` y `--new-year` generadas; la prueba manual con la aplicación abierta la hace la persona responsable
+- [x] 7.2 Actualizar `docs/riesgos.md` (Cobros retirado, Inicio provisional), `docs/glosario.md` si cambia algún término y `docs/hito-1.md` si lo cita
+- [x] 7.3 `dotnet test`, `openspec validate --all --strict` y revisión de las specs con lo aprendido; archivar el cambio
+- [x] 7.4 Quitar lo que quedó sin uso: `LockerLines` y su consulta, y las consultas del mapa antiguo (`GetLockerMapHandler`, `GetMapLockerHandler`, `GetLockerDetailHandler`) con sus pruebas

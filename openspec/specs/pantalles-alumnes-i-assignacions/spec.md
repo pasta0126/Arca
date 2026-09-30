@@ -6,7 +6,7 @@ Definir la interfaz de la sección Alumnos en el hito 1: lista con búsqueda y f
 ## Requirements
 
 ### Requirement: Lista de alumnos con búsqueda y filtros
-El sistema SHALL mostrar en la sección Alumnos una lista virtualizada de los alumnos activos del curso activo, ordenada por apellidos, con columnas de apellidos y nombre, nivel, grupo, taquilla y estado de pago, con búsqueda por texto sin distinguir mayúsculas ni acentos y filtros por nivel, grupo y estado de asignación, y con opción de incluir las bajas.
+El sistema SHALL mostrar en la sección Alumnos una lista virtualizada de los alumnos activos del curso activo, ordenada por apellidos, con columnas de apellidos y nombre, nivel, grupo, taquilla y estado de pago, con búsqueda por texto sin distinguir mayúsculas ni acentos y filtros por nivel, grupo, estado de asignación y pagos pendientes, con opción de incluir las bajas, y con el recuento de alumnos según los filtros. El estado de pago de cada fila SHALL indicar si el alumno está al corriente o tiene pendientes, sin mostrar importes. La lista nunca SHALL mostrar importes globales, saldos ni totales de deuda.
 
 #### Scenario: Lista por defecto
 - **WHEN** el usuario abre Alumnos con un curso activo
@@ -19,6 +19,14 @@ El sistema SHALL mostrar en la sección Alumnos una lista virtualizada de los al
 #### Scenario: Alumnos sin taquilla
 - **WHEN** el usuario filtra por sin taquilla
 - **THEN** ve solo los alumnos activos del curso activo sin asignación y su recuento
+
+#### Scenario: Alumnos con pendientes de pago
+- **WHEN** el usuario filtra por pendientes de pago
+- **THEN** ve solo los alumnos con algún cargo pendiente de cualquier curso, con su recuento de alumnos y sin ningún importe total
+
+#### Scenario: Filtros combinados
+- **WHEN** el usuario filtra por 2.º de ESO, sin taquilla y con pendientes
+- **THEN** la lista cumple los tres criterios a la vez y el recuento coincide
 
 #### Scenario: Búsqueda por taquilla
 - **WHEN** el usuario escribe el número de una taquilla ocupada
@@ -39,6 +47,10 @@ El sistema SHALL mostrar en la sección Alumnos una lista virtualizada de los al
 #### Scenario: Privacidad
 - **WHEN** se muestra la lista
 - **THEN** no aparecen el correo ni el identificador
+
+#### Scenario: Nadie con pendientes
+- **WHEN** el usuario filtra por pendientes de pago y ningún alumno los tiene
+- **THEN** la lista muestra un mensaje positivo en lugar de una lista vacía sin explicación
 
 ### Requirement: Alumnos sin curso activo
 El sistema SHALL indicar en la sección Alumnos, cuando no hay curso activo, que hay que activar un curso, ofrecer ir a la sección Curso y deshabilitar el alta y la asignación con ese motivo, sin ocultar la consulta de los alumnos existentes.
@@ -69,25 +81,6 @@ El sistema SHALL ofrecer la acción Nuevo alumno con un formulario de nombre y a
 #### Scenario: Correo obligatorio y único
 - **WHEN** el usuario deja vacío el correo, lo escribe mal formado o ya pertenece a otro alumno
 - **THEN** el campo se marca con el error correspondiente sin perder lo escrito, y el formulario indica que el correo identifica al alumno y que nunca se muestra en listados
-
-### Requirement: Ficha del alumno
-El sistema SHALL mostrar al seleccionar un alumno su ficha con pestañas Datos, Taquilla, Cobros e Historial, con el estado de asignación y de pago siempre visibles en la cabecera de la ficha.
-
-#### Scenario: Cabecera de la ficha
-- **WHEN** el usuario abre la ficha de un alumno con taquilla y deuda
-- **THEN** la cabecera muestra su taquilla y su estado de pago con la deuda
-
-#### Scenario: Pestaña Datos
-- **WHEN** el usuario abre Datos
-- **THEN** ve nombre, apellidos, nivel y grupo del curso activo, y el correo, que solo se muestra aquí
-
-#### Scenario: Pestaña Historial
-- **WHEN** el usuario abre Historial
-- **THEN** ve las altas, cambios de datos, de matrícula, bajas, reactivaciones y cambios de asignación con sus valores anterior y nuevo, del más reciente al más antiguo
-
-#### Scenario: Pestaña Cobros
-- **WHEN** el usuario abre Cobros
-- **THEN** ve los cargos del alumno con las mismas acciones que en la sección Cobros
 
 ### Requirement: Editar los datos del alumno
 El sistema SHALL permitir editar el nombre, los apellidos, el correo, el nivel y el grupo desde la pestaña Datos, con validación al guardar y sin cerrar el formulario si hay errores.
@@ -173,3 +166,46 @@ El sistema SHALL confirmar cada operación con una notificación que indique alu
 #### Scenario: Doble clic en asignar
 - **WHEN** el usuario hace doble clic en Confirmar la asignación
 - **THEN** se realiza una sola asignación y una sola notificación
+
+### Requirement: Ficha del alumno en una columna
+El sistema SHALL mostrar al seleccionar un alumno su ficha en una sola columna, sin pestañas. La cabecera SHALL mostrar el nombre, el nivel y grupo, la taquilla y el estado de pago, siempre visibles, y las acciones aplicables. Debajo, los cargos pendientes del alumno SHALL mostrarse abiertos, cada uno con su concepto, curso, importe y las acciones de cobro en su misma fila, o un mensaje de que está al corriente. El historial de pagos, los datos del alumno y el historial de actividad SHALL ser bloques colapsables, cerrados por defecto. El historial de pagos usa los mismos cargos que ya se cargaron para los pendientes y muestra su recuento cerrado; el historial de actividad carga su contenido solo al abrirse. La ficha SHALL recordar qué bloques están abiertos al cambiar de alumno y entre sesiones.
+
+#### Scenario: Cabecera de la ficha
+- **WHEN** el usuario abre la ficha de un alumno con taquilla y deuda
+- **THEN** la cabecera muestra su taquilla y su estado de pago con la deuda
+
+#### Scenario: Alumno con pendientes
+- **WHEN** el usuario abre la ficha de un alumno con dos cargos pendientes
+- **THEN** ve los dos cargos abiertos, cada uno con su importe y su acción de Marcar como pagado, sin tener que cambiar de pestaña
+
+#### Scenario: Alumno al corriente
+- **WHEN** el usuario abre la ficha de un alumno sin cargos pendientes
+- **THEN** la ficha indica que está al corriente y no muestra la lista de pendientes
+
+#### Scenario: Alumno sin cargos
+- **WHEN** el alumno no tiene ningún cargo
+- **THEN** la ficha explica que los cargos se generan al asignarle una taquilla
+
+#### Scenario: Historial de pagos colapsable
+- **WHEN** el usuario abre el bloque Historial de pagos
+- **THEN** ve todos los cargos del alumno de cualquier curso, por curso descendente, con concepto, curso, importe, estado con texto, fecha y motivo cuando existan, con las mismas acciones que los pendientes cuando correspondan
+
+#### Scenario: Bloques cerrados
+- **WHEN** el usuario selecciona un alumno
+- **THEN** el historial de pagos, los datos y el historial de actividad aparecen cerrados, el primero con su recuento de cargos, y el historial de actividad no se carga hasta abrirlo
+
+#### Scenario: Datos
+- **WHEN** el usuario abre el bloque Datos
+- **THEN** ve nombre, apellidos, nivel y grupo del curso activo, y el correo, que solo se muestra aquí
+
+#### Scenario: Historial de actividad
+- **WHEN** el usuario abre el bloque Historial de actividad
+- **THEN** ve las altas, cambios de datos, de matrícula, bajas, reactivaciones y cambios de asignación con sus valores anterior y nuevo, del más reciente al más antiguo
+
+#### Scenario: Cobrar desde la ficha
+- **WHEN** el usuario marca como pagado un cargo pendiente desde la ficha y confirma
+- **THEN** el cargo pasa a pagado, la cabecera y la lista actualizan el estado de pago del alumno y aparece una notificación con el cargo y el importe
+
+#### Scenario: Cambiar de alumno
+- **WHEN** el usuario selecciona otro alumno con un bloque abierto
+- **THEN** la ficha muestra al nuevo alumno con ese bloque abierto y su contenido cargado para él
