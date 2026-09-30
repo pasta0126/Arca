@@ -40,6 +40,6 @@
 
 ## 6. Datos de demostración, documentación y cierre
 
-- [ ] 6.1 La herramienta de datos de ejemplo crea las tarjetas de serie (`--demo` y `--new-year`)
-- [ ] 6.2 Actualizar la spec principal `pantalla-principal` (Purpose) y `docs/componentes-ui.md`, `docs/riesgos.md` (títulos de serie y cambio de idioma, nombres en títulos), `docs/roadmap.md` y el glosario si aparece algún término
-- [ ] 6.3 Revisión de pruebas de arquitectura, claves i18n en catalán y `openspec validate --all --strict`; archivar el cambio
+- [x] 6.1 La herramienta de datos de ejemplo crea las tarjetas de serie (`--demo` y `--new-year`)
+- [x] 6.2 Actualizar la spec principal `pantalla-principal` (Purpose) y `docs/componentes-ui.md`, `docs/riesgos.md` (títulos de serie y cambio de idioma, nombres en títulos), `docs/roadmap.md` y el glosario si aparece algún término
+- [x] 6.3 Revisión de pruebas de arquitectura, claves i18n en catalán y `openspec validate --all --strict`; archivar el cambio

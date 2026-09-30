@@ -191,6 +191,14 @@ La interfaz no tiene una sección Cobros: los cobros se hacen desde la ficha del
 | Curso | Curs | `SchoolYear` |
 | Ajustes | Ajustos | `Settings` |
 
+### Tarjetas de Inicio (`filtres-i-targetes`)
+
+| Castellano | Catalán | Inglés | Notas |
+|------------|---------|--------|-------|
+| tarjeta | targeta | `HomeCard` | Filtro guardado que aparece en Inicio con su recuento y abre una pantalla con el filtro puesto. No es una tarjeta de pago ni de identificación |
+| tarjetas de serie | targetes de sèrie | default cards | Las siete que trae todo centro (taquillas por estado, alumnos sin taquilla y con pendientes) |
+| recuento | recompte | count | Cuántos elementos cumplen un filtro; nunca un importe |
+
 ## Palabras con dos sentidos (desambiguación)
 
 | Palabra | Sentido 1 | Sentido 2 | Cómo se distingue |
