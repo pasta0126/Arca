@@ -32,7 +32,7 @@ El sistema SHALL mostrar en Inicio el curso activo y el panel de tarjetas del ce
 
 #### Scenario: Carga
 - **WHEN** Inicio lee los recuentos
-- **THEN** muestra las tarjetas con un indicador de carga en cada recuento y no se bloquea
+- **THEN** muestra un indicador de carga en lugar de las tarjetas, nunca un panel vacío, y no se bloquea
 
 ## REMOVED Requirements
 

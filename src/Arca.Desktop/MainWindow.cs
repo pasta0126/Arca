@@ -61,7 +61,7 @@ public sealed class MainWindow : Window
             },
             new Dictionary<string, Func<int>> { [ShellCatalog.Students] = () => state.Current?.StudentsWithPending ?? 0 },
             new Arca.UI.Home.StartHomeScreen(
-                new Arca.UI.Home.StartHomeModel(runtime.HomeSummary.HandleAsync, router, section => navigation!.Navigate(section), notifier, localizer), state, localizer));
+                new Arca.UI.Home.StartHomeModel(runtime.HomeCards, router, section => navigation!.Navigate(section), screenContext), state, localizer));
         navigation = new NavigationViewModel(registry, runtime.Preferences, section => SectionPlaceholder.Create(section, registry, localizer));
         navigator.Bind(navigation);
         router.Bind(navigation);

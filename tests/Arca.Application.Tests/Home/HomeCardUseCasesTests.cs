@@ -288,15 +288,18 @@ public sealed class HomeCardUseCasesTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Recuento en vivo de la tarjeta (Muchas tarjetas)")]
-    public async Task Cards_of_only_one_kind_do_not_read_the_other()
+    [Trait("spec", Spec + ": Inicio como panel de tarjetas (Centro sin configurar)")]
+    public async Task The_view_says_whether_the_centre_has_lockers_and_students_to_tell_a_centre_not_set_up()
     {
         var world = await WorldAsync();
         await Create(world).HandleAsync(Request("Lliures", HomeCardTargetView.Lockers, ("Status", "Free")), default);
+        var empty = (await Cards(world).HandleAsync(default)).Value!;
 
-        await Cards(world).HandleAsync(default);
+        await CentreAsync(world);
+        var full = (await Cards(world).HandleAsync(default)).Value!;
 
-        Assert.Equal((1, 0), (_lockerReads, _studentReads));
+        Assert.Equal((false, false), (empty.HasLockers, empty.HasStudents));
+        Assert.Equal((true, true), (full.HasLockers, full.HasStudents));
     }
 
     [Fact]
@@ -413,7 +416,7 @@ public sealed class HomeCardUseCasesTests
         var forbidden = new[] { "Amount", "Total", "Email", "Dni", "Identifier", "Student", "Debt" };
         foreach (var type in new[] { typeof(HomeCardView), typeof(HomeCardsView), typeof(ResolvedHomeCard), typeof(CardOptions), typeof(HomeCardSaved) })
         {
-            Assert.DoesNotContain(type.GetProperties(), p => forbidden.Any(f => p.Name.Contains(f, StringComparison.OrdinalIgnoreCase)));
+            Assert.DoesNotContain(type.GetProperties().Where(p => p.Name != "HasStudents"), p => forbidden.Any(f => p.Name.Contains(f, StringComparison.OrdinalIgnoreCase))); // HasStudents is a yes or no, not a student
         }
     }
 }

@@ -46,16 +46,6 @@
   <data name="Shell.Home.Action.AddStudents" xml:space="preserve">
     <value>Afegeix alumnes</value>
   </data>
-  <data name="Shell.Home.Link.WithPending" xml:space="preserve">
-    <value>Alumnes amb pendents de pagament</value>
-  </data>
-  <data name="Shell.Home.Link.WithoutLocker" xml:space="preserve">
-    <value>Alumnes sense taquilla</value>
-  </data>
-  <data name="Shell.Home.Link.Open" xml:space="preserve">
-    <value>{0}: {1}. Obre'ls filtrats.</value>
-    <comment>{0} what is counted, {1} how many</comment>
-  </data>
   <data name="Shell.Screen.Start" xml:space="preserve">
     <value>Inici</value>
   </data>
@@ -373,5 +363,68 @@
   </data>
   <data name="Shell.Students.PickFreeLocker" xml:space="preserve">
     <value>Tria una taquilla lliure al mapa.</value>
+  </data>
+  <data name="Shell.Home.Action.RestoreDefaults" xml:space="preserve">
+    <value>Restaura les targetes de sèrie</value>
+  </data>
+  <data name="Shell.Home.Empty.NoCards" xml:space="preserve">
+    <value>No hi ha cap targeta. Restaura les de sèrie per recuperar les targetes habituals.</value>
+  </data>
+  <data name="Shell.Home.Card.Open" xml:space="preserve">
+    <value>Obre la targeta «{0}»</value>
+  </data>
+  <data name="Shell.Home.Card.MoveEarlier" xml:space="preserve">
+    <value>Mou la targeta «{0}» abans</value>
+  </data>
+  <data name="Shell.Home.Card.MoveLater" xml:space="preserve">
+    <value>Mou la targeta «{0}» després</value>
+  </data>
+  <data name="Shell.Home.Card.Delete" xml:space="preserve">
+    <value>Esborra la targeta «{0}»</value>
+  </data>
+  <data name="Shell.Home.Card.Obsolete" xml:space="preserve">
+    <value>Filtre obsolet: ja no existeix {0}. El recompte l'ignora.</value>
+  </data>
+  <data name="Shell.Home.Card.NoCount" xml:space="preserve">
+    <value>Sense recompte: no hi ha curs actiu.</value>
+  </data>
+  <data name="Shell.Home.Reason.First" xml:space="preserve">
+    <value>Ja és la primera targeta.</value>
+  </data>
+  <data name="Shell.Home.Reason.Last" xml:space="preserve">
+    <value>Ja és l'última targeta.</value>
+  </data>
+  <data name="Shell.Home.Criterion.Zone" xml:space="preserve">
+    <value>la zona</value>
+  </data>
+  <data name="Shell.Home.Criterion.Level" xml:space="preserve">
+    <value>el nivell</value>
+  </data>
+  <data name="Shell.Home.Criterion.Group" xml:space="preserve">
+    <value>el grup</value>
+  </data>
+  <data name="Shell.Home.Warning.Ignored" xml:space="preserve">
+    <value>La targeta «{0}» s'ha obert sense el filtre que ja no existeix: {1}.</value>
+  </data>
+  <data name="Shell.Home.Confirm.DeleteTitle" xml:space="preserve">
+    <value>Esborrar la targeta «{0}»?</value>
+  </data>
+  <data name="Shell.Home.Confirm.DeleteConsequence" xml:space="preserve">
+    <value>Només s'esborra la targeta. No es canvia cap alumne ni cap taquilla i la podràs tornar a crear.</value>
+  </data>
+  <data name="Shell.Home.Confirm.DeleteConfirm" xml:space="preserve">
+    <value>Esborra la targeta</value>
+  </data>
+  <data name="Shell.Home.Notify.Moved" xml:space="preserve">
+    <value>S'ha mogut la targeta «{0}».</value>
+  </data>
+  <data name="Shell.Home.Notify.Deleted" xml:space="preserve">
+    <value>S'ha esborrat la targeta «{0}».</value>
+  </data>
+  <data name="Shell.Home.Notify.Restored" xml:space="preserve">
+    <value>S'han restaurat {0} targetes de sèrie.</value>
+  </data>
+  <data name="Shell.Home.Notify.NothingToRestore" xml:space="preserve">
+    <value>Ja hi són totes les targetes de sèrie.</value>
   </data>
 </root>

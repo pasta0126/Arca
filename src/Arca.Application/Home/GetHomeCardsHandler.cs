@@ -47,7 +47,7 @@ static class HomeCardResolver
 
 /// <summary>
 /// Reads the cards of the start screen with how many elements each counts (targetes-d-inici, Recuento en vivo de la tarjeta). It reads the
-/// lockers once and the students once, however many cards there are, and counts every card over those rows with the same rule the screens
+/// lockers once and the students once, however many cards there are (it needs both anyway to say whether the centre is set up), and counts every card over those rows with the same rule the screens
 /// filter with, so what a card says and what its screen shows are the same. Only counts: never an amount.
 /// </summary>
 public sealed class GetHomeCardsHandler(
@@ -59,39 +59,30 @@ public sealed class GetHomeCardsHandler(
         var all = await cards.ListAsync(ct);
         var year = await years.GetActiveAsync(ct);
 
-        IReadOnlyList<LockerListRow> lockers = [];
-        var usableZones = new HashSet<Guid>();
-        if (all.Any(c => c.Target != HomeCardTarget.Students))
+        // The lockers and the students are read once each, always: besides counting the cards they say whether the centre is set up.
+        var lockerListing = await lockerRows(ct);
+        if (!lockerListing.IsSuccess)
         {
-            var listing = await lockerRows(ct);
-            if (!listing.IsSuccess)
-            {
-                return Result<HomeCardsView>.Failure(listing.Error!);
-            }
-
-            lockers = listing.Value!.Rows;
-            var withLockers = lockers.Where(l => l.Status != Arca.Application.Search.LockerStatusView.Retired).Select(l => l.ZoneId).ToHashSet();
-            usableZones = [.. (await zones.ListAsync(ct)).Where(z => z.IsActive || withLockers.Contains(z.Id)).Select(z => z.Id)];
+            return Result<HomeCardsView>.Failure(lockerListing.Error!);
         }
+
+        var lockers = lockerListing.Value!.Rows;
+        var withLockers = lockers.Where(l => l.Status != Arca.Application.Search.LockerStatusView.Retired).Select(l => l.ZoneId).ToHashSet();
+        var usableZones = (await zones.ListAsync(ct)).Where(z => z.IsActive || withLockers.Contains(z.Id)).Select(z => z.Id).ToHashSet();
 
         IReadOnlyList<StudentListRow>? students = null;
-        var levels = new HashSet<string>();
-        var groups = new HashSet<string>();
-        if (all.Any(c => c.Target == HomeCardTarget.Students))
+        var studentListing = await studentRows(ct);
+        if (studentListing.IsSuccess)
         {
-            var listing = await studentRows(ct);
-            if (listing.IsSuccess)
-            {
-                students = listing.Value!.Rows;
-            }
-            else if (listing.Error!.Code != "SchoolYears.NoActiveYear")
-            {
-                return Result<HomeCardsView>.Failure(listing.Error);
-            }
-
-            levels = [.. (await catalog.ListLevelsAsync(ct)).Select(l => l.Name)];
-            groups = [.. (await catalog.ListGroupsAsync(ct)).Select(g => g.Name)];
+            students = studentListing.Value!.Rows;
         }
+        else if (studentListing.Error!.Code != "SchoolYears.NoActiveYear")
+        {
+            return Result<HomeCardsView>.Failure(studentListing.Error);
+        }
+
+        var levels = (await catalog.ListLevelsAsync(ct)).Select(l => l.Name).ToHashSet();
+        var groups = (await catalog.ListGroupsAsync(ct)).Select(g => g.Name).ToHashSet();
 
         var views = all.Select((card, index) =>
         {
@@ -104,7 +95,7 @@ public sealed class GetHomeCardsHandler(
                 card.Id, card.Title, Enum.Parse<HomeCardTargetView>(card.Target.ToString()), valid, count, state, ignored, card.Position,
                 index == 0, index == all.Count - 1, card.SeedKey);
         }).ToList();
-        return Result<HomeCardsView>.Success(new HomeCardsView(year?.Name, views));
+        return Result<HomeCardsView>.Success(new HomeCardsView(year?.Name, views, withLockers.Count > 0, students is { Count: > 0 }));
     }
 }
 

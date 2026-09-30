@@ -85,7 +85,7 @@ public static class AppStartup
             .AddSingleton(preferences)
             .AddSingleton(globalState)
             .AddSingleton(LockerHomeComposition.Create(inventory, clock, localizer))
-            .AddSingleton(LockerHomeComposition.HomeSummary(inventory))
+            .AddSingleton(HomeCardsComposition.Create(inventory, clock, localizer))
             .AddSingleton(CourseComposition.Create(inventory, clock, localizer))
             .AddSingleton(LockersComposition.Create(inventory, clock, localizer))
             .AddSingleton(ChargesComposition.Create(inventory, clock, localizer))

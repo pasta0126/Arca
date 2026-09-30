@@ -23,16 +23,16 @@
 
 ## 4. Inicio como panel de tarjetas
 
-- [ ] 4.1 Reescribir `StartHomeModel` y `StartHomeScreen` como panel: curso activo, tarjetas con recuento y carga, acciones Nova targeta y Restaurar (D10)
-- [ ] 4.2 Abrir una tarjeta con el enrutador, con `Level`, `Group` e `IncludeRetired` además de los criterios actuales, y avisar de los criterios ignorados (D6, D10)
-- [ ] 4.3 Estados: sin curso activo, centro sin configurar, sin tarjetas y tarjeta obsoleta con texto
-- [ ] 4.4 Editar, mover antes y después (teclado) y borrar con confirmación, en cada tarjeta
-- [ ] 4.5 Quitar `GetHomeSummaryHandler` y los enlaces fijos que sustituyen las tarjetas de serie
-- [ ] 4.6 Pruebas de modelo y de pantalla: orden, abrir, editar, mover (primera tarjeta deshabilitada), borrar, teclado y ausencia de importes y nombres
+- [x] 4.1 Reescribir `StartHomeModel` y `StartHomeScreen` como panel: curso activo, tarjetas con recuento y carga, acciones Nova targeta y Restaurar (D10)
+- [x] 4.2 Abrir una tarjeta con el enrutador, con `Level`, `Group` e `IncludeRetired` además de los criterios actuales, y avisar de los criterios ignorados (D6, D10)
+- [x] 4.3 Estados: sin curso activo, centro sin configurar, sin tarjetas y tarjeta obsoleta con texto
+- [x] 4.4 Mover antes y después (teclado) y borrar con confirmación, en cada tarjeta (Editar va con su formulario en el grupo 5.1)
+- [x] 4.5 Quitar `GetHomeSummaryHandler` y los enlaces fijos que sustituyen las tarjetas de serie
+- [x] 4.6 Pruebas de modelo y de pantalla: orden, abrir, editar, mover (primera tarjeta deshabilitada), borrar, teclado y ausencia de importes y nombres
 
 ## 5. Crear tarjetas
 
-- [ ] 5.1 Formulario de tarjeta (título, resumen de criterios, aviso de no poner nombres) con el `FormViewModel` existente y errores en el campo (D7)
+- [ ] 5.1 Formulario de tarjeta (título, resumen de criterios, aviso de no poner nombres) con el `FormViewModel` existente y errores en el campo, y la acción Editar de cada tarjeta de Inicio que lo abre (D7)
 - [ ] 5.2 Acción `Desa com a targeta` en Taquillas (mapa y lista) y Alumnos, disponible solo con filtros y con su motivo (D7)
 - [ ] 5.3 Nova targeta desde Inicio con listas desplegables y vista previa del recuento (D8)
 - [ ] 5.4 Notificaciones, doble ejecución y límite de 24

@@ -51,10 +51,4 @@ static class LockerHomeComposition
             (request, ct) => change.HandleAsync(new ChangeStudentLockerRequest(request.StudentId, request.LockerId, request.ConfirmWarnings), ct),
             ChargesComposition.DebtLines(store, clock, localizer));
     }
-
-    /// <summary>The summary of the start screen: the counts of lockers and students, from the same queries the sections use.</summary>
-    public static Arca.Application.Home.GetHomeSummaryHandler HomeSummary(EfInventory store) => new(
-        new Arca.Application.Lockers.ListLockerRows.ListLockerRowsHandler(store.Lockers, store.Zones, store.Assignments, store.Students, store.Charges),
-        new SearchStudentsHandler(store.Students, store.Enrollments, store.Catalog, store.Years, new AssignmentOccupancy(store.Assignments, store.Lockers)),
-        new Arca.Application.GlobalState.GetGlobalStateHandler(store.Years, store.Charges));
 }

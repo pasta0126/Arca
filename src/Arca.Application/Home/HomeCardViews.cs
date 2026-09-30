@@ -34,8 +34,11 @@ public sealed record HomeCardView(
     Guid Id, string Title, HomeCardTargetView Target, IReadOnlyDictionary<string, string> Criteria, int? Count, HomeCardState State,
     IReadOnlyList<string> Ignored, int Position, bool IsFirst, bool IsLast, string? SeedKey);
 
-/// <summary>The cards of the start screen in their order, with the active year they are counted for.</summary>
-public sealed record HomeCardsView(string? ActiveYearName, IReadOnlyList<HomeCardView> Cards);
+/// <summary>
+/// The cards of the start screen in their order, with the active year they are counted for and whether the centre has any locker and any
+/// student yet, which is how the start tells a centre that is not set up from one that is.
+/// </summary>
+public sealed record HomeCardsView(string? ActiveYearName, IReadOnlyList<HomeCardView> Cards, bool HasLockers, bool HasStudents);
 
 /// <summary>A card that was saved, for the notification that says so.</summary>
 public sealed record HomeCardSaved(Guid Id, string Title);
