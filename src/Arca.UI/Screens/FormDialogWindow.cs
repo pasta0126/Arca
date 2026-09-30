@@ -23,6 +23,7 @@ public sealed class FormDialogWindow : Window
 
     public FormDialogWindow(IFormModel model, ILocalizer localizer)
     {
+        AppIcon.ApplyTo(this);
         _model = model;
         Title = model.Title;
         Width = 460;

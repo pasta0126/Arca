@@ -15,6 +15,7 @@ public sealed class ConfirmationWindow : Window
 {
     public ConfirmationWindow(ConfirmationViewModel model)
     {
+        AppIcon.ApplyTo(this);
         Title = model.Title;
         Width = 460;
         SizeToContent = SizeToContent.Height;

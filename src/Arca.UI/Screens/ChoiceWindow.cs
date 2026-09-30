@@ -15,6 +15,7 @@ public sealed class ChoiceWindow : Window
 {
     public ChoiceWindow(ChoiceRequest request)
     {
+        AppIcon.ApplyTo(this);
         Title = request.Title;
         Width = 480;
         SizeToContent = SizeToContent.Height;

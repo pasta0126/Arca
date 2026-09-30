@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- Copyright (c) 2026 Guillermo Garcia Carballo -->
+<!-- The provisional icon of ARCA: one locker door on the pastel accent of the theme. Drawn for this project, no text. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <rect x="48" y="48" width="928" height="928" rx="208" fill="#A9C4D3"/>
+  <rect x="296" y="176" width="432" height="672" rx="44" fill="#F3F7FA" stroke="#5F8196" stroke-width="28"/>
+  <rect x="372" y="262" width="280" height="28" rx="14" fill="#A9C4D3"/>
+  <rect x="372" y="326" width="280" height="28" rx="14" fill="#A9C4D3"/>
+  <rect x="372" y="390" width="280" height="28" rx="14" fill="#A9C4D3"/>
+  <circle cx="628" cy="600" r="34" fill="#5F8196"/>
+</svg>

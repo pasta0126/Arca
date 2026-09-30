@@ -155,3 +155,7 @@ El spike (`docs/spike-resultados.md`) confirmó en macOS los puntos 2, 4 y 6 y, 
 - Cambios de precio de GitHub Actions (aplazados): <https://github.blog/changelog/2025-12-16-coming-soon-simpler-pricing-and-a-better-experience-for-github-actions/>
 - Propuesta de Ed25519 en .NET (abierta): <https://github.com/dotnet/runtime/issues/63174>
 - NSec.Cryptography: <https://www.nuget.org/packages/NSec.Cryptography/>
+
+## Icono de la aplicación
+
+Un dibujo propio en `assets/icon/arca.svg` (maestro vectorial) del que salen los PNG, el `.ico` y el `.icns` con `build/icons.sh`: el dibujo de los PNG lo hace la herramienta gratuita que haya (`sips` en macOS; `rsvg-convert`, Inkscape o ImageMagick en Linux) y `build/MakeIcons.cs` (solo .NET) construye los dos formatos de icono. Los derivados van en el repositorio, así que compilar no necesita ninguna. Coste cero: sin bancos de iconos ni fuentes de terceros.

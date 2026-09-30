@@ -31,6 +31,7 @@ public sealed class MainWindow : Window
 {
     public MainWindow(AppRuntime runtime)
     {
+        AppIcon.ApplyTo(this);
         var localizer = runtime.Localizer;
         Title = localizer.Get("App.Label.Title");
         WindowStateKeeper.Attach(this, runtime.Preferences);

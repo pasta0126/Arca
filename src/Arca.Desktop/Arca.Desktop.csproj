@@ -4,6 +4,8 @@
     <RootNamespace>Arca.Desktop</RootNamespace>
     <AssemblyName>Arca</AssemblyName>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <!-- The icon of the executable in Windows, from the one master in assets/icon (icona-d-aplicacio). -->
+    <ApplicationIcon>..\..\assets\icon\arca.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" />

@@ -28,6 +28,7 @@ public sealed class AccessWindow : Window
 
     public AccessWindow(AccessFormViewModel model)
     {
+        AppIcon.ApplyTo(this);
         _model = model;
         Title = model.Title;
         Width = 520;

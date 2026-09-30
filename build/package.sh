@@ -43,6 +43,20 @@ case "$rid" in
   win-*|linux-*)
     cp -R "artifacts/${rid}/." "$stage/"
     : > "$stage/arca.portable"   # portable mode: data and settings go in the "data" folder next to the program
+    cp assets/icon/arca-256.png "$stage/arca.png"
+    if [[ "$rid" == linux-* ]]; then
+      # An example launcher: copy it to ~/.local/share/applications and put the real paths in Exec and Icon.
+      cat > "$stage/arca.desktop" <<DESKTOP
+[Desktop Entry]
+Type=Application
+Name=ARCA
+Comment=Gestio de taquilles d'un centre educatiu
+Exec=/ruta/a/${name}/Arca
+Icon=/ruta/a/${name}/arca.png
+Terminal=false
+Categories=Education;Office;
+DESKTOP
+    fi
     notes "$stage"
     if [[ "$rid" == win-* ]]; then
       (cd artifacts/stage && rm -f "$out/${name}.zip" && zip -qry "$out/${name}.zip" "$name")
@@ -57,6 +71,7 @@ case "$rid" in
     mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
     cp -R "artifacts/${rid}/." "$app/Contents/MacOS/"
     chmod +x "$app/Contents/MacOS/Arca"
+    cp assets/icon/arca.icns "$app/Contents/Resources/arca.icns"
     cat > "$app/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -65,6 +80,7 @@ case "$rid" in
   <key>CFBundleName</key><string>ARCA</string>
   <key>CFBundleDisplayName</key><string>ARCA</string>
   <key>CFBundleIdentifier</key><string>io.github.pasta0126.arca</string>
+  <key>CFBundleIconFile</key><string>arca</string>
   <key>CFBundleExecutable</key><string>Arca</string>
   <key>CFBundleVersion</key><string>${version}</string>
   <key>CFBundleShortVersionString</key><string>${version}</string>

@@ -7,5 +7,7 @@
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Material.Icons.Avalonia" />
     <ProjectReference Include="..\Arca.Application\Arca.Application.csproj" />
+    <!-- The icon of the application, from the one master in assets/icon (icona-d-aplicacio): inside the assembly, so it shows also in portable mode. -->
+    <AvaloniaResource Include="..\..\assets\icon\arca-256.png" Link="Assets\arca-icon.png" />
   </ItemGroup>
 </Project>

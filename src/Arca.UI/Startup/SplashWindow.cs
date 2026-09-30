@@ -26,6 +26,7 @@ public sealed class SplashWindow : Window
 
     public SplashWindow(SplashViewModel model)
     {
+        AppIcon.ApplyTo(this);
         _model = model;
         Title = model.Name;
         Width = 520;

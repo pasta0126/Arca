@@ -76,6 +76,8 @@ Punto 12 de `docs/preparacion-desarrollo.md`. Reúne en un solo sitio lo que pue
 
 | D9 | **Tarjetas de Inicio** (`filtres-i-targetes`): (a) los títulos de las tarjetas de serie se guardan en el idioma de la creación (catalán); si más adelante hay más idiomas, hay que regenerarlas con «Restaura les targetes de sèrie» o traducir los títulos; (b) un título escrito por la persona puede contener el nombre de un alumno: el formulario lo desaconseja y nada sale del equipo, pero no se puede comprobar; (c) una taquilla en una zona desactivada cuenta en el recuento y sale en la lista pero no en el mapa | Aceptado (a, b, c) | Persona responsable | Al añadir idiomas |
 
+| D10 | **Icono y logotipo definitivos de ARCA**: hoy hay un icono provisional propio y sencillo (`assets/icon`, `icona-d-aplicacio`). La imagen definitiva de la marca (`TRADEMARK.md`) y del instalador se decide aparte; sustituirla es cambiar `arca.svg` y ejecutar `build/icons.sh` | Mantener el provisional / encargar uno / elegir uno libre | Persona responsable | Antes del primer centro piloto |
+
 ## Revisión
 
 Revisar este registro al terminar cada etapa del hito 1 y al cerrar cada cambio. Un punto se cierra cuando se resuelve o se descarta, anotando cómo y cuándo. Los riesgos nuevos se añaden con su número siguiente.

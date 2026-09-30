@@ -30,3 +30,7 @@ Coste esperado: **0 a 50 $ al año**, frente a 150–400 $ de un certificado tra
 - Windows Developer Blog: «Free developer registration for individual developers on Microsoft Store» (2025-09-10).
 - SignPath Foundation: condiciones para proyectos de código abierto (`signpath.org/terms.html`) y documentación de sistemas de construcción de confianza.
 - Certum (a través de revendedores): Open Source Code Signing y Cloud CODE Signing para particulares.
+
+## El icono y la firma
+
+El icono de la aplicación (`assets/icon`, cambio `icona-d-aplicacio`) no cambia nada de lo anterior: un ejecutable de Windows con icono sigue sin firmar y SmartScreen sigue avisando, y `ARCA.app` con su icono sigue pidiendo autorización en macOS. El icono solo identifica la aplicación.
