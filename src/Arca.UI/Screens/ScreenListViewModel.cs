@@ -150,6 +150,21 @@ public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject, ISelecti
         CurrentChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Shows a row that changed in place of its old one, leaving the rest of the list as it is. The row chosen, if it is this one,
+    /// stays chosen with its new data.
+    /// </summary>
+    public void ReplaceRow(TRow row)
+    {
+        List.ReplaceItem(row);
+        if (_hasKey && _key(row).Equals(_selectedKey))
+        {
+            Current = row;
+        }
+
+        ShowState();
+    }
+
     /// <summary>Removes the text and the other condition of the filter, what the state of a filter without results offers.</summary>
     public void ClearFilter()
     {

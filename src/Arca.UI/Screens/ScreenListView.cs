@@ -25,15 +25,7 @@ public sealed class ScreenListView<TRow, TKey> : UserControl
     public ScreenListView(ScreenListViewModel<TRow, TKey> model, ILocalizer localizer, Control? filters = null)
     {
         _model = model;
-        Search = new TextBox { PlaceholderText = localizer.Get("Common.Action.Search"), MinWidth = 200 };
-        Search.TextChanged += (_, _) => model.List.FilterText = Search.Text ?? string.Empty;
-        model.List.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName == nameof(Lists.ListViewModel<TRow, TKey>.FilterText) && Search.Text != model.List.FilterText)
-            {
-                Search.Text = model.List.FilterText; // cleared from the empty state
-            }
-        };
+        Toolbar = new ListToolbarView<TRow, TKey>(model, localizer, filters);
 
         Rows = new VirtualizedListView<TRow, TKey>(model.List, showMarks: false);
         Rows.List.SelectionChanged += (_, e) =>
@@ -46,76 +38,24 @@ public sealed class ScreenListView<TRow, TKey> : UserControl
         model.PropertyChanged += (_, _) => Show();
         model.List.PropertyChanged += (_, _) => Show();
 
-        // The search and the filters wrap onto a second line when the list is narrow, so none is ever cut off.
-        var bar = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
-        bar.Children.Add(Search);
-        if (filters is Panel panel)
-        {
-            foreach (var child in panel.Children.ToList())
-            {
-                panel.Children.Remove(child);
-                bar.Children.Add(child);
-            }
-        }
-        else if (filters is not null)
-        {
-            bar.Children.Add(filters);
-        }
-
-        // Reset, and the labels of the filters that are on, each removable on its own, with the count of rows shown.
-        ResetButton = ActionControls.Button(model.Reset);
-        bar.Children.Add(ResetButton);
-        TagsPanel = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 6, LineSpacing = 6 };
-        var count = new TextBlock { VerticalAlignment = VerticalAlignment.Center }
-            .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.TextSecondary);
-        var tagsRow = new DockPanel().ThemedThickness(MarginProperty, ArcaResourceKeys.SpacingMedium);
-        DockPanel.SetDock(count, Dock.Right);
-        tagsRow.Children.Add(count);
-        tagsRow.Children.Add(TagsPanel);
-        void ShowTags()
-        {
-            count.Text = model.CountText;
-            TagsPanel.Children.Clear();
-            foreach (var tag in model.ActiveFilters)
-            {
-                var remove = new Button { Content = tag.Text + " ✕", Padding = new Avalonia.Thickness(8, 2) };
-                Avalonia.Automation.AutomationProperties.SetName(remove, localizer.Get("Common.Action.RemoveFilter", tag.Text));
-                ToolTip.SetTip(remove, localizer.Get("Common.Action.RemoveFilter", tag.Text));
-                var taken = tag;
-                remove.Click += (_, _) => taken.Remove();
-                TagsPanel.Children.Add(remove);
-            }
-        }
-
-        model.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName is nameof(ScreenListViewModel<TRow, TKey>.ActiveFilters) or nameof(ScreenListViewModel<TRow, TKey>.CountText))
-            {
-                ShowTags();
-            }
-        };
-        ShowTags();
-
         var body = new Grid();
         body.Children.Add(Rows);
         body.Children.Add(new ListStateView(model.State));
         var layout = new DockPanel();
-        DockPanel.SetDock(bar, Dock.Top);
-        bar.ThemedThickness(MarginProperty, ArcaResourceKeys.SpacingMedium);
-        layout.Children.Add(bar);
-        DockPanel.SetDock(tagsRow, Dock.Top);
-        layout.Children.Add(tagsRow);
+        DockPanel.SetDock(Toolbar, Dock.Top);
+        layout.Children.Add(Toolbar);
         layout.Children.Add(body);
         Content = layout;
     }
 
-    public TextBox Search { get; }
+    /// <summary>The search, filters, Reset button, labels and count above the rows.</summary>
+    public ListToolbarView<TRow, TKey> Toolbar { get; }
 
-    /// <summary>The Reset button: it empties the search and takes every filter off.</summary>
-    public Button ResetButton { get; }
+    public TextBox Search => Toolbar.Search;
 
-    /// <summary>The labels of the filters that are on; pressing one takes that filter off.</summary>
-    public WrapPanel TagsPanel { get; }
+    public Button ResetButton => Toolbar.ResetButton;
+
+    public WrapPanel TagsPanel => Toolbar.TagsPanel;
 
     public VirtualizedListView<TRow, TKey> Rows { get; }
 

@@ -5,6 +5,7 @@ using Arca.Application.Localization;
 using Arca.Application.Lockers.ListLockerRows;
 using Arca.Application.Search;
 using Arca.UI.Actions;
+using Arca.UI.Map;
 using Arca.UI.Common;
 using Arca.UI.Screens;
 using Arca.UI.Shell;
@@ -18,7 +19,8 @@ namespace Arca.UI.Lockers;
 /// <summary>Builds the Lockers view: title and actions, the list with its filters and counters, and the detail of the locker chosen.</summary>
 public static class LockersView
 {
-    public static ScreenView Create(LockersViewModel model, ILocalizer localizer)
+    /// <summary>The filters of the lockers, as controls of their own: the list and the map each draw theirs over the same model and they follow each other.</summary>
+    static WrapPanel BuildFilters(LockersViewModel model, ILocalizer localizer)
     {
         var retired = new CheckBox { Content = localizer.Get("Lockers.Label.IncludeRetired") };
         var number = new TextBox { PlaceholderText = localizer.Get("Lockers.Label.Number"), Width = 90 };
@@ -59,7 +61,13 @@ public static class LockersView
         filters.Children.Add(status);
         filters.Children.Add(number);
         filters.Children.Add(retired);
+        return filters;
+    }
 
+    /// <summary>The list view of the lockers: title and actions, the list with its filters and counters, and the detail of the locker chosen.</summary>
+    public static ScreenView Create(LockersViewModel model, ILocalizer localizer)
+    {
+        var filters = BuildFilters(model, localizer);
         var list = new ScreenListView<LockerListRow, Guid>(model.Lockers, localizer, filters);
         var counters = new TextBlock { TextWrapping = Avalonia.Media.TextWrapping.Wrap }
             .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.TextSecondary);
@@ -79,6 +87,33 @@ public static class LockersView
         screen.DetachedFromVisualTree += (_, _) => shortcut?.Dispose();
         return screen;
     }
+
+    /// <summary>
+    /// The map view of the lockers: the same model, filters, selection and detail as the list, and beside the detail the students without a
+    /// locker to drag onto a free one.
+    /// </summary>
+    public static ScreenView CreateMap(LockersViewModel model, LockersMapModel map, ILocalizer localizer, Arca.UI.Preferences.UiPreferencesSession preferences)
+    {
+        var view = new LockersMapView(model, localizer, preferences, map.Drop, BuildFilters(model, localizer));
+        var side = new Grid { RowDefinitions = new RowDefinitions("Auto,*") };
+        var detail = new LockerDetailPanel(model, localizer);
+        var students = new StudentsPanelView(map.Students, map.Drop, map.AssignToSelected, localizer);
+        Grid.SetRow(students, 1);
+        side.Children.Add(detail);
+        side.Children.Add(students);
+
+        var screen = new ScreenView(localizer.Get("Shell.Screen.LockerMap"), model.MainActions, view, side, selection: model.Lockers);
+        IDisposable? shortcut = null;
+        screen.AttachedToVisualTree += (_, _) =>
+        {
+            shortcut = model.StandardNew.Attach(() => model.NewLocker.Execute(null)); // Control or Command + N, only while this view is open
+            _ = LoadAsync(model, map);
+        };
+        screen.DetachedFromVisualTree += (_, _) => shortcut?.Dispose();
+        return screen;
+    }
+
+    static async Task LoadAsync(LockersViewModel model, LockersMapModel map) => await Task.WhenAll(model.LoadAsync(), map.LoadAsync());
 
     static ComboBox Filter(IReadOnlyList<FormOption> options, Func<string> current, Action<string> set)
     {

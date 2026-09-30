@@ -195,6 +195,14 @@ public sealed class ScreenQueryTests
         Assert.Equal("Lockers.NotOutOfService", onFree.RestoreBlocked!.Code);
 
         var onBusy = await Of(busy);
+        Assert.Equal(student.Id, onBusy.StudentId); // only the detail names who holds the locker, to release it or change it…
+        Assert.Null(onFree.StudentId);
+        var listed = (await LockerRows(world).HandleAsync(default)).Value!.Rows;
+        foreach (var id in new[] { free, busy, broken, reserved, retired })
+        {
+            Assert.Equal(listed.Single(r => r.Id == id), (await Of(id)).Row); // …and the row read on its own is the row of the list
+        }
+
         Assert.Equal("Lockers.NotFree", onBusy.ReserveBlocked!.Code);
         Assert.Equal("Lockers.HasAssignment", onBusy.RetireBlocked!.Code);
         Assert.Null(onBusy.BrokenBlocked); // allowed: the decision about the student comes next

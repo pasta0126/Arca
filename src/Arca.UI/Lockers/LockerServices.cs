@@ -36,4 +36,5 @@ public sealed record LockerServices(
     Func<Guid, string, CancellationToken, Task<Result<string>>> RenameZone,
     Func<Guid, CancellationToken, Task<Result<string>>> DeactivateZone,
     Func<Guid, CancellationToken, Task<Result<string>>> ReactivateZone,
-    Func<Guid, CancellationToken, Task<Result<string>>> DeleteZone);
+    Func<Guid, CancellationToken, Task<Result<string>>> DeleteZone,
+    Func<Guid, CancellationToken, Task<Result<string>>> Release);

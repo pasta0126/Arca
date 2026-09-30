@@ -43,29 +43,6 @@ public sealed class StartScreenRaceTests
     static LockerDetail Detail(Guid id, int number) => new(id, number, "Planta 1", LockerStatusView.Free, null, null, null, null, null, null, false, 0m);
 
     [Fact]
-    [Trait("spec", Spec + " (Actualización tras un cambio)")]
-    public async Task A_detail_that_arrives_late_does_not_replace_the_locker_chosen_afterwards()
-    {
-        var slow = new TaskCompletionSource<Result<LockerDetail?>>();
-        Task<Result<string>> Op(Guid id, CancellationToken ct) => Task.FromResult(Result<string>.Success("fet"));
-        var notifier = new ResultNotifier(_notifications, _localizer, _log);
-        var students = new StudentsWithoutLockerViewModel(_ => Task.FromResult(Result<StudentListing>.Success(new([], new(0, 0, 0)))), notifier, _localizer);
-        var map = new LockerMapViewModel(_ => Task.FromResult(Result<LockerMapData>.Success(LockerMapData.Empty)), (_, _) => Task.FromResult(Result<MapLocker?>.Success(null)), new UiPreferencesSession(new MemoryStore()), notifier, _localizer);
-        var assign = new AssignLockerInteraction((_, _) => Task.FromResult(Result<AssignLockerResult>.Failure(new Error("X.Y"))), new RecordingConfirmations(true), _localizer, _notifications, _log, _delay);
-        var detail = new LockerDetailViewModel(new LockerDetailContext(
-            (id, _) => id == _a ? slow.Task : Task.FromResult(Result<LockerDetail?>.Success(Detail(_b, 2))),
-            new LockerOperations(Op, Op, Op, Op, Op), assign, new RecordingConfirmations(true), _localizer, _notifications, _log, _delay, students, map, _ => Task.CompletedTask));
-
-        var first = detail.ShowAsync(_a); // the person clicks A…
-        await detail.ShowAsync(_b); // …and then B, which answers at once
-        slow.SetResult(Result<LockerDetail?>.Success(Detail(_a, 1))); // A's answer arrives late
-        await first;
-
-        Assert.Equal(_b, detail.Detail!.LockerId);
-        Assert.All(detail.Actions, a => Assert.Equal(_b, detail.Detail.LockerId)); // and the actions are B's
-    }
-
-    [Fact]
     [Trait("spec", "ui-shell/navegacio-i-cerca: Búsqueda sin bloquear (Escritura rápida)")]
     public async Task A_search_that_fails_after_a_newer_one_started_does_not_close_the_panel_of_the_newer_one()
     {
@@ -85,43 +62,5 @@ public sealed class StartScreenRaceTests
 
         Assert.Equal(SearchState.Searching, search.State); // the newer search keeps its panel
         Assert.Empty(_notifications.Published); // and nobody is told about a search that no longer matters
-    }
-
-    [Fact]
-    [Trait("spec", "ui-shell/pantalla-principal: Detalle de la taquilla seleccionada (Taquilla ocupada)")]
-    public async Task A_failure_of_the_change_outside_its_command_is_told_to_the_person()
-    {
-        var notifier = new ResultNotifier(_notifications, _localizer, _log);
-        var map = new LockerMapViewModel(
-            _ => Task.FromResult(Result<LockerMapData>.Success(new([new ZoneMap(Guid.NewGuid(), "P", [new MapLocker(_a, 1, LockerStatusView.Free, null, null, false)], new(1, 1, 0, 0, 0, 0))], new(1, 1, 0, 0, 0, 0)))),
-            (_, _) => Task.FromResult(Result<MapLocker?>.Success(null)), new UiPreferencesSession(new MemoryStore()), notifier, _localizer)
-        {
-            OnPicked = _ => throw new InvalidOperationException("boom"),
-        };
-        await map.LoadAsync();
-        map.BeginPick(Guid.NewGuid(), "Marta Puig");
-
-        map.Select(_a);
-        await Task.Delay(40);
-
-        Assert.Equal("ChangeLocker", Assert.Single(_log.Entries).Context);
-        Assert.Equal(Arca.Application.Feedback.NotificationKind.Error, Assert.Single(_notifications.Published).Kind);
-    }
-
-    [Fact]
-    [Trait("spec", "ui-shell/pantalla-principal: Filtros del mapa (Resaltar una búsqueda)")]
-    public async Task Choosing_a_locker_in_the_search_while_changing_a_locker_ends_the_change_first()
-    {
-        var notifier = new ResultNotifier(_notifications, _localizer, _log);
-        var map = new LockerMapViewModel(
-            _ => Task.FromResult(Result<LockerMapData>.Success(new([new ZoneMap(Guid.NewGuid(), "P", [new MapLocker(_a, 1, LockerStatusView.Free, null, null, false)], new(1, 1, 0, 0, 0, 0))], new(1, 1, 0, 0, 0, 0)))),
-            (_, _) => Task.FromResult(Result<MapLocker?>.Success(null)), new UiPreferencesSession(new MemoryStore()), notifier, _localizer);
-        await map.LoadAsync();
-        map.BeginPick(Guid.NewGuid(), "Marta Puig");
-
-        map.Reveal(_a);
-
-        Assert.Null(map.Picking); // the person moved on: the next click must not reassign the student
-        Assert.Equal(_a, map.SelectedLockerId);
     }
 }

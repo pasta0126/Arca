@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using System.Globalization;
+using Arca.Application.Assignments;
 using Arca.Application.Common;
 using Arca.Application.Lockers;
 using Arca.Application.Lockers.AddLocker;
@@ -40,9 +41,15 @@ public sealed class LockersViewModel : ObservableObject
     string _statusFilter = string.Empty;
     string _numberFilter = string.Empty;
     bool _includeRetired;
+    Guid? _highlighted;
+    (Guid StudentId, string StudentName)? _picking;
+    Guid? _pickFrom;
+    (Guid StudentId, Guid FromLocker)? _changing;
 
-    public LockersViewModel(LockerServices services, ScreenContext context, AppAction standardNew, Func<Task> openNewZone, AssignmentDialogs assign)
+    public LockersViewModel(
+        LockerServices services, ScreenContext context, AppAction standardNew, Func<Task> openNewZone, AssignmentDialogs assign, Func<Task>? openMap = null)
     {
+        OpenMap = openMap;
         _services = services;
         _assign = assign;
         _context = context;
@@ -68,12 +75,132 @@ public sealed class LockersViewModel : ObservableObject
         Lockers.UseFilters(ActiveFilterTags, ResetFilterFields);
         ApplyFilters();
         Detail = new DetailViewModel<Guid, LockerScreenDetail>(LoadDetailAsync, BuildActions, text, context.Notifications, context.Log, services.History);
-        Lockers.CurrentChanged += (_, _) => _ = ShowCurrentAsync();
+        Lockers.CurrentChanged += (_, _) =>
+        {
+            if (_picking is not null)
+            {
+                CancelPick(); // choosing something else means the person moved on from changing a locker
+            }
+
+            _ = ShowCurrentAsync();
+        };
     }
 
     public ScreenListViewModel<LockerListRow, Guid> Lockers { get; }
 
     public DetailViewModel<Guid, LockerScreenDetail> Detail { get; }
+
+    /// <summary>Takes the person to the map, where a locker is chosen for a student whose locker is being changed. Null when there is no map.</summary>
+    public Func<Task>? OpenMap { get; }
+
+    /// <summary>The student chosen in the panel of students without a locker, if the screen has one: Assign puts them in the locker.</summary>
+    public Func<Guid?>? ChosenStudent { get; set; }
+
+    /// <summary>Puts a student in a locker with the checks, warnings and feedback of every other way of assigning.</summary>
+    public Func<AssignmentIntent, Task>? AssignStudent { get; set; }
+
+    /// <summary>What is done when the locker for the change is chosen: the same request the student's record sends.</summary>
+    public Func<AssignmentIntent, Task>? OnPicked { get; set; }
+
+    /// <summary>Runs after anything that assigns or releases, so the panel of students reads again.</summary>
+    public Func<Task>? AfterAssignmentChange { get; set; }
+
+    /// <summary>The locker the search chose, outlined on the map, or null.</summary>
+    public Guid? HighlightedLockerId
+    {
+        get => _highlighted;
+        private set => Set(ref _highlighted, value);
+    }
+
+    /// <summary>The student whose locker is being changed while the person chooses the new one on the map, or null.</summary>
+    public (Guid StudentId, string StudentName)? Picking => _picking;
+
+    /// <summary>How many active lockers there are in each status, whatever the filters hide.</summary>
+    public LockerCounters Counters => _counters;
+
+    public LockerListRow? Find(Guid lockerId) => Lockers.List.AllRows.FirstOrDefault(r => r.Id == lockerId);
+
+    /// <summary>Starts changing the locker of a student: the next free locker chosen on the map becomes theirs.</summary>
+    public void BeginPick(Guid studentId, string studentName, Guid? fromLocker = null)
+    {
+        _picking = (studentId, studentName);
+        _pickFrom = fromLocker;
+        Raise(nameof(Picking));
+    }
+
+    public void CancelPick()
+    {
+        _picking = null;
+        _pickFrom = null;
+        Raise(nameof(Picking));
+    }
+
+    /// <summary>
+    /// What choosing a locker on the map does: it chooses it, and while a locker is being changed a free one is taken as the new one
+    /// and anything else is ignored.
+    /// </summary>
+    public void SelectLocker(Guid lockerId)
+    {
+        if (_picking is { } picking)
+        {
+            if (Find(lockerId) is { Status: LockerStatusView.Free })
+            {
+                _changing = _pickFrom is { } from ? (picking.StudentId, from) : null; // the old locker changes too, and will be read again
+                CancelPick();
+                _ = PickedAsync(new AssignmentIntent(picking.StudentId, lockerId));
+            }
+
+            return;
+        }
+
+        if (Lockers.List.Rows.FirstOrDefault(r => r.Id == lockerId) is { } row)
+        {
+            Lockers.Select(row);
+        }
+    }
+
+    async Task PickedAsync(AssignmentIntent intent)
+    {
+        try
+        {
+            if (OnPicked is { } change)
+            {
+                await change(intent);
+            }
+        }
+        catch (Exception e)
+        {
+            new Arca.UI.Notifications.ResultNotifier(_context.Notifications, _context.Localizer, _context.Log).Unexpected(e, "ChangeLocker");
+        }
+    }
+
+    /// <summary>
+    /// Shows a locker the search chose: what hides it is taken off, it is outlined and chosen, and its detail opens. A locker that is
+    /// not here changes nothing.
+    /// </summary>
+    public void Reveal(Guid lockerId)
+    {
+        if (Lockers.List.AllRows.All(r => r.Id != lockerId))
+        {
+            return;
+        }
+
+        if (_picking is not null)
+        {
+            CancelPick(); // choosing something in the search means the person moved on from changing a locker
+        }
+
+        if (Lockers.List.Rows.All(r => r.Id != lockerId))
+        {
+            Lockers.ClearFilter();
+        }
+
+        HighlightedLockerId = lockerId;
+        if (Lockers.List.Rows.FirstOrDefault(r => r.Id == lockerId) is { } row)
+        {
+            Lockers.Select(row);
+        }
+    }
 
     /// <summary>The action of the locker form, with the shortcut of the standard New.</summary>
     public AppAction NewLocker { get; }
@@ -225,11 +352,8 @@ public sealed class LockersViewModel : ObservableObject
         _counters = listing.Value!.Counters;
         _emptyState = listing.Value.EmptyState;
         Raise(nameof(CountersText));
-        ZoneOptions =
-        [
-            new(string.Empty, _context.Localizer.Get("Lockers.Label.AllZones")),
-            .. listing.Value.Rows.GroupBy(r => r.ZoneId).Select(g => new FormOption(g.Key.ToString(), g.First().ZoneName)).OrderBy(o => o.Label, TextComparer.Comparer),
-        ];
+        Raise(nameof(Counters));
+        ZoneOptions = ZoneOptionsOf(listing.Value.Rows);
         return Result<IReadOnlyList<LockerListRow>>.Success(listing.Value.Rows);
     }
 
@@ -261,20 +385,103 @@ public sealed class LockersViewModel : ObservableObject
         await Detail.ShowAsync(has, id);
     }
 
+    /// <summary>
+    /// Reads again what a change touched and nothing more: the locker it was done to (one query), so the list, the map and their
+    /// counters follow without loading everything; everything only when there is no one locker to read, as after adding lockers.
+    /// </summary>
     async Task RefreshAsync(Guid? select = null)
     {
-        await LoadAsync();
-        if (select is { } id && Lockers.List.Rows.FirstOrDefault(r => r.Id == id) is { } row)
+        if (select is { } id && Lockers.List.AllRows.Any(r => r.Id == id))
         {
-            Lockers.Select(row);
+            await RefreshLockerAsync(id);
+            if (Lockers.List.AllRows.FirstOrDefault(r => r.Id == id) is { } row && !(Lockers.TryGetSelectedKey(out var chosen) && chosen == id))
+            {
+                Lockers.Select(row);
+            }
+            else if (Lockers.TryGetSelectedKey(out _))
+            {
+                await ShowCurrentAsync();
+            }
         }
-        else if (Lockers.TryGetSelectedKey(out _))
+        else
         {
-            await ShowCurrentAsync();
+            await LoadAsync();
+            if (select is { } wanted && Lockers.List.Rows.FirstOrDefault(r => r.Id == wanted) is { } row)
+            {
+                Lockers.Select(row);
+            }
+            else if (Lockers.TryGetSelectedKey(out _))
+            {
+                await ShowCurrentAsync();
+            }
+        }
+
+        if (AfterAssignmentChange is { } changed)
+        {
+            await changed();
         }
 
         await _context.AfterWrite();
     }
+
+    /// <summary>Reads one locker again and puts it in place, and counts the lockers again without asking for them all.</summary>
+    public async Task RefreshLockerAsync(Guid lockerId, CancellationToken ct = default)
+    {
+        var notifier = new Arca.UI.Notifications.ResultNotifier(_context.Notifications, _context.Localizer, _context.Log);
+        try
+        {
+            var read = await _services.Detail(lockerId, ct);
+            if (!read.IsSuccess)
+            {
+                notifier.Error(read.Error!);
+                return;
+            }
+
+            Lockers.ReplaceRow(read.Value!.Row);
+            Recount();
+            ZoneOptions = ZoneOptionsOf(Lockers.List.AllRows);
+        }
+        catch (OperationCanceledException)
+        {
+            // Closed meanwhile.
+        }
+        catch (Exception e)
+        {
+            notifier.Unexpected(e, "RefreshLocker");
+        }
+    }
+
+    /// <summary>After an assignment or a change: the new locker and, if the student had one, the old one, which changed too, and the list of students.</summary>
+    public async Task RefreshAfterAssignmentAsync(AssignmentIntent intent)
+    {
+        var old = _changing is { } change && change.StudentId == intent.StudentId ? change.FromLocker : (Guid?)null;
+        _changing = null;
+        await RefreshAsync(intent.LockerId);
+        if (old is { } previous && previous != intent.LockerId)
+        {
+            await RefreshLockerAsync(previous);
+        }
+    }
+
+    void Recount()
+    {
+        var active = Lockers.List.AllRows.Where(r => r.Status != LockerStatusView.Retired).ToList();
+        _counters = new LockerCounters(
+            active.Count,
+            active.Count(r => r.Status == LockerStatusView.Free),
+            active.Count(r => r.Status == LockerStatusView.Occupied),
+            active.Count(r => r.Status == LockerStatusView.Broken),
+            active.Count(r => r.Status == LockerStatusView.Maintenance),
+            active.Count(r => r.Status == LockerStatusView.Reserved));
+        Raise(nameof(CountersText));
+        Raise(nameof(Counters));
+    }
+
+    IReadOnlyList<FormOption> ZoneOptionsOf(IEnumerable<LockerListRow> rows) =>
+    [
+        new(string.Empty, _context.Localizer.Get("Lockers.Label.AllZones")),
+        .. rows.GroupBy(r => r.ZoneId).Select(g => new FormOption(g.Key.ToString(), g.First().ZoneName)).OrderBy(o => o.Label, TextComparer.Comparer),
+    ];
 
     // --- Actions of the detail ---
 
@@ -288,6 +495,8 @@ public sealed class LockersViewModel : ObservableObject
         }
 
         actions.Add("Assign", "Lockers.Action.Assign", () => _ = AssignAsync(row), () => detail.ReserveBlocked); // it is free exactly when it can be reserved
+        actions.Add("Change", "Shell.Action.Change", () => _ = ChangeAsync(detail), () => detail.StudentId is null ? new Error("Assignments.NoAssignment") : null);
+        actions.Add("Release", "Shell.Action.Release", () => _ = ReleaseAsync(detail), () => detail.StudentId is null ? new Error("Assignments.NoAssignment") : null);
         actions.Add("Edit", "Lockers.Action.Edit", () => _ = EditAsync(detail), () => detail.EditBlocked);
         actions.Add("Reserve", "Lockers.Action.Reserve", () => _ = ReserveAsync(row), () => detail.ReserveBlocked);
         actions.Add("RemoveReservation", "Lockers.Action.RemoveReservation",
@@ -301,8 +510,44 @@ public sealed class LockersViewModel : ObservableObject
 
     async Task AssignAsync(LockerListRow row)
     {
+        if (ChosenStudent?.Invoke() is { } student && AssignStudent is { } assign)
+        {
+            await assign(new AssignmentIntent(student, row.Id)); // the student chosen in the panel, as dragging them here does
+            return;
+        }
+
         await _assign.ChooseStudentForAsync(row.Id, row.Number, row.ZoneName);
         await RefreshAsync(row.Id); // the detail shows the student the locker has now
+    }
+
+    /// <summary>Changing the locker of the student: the new one is chosen on the map, which opens if it was not.</summary>
+    async Task ChangeAsync(LockerScreenDetail detail)
+    {
+        if (detail.StudentId is not { } student)
+        {
+            return;
+        }
+
+        BeginPick(student, detail.Row.StudentName ?? string.Empty, detail.Row.Id);
+        if (OpenMap is { } open)
+        {
+            await open();
+        }
+    }
+
+    async Task ReleaseAsync(LockerScreenDetail detail)
+    {
+        var row = detail.Row;
+        if (detail.StudentId is not { } student)
+        {
+            return;
+        }
+
+        var request = new AssignmentConfirmations(_context.Localizer).ForRelease(row.StudentName ?? string.Empty, row.Number);
+        if (await _context.Confirmations.ConfirmAsync(request))
+        {
+            await RunAsync(ct => _services.Release(student, ct), "ReleaseLocker", row.Id);
+        }
     }
 
     Task RunAsync(Func<CancellationToken, Task<Result<string>>> operation, string name, Guid? select) =>

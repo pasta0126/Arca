@@ -87,19 +87,6 @@ public sealed class StartScreenPrivacyTests
 
     [Fact]
     [Trait("spec", Spec)]
-    public async Task A_failing_map_and_locker_read_leave_no_student_data_in_the_notification_or_the_log()
-    {
-        var map = new LockerMapViewModel(_ => throw Leaky(), (_, _) => throw Leaky(), new UiPreferencesSession(new MemoryStore()), Notifier(), _localizer);
-
-        await map.LoadAsync();
-        await map.RefreshLockerAsync(Guid.NewGuid());
-
-        Assert.Equal(2, _notifications.Published.Count);
-        AssertNothingPersonalWasLeaked("LoadLockerMap", "RefreshLocker");
-    }
-
-    [Fact]
-    [Trait("spec", Spec)]
     public async Task A_failing_list_of_students_leaves_no_student_data_in_the_notification_or_the_log()
     {
         var students = new StudentsWithoutLockerViewModel(_ => throw Leaky(), Notifier(), _localizer);
@@ -112,32 +99,13 @@ public sealed class StartScreenPrivacyTests
 
     [Fact]
     [Trait("spec", Spec)]
-    public async Task A_failing_detail_leaves_no_student_data_in_the_notification_or_the_log()
-    {
-        var students = new StudentsWithoutLockerViewModel(_ => Task.FromResult(Result<StudentListing>.Success(new([], new(0, 0, 0)))), Notifier(), _localizer);
-        var map = new LockerMapViewModel(_ => Task.FromResult(Result<LockerMapData>.Success(LockerMapData.Empty)), (_, _) => Task.FromResult(Result<MapLocker?>.Success(null)), new UiPreferencesSession(new MemoryStore()), Notifier(), _localizer);
-        Task<Result<string>> Op(Guid id, CancellationToken ct) => Task.FromResult(Result<string>.Success("fet"));
-        var assign = new Arca.UI.Assigning.AssignLockerInteraction(
-            (_, _) => Task.FromResult(Result<AssignLockerResult>.Failure(new Error("X.Y"))), new RecordingConfirmations(true), _localizer, _notifications, _log, _delay);
-        var detail = new LockerDetailViewModel(new LockerDetailContext(
-            (_, _) => throw Leaky(), new LockerOperations(Op, Op, Op, Op, Op), assign, new RecordingConfirmations(true), _localizer, _notifications, _log, _delay,
-            students, map, _ => Task.CompletedTask));
-
-        await detail.ShowAsync(Guid.NewGuid());
-
-        Assert.Single(_notifications.Published);
-        AssertNothingPersonalWasLeaked("LockerDetail");
-    }
-
-    [Fact]
-    [Trait("spec", Spec)]
     public void The_results_of_the_search_the_map_and_the_detail_hold_nothing_that_identifies_a_student_beyond_the_name()
     {
         var forbidden = new[] { "Email", "Dni", "Identifier", "Nif" };
         var types = new[]
         {
             typeof(StudentHit), typeof(LockerHit), typeof(GroupHit), typeof(GlobalSearchResult), typeof(MapLocker), typeof(ZoneMap),
-            typeof(LockerMapData), typeof(LockerDetail), typeof(StudentRow), typeof(AssignmentTargetCheck),
+            typeof(LockerMapData), typeof(LockerDetail), typeof(Arca.Application.Lockers.ListLockerRows.LockerListRow), typeof(StudentRow), typeof(AssignmentTargetCheck),
         };
 
         foreach (var type in types)

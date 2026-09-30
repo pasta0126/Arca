@@ -51,6 +51,7 @@ static class LockersComposition
         var outOfService = new MarkLockerOutOfServiceHandler(store.Lockers, store.Zones, store.Events, occupancy, LockerHomeComposition.Services(store, clock), store, clock);
         var restore = new RestoreLockerServiceHandler(store.Lockers, store.Zones, store.Events, occupancy, store, clock);
         var retire = new RetireLockerHandler(store.Lockers, store.Zones, store.Events, occupancy, [], store, clock);
+        var release = new Arca.Application.Assignments.ReleaseStudentLocker.ReleaseStudentLockerHandler(LockerHomeComposition.Services(store, clock), store, clock);
         var createZone = new CreateZoneHandler(store.Zones, store);
         var renameZone = new RenameZoneHandler(store.Zones, store.Lockers, store);
         var deactivateZone = new DeactivateZoneHandler(store.Zones, store.Lockers, store);
@@ -109,6 +110,7 @@ static class LockersComposition
             (id, name, ct) => Said(renameZone.HandleAsync(new RenameZoneRequest(id, name), ct), text.ZoneRenamed),
             (id, ct) => Said(deactivateZone.HandleAsync(new DeactivateZoneRequest(id), ct), text.ZoneDeactivated),
             (id, ct) => Said(reactivateZone.HandleAsync(new ReactivateZoneRequest(id), ct), text.ZoneReactivated),
-            (id, ct) => Said(deleteZone.HandleAsync(new DeleteZoneRequest(id), ct), _ => text.ZoneDeleted()));
+            (id, ct) => Said(deleteZone.HandleAsync(new DeleteZoneRequest(id), ct), _ => text.ZoneDeleted()),
+            (student, ct) => Said(release.HandleAsync(new Arca.Application.Assignments.ReleaseStudentLocker.ReleaseStudentLockerRequest(student), ct), new AssignmentResultTexts(localizer).Released));
     }
 }

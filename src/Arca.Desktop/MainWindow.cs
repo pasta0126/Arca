@@ -43,16 +43,14 @@ public sealed class MainWindow : Window
         themeSettings.ApplySaved(); // the theme chosen on this computer, with the accent of the centre
         var screenContext = new ScreenContext(
             localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay, runtime.Confirmations, runtime.Forms, () => state.RefreshAsync(), runtime.Choices);
-        var homeModel = new LockerHomeModel(
-            runtime.HomeServices, runtime.Preferences, notifier, runtime.Confirmations, localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay, state);
-        var home = new LockerMapHomeScreen(homeModel, navigator, localizer);
         NavigationViewModel? navigation = null;
         var assignments = new AssignmentDialogs(runtime.Pickers, screenContext);
         var registry = SectionRegistry.Compose(
             new Dictionary<string, Func<Avalonia.Controls.Control>>
             {
                 [ShellCatalog.Settings] = () => SettingsRoot(runtime, themeSettings, screenContext),
-                [ShellCatalog.Lockers] = () => LockersSection.Create(runtime.LockerServices, screenContext, runtime.Actions[StandardActions.New], assignments),
+                [ShellCatalog.Lockers] = () => LockersSection.Create(
+                    runtime.LockerServices, runtime.AssignmentServices, screenContext, runtime.Actions[StandardActions.New], assignments, runtime.Preferences, navigator, notifier),
                 [ShellCatalog.Students] = () => StudentsView.Create(
                     new StudentsViewModel(runtime.StudentServices, screenContext, assignments, runtime.Actions[StandardActions.New],
                         () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)),
@@ -61,7 +59,7 @@ public sealed class MainWindow : Window
                     new CourseViewModel(runtime.CourseServices, screenContext, runtime.Actions[StandardActions.New]), localizer),
             },
             new Dictionary<string, Func<int>> { [ShellCatalog.Students] = () => state.Current?.StudentsWithPending ?? 0 },
-            home);
+            null);
         navigation = new NavigationViewModel(registry, runtime.Preferences, section => SectionPlaceholder.Create(section, registry, localizer));
         navigator.Bind(navigation);
         var shell = new ShellView(navigation, localizer, new NotificationHostView(runtime.Notifications, localizer));

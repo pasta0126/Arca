@@ -38,14 +38,14 @@ public static class ShellCatalog
     ];
 
     /// <summary>
-    /// Every screen in its one section: Lockers (lockers, zones and their history), Students (students, their charges and
+    /// Every screen in its one section: Lockers (map, list, zones and their history), Students (students, their charges and
     /// deposit, import and assignments), Keys and incidents, Reports, Course (current year, amounts,
     /// closing and data retention) and Settings (identity, theme, registration, backup, guided setup, incident reasons and data folder).
     /// </summary>
     public static IReadOnlyList<ScreenDefinition> Screens { get; } =
     [
-        Screen("LockerMap", Home),
-        Screen("Lockers", Lockers), Screen("Zones", Lockers), Screen("LockerHistory", Lockers),
+        Screen("Start", Home),
+        Screen("LockerMap", Lockers), Screen("Lockers", Lockers), Screen("Zones", Lockers), Screen("LockerHistory", Lockers),
         Screen("Students", Students), Screen("StudentImport", Students), Screen("Assignments", Students),
         Screen("Deposits", Students),
         Screen("Keys", KeysAndIncidents), Screen("Incidents", KeysAndIncidents), Screen("BulkMaintenance", KeysAndIncidents),

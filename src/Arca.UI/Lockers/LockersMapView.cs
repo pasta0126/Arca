@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
-using Arca.Application.LockerMap;
 using Arca.Application.Localization;
+using Arca.Application.Lockers.ListLockerRows;
 using Arca.Application.Search;
+using Arca.Domain.Common;
 using Arca.UI.Assigning;
 using Arca.UI.Common;
 using Arca.UI.Layout;
 using Arca.UI.Lists;
+using Arca.UI.Preferences;
+using Arca.UI.Screens;
 using Arca.UI.Shell;
 using Arca.UI.Theme;
 using Avalonia;
@@ -17,100 +20,97 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Material.Icons;
 
-namespace Arca.UI.Map;
+namespace Arca.UI.Lockers;
 
 /// <summary>
-/// The map of lockers by zone: a bar of counters that also filter by status, a filter by zone, and each zone as a folding
-/// section holding its lockers in a grid, by number. Each locker shows its number, its status by colour, icon and word (in its
-/// tooltip), and a mark when the student who holds it owes something. The one whose detail is open and the one found by the
-/// search are drawn with an outline.
+/// The lockers of the Lockers section drawn as a map (pantalles-taquilles-i-zones, Vista de mapa de taquillas): the zones as sections that
+/// fold, told apart with room between them, each with its lockers as cells that say their number and, by colour and icon, their status, with
+/// the mark of debt on an occupied one. It is another view of the same model as the list: it draws the rows the filters leave, the row chosen
+/// is the one chosen in the list, and the counters by status are filters. A cell is a drop destination for a student dragged from the panel.
 /// </summary>
-public sealed class LockerMapView : UserControl
+public sealed class LockersMapView : UserControl
 {
     static readonly LockerStatusView[] _statuses =
         [LockerStatusView.Free, LockerStatusView.Occupied, LockerStatusView.Reserved, LockerStatusView.Broken, LockerStatusView.Maintenance];
 
-    readonly LockerMapViewModel _model;
+    readonly LockersViewModel _model;
     readonly ILocalizer _localizer;
+    readonly UiPreferencesSession _preferences;
     readonly AssignmentDropViewModel? _drop;
-    readonly StackPanel _zones = new();
+    readonly StackPanel _zones = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingLarge);
     readonly WrapPanel _chips = new() { Orientation = Orientation.Horizontal };
-    readonly ComboBox _zoneFilter = new();
     readonly Dictionary<Guid, Button> _cells = [];
+    readonly Dictionary<Guid, CollapsibleSectionViewModel> _sections = [];
     readonly Border _pickBanner;
     readonly TextBlock _pickText = new();
-    bool _syncing;
 
-    /// <param name="drop">What dragging a student over a locker does; without it the lockers accept no drops.</param>
-    public LockerMapView(LockerMapViewModel model, ILocalizer localizer, AssignmentDropViewModel? drop = null)
+    public LockersMapView(LockersViewModel model, ILocalizer localizer, UiPreferencesSession preferences, AssignmentDropViewModel? drop = null, Control? filters = null)
     {
         _model = model;
         _localizer = localizer;
+        _preferences = preferences;
         _drop = drop;
-        _zoneFilter.SelectionChanged += (_, _) =>
-        {
-            if (!_syncing)
-            {
-                _model.ZoneFilter = _zoneFilter.SelectedIndex > 0 ? _model.ZoneNames[_zoneFilter.SelectedIndex - 1].ZoneId : null;
-            }
-        };
-
-        var bar = new DockPanel().ThemedThickness(MarginProperty, ArcaResourceKeys.SpacingMedium);
-        DockPanel.SetDock(_zoneFilter, Dock.Right);
-        bar.Children.Add(_zoneFilter);
-        bar.Children.Add(_chips);
-
+        Toolbar = new ListToolbarView<LockerListRow, Guid>(model.Lockers, localizer, filters);
         _pickBanner = BuildPickBanner();
-        DockPanel.SetDock(_pickBanner, Dock.Top);
+        _chips.ThemedThickness(MarginProperty, ArcaResourceKeys.SpacingMedium);
+
+        var top = new StackPanel();
+        top.Children.Add(Toolbar);
+        top.Children.Add(_chips);
+        top.Children.Add(_pickBanner);
+        DockPanel.SetDock(top, Dock.Top);
         var body = new Grid();
         body.Children.Add(new ScrollViewer { Content = _zones });
-        body.Children.Add(new ListStateView(model.State));
+        body.Children.Add(new ListStateView(model.Lockers.State));
         var layout = new DockPanel();
-        DockPanel.SetDock(bar, Dock.Top);
-        layout.Children.Add(bar);
-        layout.Children.Add(_pickBanner);
+        layout.Children.Add(top);
         layout.Children.Add(body);
         Content = layout;
 
+        model.Lockers.List.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(Lists.ListViewModel<LockerListRow, Guid>.Rows))
+            {
+                RebuildZones();
+            }
+        };
+        model.Lockers.CurrentChanged += (_, _) => MarkCells();
         model.PropertyChanged += (_, e) =>
         {
             switch (e.PropertyName)
             {
-                case nameof(LockerMapViewModel.Zones):
-                    RebuildZones();
-                    break;
-                case nameof(LockerMapViewModel.Counters):
-                case nameof(LockerMapViewModel.StatusFilter):
+                case nameof(LockersViewModel.Counters):
+                case nameof(LockersViewModel.StatusFilter):
                     RebuildChips();
                     break;
-                case nameof(LockerMapViewModel.ZoneNames):
-                    RebuildZoneFilter();
-                    break;
-                case nameof(LockerMapViewModel.ZoneFilter):
-                    SyncZoneSelection();
-                    break;
-                case nameof(LockerMapViewModel.Picking):
+                case nameof(LockersViewModel.Picking):
                     RefreshPickBanner();
                     break;
-                case nameof(LockerMapViewModel.SelectedLockerId):
-                case nameof(LockerMapViewModel.HighlightedLockerId):
+                case nameof(LockersViewModel.HighlightedLockerId):
+                    Unfold();
                     MarkCells();
+                    break;
+                default:
                     break;
             }
         };
-        RebuildZoneFilter();
         RebuildChips();
-        RebuildZones(); // the map may already be loaded when the view is built
+        RebuildZones(); // the lockers may already be loaded when the view is built
     }
 
-    /// <summary>The locker cells on screen, by locker, so a test or the detail can reach them.</summary>
+    /// <summary>The search, filters, Reset button, labels and count above the map.</summary>
+    public ListToolbarView<LockerListRow, Guid> Toolbar { get; }
+
+    /// <summary>The cell of each locker drawn now, so a test can press it.</summary>
     public IReadOnlyDictionary<Guid, Button> Cells => _cells;
 
-    /// <summary>The buttons of the counters, one per status, in order.</summary>
+    /// <summary>The counters by status, each one a filter when pressed.</summary>
     public IReadOnlyList<ToggleButton> Chips => [.. _chips.Children.OfType<ToggleButton>()];
 
-    /// <summary>The filter by zone.</summary>
-    public ComboBox ZoneFilter => _zoneFilter;
+    public Border PickBanner => _pickBanner;
+
+    /// <summary>The sections of the zones drawn now, by zone, so a test can tell whether one is unfolded.</summary>
+    public IReadOnlyDictionary<Guid, CollapsibleSectionViewModel> Sections => _sections;
 
     void RebuildChips()
     {
@@ -129,63 +129,58 @@ public sealed class LockerMapView : UserControl
             var row = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingSmall);
             row.Children.Add(ThemedIcon.Create(LockerStatusPresentation.Icon(status), 16));
             row.Children.Add(new TextBlock { Text = _localizer.Get("Shell.Map.Counter", LockerStatusPresentation.Text(status, _localizer), count), VerticalAlignment = VerticalAlignment.Center });
-            var chip = new ToggleButton { Content = row, IsChecked = _model.StatusFilter == status }
+            var chip = new ToggleButton { Content = row, IsChecked = _model.StatusFilter == status.ToString() }
                 .Themed(TemplatedControl.BackgroundProperty, LockerStatusPresentation.BrushKey(status))
                 .ThemedThickness(Layoutable.MarginProperty, ArcaResourceKeys.SpacingSmall);
-            var chosen = status;
-            chip.Click += (_, _) => _model.StatusFilter = _model.StatusFilter == chosen ? null : chosen;
+            var chosen = status.ToString();
+            chip.Click += (_, _) => _model.StatusFilter = _model.StatusFilter == chosen ? string.Empty : chosen;
             _chips.Children.Add(chip);
         }
-    }
-
-    void RebuildZoneFilter()
-    {
-        _syncing = true;
-        _zoneFilter.Items.Clear();
-        _zoneFilter.Items.Add(_localizer.Get("Shell.Map.AllZones"));
-        foreach (var (_, name) in _model.ZoneNames)
-        {
-            _zoneFilter.Items.Add(name);
-        }
-
-        _syncing = false;
-        SyncZoneSelection();
-    }
-
-    /// <summary>Makes the drop-down show the zone the model filters by, when the filter was changed by code (clearing, revealing).</summary>
-    void SyncZoneSelection()
-    {
-        var at = _model.ZoneFilter is { } id ? _model.ZoneNames.ToList().FindIndex(z => z.ZoneId == id) + 1 : 0;
-        _syncing = true;
-        _zoneFilter.SelectedIndex = Math.Max(0, at);
-        _syncing = false;
     }
 
     void RebuildZones()
     {
         _zones.Children.Clear();
         _cells.Clear();
-        foreach (var zone in _model.Zones)
+        _sections.Clear();
+        var groups = _model.Lockers.List.Rows
+            .Where(r => r.ZoneActive)
+            .GroupBy(r => (r.ZoneId, r.ZoneName))
+            .OrderBy(g => g.Key.ZoneName, TextComparer.Comparer);
+        foreach (var group in groups)
         {
             var cells = new WrapPanel { Orientation = Orientation.Horizontal };
-            foreach (var locker in zone.Visible)
+            foreach (var locker in group)
             {
                 var cell = Cell(locker);
-                _cells[locker.LockerId] = cell;
+                _cells[locker.Id] = cell;
                 var host = new Border { Child = cell, BorderThickness = new Thickness(3) }; // the outline of a drop goes here, around the cell
                 if (_drop is not null)
                 {
-                    var id = locker.LockerId;
+                    var id = locker.Id;
                     LockerDropTarget.Attach(host, () => id, _drop);
                 }
 
                 cells.Children.Add(host);
             }
 
-            _zones.Children.Add(new CollapsibleSectionView(zone.Section, cells));
+            var inZone = _model.Lockers.List.AllRows.Where(r => r.ZoneId == group.Key.ZoneId && r.Status != LockerStatusView.Retired).ToList();
+            var summary = _localizer.Get("Shell.Map.ZoneSummary", inZone.Count, inZone.Count(r => r.Status == LockerStatusView.Free));
+            var section = new CollapsibleSectionViewModel("zone:" + group.Key.ZoneId.ToString("N"), group.Key.ZoneName, () => summary, _preferences);
+            _sections[group.Key.ZoneId] = section;
+            _zones.Children.Add(new CollapsibleSectionView(section, cells));
         }
 
         MarkCells();
+    }
+
+    /// <summary>Opens the zone of the locker the search chose, so it is seen.</summary>
+    void Unfold()
+    {
+        if (_model.HighlightedLockerId is { } id && _model.Find(id) is { } row && _sections.TryGetValue(row.ZoneId, out var section))
+        {
+            section.IsExpanded = true;
+        }
     }
 
     Border BuildPickBanner()
@@ -198,23 +193,18 @@ public sealed class LockerMapView : UserControl
         DockPanel.SetDock(cancel, Dock.Right);
         row.Children.Add(cancel);
         row.Children.Add(_pickText);
-        var banner = new Border { Child = row, IsVisible = false }
+        return new Border { Child = row, IsVisible = false }
             .Themed(Border.BackgroundProperty, ArcaResourceKeys.Warning)
             .ThemedThickness(Border.PaddingProperty, ArcaResourceKeys.SpacingMedium);
-        return banner;
     }
 
-    /// <summary>Tells the person, while changing a student's locker, to choose the new one on the map.</summary>
     void RefreshPickBanner()
     {
         _pickBanner.IsVisible = _model.Picking is not null;
         _pickText.Text = _model.Picking is { } picking ? _localizer.Get("Shell.Pick.Banner", picking.StudentName) : string.Empty;
     }
 
-    /// <summary>The banner that asks for the new locker, so a test can see whether it is on.</summary>
-    public Border PickBanner => _pickBanner;
-
-    Button Cell(MapLocker locker)
+    Button Cell(LockerListRow locker)
     {
         var grid = new Grid { Width = 68, Height = 48 };
         grid.Children.Add(new TextBlock { Text = locker.Number.ToString(System.Globalization.CultureInfo.CurrentCulture), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeight.SemiBold }
@@ -235,13 +225,13 @@ public sealed class LockerMapView : UserControl
         var button = new Button { Content = grid, Padding = new Thickness(2), BorderThickness = new Thickness(3) }
             .Themed(TemplatedControl.BackgroundProperty, LockerStatusPresentation.BrushKey(locker.Status))
             .ThemedThickness(Layoutable.MarginProperty, ArcaResourceKeys.SpacingSmall);
-        var id = locker.LockerId;
-        button.Click += (_, _) => _model.Select(id);
+        var id = locker.Id;
+        button.Click += (_, _) => _model.SelectLocker(id);
         ToolTip.SetTip(button, TipOf(locker));
         return button;
     }
 
-    string TipOf(MapLocker locker)
+    string TipOf(LockerListRow locker)
     {
         var tip = _localizer.Get("Shell.Map.CellTip", locker.Number, LockerStatusPresentation.Text(locker.Status, _localizer));
         if (locker.StudentName is not null)
@@ -252,12 +242,13 @@ public sealed class LockerMapView : UserControl
         return locker.HasDebt ? _localizer.Get("Shell.Map.CellTipStudent", tip, _localizer.Get("Shell.Map.Debt")) : tip;
     }
 
-    /// <summary>Outlines the cell whose detail is open and the one the search found.</summary>
     void MarkCells()
     {
+        _model.Lockers.TryGetSelectedKey(out var selected);
+        var hasSelection = _model.Lockers.HasSelection;
         foreach (var (id, cell) in _cells)
         {
-            if (id == _model.SelectedLockerId)
+            if (hasSelection && id == selected)
             {
                 cell.Themed(TemplatedControl.BorderBrushProperty, ArcaResourceKeys.Focus);
             }

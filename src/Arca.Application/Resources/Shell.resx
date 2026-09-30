@@ -26,10 +26,13 @@
     <value>Ajustos</value>
   </data>
   <data name="Shell.Screen.LockerMap" xml:space="preserve">
-    <value>Mapa de taquilles</value>
+    <value>Mapa</value>
+  </data>
+  <data name="Shell.Screen.Start" xml:space="preserve">
+    <value>Inici</value>
   </data>
   <data name="Shell.Screen.Lockers" xml:space="preserve">
-    <value>Taquilles</value>
+    <value>Llista</value>
   </data>
   <data name="Shell.Screen.Zones" xml:space="preserve">
     <value>Zones</value>

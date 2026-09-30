@@ -30,11 +30,11 @@
 
 ## 5. El mapa en la sección Taquillas
 
-- [ ] 5.1 Tercera pestaña Mapa (vista inicial) con el modelo compartido de filtros, búsqueda, selección y detalle con la lista (D6)
-- [ ] 5.2 Mover el mapa y el panel de alumnos sin taquilla a la sección, con arrastrar y soltar y su alternativa de menú y teclado, y eliminar el detalle duplicado del mapa
-- [ ] 5.3 Espacio entre zonas del mapa con espaciado de tema (D7) y `Esc` que quita la taquilla seleccionada
-- [ ] 5.4 La búsqueda global que elige una taquilla abre Taquillas en el mapa con ella resaltada y su detalle
-- [ ] 5.5 Pruebas: cambio de Mapa a Lista con filtro y selección, filtro por estado, resaltado de búsqueda, asignar arrastrando, 300 taquillas y actualización de una sola taquilla tras asignar
+- [x] 5.1 Tercera pestaña Mapa (vista inicial) con el modelo compartido de filtros, búsqueda, selección y detalle con la lista (D6)
+- [x] 5.2 Mover el mapa y el panel de alumnos sin taquilla a la sección, con arrastrar y soltar y su alternativa de menú y teclado, y eliminar el detalle duplicado del mapa
+- [x] 5.3 Espacio entre zonas del mapa con espaciado de tema (D7) y `Esc` que quita la taquilla seleccionada
+- [x] 5.4 La búsqueda global que elige una taquilla abre Taquillas en el mapa con ella resaltada y su detalle
+- [x] 5.5 Pruebas: cambio de Mapa a Lista con filtro y selección, filtro por estado, resaltado de búsqueda, asignar arrastrando, 300 taquillas y actualización de una sola taquilla tras asignar
 
 ## 6. Inicio mínimo provisional
 

@@ -37,7 +37,7 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
 
     public GlobalStateService GlobalState => services.GetRequiredService<GlobalStateService>();
 
-    public LockerHomeServices HomeServices => services.GetRequiredService<LockerHomeServices>();
+    public LockerAssignmentServices AssignmentServices => services.GetRequiredService<LockerAssignmentServices>();
 
     public CourseServices CourseServices => services.GetRequiredService<CourseServices>();
 

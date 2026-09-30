@@ -3,7 +3,10 @@
 
 using Arca.Application.Localization;
 using Arca.UI.Actions;
+using Arca.UI.Notifications;
+using Arca.UI.Preferences;
 using Arca.UI.Screens;
+using Arca.UI.Search;
 using Arca.UI.Shell;
 using Avalonia.Controls;
 
@@ -12,7 +15,9 @@ namespace Arca.UI.Lockers;
 /// <summary>Builds the Lockers section: the Lockers and Zones views as tabs, with Lockers first.</summary>
 public static class LockersSection
 {
-    public static Control Create(LockerServices services, ScreenContext context, AppAction standardNew, Arca.UI.Assigning.AssignmentDialogs assign)
+    public static Control Create(
+        LockerServices services, LockerAssignmentServices assignment, ScreenContext context, AppAction standardNew, Arca.UI.Assigning.AssignmentDialogs assign,
+        UiPreferencesSession preferences, SearchNavigator navigator, ResultNotifier notifier)
     {
         var localizer = context.Localizer;
         ZonesViewModel? zones = null;
@@ -22,15 +27,43 @@ public static class LockersSection
         {
             section!.Open("Zones");
             return zones!.NewZoneAsync();
-        }, assign);
+        }, assign, () =>
+        {
+            section!.Open("LockerMap");
+            return Task.CompletedTask;
+        });
         zones = new ZonesViewModel(services, context, () => lockers.LoadAsync());
+        var map = new LockersMapModel(lockers, assignment, notifier, context.Confirmations, localizer, context.Notifications, context.Log, context.Delay);
         section = new SectionScreens(
             ShellCatalog.Lockers,
             [
+                new("LockerMap", () => LockersView.CreateMap(lockers, map, localizer, preferences)),
                 new("Lockers", () => LockersView.Create(lockers, localizer)),
                 new("Zones", () => ZonesView.Create(zones, localizer)),
             ],
             localizer);
+
+        // A locker chosen in the search opens the map with it outlined and its detail open, also when the section is built by that very choice.
+        navigator.Requested += (_, target) => Reveal(target);
+        _ = LoadAsync();
         return section;
+
+        async Task LoadAsync()
+        {
+            await lockers.LoadAsync();
+            if (navigator.TakePending() is { } pending)
+            {
+                Reveal(pending);
+            }
+        }
+
+        void Reveal(SearchTarget target)
+        {
+            if (target.Kind == SearchTargetKind.Locker)
+            {
+                section.Open("LockerMap");
+                lockers.Reveal(target.Id);
+            }
+        }
     }
 }
