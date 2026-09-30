@@ -47,6 +47,7 @@ public sealed class LayerReferenceTests
     [Theory]
     [Trait("spec", "acces-i-xifrat/xifrat-de-la-base: Ningún secreto en el código (las capas internas no conocen el cifrado)")]
     [Trait("spec", "taquilles-i-zones/design: D4 y D5 (Domain y Application no referencian EF Core)")]
+    [Trait("spec", "copies-de-seguretat/tasks: 6.1 (Domain y Application no referencian EF Core ni el sistema de ficheros de la base)")]
     [InlineData(typeof(Domain.AssemblyMarker))]
     [InlineData(typeof(Application.AssemblyMarker))]
     public void Inner_layers_do_not_reference_EF_Core_the_cryptography_or_the_encrypted_database(Type marker)

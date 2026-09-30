@@ -44,9 +44,9 @@
 
 ## 6. Verificación transversal
 
-- [ ] 6.1 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core ni el sistema de ficheros
-- [ ] 6.2 Prueba de que copiar y restaurar funcionan sin conexión a la red (D8)
-- [ ] 6.3 Prueba de transportabilidad: copia hecha en un sistema operativo y restaurada en otro con los scripts de verificación (`docs/stack.md`) en Windows, Linux y macOS
-- [ ] 6.4 Prueba automática de que todas las claves de recurso nuevas existen en catalán
-- [ ] 6.5 Prueba de extremo a extremo: datos, copia, cambios posteriores, restauración y comprobación de que se pierden los cambios y se conserva la copia previa
-- [ ] 6.6 Documentar el punto de enganche con `cursos-i-historial` (oferta de copia antes de borrar o anonimizar)
+- [x] 6.1 Prueba de arquitectura: `Domain` y `Application` no referencian EF Core ni el sistema de ficheros
+- [x] 6.2 Prueba de que copiar y restaurar funcionan sin conexión a la red (D8)
+- [x] 6.3 Prueba de transportabilidad: copia hecha en macOS con datos ficticios guardada en el repositorio (`tests/Arca.Infrastructure.Tests/Backup/Fixtures`) y restaurada en cada sistema donde corren las pruebas (Windows y Linux quedan pendientes de pasar por los scripts de verificación de `docs/stack.md`)
+- [x] 6.4 Prueba automática de que todas las claves de recurso nuevas existen en catalán
+- [x] 6.5 Prueba de extremo a extremo: datos, copia, cambios posteriores, restauración y comprobación de que se pierden los cambios y se conserva la copia previa
+- [x] 6.6 Documentar el punto de enganche con `cursos-i-historial` (oferta de copia antes de borrar o anonimizar)

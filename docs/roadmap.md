@@ -14,7 +14,7 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 | 7 | `manteniment` | Operaciones en bloque sobre incidencias: poner un grupo de taquillas en mantenimiento o averiadas y repararlas de una vez, con motivo y nota opcional | redactado |
 | 8 | `cursos-i-historial` | Cierre de curso guiado con liberación masiva de taquillas y devolución masiva de llaves, apertura del curso siguiente, conservación y anonimización. La actualización de alumnos (niveles, grupos, bajas de finalistas, repetidores) se hace con la conciliación de la importación anual, definida en `alumnes-i-assignacions` | redactado |
 | 9 | `informes-csv` | Morosos, taquillas libres y averiadas, asignaciones, resumen de cobros (solo CSV) | redactado |
-| 10 | `copies-de-seguretat` | Copia y restauración manuales | redactado |
+| 10 | `copies-de-seguretat` | Copia y restauración manuales | implementado y archivado (`2026-09-30-copies-de-seguretat`) |
 | 11 | `registre-i-actualitzacions` | Registro opcional de la instalación y aviso de versión nueva (software libre y gratuito, sin licencias) | redactado |
 | 12 | `configuracio-inicial` | Asistente guiado de primera configuración | redactado |
 | 13 | `ux-fonaments` | Sistema de diseño: adaptabilidad, colapsables, arrastrar y soltar, menús, componentes de feedback | redactado |
