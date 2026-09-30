@@ -517,6 +517,45 @@ public sealed class StudentsScreenTests
     }
 
     [Fact]
+    [Trait("spec", "ui-llistats-i-detall/pantalla-principal: Inicio como pantalla registrable (Resumen mínimo)")]
+    public async Task A_card_of_the_start_takes_off_what_was_on_and_shows_exactly_its_filter_with_the_label_to_remove_it()
+    {
+        AddStudent("Marta", "Puig", "1r ESO", debt: true);
+        AddStudent("Pau", "Alsina", "2n ESO", debt: true);
+        AddStudent("Jana", "Roca", "2n ESO");
+        var model = Model();
+        await model.LoadAsync();
+        model.Students.List.FilterText = "zzz";
+        model.LevelFilter = "1r ESO";
+
+        model.ApplyRequest(new Dictionary<string, string> { ["Payment"] = "pending" });
+
+        Assert.Equal(string.Empty, model.Students.List.FilterText);
+        Assert.Equal(string.Empty, model.LevelFilter);
+        Assert.Equal(["Alsina", "Puig"], model.Students.List.Rows.Select(s => s.LastName));
+        Assert.Equal(["Amb pendents de pagament"], model.Students.ActiveFilters.Select(t => t.Text));
+    }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    [Trait("spec", "ui-llistats-i-detall/pantalla-principal: Inicio como pantalla registrable (Resumen mínimo)")]
+    public async Task A_section_built_by_the_very_request_takes_the_filter_it_was_waiting_for()
+    {
+        AddStudent("Marta", "Puig", debt: true);
+        AddStudent("Jana", "Roca");
+        var model = Model();
+        var router = new Arca.UI.Shell.ScreenFilterRouter();
+        router.Open(new Arca.UI.Shell.ScreenFilterRequest("Students", null, new Dictionary<string, string> { ["Locker"] = "without" })); // before the section exists
+
+        _ = StudentsView.Create(model, _localizer, new UiPreferencesSession(new MemoryStore()), router);
+        await model.LoadAsync();
+
+        Assert.Equal("without", model.LockerFilter);
+        Assert.Equal(["Puig", "Roca"], model.Students.List.Rows.Select(s => s.LastName));
+        router.Open(new Arca.UI.Shell.ScreenFilterRequest("Students", null, new Dictionary<string, string> { ["Payment"] = "pending" })); // and once it is built
+        Assert.Equal((string.Empty, "pending"), (model.LockerFilter, model.PaymentFilter));
+    }
+
+    [Fact]
     [Trait("spec", PatternSpec + ": Patrón común de pantalla (Reiniciar la búsqueda)")]
     public async Task Reset_empties_the_search_and_takes_every_filter_off_and_the_list_goes_back_to_its_start()
     {

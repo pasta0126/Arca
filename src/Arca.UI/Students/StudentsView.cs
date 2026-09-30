@@ -18,7 +18,7 @@ namespace Arca.UI.Students;
 /// <summary>Builds the Students section: title and actions, the list with search, filters and counters, and the record of the student chosen.</summary>
 public static class StudentsView
 {
-    public static ScreenView Create(StudentsViewModel model, ILocalizer localizer, UiPreferencesSession preferences)
+    public static ScreenView Create(StudentsViewModel model, ILocalizer localizer, UiPreferencesSession preferences, ScreenFilterRouter? router = null)
     {
         var retired = new CheckBox { Content = localizer.Get("Students.Label.IncludeRetired") };
         var level = Filter(model.LevelOptions, () => model.LevelFilter, v => model.LevelFilter = v);
@@ -73,6 +73,27 @@ public static class StudentsView
         left.Children.Add(list);
 
         var screen = new ScreenView(localizer.Get("Shell.Screen.Students"), model.MainActions, left, new StudentDetailPanel(model, localizer, preferences), selection: model.Students);
+        if (router is not null)
+        {
+            // A card of the start screen opens this section with a filter on: at once if it is built already, and when it is built otherwise.
+            void Take()
+            {
+                if (router.Take(ShellCatalog.Students) is { } request)
+                {
+                    model.ApplyRequest(request.Filters);
+                }
+            }
+
+            router.Requested += (_, request) =>
+            {
+                if (request.Section == ShellCatalog.Students)
+                {
+                    Take();
+                }
+            };
+            Take();
+        }
+
         IDisposable? shortcut = null;
         screen.AttachedToVisualTree += (_, _) =>
         {

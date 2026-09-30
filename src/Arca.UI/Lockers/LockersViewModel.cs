@@ -328,6 +328,24 @@ public sealed class LockersViewModel : ObservableObject
     /// <summary>Removes every filter, the search and the number, which is what the state of a list without results and the Reset button offer.</summary>
     public void ClearFilters() => Lockers.ClearFilter();
 
+    /// <summary>
+    /// Puts on the filters a card of the start screen asks for (Status=Free…, Zone=id), after taking off the search and every other filter,
+    /// so the map and the list show exactly that and nothing else.
+    /// </summary>
+    public void ApplyRequest(IReadOnlyDictionary<string, string> filters)
+    {
+        Lockers.ClearFilter();
+        if (filters.TryGetValue("Status", out var status))
+        {
+            StatusFilter = status;
+        }
+
+        if (filters.TryGetValue("Zone", out var zone))
+        {
+            ZoneFilter = zone;
+        }
+    }
+
     void ResetFilterFields()
     {
         _zoneFilter = _statusFilter = _numberFilter = string.Empty;

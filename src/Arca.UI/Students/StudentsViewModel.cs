@@ -261,6 +261,24 @@ public sealed class StudentsViewModel : ObservableObject
     /// <summary>Removes the search and every filter, which is what the state of a list without results and the Reset button offer.</summary>
     public void ClearFilters() => Students.ClearFilter();
 
+    /// <summary>
+    /// Puts on the filters a card of the start screen asks for (Locker=with|without, Payment=pending|upToDate), after taking off the search
+    /// and every other filter, so the list shows exactly that and nothing else.
+    /// </summary>
+    public void ApplyRequest(IReadOnlyDictionary<string, string> filters)
+    {
+        Students.ClearFilter();
+        if (filters.TryGetValue("Locker", out var locker))
+        {
+            LockerFilter = locker;
+        }
+
+        if (filters.TryGetValue("Payment", out var payment))
+        {
+            PaymentFilter = payment;
+        }
+    }
+
     void ResetFilterFields()
     {
         _levelFilter = _groupFilter = _lockerFilter = _paymentFilter = string.Empty;

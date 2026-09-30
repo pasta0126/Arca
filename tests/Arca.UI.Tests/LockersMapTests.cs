@@ -250,6 +250,21 @@ public sealed partial class LockersScreenTests
         Assert.Equal(string.Empty, model.StatusFilter);
     }
 
+    [Fact]
+    [Trait("spec", "ui-llistats-i-detall/pantalla-principal: Inicio como pantalla registrable (Resumen mínimo)")]
+    public async Task A_card_of_the_start_shows_the_map_and_the_list_with_exactly_its_status()
+    {
+        Sample();
+        var (model, _) = await LoadedAsync();
+        model.Lockers.List.FilterText = "zzz";
+        model.NumberFilter = "3";
+
+        model.ApplyRequest(new Dictionary<string, string> { ["Status"] = "Free" });
+
+        Assert.Equal((string.Empty, string.Empty, "Free"), (model.Lockers.List.FilterText, model.NumberFilter, model.StatusFilter));
+        Assert.Equal([1, 2], model.Lockers.List.Rows.Select(r => r.Number));
+    }
+
     // --- One locker changes ---
 
     [Fact]

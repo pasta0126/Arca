@@ -37,6 +37,8 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
 
     public GlobalStateService GlobalState => services.GetRequiredService<GlobalStateService>();
 
+    public Arca.Application.Home.GetHomeSummaryHandler HomeSummary => services.GetRequiredService<Arca.Application.Home.GetHomeSummaryHandler>();
+
     public LockerAssignmentServices AssignmentServices => services.GetRequiredService<LockerAssignmentServices>();
 
     public CourseServices CourseServices => services.GetRequiredService<CourseServices>();

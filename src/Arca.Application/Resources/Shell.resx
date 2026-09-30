@@ -28,6 +28,34 @@
   <data name="Shell.Screen.LockerMap" xml:space="preserve">
     <value>Mapa</value>
   </data>
+  <data name="Shell.Home.Label.Year" xml:space="preserve">
+    <value>Curs actiu: {0}</value>
+  </data>
+  <data name="Shell.Home.Empty.NoYear" xml:space="preserve">
+    <value>No hi ha cap curs actiu. Activa'n un per poder assignar taquilles.</value>
+  </data>
+  <data name="Shell.Home.Action.GoToCourse" xml:space="preserve">
+    <value>Ves a Curs</value>
+  </data>
+  <data name="Shell.Home.Empty.NotSetUp" xml:space="preserve">
+    <value>Encara no hi ha taquilles ni alumnes. Comença per crear les zones i les taquilles i afegir els alumnes.</value>
+  </data>
+  <data name="Shell.Home.Action.SetUpLockers" xml:space="preserve">
+    <value>Crea zones i taquilles</value>
+  </data>
+  <data name="Shell.Home.Action.AddStudents" xml:space="preserve">
+    <value>Afegeix alumnes</value>
+  </data>
+  <data name="Shell.Home.Link.WithPending" xml:space="preserve">
+    <value>Alumnes amb pendents de pagament</value>
+  </data>
+  <data name="Shell.Home.Link.WithoutLocker" xml:space="preserve">
+    <value>Alumnes sense taquilla</value>
+  </data>
+  <data name="Shell.Home.Link.Open" xml:space="preserve">
+    <value>{0}: {1}. Obre'ls filtrats.</value>
+    <comment>{0} what is counted, {1} how many</comment>
+  </data>
   <data name="Shell.Screen.Start" xml:space="preserve">
     <value>Inici</value>
   </data>

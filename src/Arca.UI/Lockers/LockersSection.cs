@@ -17,7 +17,7 @@ public static class LockersSection
 {
     public static Control Create(
         LockerServices services, LockerAssignmentServices assignment, ScreenContext context, AppAction standardNew, Arca.UI.Assigning.AssignmentDialogs assign,
-        UiPreferencesSession preferences, SearchNavigator navigator, ResultNotifier notifier)
+        UiPreferencesSession preferences, SearchNavigator navigator, ResultNotifier notifier, ScreenFilterRouter? router = null)
     {
         var localizer = context.Localizer;
         ZonesViewModel? zones = null;
@@ -45,6 +45,28 @@ public static class LockersSection
 
         // A locker chosen in the search opens the map with it outlined and its detail open, also when the section is built by that very choice.
         navigator.Requested += (_, target) => Reveal(target);
+        if (router is not null)
+        {
+            // A card of the start screen opens the map, or the screen it names, with a filter on.
+            void Take()
+            {
+                if (router.Take(ShellCatalog.Lockers) is { } request)
+                {
+                    section.Open(request.Screen ?? "LockerMap");
+                    lockers.ApplyRequest(request.Filters);
+                }
+            }
+
+            router.Requested += (_, request) =>
+            {
+                if (request.Section == ShellCatalog.Lockers)
+                {
+                    Take();
+                }
+            };
+            Take();
+        }
+
         _ = LoadAsync();
         return section;
 

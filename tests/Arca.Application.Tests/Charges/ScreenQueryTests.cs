@@ -455,4 +455,49 @@ public sealed class ScreenQueryTests
 
         Assert.Contains("de pagat a pendent", lines[0].Text, StringComparison.Ordinal);
     }
+
+    const string HomeSpec = "ui-llistats-i-detall/pantalla-principal";
+
+    [Fact]
+    [Trait("spec", HomeSpec + ": Inicio como pantalla registrable (Resumen mínimo)")]
+    public async Task The_start_summary_counts_lockers_students_without_locker_and_students_with_pending_and_carries_no_amount_or_name()
+    {
+        var world = await WorldAsync();
+        var zone = await world.ZoneAsync("Planta 1");
+        var marta = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        await world.StudentAsync("Pau", "Abad", "pau@example.com");
+        await world.StudentAsync("Aina", "Zapata", "aina@example.com");
+        await world.AssignAsync(marta.Id, await world.LockerAsync(1, zone)); // a pending fee and a pending deposit
+        await world.LockerAsync(2, zone);
+        var handler = new Arca.Application.Home.GetHomeSummaryHandler(
+            LockerRows(world), world.Assignments.Students.Search, new Arca.Application.GlobalState.GetGlobalStateHandler(world.Store.Years, world.Store.Charges));
+
+        var summary = (await handler.HandleAsync(default)).Value!;
+
+        Assert.Equal("2026-2027", summary.ActiveYearName);
+        Assert.Equal((2, 1, 1), (summary.Lockers.Active, summary.Lockers.Free, summary.Lockers.Occupied));
+        Assert.Equal((2, 1), (summary.StudentsWithoutLocker, summary.StudentsWithPending));
+        Assert.True(summary.HasLockers && summary.HasStudents);
+        foreach (var property in typeof(Arca.Application.Home.HomeSummary).GetProperties())
+        {
+            Assert.DoesNotContain("Total", property.Name, StringComparison.Ordinal);
+            Assert.DoesNotContain("Amount", property.Name, StringComparison.Ordinal);
+            Assert.DoesNotContain("Name", property.Name.Replace("ActiveYearName", string.Empty, StringComparison.Ordinal), StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    [Trait("spec", HomeSpec + ": Inicio como pantalla registrable (Sin curso activo)")]
+    public async Task Without_an_active_year_the_summary_says_so_and_counts_no_students()
+    {
+        var world = new PagamentsWorld();
+        var handler = new Arca.Application.Home.GetHomeSummaryHandler(
+            LockerRows(world), world.Assignments.Students.Search, new Arca.Application.GlobalState.GetGlobalStateHandler(world.Store.Years, world.Store.Charges));
+
+        var summary = (await handler.HandleAsync(default)).Value!;
+
+        Assert.Null(summary.ActiveYearName);
+        Assert.Equal((0, 0), (summary.StudentsWithoutLocker, summary.StudentsWithPending));
+        Assert.False(summary.HasLockers || summary.HasStudents);
+    }
 }

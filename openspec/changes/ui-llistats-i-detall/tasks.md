@@ -38,9 +38,9 @@
 
 ## 6. Inicio mínimo provisional
 
-- [ ] 6.1 Nueva pantalla de Inicio con curso activo y recuentos como accesos que abren Taquillas o Alumnos con el filtro adecuado precargado
-- [ ] 6.2 Estados: sin curso activo con acceso a Curso, y sin datos con guía a la configuración guiada
-- [ ] 6.3 Pruebas: cada acceso abre la sección con su filtro visible como etiqueta quitable y sin importes en ningún texto
+- [x] 6.1 Nueva pantalla de Inicio con curso activo y recuentos como accesos que abren Taquillas o Alumnos con el filtro adecuado precargado
+- [x] 6.2 Estados: sin curso activo con acceso a Curso, y sin datos con guía a la configuración guiada
+- [x] 6.3 Pruebas: cada acceso abre la sección con su filtro visible como etiqueta quitable y sin importes en ningún texto
 
 ## 7. Datos de demostración y cierre
 

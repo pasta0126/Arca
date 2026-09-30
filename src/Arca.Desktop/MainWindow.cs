@@ -38,6 +38,7 @@ public sealed class MainWindow : Window
 
         var state = runtime.GlobalState;
         var navigator = new SearchNavigator();
+        var router = new ScreenFilterRouter();
         var notifier = new ResultNotifier(runtime.Notifications, localizer, runtime.ErrorLog);
         var themeSettings = new ThemeSettingsViewModel(runtime.Preferences, runtime.Identity, (choice, accent) => runtime.Theme?.Apply(choice, accent));
         themeSettings.ApplySaved(); // the theme chosen on this computer, with the accent of the centre
@@ -50,18 +51,20 @@ public sealed class MainWindow : Window
             {
                 [ShellCatalog.Settings] = () => SettingsRoot(runtime, themeSettings, screenContext),
                 [ShellCatalog.Lockers] = () => LockersSection.Create(
-                    runtime.LockerServices, runtime.AssignmentServices, screenContext, runtime.Actions[StandardActions.New], assignments, runtime.Preferences, navigator, notifier),
+                    runtime.LockerServices, runtime.AssignmentServices, screenContext, runtime.Actions[StandardActions.New], assignments, runtime.Preferences, navigator, notifier, router),
                 [ShellCatalog.Students] = () => StudentsView.Create(
                     new StudentsViewModel(runtime.StudentServices, screenContext, assignments, runtime.Actions[StandardActions.New],
                         () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)),
-                        new StudentChargesViewModel(runtime.ChargeServices, screenContext, () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)))), localizer, runtime.Preferences),
+                        new StudentChargesViewModel(runtime.ChargeServices, screenContext, () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)))), localizer, runtime.Preferences, router),
                 [ShellCatalog.Course] = () => CourseView.Create(
                     new CourseViewModel(runtime.CourseServices, screenContext, runtime.Actions[StandardActions.New]), localizer),
             },
             new Dictionary<string, Func<int>> { [ShellCatalog.Students] = () => state.Current?.StudentsWithPending ?? 0 },
-            null);
+            new Arca.UI.Home.StartHomeScreen(
+                new Arca.UI.Home.StartHomeModel(runtime.HomeSummary.HandleAsync, router, section => navigation!.Navigate(section), notifier, localizer), state, localizer));
         navigation = new NavigationViewModel(registry, runtime.Preferences, section => SectionPlaceholder.Create(section, registry, localizer));
         navigator.Bind(navigation);
+        router.Bind(navigation);
         var shell = new ShellView(navigation, localizer, new NotificationHostView(runtime.Notifications, localizer));
         var header = new StackPanel();
         var headerView = new HeaderView(state, localizer, localizer.Get("App.Label.Title"));
