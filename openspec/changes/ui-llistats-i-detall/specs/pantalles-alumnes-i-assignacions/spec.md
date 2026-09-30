@@ -50,7 +50,7 @@ El sistema SHALL mostrar en la sección Alumnos una lista virtualizada de los al
 ## ADDED Requirements
 
 ### Requirement: Ficha del alumno en una columna
-El sistema SHALL mostrar al seleccionar un alumno su ficha en una sola columna, sin pestañas. La cabecera SHALL mostrar el nombre, el nivel y grupo, la taquilla y el estado de pago, siempre visibles, y las acciones aplicables. Debajo, los cargos pendientes del alumno SHALL mostrarse abiertos, cada uno con su concepto, curso, importe y las acciones de cobro en su misma fila, o un mensaje de que está al corriente. El historial de pagos, los datos del alumno y el historial de actividad SHALL ser bloques colapsables, cerrados por defecto, que cargan su contenido solo al abrirse. La ficha SHALL recordar qué bloques están abiertos al cambiar de alumno.
+El sistema SHALL mostrar al seleccionar un alumno su ficha en una sola columna, sin pestañas. La cabecera SHALL mostrar el nombre, el nivel y grupo, la taquilla y el estado de pago, siempre visibles, y las acciones aplicables. Debajo, los cargos pendientes del alumno SHALL mostrarse abiertos, cada uno con su concepto, curso, importe y las acciones de cobro en su misma fila, o un mensaje de que está al corriente. El historial de pagos, los datos del alumno y el historial de actividad SHALL ser bloques colapsables, cerrados por defecto. El historial de pagos usa los mismos cargos que ya se cargaron para los pendientes y muestra su recuento cerrado; el historial de actividad carga su contenido solo al abrirse. La ficha SHALL recordar qué bloques están abiertos al cambiar de alumno y entre sesiones.
 
 #### Scenario: Cabecera de la ficha
 - **WHEN** el usuario abre la ficha de un alumno con taquilla y deuda
@@ -74,7 +74,7 @@ El sistema SHALL mostrar al seleccionar un alumno su ficha en una sola columna, 
 
 #### Scenario: Bloques cerrados
 - **WHEN** el usuario selecciona un alumno
-- **THEN** el historial de pagos, los datos y el historial de actividad aparecen cerrados con su recuento y no se cargan hasta abrirlos
+- **THEN** el historial de pagos, los datos y el historial de actividad aparecen cerrados, el primero con su recuento de cargos, y el historial de actividad no se carga hasta abrirlo
 
 #### Scenario: Datos
 - **WHEN** el usuario abre el bloque Datos

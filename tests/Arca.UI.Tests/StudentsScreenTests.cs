@@ -7,6 +7,7 @@ using Arca.Application.Assignments.CheckAssignmentTarget;
 using Arca.Application.Catalog.ListCatalog;
 using Arca.Application.Feedback;
 using Arca.Application.Localization;
+using Arca.Application.Preferences;
 using Arca.Application.Lockers;
 using Arca.Application.Lockers.ListLockerRows;
 using Arca.Application.Search;
@@ -22,8 +23,10 @@ using Arca.Testing;
 using Arca.UI.Actions;
 using Arca.UI.Assigning;
 using Arca.UI.Lists;
+using Arca.UI.Preferences;
 using Arca.UI.Screens;
 using Arca.UI.Students;
+using Avalonia.VisualTree;
 using Xunit;
 
 namespace Arca.UI.Tests;
@@ -56,6 +59,15 @@ public sealed class StudentsScreenTests
         }
     }
 
+    sealed class MemoryStore : IUiPreferencesStore
+    {
+        public UiPreferences Saved { get; private set; } = new();
+
+        public UiPreferences Load() => Saved;
+
+        public void Save(UiPreferences preferences) => Saved = preferences;
+    }
+
     readonly RecordingNotifications _notifications = new();
     readonly RecordingErrorLog _log = new();
     readonly ManualDelay _delay = new();
@@ -64,6 +76,7 @@ public sealed class StudentsScreenTests
     readonly FakeChoices _choices = new();
     readonly List<StudentListRow> _students = [];
     readonly List<LockerListRow> _lockers = [];
+    readonly FakeChargeWorld _chargeWorld = new();
     readonly List<string> _calls = [];
     readonly Dictionary<Guid, StudentScreenDetail> _details = [];
     RecordingConfirmations _confirmations = new(true);
@@ -208,7 +221,7 @@ public sealed class StudentsScreenTests
             _courseOpened++;
             return Task.CompletedTask;
         },
-        new Arca.UI.Charges.StudentChargesViewModel(new FakeChargeWorld().Services(), Context(), () => Task.CompletedTask));
+        new Arca.UI.Charges.StudentChargesViewModel(_chargeWorld.Services(), Context(), () => Task.CompletedTask));
 
     // --- The list ---
 
@@ -342,6 +355,165 @@ public sealed class StudentsScreenTests
         Assert.Equal("Cap alumne té pagaments pendents. Tot al corrent.", model.Students.State.Message);
         model.LevelFilter = "2n ESO";
         Assert.DoesNotContain("Tot al corrent", model.Students.State.Message, StringComparison.Ordinal); // with another filter on it is just no match
+    }
+
+    const string RecordSpec = "ui-llistats-i-detall/pantalles-alumnes-i-assignacions";
+
+    Arca.UI.Students.StudentDetailPanel Record(StudentsViewModel model, out UiPreferencesSession preferences, UiPreferencesSession? reuse = null)
+    {
+        preferences = reuse ?? new UiPreferencesSession(new MemoryStore());
+        var panel = new Arca.UI.Students.StudentDetailPanel(model, _localizer, preferences);
+        var window = new Avalonia.Controls.Window { Content = panel, Width = 700, Height = 900 };
+        window.Show();
+        return panel;
+    }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    [Trait("spec", RecordSpec + ": Ficha del alumno en una columna (Alumno con pendientes)")]
+    public async Task A_student_with_two_pending_charges_shows_them_open_each_with_its_pay_button_and_no_tabs()
+    {
+        var marta = AddStudent("Marta", "Puig", locker: 5, debt: true);
+        _chargeWorld.Line("Fee", "Pending", 50m);
+        _chargeWorld.Line("Deposit", "Pending", 20m, current: false);
+        _chargeWorld.Line("KeyReplacementFee", "Paid", 10m);
+        var model = Model();
+        var panel = Record(model, out _);
+        await model.LoadAsync();
+
+        model.Students.Select(model.Students.List.Rows[0]);
+        await Task.Delay(100);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+
+        Assert.Equal(2, panel.Pending.Lines.Count);
+        Assert.Equal(2, panel.Pending.PayButtons.Count);
+        Assert.All(panel.Pending.PayButtons, b => Assert.Equal("Marca com a pagat", (string?)b.Content));
+        Assert.Empty(panel.GetVisualDescendants().OfType<Avalonia.Controls.TabControl>());
+        Assert.False(panel.UpToDateText.IsVisible);
+        Assert.Equal(marta.Id, model.Charges.Screen!.StudentId);
+    }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    [Trait("spec", RecordSpec + ": Ficha del alumno en una columna (Alumno al corriente)")]
+    public async Task A_student_with_nothing_pending_is_said_to_be_up_to_date_and_shows_no_pending_list()
+    {
+        AddStudent("Marta", "Puig", locker: 5);
+        _chargeWorld.Line("Fee", "Paid", 50m);
+        var model = Model();
+        var panel = Record(model, out _);
+        await model.LoadAsync();
+
+        model.Students.Select(model.Students.List.Rows[0]);
+        await Task.Delay(100);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+
+        Assert.Empty(panel.Pending.Lines);
+        Assert.True(panel.UpToDateText.IsVisible);
+        Assert.Contains("al corrent", panel.UpToDateText.Text, StringComparison.Ordinal);
+    }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    [Trait("spec", RecordSpec + ": Ficha del alumno en una columna (Alumno sin cargos)")]
+    public async Task A_student_without_charges_is_told_they_are_generated_when_a_locker_is_assigned()
+    {
+        AddStudent("Marta", "Puig");
+        var model = Model();
+        var panel = Record(model, out _);
+        await model.LoadAsync();
+
+        model.Students.Select(model.Students.List.Rows[0]);
+        await Task.Delay(100);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+
+        Assert.Contains("assignar-li una taquilla", panel.UpToDateText.Text, StringComparison.Ordinal);
+    }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    [Trait("spec", RecordSpec + ": Ficha del alumno en una columna (Historial de pagos colapsable)")]
+    public async Task The_history_of_payments_block_starts_folded_and_holds_every_charge_of_any_year()
+    {
+        AddStudent("Marta", "Puig", debt: true);
+        _chargeWorld.Line("Fee", "Pending", 50m);
+        _chargeWorld.Line("Fee", "Paid", 50m, current: false);
+        var model = Model();
+        var panel = Record(model, out _);
+        await model.LoadAsync();
+        model.Students.Select(model.Students.List.Rows[0]);
+        await Task.Delay(100);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+
+        Assert.False(panel.PaymentsSection.IsExpanded);
+        Assert.False(panel.DataSection.IsExpanded);
+        Assert.False(panel.ActivitySection.IsExpanded);
+        Assert.Equal(["2026-2027", "2025-2026"], panel.Payments.Lines.Select(l => l.YearName));
+        Assert.Equal("2 càrrecs", _localizer.Get("Students.Label.PaymentCount", panel.Payments.Lines.Count));
+    }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    [Trait("spec", RecordSpec + ": Ficha del alumno en una columna (Bloques cerrados)")]
+    public async Task The_activity_block_does_not_load_until_it_is_opened()
+    {
+        AddStudent("Marta", "Puig");
+        var model = Model();
+        var panel = Record(model, out _);
+        await model.LoadAsync();
+        model.Students.Select(model.Students.List.Rows[0]);
+        await Task.Delay(100);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+        Assert.False(model.Detail.HistoryLoaded);
+
+        panel.ActivitySection.IsExpanded = true;
+        await Task.Delay(100);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+
+        Assert.True(model.Detail.HistoryLoaded);
+        Assert.Equal(["alta"], model.Detail.History);
+    }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    [Trait("spec", RecordSpec + ": Ficha del alumno en una columna (Datos)")]
+    public async Task The_data_block_is_the_only_place_that_shows_the_email()
+    {
+        AddStudent("Marta", "Puig");
+        var model = Model();
+        var panel = Record(model, out _);
+        await model.LoadAsync();
+        model.Students.Select(model.Students.List.Rows[0]);
+        await Task.Delay(100);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+
+        IEnumerable<string> Texts() => panel.GetVisualDescendants().OfType<Avalonia.Controls.TextBlock>().Select(t => t.Text ?? string.Empty).ToList();
+        Assert.DoesNotContain(Texts(), t => t.Contains("marta@example.com", StringComparison.Ordinal)); // folded: not on the screen
+
+        panel.DataSection.IsExpanded = true;
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+
+        Assert.Single(Texts(), t => t.Contains("marta@example.com", StringComparison.Ordinal));
+    }
+
+    [Avalonia.Headless.XUnit.AvaloniaFact]
+    [Trait("spec", RecordSpec + ": Ficha del alumno en una columna (Cobrar desde la ficha)")]
+    public async Task Paying_from_the_record_opens_the_payment_form_for_that_charge_and_a_fold_choice_is_kept_for_the_next_student()
+    {
+        AddStudent("Marta", "Puig", debt: true);
+        AddStudent("Pau", "Alsina");
+        var pending = _chargeWorld.Line("Fee", "Pending", 50m);
+        var model = Model();
+        var panel = Record(model, out var preferences);
+        await model.LoadAsync();
+        model.Students.Select(model.Students.List.Rows.Single(r => r.LastName == "Puig"));
+        await Task.Delay(100);
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+
+        panel.Pending.PayButtons.Single().Command!.Execute(null);
+        await Task.Delay(50);
+        Assert.Single(_forms.Shown); // the form of the payment, with today as the date
+
+        panel.ActivitySection.IsExpanded = true;
+        model.Students.Select(model.Students.List.Rows.Single(r => r.LastName == "Alsina"));
+        await Task.Delay(100);
+        Assert.True(panel.ActivitySection.IsExpanded);
+        Assert.True(preferences.IsSectionExpanded("student.activity", false));
+        Assert.NotNull(pending);
     }
 
     [Fact]
@@ -551,22 +723,17 @@ public sealed class StudentsScreenTests
     }
 
     [Fact]
-    [Trait("spec", Spec + ": Ficha del alumno (Pestaña Historial)")]
-    public async Task The_history_and_the_lockers_load_only_when_their_tab_is_opened()
+    [Trait("spec", RecordSpec + ": Ficha del alumno en una columna (Historial de actividad)")]
+    public async Task The_history_of_activity_loads_only_when_asked_for_it()
     {
         var student = AddStudent("Marta", "Puig", locker: 5);
         var model = Model();
         await model.LoadAsync();
         await model.Detail.ShowAsync(true, student.Id);
         Assert.False(model.Detail.HistoryLoaded);
-        Assert.False(model.LockerLinesLoaded);
 
-        model.Students.Select(model.Students.List.Rows[0]);
-        await Task.Delay(50);
-        await model.LoadLockerLinesAsync();
         await model.Detail.LoadHistoryAsync();
 
-        Assert.Equal(["Taquilla 5"], model.LockerLines);
         Assert.Equal(["alta"], model.Detail.History);
     }
 
@@ -773,7 +940,7 @@ public sealed class StudentsScreenTests
         AddStudent("Pau", "Alsina");
         AddStudent("Núria", "García", "2n ESO", "B", locker: 12);
         var model = Model();
-        var screen = StudentsView.Create(model, _localizer);
+        var screen = StudentsView.Create(model, _localizer, new UiPreferencesSession(new MemoryStore()));
         var window = new Avalonia.Controls.Window { Content = screen, Width = 1200, Height = 700 };
         window.Show();
         await model.LoadAsync();

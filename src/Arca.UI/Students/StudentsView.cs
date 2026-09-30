@@ -5,6 +5,7 @@ using Arca.Application.Localization;
 using Arca.Application.Students.ListStudentRows;
 using Arca.UI.Actions;
 using Arca.UI.Common;
+using Arca.UI.Preferences;
 using Arca.UI.Screens;
 using Arca.UI.Shell;
 using Arca.UI.Theme;
@@ -17,7 +18,7 @@ namespace Arca.UI.Students;
 /// <summary>Builds the Students section: title and actions, the list with search, filters and counters, and the record of the student chosen.</summary>
 public static class StudentsView
 {
-    public static ScreenView Create(StudentsViewModel model, ILocalizer localizer)
+    public static ScreenView Create(StudentsViewModel model, ILocalizer localizer, UiPreferencesSession preferences)
     {
         var retired = new CheckBox { Content = localizer.Get("Students.Label.IncludeRetired") };
         var level = Filter(model.LevelOptions, () => model.LevelFilter, v => model.LevelFilter = v);
@@ -71,7 +72,7 @@ public static class StudentsView
         left.Children.Add(counters);
         left.Children.Add(list);
 
-        var screen = new ScreenView(localizer.Get("Shell.Screen.Students"), model.MainActions, left, new StudentDetailPanel(model, localizer), selection: model.Students);
+        var screen = new ScreenView(localizer.Get("Shell.Screen.Students"), model.MainActions, left, new StudentDetailPanel(model, localizer, preferences), selection: model.Students);
         IDisposable? shortcut = null;
         screen.AttachedToVisualTree += (_, _) =>
         {

@@ -285,6 +285,9 @@
   <data name="Charges.Action.Revert" xml:space="preserve">
     <value>Reverteix a pendent</value>
   </data>
+  <data name="Charges.Action.More" xml:space="preserve">
+    <value>Més accions</value>
+  </data>
   <data name="Charges.Action.History" xml:space="preserve">
     <value>Historial del càrrec</value>
   </data>

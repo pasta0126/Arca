@@ -77,6 +77,22 @@ public sealed class StudentChargesViewModel : ObservableObject
         }
     }
 
+    /// <summary>The operations of a charge, each disabled with its reason when it does not apply. A row of the record builds its buttons from them.</summary>
+    public IReadOnlyList<AppAction> ActionsFor(ChargeLine line) => BuildActions(line);
+
+    public string ConceptText(ChargeLine line) => ConceptNames.Of(_context.Localizer, line.Concept);
+
+    public string StatusText(ChargeLine line) => _texts.StatusName(line.Status);
+
+    public string AmountText(ChargeLine line) => _context.Localizer.Format(Money.FromCents((long)Math.Round(line.Amount * 100)));
+
+    /// <summary>Chooses a charge and loads its read-only history, which the row shows under itself.</summary>
+    public async Task ShowHistoryAsync(ChargeLine line)
+    {
+        await Detail.ShowAsync(true, line.Id);
+        await Detail.LoadHistoryAsync();
+    }
+
     /// <summary>Raised after an operation changed a charge, so whoever shows the state of the student reads it again.</summary>
     public event EventHandler? Changed;
 

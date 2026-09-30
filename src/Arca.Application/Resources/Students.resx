@@ -170,6 +170,21 @@
   <data name="Students.Label.Counters" xml:space="preserve">
     <value>{0} actius · {1} amb taquilla · {2} sense taquilla</value>
   </data>
+  <data name="Students.Section.Pending" xml:space="preserve">
+    <value>Pendents de pagament</value>
+  </data>
+  <data name="Students.Section.Payments" xml:space="preserve">
+    <value>Historial de pagaments</value>
+  </data>
+  <data name="Students.Section.Data" xml:space="preserve">
+    <value>Dades de l'alumne</value>
+  </data>
+  <data name="Students.Section.Activity" xml:space="preserve">
+    <value>Historial d'activitat</value>
+  </data>
+  <data name="Students.Label.PaymentCount" xml:space="preserve">
+    <value>{0} càrrecs</value>
+  </data>
   <data name="Students.Label.AnyPayment" xml:space="preserve">
     <value>Tots els pagaments</value>
   </data>

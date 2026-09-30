@@ -71,7 +71,7 @@ public sealed class StudentsViewModel : ObservableObject
                 new ListColumn<StudentListRow>("level", text.Get("Students.Label.Level"), s => s.LevelName ?? string.Empty, Width: 2),
                 new ListColumn<StudentListRow>("group", text.Get("Students.Label.Group"), s => s.GroupName ?? string.Empty, Width: 1),
                 new ListColumn<StudentListRow>("locker", text.Get("Students.Label.Locker"), s => s.LockerNumber?.ToString(CultureInfo.InvariantCulture) ?? string.Empty, s => s.LockerNumber ?? int.MaxValue, Width: 1),
-                new ListColumn<StudentListRow>("payment", text.Get("Students.Label.Payment"), s => PaymentOf(s), s => s.PendingTotal, Width: 2),
+                new ListColumn<StudentListRow>("payment", text.Get("Students.Label.Payment"), s => PaymentOf(s), s => s.PendingTotal, Width: 3),
                 new ListColumn<StudentListRow>("state", text.Get("Students.Label.State"), s => text.Get(s.IsRetired ? "Students.State.Retired" : "Students.State.Active"), Width: 1),
             ],
             s => s.Id, LoadRowsAsync, text, context.Notifications, context.Log,
@@ -95,7 +95,7 @@ public sealed class StudentsViewModel : ObservableObject
 
     public AppAction StandardNew { get; }
 
-    /// <summary>The charges of the student chosen, shown in the Payments tab of the record with the same model the Payments section uses.</summary>
+    /// <summary>The charges of the student chosen, shown in the record as the pending ones and the history of payments.</summary>
     public StudentChargesViewModel Charges { get; }
 
     async Task RefreshAfterChargesAsync()
@@ -106,12 +106,6 @@ public sealed class StudentsViewModel : ObservableObject
         }
     }
 
-    /// <summary>Fetches the charges of the student, when the person opens the Payments tab.</summary>
-    public async Task LoadChargesAsync()
-    {
-        var has = Students.TryGetSelectedKey(out var id);
-        await Charges.ShowAsync(has ? id : null);
-    }
 
     public IReadOnlyList<AppAction> MainActions => [NewStudent];
 
@@ -342,7 +336,9 @@ public sealed class StudentsViewModel : ObservableObject
     async Task ShowCurrentAsync()
     {
         var has = Students.TryGetSelectedKey(out var id);
+        var charges = Charges.ShowAsync(has ? id : null); // the pending charges are open in the record, so they load with it
         await Detail.ShowAsync(has, id);
+        await charges;
     }
 
     /// <summary>The lockers the student has had, the most recent first, once the Locker tab asked for them.</summary>

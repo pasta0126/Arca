@@ -14,12 +14,12 @@
 
 ## 3. Lista y ficha de Alumnos
 
-- [ ] 3.1 Usar la barra de lista común en Alumnos con el filtro de pendientes, el recuento y el estado de pago sin importes en las filas
-- [ ] 3.2 Partir `StudentChargesPanel` en lista de pendientes con acciones en la fila y lista de historial de pagos (D4)
-- [ ] 3.3 Rehacer `StudentDetailPanel` en una columna: cabecera, acciones, pendientes o «al corriente», y bloques colapsables cerrados con recuento y carga al abrir (D4)
-- [ ] 3.4 Recordar los bloques abiertos como preferencia local y mantenerlos al cambiar de alumno
-- [ ] 3.5 Estados vacíos y de carga guiados (sin cargos, al corriente, nadie con pendientes) y notificación de cada cobro con cargo e importe
-- [ ] 3.6 Pruebas: alumno con pendientes, al corriente, sin cargos, cobrar desde la ficha y refresco de cabecera y lista, doble clic en confirmar, cambio de alumno con bloque abierto y privacidad del correo
+- [x] 3.1 Usar la barra de lista común en Alumnos con el filtro de pendientes, el recuento y el estado de pago sin importes en las filas
+- [x] 3.2 Partir `StudentChargesPanel` en lista de pendientes con acciones en la fila y lista de historial de pagos (D4)
+- [x] 3.3 Rehacer `StudentDetailPanel` en una columna: cabecera, acciones, pendientes o «al corriente», y bloques colapsables cerrados con recuento y carga al abrir (D4)
+- [x] 3.4 Recordar los bloques abiertos como preferencia local y mantenerlos al cambiar de alumno
+- [x] 3.5 Estados vacíos y de carga guiados (sin cargos, al corriente, nadie con pendientes) y notificación de cada cobro con cargo e importe
+- [x] 3.6 Pruebas: alumno con pendientes, al corriente, sin cargos, cobrar desde la ficha y refresco de cabecera y lista, doble clic en confirmar, cambio de alumno con bloque abierto y privacidad del correo
 
 ## 4. Retirar la sección Cobros
 
