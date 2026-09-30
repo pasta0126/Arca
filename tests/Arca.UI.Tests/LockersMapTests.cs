@@ -265,6 +265,26 @@ public sealed partial class LockersScreenTests
         Assert.Equal([1, 2], model.Lockers.List.Rows.Select(r => r.Number));
     }
 
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Una tarjeta es un filtro guardado (Tarjeta de taquillas libres)")]
+    public async Task The_status_and_zone_on_come_back_as_the_criteria_of_a_card_and_are_the_same_for_the_map_and_the_list()
+    {
+        Sample();
+        var other = AddZone("Planta 2");
+        AddLocker(10, other);
+        var (model, _) = await LoadedAsync();
+        Assert.Empty(model.CurrentCardCriteria);
+
+        model.StatusFilter = "Free";
+        model.ZoneFilter = other.Id.ToString();
+        model.NumberFilter = "10"; // what is typed in the number box is not a criterion of a card
+
+        Assert.Equal(new Dictionary<string, string> { ["Status"] = "Free", ["Zone"] = other.Id.ToString() }, model.CurrentCardCriteria);
+        var counted = model.Lockers.List.AllRows.Count(Arca.Application.Home.LockerCardFilter.From(model.CurrentCardCriteria).Matches);
+        model.NumberFilter = string.Empty;
+        Assert.Equal(counted, model.Lockers.List.Rows.Count);
+    }
+
     // --- One locker changes ---
 
     [Fact]

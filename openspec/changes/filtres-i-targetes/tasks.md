@@ -1,10 +1,10 @@
 ## 1. Modelo y reglas de los filtros
 
-- [ ] 1.1 Dominio `HomeCard` con título (obligatorio, ≤ 60), destino, criterios, posición y clave de serie, y errores de dominio (D1, D5)
-- [ ] 1.2 Criterios válidos por destino (Taquillas: estado y zona; Alumnos: taquilla, pago, nivel, grupo, incluir bajas) y su serialización estable (D1)
-- [ ] 1.3 `LockerCardFilter` y `StudentCardFilter` puros con `Matches(fila)`, y hacer que los modelos de Taquillas y Alumnos los usen al aplicar una petición (D2)
-- [ ] 1.4 Criterio inverso: `CurrentCardCriteria` en los modelos de Taquillas y Alumnos (D7)
-- [ ] 1.5 Pruebas: cada criterio y su combinación, la misma fila da el mismo resultado en el recuento y en la lista, criterios inválidos y límites
+- [x] 1.1 Dominio `HomeCard` con título (obligatorio, ≤ 60), destino, criterios, posición y clave de serie, y errores de dominio (D1, D5)
+- [x] 1.2 Criterios válidos por destino (Taquillas: estado y zona; Alumnos: taquilla, pago, nivel, grupo, incluir bajas) y su serialización estable (D1)
+- [x] 1.3 `LockerCardFilter` y `StudentCardFilter` puros con `Matches(fila)`, y hacer que los modelos de Taquillas y Alumnos los usen al aplicar una petición (D2)
+- [x] 1.4 Criterio inverso: `CurrentCardCriteria` en los modelos de Taquillas y Alumnos (D7)
+- [x] 1.5 Pruebas: cada criterio y su combinación, la misma fila da el mismo resultado en el recuento y en la lista, criterios inválidos y límites
 
 ## 2. Persistencia
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="HomeCards.Error.TitleRequired" xml:space="preserve">
+    <value>Escriu el títol de la targeta.</value>
+  </data>
+  <data name="HomeCards.Error.TitleTooLong" xml:space="preserve">
+    <value>El títol pot tenir com a màxim {0} caràcters.</value>
+  </data>
+  <data name="HomeCards.Error.CriterionUnknown" xml:space="preserve">
+    <value>La pantalla de la targeta no té el filtre «{0}».</value>
+  </data>
+  <data name="HomeCards.Error.CriterionInvalid" xml:space="preserve">
+    <value>El valor del filtre «{0}» no és vàlid.</value>
+  </data>
+  <data name="HomeCards.Error.TooManyCards" xml:space="preserve">
+    <value>Ja hi ha {0} targetes, que és el màxim. Esborra'n alguna per afegir-ne una de nova.</value>
+  </data>
+  <data name="HomeCards.Error.NotFound" xml:space="preserve">
+    <value>La targeta ja no existeix.</value>
+  </data>
+</root>

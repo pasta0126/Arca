@@ -3,6 +3,7 @@
 
 using System.Globalization;
 using Arca.Application.Assignments;
+using Arca.Application.Home;
 using Arca.Application.Common;
 using Arca.Application.Lockers;
 using Arca.Application.Lockers.AddLocker;
@@ -287,13 +288,23 @@ public sealed class LockersViewModel : ObservableObject
 
     void ApplyFilters()
     {
+        var filter = CurrentFilter;
         Lockers.List.SetPredicate(row =>
             (IncludeRetired || row.Status != LockerStatusView.Retired)
-            && (ZoneFilter.Length == 0 || row.ZoneId.ToString() == ZoneFilter)
-            && (StatusFilter.Length == 0 || row.Status.ToString() == StatusFilter)
+            && filter.MatchesCriteria(row)
             && (NumberFilter.Length == 0 || (int.TryParse(NumberFilter, NumberStyles.None, CultureInfo.InvariantCulture, out var number) && row.Number == number)));
         Lockers.RefreshFilters();
     }
+
+    /// <summary>The status and the zone on, as the one rule that also counts the cards of the start screen.</summary>
+    LockerCardFilter CurrentFilter => new(
+        Enum.TryParse<LockerStatusView>(StatusFilter, out var status) ? status : null, Guid.TryParse(ZoneFilter, out var zone) ? zone : null);
+
+    /// <summary>
+    /// What the status and the zone on come to as the criteria of a card (targetes-d-inici), or nothing when none is on: the inverse of
+    /// <see cref="ApplyRequest"/>. The map and the list share it, so a card saved from either is the same.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> CurrentCardCriteria => CurrentFilter.ToCriteria();
 
     /// <summary>The filters that are on, each with what removes it, for the labels under the search.</summary>
     IReadOnlyList<ListFilterTag> ActiveFilterTags()

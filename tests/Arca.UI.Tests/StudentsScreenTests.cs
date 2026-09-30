@@ -554,6 +554,55 @@ public sealed class StudentsScreenTests
         Assert.Equal((string.Empty, "pending"), (model.LockerFilter, model.PaymentFilter));
     }
 
+    const string CardSpec = "filtres-i-targetes/targetes-d-inici";
+
+    [Fact]
+    [Trait("spec", CardSpec + ": Una tarjeta es un filtro guardado (Criterios combinados)")]
+    public async Task A_request_with_level_group_and_retired_puts_them_on_and_the_filters_on_come_back_as_the_same_criteria()
+    {
+        AddStudent("Marta", "Puig", "1r ESO", "A", locker: 5);
+        AddStudent("Pau", "Alsina", "2n ESO", "B");
+        AddStudent("Oriol", "Zamora", "2n ESO", "B", retired: true);
+        AddStudent("Jana", "Roca", "2n ESO", "A");
+        var model = Model();
+        await model.LoadAsync();
+        Assert.Empty(model.CurrentCardCriteria); // nothing on, nothing to save
+        var request = new Dictionary<string, string> { ["Payment"] = "upToDate", ["Level"] = "2n ESO", ["Group"] = "B", ["IncludeRetired"] = "true" };
+
+        model.ApplyRequest(request);
+
+        Assert.Equal(["Alsina", "Zamora"], model.Students.List.Rows.Select(s => s.LastName));
+        Assert.Equal(request.OrderBy(r => r.Key), model.CurrentCardCriteria.OrderBy(r => r.Key));
+    }
+
+    [Fact]
+    [Trait("spec", CardSpec + ": Recuento en vivo de la tarjeta (Recuento coherente con la pantalla)")]
+    public async Task What_a_card_counts_is_what_the_list_shows_for_the_same_criteria()
+    {
+        AddStudent("Marta", "Puig", "1r ESO", "A", locker: 5, debt: true);
+        AddStudent("Pau", "Alsina", "2n ESO", "B", debt: true);
+        AddStudent("Oriol", "Zamora", "2n ESO", "B", retired: true, debt: true);
+        AddStudent("Jana", "Roca", "2n ESO", "A");
+        var model = Model();
+        await model.LoadAsync();
+        var all = model.Students.List.AllRows;
+
+        foreach (var criteria in new[]
+        {
+            new Dictionary<string, string> { ["Payment"] = "pending" },
+            new Dictionary<string, string> { ["Locker"] = "without" },
+            new Dictionary<string, string> { ["Level"] = "2n ESO", ["Payment"] = "upToDate" },
+            new Dictionary<string, string> { ["IncludeRetired"] = "true" },
+        })
+        {
+            model.ApplyRequest(criteria);
+
+            var counted = all.Count(Arca.Application.Home.StudentCardFilter.From(criteria).Matches);
+
+            Assert.Equal(counted, model.Students.List.Rows.Count);
+        }
+    }
+
     [Fact]
     [Trait("spec", PatternSpec + ": Patrón común de pantalla (Reiniciar la búsqueda)")]
     public async Task Reset_empties_the_search_and_takes_every_filter_off_and_the_list_goes_back_to_its_start()

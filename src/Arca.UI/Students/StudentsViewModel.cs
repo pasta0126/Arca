@@ -3,6 +3,7 @@
 
 using System.Globalization;
 using Arca.Application.Assignments;
+using Arca.Application.Home;
 using Arca.Application.Catalog.ListCatalog;
 using Arca.Application.Feedback;
 using Arca.Application.Students;
@@ -213,14 +214,22 @@ public sealed class StudentsViewModel : ObservableObject
 
     void ApplyFilters()
     {
-        Students.List.SetPredicate(s =>
-            (IncludeRetired || !s.IsRetired || (PaymentFilter == "pending" && s.HasDebt))
-            && (LevelFilter.Length == 0 || s.LevelName == LevelFilter)
-            && (GroupFilter.Length == 0 || s.GroupName == GroupFilter)
-            && (LockerFilter switch { "with" => s.LockerNumber is not null, "without" => s.LockerNumber is null && !s.IsRetired, _ => true })
-            && (PaymentFilter switch { "pending" => s.HasDebt, "upToDate" => !s.HasDebt, _ => true }));
+        var filter = CurrentFilter;
+        Students.List.SetPredicate(filter.Matches);
         Students.RefreshFilters();
     }
+
+    /// <summary>The filters that are on as the one rule that also counts the cards of the start screen.</summary>
+    StudentCardFilter CurrentFilter => new(
+        NullIfEmpty(LockerFilter), NullIfEmpty(PaymentFilter), NullIfEmpty(LevelFilter), NullIfEmpty(GroupFilter), IncludeRetired);
+
+    /// <summary>
+    /// What the filters on come to as the criteria of a card (targetes-d-inici), or nothing when none is on: the inverse of
+    /// <see cref="ApplyRequest"/>, which is what lets a screen already filtered be saved as a card.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> CurrentCardCriteria => CurrentFilter.ToCriteria();
+
+    static string? NullIfEmpty(string value) => value.Length == 0 ? null : value;
 
     /// <summary>The filters that are on, each with what removes it, for the labels under the search.</summary>
     IReadOnlyList<ListFilterTag> ActiveFilterTags()
@@ -275,6 +284,18 @@ public sealed class StudentsViewModel : ObservableObject
         {
             PaymentFilter = payment;
         }
+
+        if (filters.TryGetValue("Level", out var level))
+        {
+            LevelFilter = level;
+        }
+
+        if (filters.TryGetValue("Group", out var group))
+        {
+            GroupFilter = group;
+        }
+
+        IncludeRetired = filters.TryGetValue("IncludeRetired", out var retired) && retired == "true";
     }
 
     void ResetFilterFields()
