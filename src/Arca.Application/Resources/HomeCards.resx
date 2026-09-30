@@ -22,4 +22,25 @@
   <data name="HomeCards.Error.NotFound" xml:space="preserve">
     <value>La targeta ja no existeix.</value>
   </data>
+  <data name="HomeCards.Default.LockersFree" xml:space="preserve">
+    <value>Taquilles lliures</value>
+  </data>
+  <data name="HomeCards.Default.LockersOccupied" xml:space="preserve">
+    <value>Taquilles ocupades</value>
+  </data>
+  <data name="HomeCards.Default.LockersReserved" xml:space="preserve">
+    <value>Taquilles reservades</value>
+  </data>
+  <data name="HomeCards.Default.LockersBroken" xml:space="preserve">
+    <value>Taquilles avariades</value>
+  </data>
+  <data name="HomeCards.Default.LockersMaintenance" xml:space="preserve">
+    <value>Taquilles en manteniment</value>
+  </data>
+  <data name="HomeCards.Default.StudentsWithoutLocker" xml:space="preserve">
+    <value>Alumnes sense taquilla</value>
+  </data>
+  <data name="HomeCards.Default.StudentsPending" xml:space="preserve">
+    <value>Alumnes amb pendents de pagament</value>
+  </data>
 </root>

@@ -46,6 +46,7 @@ public sealed class InMemoryInventory : IUnitOfWork
         Charges = new ChargeRepository(this);
         ChargeEvents = new ChargeEventRepository(this);
         Identity = new IdentityRepository(this);
+        HomeCards = new HomeCardRepository(this);
     }
 
     public List<Zone> ZoneList { get; private set; } = [];
@@ -110,6 +111,14 @@ public sealed class InMemoryInventory : IUnitOfWork
 
     public Arca.Application.Identity.ICentreIdentityRepository Identity { get; }
 
+    public Arca.Application.Home.IHomeCardRepository HomeCards { get; }
+
+    /// <summary>The cards of the start screen.</summary>
+    public List<Arca.Domain.Home.HomeCard> HomeCardList { get; private set; } = [];
+
+    /// <summary>When the cards of a new centre were created, or null while they have not been.</summary>
+    public DateTimeOffset? DefaultsCreatedAt { get; set; }
+
     /// <summary>The identity of the centre, once defined.</summary>
     public Arca.Domain.Identity.CentreIdentity? StoredIdentity { get; set; }
 
@@ -153,6 +162,8 @@ public sealed class InMemoryInventory : IUnitOfWork
         var conceptAmountEvents = ConceptAmountEventList.ToList();
         var charges = ChargeList.Select(c => new Charge(c.Id, c.StudentId, c.Concept, c.YearId, c.Amount, c.Status, c.PaidOn, c.Reason, c.Return, c.ReturnedOn, c.ReturnNote)).ToList();
         var chargeEvents = ChargeEventList.ToList();
+        var homeCards = HomeCardList.Select(c => new Arca.Domain.Home.HomeCard(c.Id, c.Title, c.Target, c.CriteriaText, c.Position, c.SeedKey)).ToList();
+        var defaultsCreatedAt = DefaultsCreatedAt;
         Result<T> result;
         try
         {
@@ -164,6 +175,7 @@ public sealed class InMemoryInventory : IUnitOfWork
             (StudentList, EnrollmentList, LevelList, GroupList, StudentEventList, AssignmentList) = (students, enrollments, levels, groups, studentEvents, assignments);
             (ConceptAmountList, ConceptAmountEventList) = (conceptAmounts, conceptAmountEvents);
             (ChargeList, ChargeEventList) = (charges, chargeEvents);
+            (HomeCardList, DefaultsCreatedAt) = (homeCards, defaultsCreatedAt);
             throw;
         }
 
@@ -173,6 +185,7 @@ public sealed class InMemoryInventory : IUnitOfWork
             (StudentList, EnrollmentList, LevelList, GroupList, StudentEventList, AssignmentList) = (students, enrollments, levels, groups, studentEvents, assignments);
             (ConceptAmountList, ConceptAmountEventList) = (conceptAmounts, conceptAmountEvents);
             (ChargeList, ChargeEventList) = (charges, chargeEvents);
+            (HomeCardList, DefaultsCreatedAt) = (homeCards, defaultsCreatedAt);
         }
 
         return result;
@@ -291,6 +304,36 @@ public sealed class InMemoryInventory : IUnitOfWork
         }
 
         public Task UpdateAsync(Assignment assignment, CancellationToken ct) => Task.CompletedTask;
+    }
+
+    sealed class HomeCardRepository(InMemoryInventory owner) : Arca.Application.Home.IHomeCardRepository
+    {
+        public Task<IReadOnlyList<Arca.Domain.Home.HomeCard>> ListAsync(CancellationToken ct) =>
+            Task.FromResult<IReadOnlyList<Arca.Domain.Home.HomeCard>>([.. owner.HomeCardList.OrderBy(c => c.Position)]);
+
+        public Task<Arca.Domain.Home.HomeCard?> GetAsync(Guid id, CancellationToken ct) => Task.FromResult(owner.HomeCardList.FirstOrDefault(c => c.Id == id));
+
+        public Task AddAsync(Arca.Domain.Home.HomeCard card, CancellationToken ct)
+        {
+            owner.HomeCardList.Add(card);
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateAsync(Arca.Domain.Home.HomeCard card, CancellationToken ct) => Task.CompletedTask;
+
+        public Task RemoveAsync(Arca.Domain.Home.HomeCard card, CancellationToken ct)
+        {
+            owner.HomeCardList.Remove(card);
+            return Task.CompletedTask;
+        }
+
+        public Task<DateTimeOffset?> GetDefaultsCreatedAtAsync(CancellationToken ct) => Task.FromResult(owner.DefaultsCreatedAt);
+
+        public Task MarkDefaultsCreatedAsync(DateTimeOffset at, CancellationToken ct)
+        {
+            owner.DefaultsCreatedAt ??= at;
+            return Task.CompletedTask;
+        }
     }
 
     sealed class IdentityRepository(InMemoryInventory owner) : Arca.Application.Identity.ICentreIdentityRepository

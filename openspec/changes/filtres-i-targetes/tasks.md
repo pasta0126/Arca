@@ -14,12 +14,12 @@
 
 ## 3. Casos de uso
 
-- [ ] 3.1 `EnsureDefaultCardsHandler`: crea las siete de serie una sola vez, idempotente, y Restaurar sin duplicar (D4)
-- [ ] 3.2 Crear, editar, mover y borrar tarjetas con sus errores, el máximo de 24 y la protección de la doble ejecución (D5, D9)
-- [ ] 3.3 `GetHomeCardsHandler`: recuentos con dos lecturas, sin curso activo para Alumnos, y estado por tarjeta (con recuento, sin recuento, obsoleta) (D3)
-- [ ] 3.4 `ResolveHomeCardHandler`: criterios válidos e ignorados contra zonas y catálogo (D6)
-- [ ] 3.5 `GetCardOptionsHandler`: zonas, niveles y grupos para el formulario (D8)
-- [ ] 3.6 Pruebas por escenario: serie, restaurar, borrar una de serie, obsoletas, muchas tarjetas con dos lecturas, sin datos personales y recuento coherente con la pantalla por cada tarjeta de serie
+- [x] 3.1 `EnsureDefaultCardsHandler`: crea las siete de serie una sola vez, idempotente, y Restaurar sin duplicar (D4)
+- [x] 3.2 Crear, editar, mover y borrar tarjetas con sus errores, el máximo de 24 y la protección de la doble ejecución (D5, D9)
+- [x] 3.3 `GetHomeCardsHandler`: recuentos con dos lecturas, sin curso activo para Alumnos, y estado por tarjeta (con recuento, sin recuento, obsoleta) (D3)
+- [x] 3.4 `ResolveHomeCardHandler`: criterios válidos e ignorados contra zonas y catálogo (D6)
+- [x] 3.5 `GetCardOptionsHandler`: zonas, niveles y grupos para el formulario (D8)
+- [x] 3.6 Pruebas por escenario: serie, restaurar, borrar una de serie, obsoletas, muchas tarjetas con dos lecturas, sin datos personales y recuento coherente con la pantalla por cada tarjeta de serie
 
 ## 4. Inicio como panel de tarjetas
 
