@@ -25,6 +25,9 @@ public sealed class StorageSession : IAsyncDisposable
     public string DatabasePath { get; }
 
     /// <summary>The last migration applied to the open database.</summary>
+    /// <summary>The key of the open data, for the services of this assembly that work on the file itself (backups). Never leaves Infrastructure.</summary>
+    internal DatabaseKey Key => _key;
+
     public string SchemaVersion { get; }
 
     public bool WasCreated { get; }

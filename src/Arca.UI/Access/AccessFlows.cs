@@ -22,6 +22,9 @@ public sealed class AccessFlows(
 {
     const int Minimum = PasswordPolicy.MinimumLength;
 
+    /// <summary>The presenter of the forms, for the other flows that ask for passwords (restoring a backup).</summary>
+    internal IFormPresenter Presenter => presenter;
+
     public async Task<Result<DatabaseKey>> UnlockAsync(string databasePath, CancellationToken ct)
     {
         while (true)
@@ -245,7 +248,7 @@ public sealed class AccessFlows(
     }
 
     /// <summary>The form of a new password with its confirmation, the length counter and the strength indicator.</summary>
-    async Task<bool> AskNewPasswordAsync(
+    internal async Task<bool> AskNewPasswordAsync(
         string titleKey, string introKey, string buttonKey, Func<string, string, Error?> apply, CancellationToken ct)
     {
         var password = new FormField(Text("Keys.Label.NewPasswordField"), isSecret: true);
@@ -269,7 +272,7 @@ public sealed class AccessFlows(
     }
 
     /// <summary>Shows the recovery key once and asks for the groups that prove it was written down.</summary>
-    async Task<bool> ShowKeyAsync(
+    internal async Task<bool> ShowKeyAsync(
         string recoveryKey, RecoveryKeyChallenge challenge, string buttonKey, string busyKey,
         Func<IReadOnlyList<string?>, CancellationToken, Task<Error?>> confirm, CancellationToken ct)
     {
@@ -323,7 +326,7 @@ public sealed class AccessFlows(
         return lines;
     }
 
-    AccessFormViewModel NewForm(
+    internal AccessFormViewModel NewForm(
         string titleKey, string introKey, string primaryKey, string busyKey, IReadOnlyList<FormField> fields,
         Func<AccessFormViewModel, Task<bool>> submit, string? secondary = null,
         Func<IReadOnlyList<string>, IReadOnlyList<string>>? hints = null, string? warning = null) =>

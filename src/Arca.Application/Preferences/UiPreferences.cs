@@ -33,7 +33,7 @@ public enum ThemeChoice
 
 public sealed record UiPreferences(
     WindowBounds? Window = null, IReadOnlyDictionary<string, bool>? Sections = null, bool CompactLists = false, bool SidebarCollapsed = false,
-    ThemeChoice Theme = ThemeChoice.Light);
+    ThemeChoice Theme = ThemeChoice.Light, string? BackupFolder = null);
 
 /// <summary>Where the interface preferences are kept. Reading never fails: anything wrong gives the defaults.</summary>
 public interface IUiPreferencesStore

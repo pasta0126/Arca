@@ -17,7 +17,10 @@ using Arca.Infrastructure.Common;
 using Arca.Infrastructure.Inventory;
 using Arca.Infrastructure.Security;
 using Arca.Infrastructure.Storage;
+using Arca.Application.Backup;
+using Arca.Infrastructure.Backup;
 using Arca.UI.Access;
+using Arca.UI.Backup;
 using Arca.UI.Actions;
 using Arca.UI.Map;
 using Arca.UI.Confirmation;
@@ -76,12 +79,20 @@ public static class AppStartup
         var globalState = new GlobalStateService(
             new GetGlobalStateHandler(inventory.Years, inventory.Charges).HandleAsync, new ResultNotifier(notifications, localizer, log));
         var security = new SecurityViewModel(settingsFlows, session.DatabasePath, notifications, localizer, log);
+        var confirmations = new DialogConfirmationService(() => windows.Current, localizer);
+        var restarter = new ApplicationRestarter(windows);
+        var backupFlows = new BackupViewModel(
+            new BackupService(session, new BackupRestorer(access)), new WindowBackupFilePicker(() => windows.Current, localizer),
+            confirmations, settingsFlows, notifications, restarter, preferences, clock, localizer, log);
         var studentWiring = StudentsComposition.Create(inventory, clock, localizer);
         var services = new ServiceCollection()
             .AddSingleton<ILocalizer>(localizer)
             .AddSingleton(access)
             .AddSingleton(flows)
             .AddSingleton(security)
+            .AddSingleton(backupFlows)
+            .AddSingleton(restarter)
+            .AddSingleton<IApplicationRestarter>(restarter)
             .AddSingleton(preferences)
             .AddSingleton(globalState)
             .AddSingleton(LockerHomeComposition.Create(inventory, clock, localizer))
@@ -108,7 +119,7 @@ public static class AppStartup
             .AddSingleton(windows)
             .AddSingleton(notifications)
             .AddSingleton<INotificationService>(notifications)
-            .AddSingleton<IConfirmationService>(new DialogConfirmationService(() => windows.Current, localizer))
+            .AddSingleton<IConfirmationService>(confirmations)
             .BuildServiceProvider();
         return Result<AppRuntime>.Success(new AppRuntime(services, info, windows));
     }

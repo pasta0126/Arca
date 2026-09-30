@@ -68,6 +68,9 @@ public sealed class BackupRestorer(AccessService access, TimeProvider? timeProvi
     /// Forgotten password of the backup: its recovery key opens it, and a new password and recovery key are set for the
     /// restored data, as for any reset. Nothing is applied until the new key is confirmed in <see cref="ConfirmRecoveryAsync"/>.
     /// </summary>
+    /// <summary>Checks a recovery key of the backup without changing anything.</summary>
+    public Result<bool> CheckRecoveryKey(RestoreSession session, string? recoveryKey) => access.CheckRecoveryKey(session.DatabasePath, recoveryKey);
+
     public Result<PendingKeyChange> BeginRecovery(RestoreSession session, string? recoveryKey, string? newPassword, string? confirmation) =>
         access.PrepareReset(session.DatabasePath, recoveryKey, newPassword, confirmation);
 

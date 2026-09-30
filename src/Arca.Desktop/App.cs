@@ -86,6 +86,11 @@ public sealed class App : Avalonia.Application
             main.Closed += async (_, _) =>
             {
                 await runtime.DisposeAsync();
+                if (runtime.Restarter.RestartRequested)
+                {
+                    ApplicationRestarter.Launch(); // after the data were released, so the new process finds them free
+                }
+
                 desktop.Shutdown(0);
             };
             desktop.MainWindow = main;

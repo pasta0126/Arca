@@ -46,4 +46,103 @@
   <data name="Backup.Stage.Replacing" xml:space="preserve">
     <value>Substituint les dades…</value>
   </data>
+  <data name="Backup.Label.Title" xml:space="preserve">
+    <value>Còpia de seguretat</value>
+  </data>
+  <data name="Backup.Label.Note" xml:space="preserve">
+    <value>Fes una còpia de tant en tant i guarda-la fora d'aquest ordinador: és la manera de recuperar les dades si es perden. La còpia va xifrada amb la contrasenya del centre i no es pot llegir sense ella. Es pot fer i restaurar sempre, sense connexió.</value>
+  </data>
+  <data name="Backup.Label.MakeButton" xml:space="preserve">
+    <value>Fer una còpia</value>
+  </data>
+  <data name="Backup.Label.RestoreButton" xml:space="preserve">
+    <value>Restaurar una còpia</value>
+  </data>
+  <data name="Backup.Label.Cancelled" xml:space="preserve">
+    <value>S'ha cancel·lat. No s'ha canviat res.</value>
+  </data>
+  <data name="Backup.Label.MakeTitle" xml:space="preserve">
+    <value>Fer una còpia de seguretat</value>
+  </data>
+  <data name="Backup.Label.MinorsWarning" xml:space="preserve">
+    <value>La còpia conté les dades d'alumnes, que poden ser menors d'edat. Va xifrada, però guarda-la en un lloc de confiança i no la comparteixis.</value>
+  </data>
+  <data name="Backup.Label.MakeConfirm" xml:space="preserve">
+    <value>Triar on desar-la</value>
+  </data>
+  <data name="Backup.Label.OverwriteTitle" xml:space="preserve">
+    <value>Substituir el fitxer?</value>
+  </data>
+  <data name="Backup.Label.OverwriteConsequence" xml:space="preserve">
+    <value>Ja existeix un fitxer anomenat «{0}» en aquesta carpeta. Si continues, es substituirà per la còpia nova.</value>
+  </data>
+  <data name="Backup.Label.OverwriteConfirm" xml:space="preserve">
+    <value>Substituir</value>
+  </data>
+  <data name="Backup.Label.PickSaveTitle" xml:space="preserve">
+    <value>On vols desar la còpia?</value>
+  </data>
+  <data name="Backup.Label.PickOpenTitle" xml:space="preserve">
+    <value>Quina còpia vols restaurar?</value>
+  </data>
+  <data name="Backup.Label.FileTypeName" xml:space="preserve">
+    <value>Còpia de seguretat d'ARCA</value>
+  </data>
+  <data name="Backup.Label.Done" xml:space="preserve">
+    <value>Còpia feta: {0} ({1}).</value>
+  </data>
+  <data name="Backup.Label.SizeMb" xml:space="preserve">
+    <value>{0} MB</value>
+  </data>
+  <data name="Backup.Label.SizeKb" xml:space="preserve">
+    <value>{0} kB</value>
+  </data>
+  <data name="Backup.Label.UnlockTitle" xml:space="preserve">
+    <value>Contrasenya de la còpia</value>
+  </data>
+  <data name="Backup.Label.UnlockIntro" xml:space="preserve">
+    <value>Escriu la contrasenya que tenia el centre quan es va fer aquesta còpia. Encara no es canvia res.</value>
+  </data>
+  <data name="Backup.Label.RecoveryIntro" xml:space="preserve">
+    <value>Escriu la clau de recuperació que tenia el centre quan es va fer aquesta còpia. Pots escriure-la en minúscules, sense guions o amb espais.</value>
+  </data>
+  <data name="Backup.Label.RestoreTitle" xml:space="preserve">
+    <value>Restaurar la còpia</value>
+  </data>
+  <data name="Backup.Label.RestoreConsequence" xml:space="preserve">
+    <value>Les dades actuals se substituiran per les de la còpia i es perdran els canvis fets després d'ella. Abans es guarda una còpia prèvia de les dades actuals, i ARCA es reiniciarà.</value>
+  </data>
+  <data name="Backup.Label.RestoreConfirm" xml:space="preserve">
+    <value>Restaurar</value>
+  </data>
+  <data name="Backup.Label.PreviewBackup" xml:space="preserve">
+    <value>La còpia conté: {0}.</value>
+  </data>
+  <data name="Backup.Label.PreviewCurrent" xml:space="preserve">
+    <value>Ara hi ha: {0}.</value>
+  </data>
+  <data name="Backup.Label.PreviewLosses" xml:space="preserve">
+    <value>Tot el que s'hagi fet després de la còpia es perdrà.</value>
+  </data>
+  <data name="Backup.Label.PreviewOlder" xml:space="preserve">
+    <value>La còpia és d'una versió anterior d'ARCA: s'actualitzarà en restaurar-la, sense tocar el fitxer de la còpia.</value>
+  </data>
+  <data name="Backup.Label.Counts" xml:space="preserve">
+    <value>{0} cursos, {1} alumnes, {2} taquilles i {3} assignacions</value>
+  </data>
+  <data name="Backup.Label.Restored" xml:space="preserve">
+    <value>Dades restaurades. ARCA es reinicia.</value>
+  </data>
+  <data name="Backup.Label.RestoredTitle" xml:space="preserve">
+    <value>Dades restaurades</value>
+  </data>
+  <data name="Backup.Label.RestoredManual" xml:space="preserve">
+    <value>Les dades ja s'han restaurat, però ARCA no s'ha pogut reiniciar sola. Es tancarà ara; obre-la una altra vegada i entra amb la contrasenya de la còpia.</value>
+  </data>
+  <data name="Backup.Label.RestoredClose" xml:space="preserve">
+    <value>Tancar ARCA</value>
+  </data>
+  <data name="Backup.Stage.Restarting" xml:space="preserve">
+    <value>Reiniciant ARCA…</value>
+  </data>
 </root>

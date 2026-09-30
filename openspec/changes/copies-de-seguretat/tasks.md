@@ -14,33 +14,33 @@
 
 ## 3. Restauración
 
-- [ ] 3.1 Caso de uso de análisis que verifica el fichero y devuelve la vista previa con la comparación de recuentos (D3, D4)
+- [x] 3.1 Caso de uso de análisis que verifica el fichero y devuelve la vista previa con la comparación de recuentos (D3, D4)
 - [x] 3.1b Pedir la contraseña o la clave de recuperación de la copia antes de la vista previa y adoptar su llave al restaurar (`acces-i-xifrat`)
 - [x] 3.2 Secuencia de restauración: cerrar, copia previa verificada, temporal, migración, sustitución atómica y reapertura (D5)
 - [x] 3.3 Recuperación automática desde la copia previa ante fallo en cualquier punto, e información de rutas si también fallara
 - [x] 3.4 Copia previa de una base dañada sin verificar (ofrecer la restauración desde el error de fichero dañado y desde el primer arranque queda para `configuracio-inicial`; aquí el servicio ya lo permite)
 - [x] 3.5 Retención de las 3 copias previas a restauración, separada de las de migración (D6)
 - [x] 3.6 Limpieza de temporales huérfanos al arrancar
-- [ ] 3.7 Reinicio de la aplicación tras restaurar, sin caches de los datos anteriores, y aviso si no puede hacerse (D7, D13)
+- [x] 3.7 Reinicio de la aplicación tras restaurar, sin caches de los datos anteriores, y aviso si no puede hacerse (D7, D13)
 - [x] 3.8 Pruebas de integración: restauración correcta, copia antigua migrada con la original intacta, copia más nueva rechazada, fallo al migrar con recuperación, fallo al sustituir, base dañada, instalación nueva, corte simulado y retención
 
 ## 4. Feedback y guía al usuario
 
-- [ ] 4.1 Devolver el resultado estructurado con ubicación, tamaño y etapas reales en copia y restauración (D10)
-- [ ] 4.2 Confirmaciones con su consecuencia: aviso de datos de menores al copiar y sustitución de datos al restaurar
-- [ ] 4.3 Progreso sin bloquear la interfaz, cancelación antes de sustituir y protección contra doble ejecución
-- [ ] 4.4 Mensajes comprensibles para cada rechazo de verificación y de destino
-- [ ] 4.5 Claves de recurso en catalán para todos los mensajes
-- [ ] 4.6 Pruebas de mensajes, cancelación, doble ejecución y ausencia de datos de alumnos en el registro técnico
+- [x] 4.1 Devolver el resultado estructurado con ubicación, tamaño y etapas reales en copia y restauración (D10)
+- [x] 4.2 Confirmaciones con su consecuencia: aviso de datos de menores al copiar y sustitución de datos al restaurar
+- [x] 4.3 Progreso sin bloquear la interfaz, cancelación antes de sustituir y protección contra doble ejecución
+- [x] 4.4 Mensajes comprensibles para cada rechazo de verificación y de destino
+- [x] 4.5 Claves de recurso en catalán para todos los mensajes
+- [x] 4.6 Pruebas de mensajes, cancelación, doble ejecución y ausencia de datos de alumnos en el registro técnico
 
 ## 5. Ajustes: copia y restauración
 
-- [ ] 5.1 Servicio de Application (`IBackupService`) que envuelve lo de Infrastructure: nombre propuesto, validación del destino, copia, apertura, desbloqueo, vista previa y restauración (D11)
-- [ ] 5.2 Selectores de fichero de copia (guardar y abrir) y memoria de la última carpeta en las preferencias locales
-- [ ] 5.3 Flujo de «Fer una còpia» con aviso de datos de menores, confirmación de sobrescritura, progreso, resultado con ubicación y tamaño y errores comprensibles (D14)
-- [ ] 5.4 Flujo de «Restaurar una còpia»: fichero, contraseña o clave de recuperación de la copia, vista previa con comparación, aviso del cambio de contraseña, confirmación y aplicación (D14)
-- [ ] 5.5 Reinicio de la aplicación tras restaurar y aviso si no se puede (D13)
-- [ ] 5.6 Bloque plegable «Còpia de seguretat» en Ajustes, siempre disponible, y pruebas de modelo y de pantalla
+- [x] 5.1 Servicio de Application (`IBackupService`) que envuelve lo de Infrastructure: nombre propuesto, validación del destino, copia, apertura, desbloqueo, vista previa y restauración (D11)
+- [x] 5.2 Selectores de fichero de copia (guardar y abrir) y memoria de la última carpeta en las preferencias locales
+- [x] 5.3 Flujo de «Fer una còpia» con aviso de datos de menores, confirmación de sobrescritura, progreso, resultado con ubicación y tamaño y errores comprensibles (D14)
+- [x] 5.4 Flujo de «Restaurar una còpia»: fichero, contraseña o clave de recuperación de la copia, vista previa con comparación, aviso del cambio de contraseña, confirmación y aplicación (D14)
+- [x] 5.5 Reinicio de la aplicación tras restaurar y aviso si no se puede (D13)
+- [x] 5.6 Bloque plegable «Còpia de seguretat» en Ajustes, siempre disponible, y pruebas de modelo y de pantalla
 
 ## 6. Verificación transversal
 

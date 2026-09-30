@@ -51,6 +51,11 @@ public sealed class UiPreferencesSession
 
     public void SetTheme(ThemeChoice theme) => Update(_current with { Theme = theme });
 
+    /// <summary>The folder of the last backup made or restored on this computer, to propose it again; null when there is none.</summary>
+    public string? BackupFolder => _current.BackupFolder;
+
+    public void SetBackupFolder(string? folder) => Update(_current with { BackupFolder = folder });
+
     void Update(UiPreferences next)
     {
         _current = next;

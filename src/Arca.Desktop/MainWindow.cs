@@ -17,6 +17,7 @@ using Arca.UI.Map;
 using Arca.UI.Notifications;
 using Arca.UI.Search;
 using Arca.UI.Access;
+using Arca.UI.Backup;
 using Arca.UI.Shell;
 using Avalonia.Controls;
 
@@ -91,6 +92,7 @@ public sealed class MainWindow : Window
     {
         var localizer = runtime.Localizer;
         var security = new CollapsibleSectionViewModel("security", runtime.Security.Title, () => runtime.Security.Note, runtime.Preferences);
+        var backup = new CollapsibleSectionViewModel("backup", runtime.Backup.Title, () => runtime.Backup.Note, runtime.Preferences);
         var identity = new IdentityViewModel(
             runtime.IdentityServices, runtime.Identity, runtime.LogoPicker, localizer, runtime.Notifications, runtime.ErrorLog, runtime.Delay);
         var identitySection = new CollapsibleSectionViewModel("identity", localizer.Get("Identity.Section.Identity"), () => string.Empty, runtime.Preferences);
@@ -103,6 +105,7 @@ public sealed class MainWindow : Window
                 new CollapsibleSectionView(identitySection, IdentitySettingsView.Identity(identity, localizer)),
                 new CollapsibleSectionView(themeSection, IdentitySettingsView.Theme(themeSettings, localizer)),
                 new CollapsibleSectionView(security, new SecurityView(runtime.Security)),
+                new CollapsibleSectionView(backup, new BackupView(runtime.Backup)),
             },
         };
         return new ScreenView(localizer.Get("Shell.Section.Settings"), [], content);

@@ -64,12 +64,12 @@ public sealed class UiPreferencesStoreTests
 
     [Fact]
     [Trait("spec", Spec + " (sin datos personales)")]
-    public void The_preferences_hold_only_sizes_positions_and_flags()
+    public void The_preferences_hold_only_sizes_positions_flags_and_the_folder_of_the_last_backup()
     {
         var properties = typeof(UiPreferences).GetProperties().Concat(typeof(WindowBounds).GetProperties()).Select(p => p.Name);
 
         Assert.Equal(
-            ["CompactLists", "Height", "IsMaximized", "Sections", "SidebarCollapsed", "Theme", "Width", "Window", "X", "Y"],
+            ["BackupFolder", "CompactLists", "Height", "IsMaximized", "Sections", "SidebarCollapsed", "Theme", "Width", "Window", "X", "Y"],
             properties.Order(StringComparer.Ordinal).ToArray());
     }
 

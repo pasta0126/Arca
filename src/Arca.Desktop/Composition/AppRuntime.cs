@@ -33,6 +33,10 @@ public sealed class AppRuntime(ServiceProvider services, AppInfo info, MainWindo
 
     public SecurityViewModel Security => services.GetRequiredService<SecurityViewModel>();
 
+    public Arca.UI.Backup.BackupViewModel Backup => services.GetRequiredService<Arca.UI.Backup.BackupViewModel>();
+
+    public ApplicationRestarter Restarter => services.GetRequiredService<ApplicationRestarter>();
+
     public UiPreferencesSession Preferences => services.GetRequiredService<UiPreferencesSession>();
 
     public GlobalStateService GlobalState => services.GetRequiredService<GlobalStateService>();
