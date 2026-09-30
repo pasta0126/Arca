@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Backup.Error.DestinationIsDatabase" xml:space="preserve">
+    <value>No es pot fer la còpia sobre el fitxer de dades mateix. Tria una altra ubicació.</value>
+  </data>
+  <data name="Backup.Error.FolderMissing" xml:space="preserve">
+    <value>La carpeta {0} no existeix. Tria una altra carpeta.</value>
+  </data>
+  <data name="Backup.Error.FolderNotWritable" xml:space="preserve">
+    <value>No es pot escriure a la carpeta {0}. Tria una altra carpeta.</value>
+  </data>
+  <data name="Backup.Error.NotEnoughSpace" xml:space="preserve">
+    <value>No hi ha prou espai per a la còpia: calen uns {0} MB lliures. Tria una altra ubicació.</value>
+  </data>
+  <data name="Backup.Error.CopyFailed" xml:space="preserve">
+    <value>No s'ha pogut fer una còpia vàlida. No s'ha deixat cap fitxer a la destinació; torna-ho a provar o tria una altra ubicació.</value>
+  </data>
+  <data name="Backup.Error.PreviousCopyFailed" xml:space="preserve">
+    <value>No s'ha pogut guardar una còpia prèvia de les dades actuals, així que no s'ha restaurat res i les dades no han canviat.</value>
+  </data>
+  <data name="Backup.Error.VersionNewer" xml:space="preserve">
+    <value>Aquesta còpia és d'una versió d'ARCA més nova que la instal·lada. Actualitza l'aplicació abans de restaurar-la.</value>
+  </data>
+  <data name="Backup.Error.MigrationFailed" xml:space="preserve">
+    <value>No s'ha pogut actualitzar la còpia a la versió actual, així que no s'ha restaurat res i les dades no han canviat.</value>
+  </data>
+  <data name="Backup.Stage.Copying" xml:space="preserve">
+    <value>Copiant les dades…</value>
+  </data>
+  <data name="Backup.Stage.Verifying" xml:space="preserve">
+    <value>Verificant la còpia…</value>
+  </data>
+  <data name="Backup.Stage.Finishing" xml:space="preserve">
+    <value>Acabant…</value>
+  </data>
+</root>

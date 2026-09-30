@@ -49,7 +49,7 @@ public sealed class SchemaMigrator(
             known = [.. probe.Database.GetMigrations()];
         }
 
-        var applied = await ReadAppliedAsync(path, key, ct);
+        var applied = await Arca.Infrastructure.Backup.DatabaseInspector.AppliedAsync(path, key, ct);
         if (applied.Except(known, StringComparer.Ordinal).Any())
         {
             return Result<MigrationOutcome>.Failure(StorageErrors.SchemaNewer);
@@ -169,31 +169,6 @@ public sealed class SchemaMigrator(
             File.Delete(old);
             DeleteKeyFileCopy(old);
         }
-    }
-
-    static async Task<string[]> ReadAppliedAsync(string path, DatabaseKey key, CancellationToken ct)
-    {
-        await using var connection = new SqliteConnection($"Data Source={path};Mode=ReadOnly;Pooling=False");
-        await connection.OpenAsync(ct);
-        SqlCipherKeyInterceptor.Unlock(connection, key);
-
-        await using var exists = connection.CreateCommand();
-        exists.CommandText = "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = '__EFMigrationsHistory'";
-        if (await exists.ExecuteScalarAsync(ct) is null)
-        {
-            return [];
-        }
-
-        await using var command = connection.CreateCommand();
-        command.CommandText = "SELECT MigrationId FROM __EFMigrationsHistory";
-        var ids = new List<string>();
-        await using var reader = await command.ExecuteReaderAsync(ct);
-        while (await reader.ReadAsync(ct))
-        {
-            ids.Add(reader.GetString(0));
-        }
-
-        return [.. ids];
     }
 
     static async Task<bool> IntegrityCheckAsync(string path, DatabaseKey key, CancellationToken ct)

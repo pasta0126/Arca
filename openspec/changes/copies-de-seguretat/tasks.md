@@ -1,16 +1,16 @@
 ## 1. Verificación de ficheros de base de datos
 
-- [ ] 1.1 Extraer del migrador un servicio compartido que abre un fichero con la clave, comprueba la integridad y clasifica su versión: igual, anterior o más nueva (D3)
-- [ ] 1.2 Servicio de recuentos en solo lectura de cursos, alumnos, taquillas y asignaciones, sin leer datos personales (D4)
-- [ ] 1.3 Pruebas: fichero que no es de ARCA, clave incompatible, copia dañada, versión anterior, igual y más nueva
+- [x] 1.1 Extraer del migrador un servicio compartido que abre un fichero con la clave, comprueba la integridad y clasifica su versión: igual, anterior o más nueva (D3)
+- [x] 1.2 Servicio de recuentos en solo lectura de cursos, alumnos, taquillas y asignaciones, sin leer datos personales (D4)
+- [x] 1.3 Pruebas: fichero que no es de ARCA, clave incompatible, copia dañada, versión anterior, igual y más nueva
 
 ## 2. Copia de seguridad
 
-- [ ] 2.1 Copia consistente con la API de copia en línea sobre una conexión propia y fichero temporal en el destino (D2)
-- [ ] 2.2 Verificación de la copia y movimiento atómico al nombre final; borrado del temporal ante error o cancelación
-- [ ] 2.3 Validación previa del destino: no es la base de datos, existe, admite escritura y tiene espacio (D9)
-- [ ] 2.4 Nombre propuesto con fecha y hora, extensión propia, última carpeta usada y confirmación de sobrescritura
-- [ ] 2.5 Pruebas de integración sobre SQLite cifrado temporal: copia tras un cambio, copia con la aplicación en uso, fallo a mitad sin fichero parcial, fichero anterior intacto, destino inválido, sin datos legibles en el fichero
+- [x] 2.1 Copia consistente con la API de copia en línea sobre una conexión propia y fichero temporal en el destino (D2)
+- [x] 2.2 Verificación de la copia y movimiento atómico al nombre final; borrado del temporal ante error o cancelación
+- [x] 2.3 Validación previa del destino: no es la base de datos, existe, admite escritura y tiene espacio (D9)
+- [x] 2.4 Nombre propuesto con fecha y hora y extensión propia (la última carpeta usada y la confirmación de sobrescritura van con el flujo de Ajustes, 5.2 y 5.3)
+- [x] 2.5 Pruebas de integración sobre SQLite cifrado temporal: copia tras un cambio, copia con la aplicación en uso, fallo a mitad sin fichero parcial, fichero anterior intacto, destino inválido, sin datos legibles en el fichero
 
 ## 3. Restauración
 
