@@ -76,6 +76,9 @@ public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject, ISelecti
     /// <summary>Puts the search and every filter back as the list starts: the action of the Reset button, available only when there is something to put back.</summary>
     public AppAction Reset { get; }
 
+    /// <summary>What to say when a filter leaves no rows, if the general text does not do; such as a positive message when nobody has a pending payment.</summary>
+    public Func<string?>? NoResultsMessage { get; set; }
+
     /// <summary>The filters that are on, other than the search text, each one removable on its own.</summary>
     public IReadOnlyList<ListFilterTag> ActiveFilters => _filterTags?.Invoke() ?? [];
 
@@ -235,7 +238,7 @@ public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject, ISelecti
         {
             var clear = new AppAction("ClearFilter", _localizer.Get("Common.Action.ClearFilter"));
             clear.Attach(ClearFilter);
-            State.ShowNoResults(new EmptyStateAction(clear.Label, clear));
+            State.ShowNoResults(new EmptyStateAction(clear.Label, clear), NoResultsMessage?.Invoke());
         }
     }
 }

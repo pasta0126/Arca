@@ -23,6 +23,7 @@ public static class StudentsView
         var level = Filter(model.LevelOptions, () => model.LevelFilter, v => model.LevelFilter = v);
         var group = Filter(model.GroupOptions, () => model.GroupFilter, v => model.GroupFilter = v);
         var locker = Filter(model.LockerOptions, () => model.LockerFilter, v => model.LockerFilter = v);
+        var payment = Filter(model.PaymentOptions, () => model.PaymentFilter, v => model.PaymentFilter = v);
         model.PropertyChanged += (_, e) =>
         {
             switch (e.PropertyName)
@@ -44,6 +45,9 @@ public static class StudentsView
                 case nameof(StudentsViewModel.LockerFilter):
                     locker.SelectedItem = model.LockerOptions.FirstOrDefault(o => o.Id == model.LockerFilter);
                     break;
+                case nameof(StudentsViewModel.PaymentFilter):
+                    payment.SelectedItem = model.PaymentOptions.FirstOrDefault(o => o.Id == model.PaymentFilter);
+                    break;
                 case nameof(StudentsViewModel.IncludeRetired):
                     retired.IsChecked = model.IncludeRetired;
                     break;
@@ -56,6 +60,7 @@ public static class StudentsView
         filters.Children.Add(level);
         filters.Children.Add(group);
         filters.Children.Add(locker);
+        filters.Children.Add(payment);
         filters.Children.Add(retired);
 
         var list = new ScreenListView<StudentListRow, Guid>(model.Students, localizer, filters);

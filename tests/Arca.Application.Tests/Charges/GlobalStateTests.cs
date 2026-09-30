@@ -61,4 +61,27 @@ public sealed class GlobalStateTests
 
         Assert.Equal(1, (await Handler(world).HandleAsync(default)).Value!.PendingCharges); // only the deposit is left
     }
+
+    [Fact]
+    [Trait("spec", Spec + ": Indicadores de sección (Alumnos con pendientes)")]
+    public async Task The_students_section_counts_different_students_with_something_pending_and_never_an_amount()
+    {
+        var world = new PagamentsWorld();
+        var current = await world.YearAsync(2026);
+        await world.SeedAmountsAsync(current, 50m, 20m, 10m);
+        var zone = await world.ZoneAsync("Planta 1");
+        var marta = await world.StudentAsync("Marta", "Puig", "marta@example.com");
+        var pau = await world.StudentAsync("Pau", "Alsina", "pau@example.com");
+        await world.AssignAsync(marta.Id, await world.LockerAsync(1, zone)); // a pending fee and a pending deposit: two charges, one student
+        await world.AssignAsync(pau.Id, await world.LockerAsync(2, zone));
+        Assert.Equal(2, (await Handler(world).HandleAsync(default)).Value!.StudentsWithPending);
+        Assert.Equal(4, (await Handler(world).HandleAsync(default)).Value!.PendingCharges);
+
+        foreach (var charge in world.ChargesOf(pau.Id))
+        {
+            await world.MarkPaid.HandleAsync(new MarkChargePaidRequest(charge.Id, null), default);
+        }
+
+        Assert.Equal(1, (await Handler(world).HandleAsync(default)).Value!.StudentsWithPending);
+    }
 }

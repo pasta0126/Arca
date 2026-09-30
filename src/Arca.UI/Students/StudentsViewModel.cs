@@ -44,6 +44,7 @@ public sealed class StudentsViewModel : ObservableObject
     string _levelFilter = string.Empty;
     string _groupFilter = string.Empty;
     string _lockerFilter = string.Empty;
+    string _paymentFilter = string.Empty;
     bool _includeRetired;
     IReadOnlyList<StudentListRow> _all = [];
     IReadOnlyList<string> _lockerLines = [];
@@ -78,6 +79,8 @@ public sealed class StudentsViewModel : ObservableObject
                 : _emptyState == StudentEmptyState.NoStudents ? text.Get("Students.Empty.NoStudentsList") : StudentEmptyStates.Describe(_emptyState, text)?.Message, emptyActions: EmptyActions);
         Students.List.SortBy("last");
         Students.UseFilters(ActiveFilterTags, ResetFilterFields);
+        Students.NoResultsMessage = () => PaymentFilter == "pending" && Students.List.FilterText.Length == 0 && LevelFilter.Length == 0 && GroupFilter.Length == 0 && LockerFilter.Length == 0
+            ? text.Get("Students.Empty.NobodyPending") : null;
         ApplyFilters();
         Detail = new DetailViewModel<Guid, StudentScreenDetail>(LoadDetailAsync, BuildActions, text, context.Notifications, context.Log, services.History);
         Students.CurrentChanged += (_, _) => _ = ShowCurrentAsync();
@@ -144,6 +147,26 @@ public sealed class StudentsViewModel : ObservableObject
         new("without", _context.Localizer.Get("Students.Label.WithoutLocker")),
     ];
 
+    public IReadOnlyList<FormOption> PaymentOptions =>
+    [
+        new(string.Empty, _context.Localizer.Get("Students.Label.AnyPayment")),
+        new("pending", _context.Localizer.Get("Students.Label.WithPendingPayments")),
+        new("upToDate", _context.Localizer.Get("Students.Label.PaymentsUpToDate")),
+    ];
+
+    /// <summary>"pending" for the students with something to pay, "upToDate" for those with nothing, or empty for any.</summary>
+    public string PaymentFilter
+    {
+        get => _paymentFilter;
+        set
+        {
+            if (Set(ref _paymentFilter, value))
+            {
+                ApplyFilters();
+            }
+        }
+    }
+
     public string LevelFilter
     {
         get => _levelFilter;
@@ -199,10 +222,11 @@ public sealed class StudentsViewModel : ObservableObject
     void ApplyFilters()
     {
         Students.List.SetPredicate(s =>
-            (IncludeRetired || !s.IsRetired)
+            (IncludeRetired || !s.IsRetired || (PaymentFilter == "pending" && s.HasDebt))
             && (LevelFilter.Length == 0 || s.LevelName == LevelFilter)
             && (GroupFilter.Length == 0 || s.GroupName == GroupFilter)
-            && (LockerFilter switch { "with" => s.LockerNumber is not null, "without" => s.LockerNumber is null && !s.IsRetired, _ => true }));
+            && (LockerFilter switch { "with" => s.LockerNumber is not null, "without" => s.LockerNumber is null && !s.IsRetired, _ => true })
+            && (PaymentFilter switch { "pending" => s.HasDebt, "upToDate" => !s.HasDebt, _ => true }));
         Students.RefreshFilters();
     }
 
@@ -227,6 +251,11 @@ public sealed class StudentsViewModel : ObservableObject
             tags.Add(new ListFilterTag("locker", label, () => LockerFilter = string.Empty));
         }
 
+        if (PaymentFilter.Length > 0)
+        {
+            tags.Add(new ListFilterTag("payment", PaymentOptions.First(o => o.Id == PaymentFilter).Label, () => PaymentFilter = string.Empty));
+        }
+
         if (IncludeRetired)
         {
             tags.Add(new ListFilterTag("retired", text.Get("Students.Label.IncludeRetired"), () => IncludeRetired = false));
@@ -240,8 +269,9 @@ public sealed class StudentsViewModel : ObservableObject
 
     void ResetFilterFields()
     {
-        _levelFilter = _groupFilter = _lockerFilter = string.Empty;
+        _levelFilter = _groupFilter = _lockerFilter = _paymentFilter = string.Empty;
         _includeRetired = false;
+        Raise(nameof(PaymentFilter));
         Raise(nameof(LevelFilter));
         Raise(nameof(GroupFilter));
         Raise(nameof(LockerFilter));
@@ -249,9 +279,7 @@ public sealed class StudentsViewModel : ObservableObject
         ApplyFilters();
     }
 
-    string PaymentOf(StudentListRow s) => s.HasDebt
-        ? _context.Localizer.Get("Students.Label.PaymentDebt", _context.Localizer.Format(Money.FromCents((long)Math.Round(s.PendingTotal * 100))))
-        : _context.Localizer.Get("Students.Label.PaymentUpToDate");
+    string PaymentOf(StudentListRow s) => _context.Localizer.Get(s.HasDebt ? "Students.Label.PaymentDebt" : "Students.Label.PaymentUpToDate"); // never an amount: that is in the record
 
     // --- Loading ---
 

@@ -61,7 +61,7 @@ public sealed class MainWindow : Window
                 [ShellCatalog.Course] = () => CourseView.Create(
                     new CourseViewModel(runtime.CourseServices, screenContext, runtime.Actions[StandardActions.New]), localizer),
             },
-            new Dictionary<string, Func<int>> { [ShellCatalog.Payments] = () => state.Current?.PendingCharges ?? 0 },
+            new Dictionary<string, Func<int>> { [ShellCatalog.Students] = () => state.Current?.StudentsWithPending ?? 0 },
             home);
         navigation = new NavigationViewModel(registry, runtime.Preferences, section => SectionPlaceholder.Create(section, registry, localizer));
         navigator.Bind(navigation);

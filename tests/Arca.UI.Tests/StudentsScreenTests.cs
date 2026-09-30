@@ -287,6 +287,64 @@ public sealed class StudentsScreenTests
     const string PatternSpec = "ui-llistats-i-detall/navegacio-i-cerca";
 
     [Fact]
+    [Trait("spec", "ui-llistats-i-detall/pantalles-alumnes-i-assignacions: Lista de alumnos con búsqueda y filtros (Alumnos con pendientes de pago)")]
+    public async Task The_pending_payments_filter_shows_only_students_with_something_to_pay_and_the_rows_carry_no_amount()
+    {
+        AddStudent("Marta", "Puig", debt: true);
+        AddStudent("Pau", "Alsina");
+        AddStudent("Oriol", "Zamora", retired: true, debt: true);
+        var model = Model();
+        await model.LoadAsync();
+
+        model.PaymentFilter = "pending";
+
+        Assert.Equal(["Puig", "Zamora"], model.Students.List.Rows.Select(s => s.LastName)); // a leaver who still owes is shown, marked as a leaver
+        Assert.Equal("2 de 3", model.Students.CountText);
+        var payment = model.Students.List.Columns.Single(c => c.Id == "payment");
+        Assert.All(model.Students.List.Rows, r => Assert.Equal("Pendent de pagament", payment.Text(r)));
+        Assert.DoesNotContain(model.Students.List.Rows, r => payment.Text(r).Contains('€', StringComparison.Ordinal));
+        Assert.Equal(["Amb pendents de pagament"], model.Students.ActiveFilters.Select(t => t.Text));
+
+        model.PaymentFilter = "upToDate";
+        Assert.Equal(["Alsina"], model.Students.List.Rows.Select(s => s.LastName));
+    }
+
+    [Fact]
+    [Trait("spec", "ui-llistats-i-detall/pantalles-alumnes-i-assignacions: Lista de alumnos con búsqueda y filtros (Filtros combinados)")]
+    public async Task Pending_payments_combines_with_level_and_without_a_locker()
+    {
+        AddStudent("Marta", "Puig", "2n ESO", debt: true);
+        AddStudent("Pau", "Alsina", "2n ESO", debt: true, locker: 4);
+        AddStudent("Jana", "Roca", "1r ESO", debt: true);
+        AddStudent("Nil", "Font", "2n ESO");
+        var model = Model();
+        await model.LoadAsync();
+
+        model.PaymentFilter = "pending";
+        model.LevelFilter = "2n ESO";
+        model.LockerFilter = "without";
+
+        Assert.Equal(["Puig"], model.Students.List.Rows.Select(s => s.LastName));
+        Assert.Equal("1 de 4", model.Students.CountText);
+    }
+
+    [Fact]
+    [Trait("spec", "ui-llistats-i-detall/pantalles-alumnes-i-assignacions: Lista de alumnos con búsqueda y filtros (Nadie con pendientes)")]
+    public async Task When_nobody_has_pending_payments_the_filter_says_so_in_a_positive_way_instead_of_an_empty_list()
+    {
+        AddStudent("Marta", "Puig");
+        var model = Model();
+        await model.LoadAsync();
+
+        model.PaymentFilter = "pending";
+
+        Assert.Equal(ListViewState.NoResults, model.Students.State.State);
+        Assert.Equal("Cap alumne té pagaments pendents. Tot al corrent.", model.Students.State.Message);
+        model.LevelFilter = "2n ESO";
+        Assert.DoesNotContain("Tot al corrent", model.Students.State.Message, StringComparison.Ordinal); // with another filter on it is just no match
+    }
+
+    [Fact]
     [Trait("spec", PatternSpec + ": Patrón común de pantalla (Reiniciar la búsqueda)")]
     public async Task Reset_empties_the_search_and_takes_every_filter_off_and_the_list_goes_back_to_its_start()
     {

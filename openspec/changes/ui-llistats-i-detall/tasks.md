@@ -8,9 +8,9 @@
 
 ## 2. Filtro de pendientes de pago
 
-- [ ] 2.1 Añadir `PendingPayments` a `StudentFilter` y resolverlo en `SearchStudents` con la consulta agregada de deuda, sin importes (D5)
-- [ ] 2.2 Recuento de alumnos con pendientes para el indicador de la barra lateral, que pasa de Cobros a Alumnos
-- [ ] 2.3 Pruebas: solo con pendientes de cualquier curso, al corriente, combinado con nivel y sin taquilla, alumno de baja, nadie con pendientes y 900 alumnos sin consultas una a una
+- [x] 2.1 Filtro «Pagaments» (cualquiera, amb pendents, al corrent) en la lista de Alumnos sobre las filas que ya traen la deuda, con etiqueta quitable y reinicio, y estado de pago de las filas sin importes (D5)
+- [x] 2.2 Recuento de alumnos con pendientes en el estado global (`StudentsWithPending`) para el indicador de la barra lateral, que pasa de Cobros a Alumnos, y mensaje positivo cuando nadie tiene pendientes
+- [x] 2.3 Pruebas: solo con pendientes de cualquier curso, al corriente, combinado con nivel y sin taquilla, alumno de baja, nadie con pendientes y 900 alumnos sin consultas una a una
 
 ## 3. Lista y ficha de Alumnos
 
