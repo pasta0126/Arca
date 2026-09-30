@@ -17,7 +17,7 @@ public static class LockersSection
 {
     public static Control Create(
         LockerServices services, LockerAssignmentServices assignment, ScreenContext context, AppAction standardNew, Arca.UI.Assigning.AssignmentDialogs assign,
-        UiPreferencesSession preferences, SearchNavigator navigator, ResultNotifier notifier, ScreenFilterRouter? router = null)
+        UiPreferencesSession preferences, SearchNavigator navigator, ResultNotifier notifier, ScreenFilterRouter? router = null, Arca.UI.Home.HomeCardServices? cards = null)
     {
         var localizer = context.Localizer;
         ZonesViewModel? zones = null;
@@ -31,7 +31,7 @@ public static class LockersSection
         {
             section!.Open("LockerMap");
             return Task.CompletedTask;
-        });
+        }, cards);
         zones = new ZonesViewModel(services, context, () => lockers.LoadAsync());
         var map = new LockersMapModel(lockers, assignment, notifier, context.Confirmations, localizer, context.Notifications, context.Log, context.Delay);
         section = new SectionScreens(

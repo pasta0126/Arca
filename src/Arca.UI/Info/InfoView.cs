@@ -38,7 +38,7 @@ public sealed class InfoView : UserControl
     static void AddRow(Grid grid, int row, string label, string value)
     {
         var name = new TextBlock { Text = label, Opacity = 0.7, VerticalAlignment = VerticalAlignment.Center };
-        var text = new TextBlock { Text = value, IsHitTestVisible = true };
+        var text = new SelectableTextBlock { Text = value, IsHitTestVisible = true }; // selectable, so the version can be copied into a support notice
         Grid.SetRow(name, row);
         Grid.SetRow(text, row);
         Grid.SetColumn(text, 1);

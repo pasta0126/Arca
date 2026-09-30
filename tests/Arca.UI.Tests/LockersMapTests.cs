@@ -47,6 +47,7 @@ public sealed partial class LockersScreenTests
     readonly List<AssignLockerRequest> _assigned = [];
     readonly List<AssignLockerRequest> _changed = [];
     readonly MemoryPreferences _preferences = new();
+    readonly FakeHomeCards _homeCards = new();
     Result<StudentListing> _waiting = Result<StudentListing>.Success(new(
         [new StudentRow(_waitingId, "Pau", "Abad", "1r ESO", "A", false, null), new StudentRow(Guid.NewGuid(), "Aina", "Zapata", "2n ESO", "B", false, null)], new(50, 48, 2)));
 
@@ -263,6 +264,58 @@ public sealed partial class LockersScreenTests
 
         Assert.Equal((string.Empty, string.Empty, "Free"), (model.Lockers.List.FilterText, model.NumberFilter, model.StatusFilter));
         Assert.Equal([1, 2], model.Lockers.List.Rows.Select(r => r.Number));
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Una tarjeta es un filtro guardado (Tarjeta de taquillas libres)")]
+    public async Task The_status_and_zone_on_come_back_as_the_criteria_of_a_card_and_are_the_same_for_the_map_and_the_list()
+    {
+        Sample();
+        var other = AddZone("Planta 2");
+        AddLocker(10, other);
+        var (model, _) = await LoadedAsync();
+        Assert.Empty(model.CurrentCardCriteria);
+
+        model.StatusFilter = "Free";
+        model.ZoneFilter = other.Id.ToString();
+        model.NumberFilter = "10"; // what is typed in the number box is not a criterion of a card
+
+        Assert.Equal(new Dictionary<string, string> { ["Status"] = "Free", ["Zone"] = other.Id.ToString() }, model.CurrentCardCriteria);
+        var counted = model.Lockers.List.AllRows.Count(Arca.Application.Home.LockerCardFilter.From(model.CurrentCardCriteria).Matches);
+        model.NumberFilter = string.Empty;
+        Assert.Equal(counted, model.Lockers.List.Rows.Count);
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/navegacio-i-cerca: Guardar el filtro como tarjeta (Acción en el mapa y en la lista)")]
+    public async Task The_map_and_the_list_offer_save_as_a_card_with_the_same_criteria_and_each_opens_its_own_view()
+    {
+        Sample();
+        var model = new LockersViewModel(
+            Services(), Context(), new ActionRegistry(_localizer, UiPlatform.Windows)[StandardActions.New], () => Task.CompletedTask,
+            new Arca.UI.Assigning.AssignmentDialogs(null!, Context()), null, _homeCards.Services());
+        await model.LoadAsync();
+        Assert.Contains(model.SaveMapCard, model.MapActions);
+        Assert.Contains(model.SaveListCard, model.ListActions);
+        Assert.DoesNotContain(model.SaveMapCard, model.ListActions);
+        Assert.False(model.SaveMapCard.IsAvailable);
+        Assert.Equal("Primer cal posar algun filtre.", model.SaveListCard.UnavailableReason);
+
+        model.StatusFilter = "Broken";
+        model.NumberFilter = "5"; // a typed number is not a criterion of a card
+        Assert.True(model.SaveMapCard.IsAvailable);
+
+        model.SaveMapCard.Execute(null);
+        await Task.Delay(50);
+        var mapForm = (Arca.UI.Screens.FormViewModel<Arca.Application.Home.HomeCardSaved>)_forms.Last;
+        Assert.Equal("Taquilles: Estat: Avariada", mapForm.Fields[0].Text);
+        await mapForm.Save.RunAsync();
+        model.SaveListCard.Execute(null);
+        await Task.Delay(50);
+        await ((Arca.UI.Screens.FormViewModel<Arca.Application.Home.HomeCardSaved>)_forms.Last).Save.RunAsync();
+
+        Assert.Equal([Arca.Application.Home.HomeCardTargetView.LockerMap, Arca.Application.Home.HomeCardTargetView.Lockers], _homeCards.Created.Select(c => c.Target));
+        Assert.All(_homeCards.Created, c => Assert.Equal(new Dictionary<string, string> { ["Status"] = "Broken" }, c.Criteria));
     }
 
     // --- One locker changes ---

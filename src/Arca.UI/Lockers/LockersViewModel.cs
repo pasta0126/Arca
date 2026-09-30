@@ -3,6 +3,7 @@
 
 using System.Globalization;
 using Arca.Application.Assignments;
+using Arca.Application.Home;
 using Arca.Application.Common;
 using Arca.Application.Lockers;
 using Arca.Application.Lockers.AddLocker;
@@ -31,6 +32,7 @@ namespace Arca.UI.Lockers;
 public sealed class LockersViewModel : ObservableObject
 {
     readonly LockerServices _services;
+    readonly Arca.UI.Home.HomeCardServices? _cards;
     readonly ScreenContext _context;
     readonly AssignmentDialogs _assign;
     readonly OneAtATime _once = new();
@@ -47,8 +49,10 @@ public sealed class LockersViewModel : ObservableObject
     (Guid StudentId, Guid FromLocker)? _changing;
 
     public LockersViewModel(
-        LockerServices services, ScreenContext context, AppAction standardNew, Func<Task> openNewZone, AssignmentDialogs assign, Func<Task>? openMap = null)
+        LockerServices services, ScreenContext context, AppAction standardNew, Func<Task> openNewZone, AssignmentDialogs assign, Func<Task>? openMap = null,
+        Arca.UI.Home.HomeCardServices? cards = null)
     {
+        _cards = cards;
         OpenMap = openMap;
         _services = services;
         _assign = assign;
@@ -72,6 +76,11 @@ public sealed class LockersViewModel : ObservableObject
             r => r.Id, LoadRowsAsync, text, context.Notifications, context.Log,
             () => LockerEmptyStates.Describe(_emptyState, text)?.Message, emptyActions: EmptyActions);
         Lockers.List.SortBy("number");
+        Availability CardAvailability() => CurrentCardCriteria.Count > 0 ? Availability.Available : Availability.Unavailable(text.Get("Shell.Home.Reason.NeedFilter"));
+        SaveMapCard = new AppAction("SaveMapCard", text.Get("Shell.Home.Action.SaveAsCard"));
+        SaveMapCard.Attach(() => _ = SaveCardAsync(Arca.Application.Home.HomeCardTargetView.LockerMap), CardAvailability);
+        SaveListCard = new AppAction("SaveListCard", text.Get("Shell.Home.Action.SaveAsCard"));
+        SaveListCard.Attach(() => _ = SaveCardAsync(Arca.Application.Home.HomeCardTargetView.Lockers), CardAvailability);
         Lockers.UseFilters(ActiveFilterTags, ResetFilterFields);
         ApplyFilters();
         Detail = new DetailViewModel<Guid, LockerScreenDetail>(LoadDetailAsync, BuildActions, text, context.Notifications, context.Log, services.History);
@@ -212,6 +221,33 @@ public sealed class LockersViewModel : ObservableObject
     /// <summary>The main actions of the view, in order.</summary>
     public IReadOnlyList<AppAction> MainActions => [NewLocker, NewRange];
 
+    /// <summary>The main actions of the map, with the one that saves the filters on as a card that opens the map.</summary>
+    public IReadOnlyList<AppAction> MapActions => _cards is null ? MainActions : [.. MainActions, SaveMapCard];
+
+    /// <summary>The main actions of the list, with the one that saves the filters on as a card that opens the list.</summary>
+    public IReadOnlyList<AppAction> ListActions => _cards is null ? MainActions : [.. MainActions, SaveListCard];
+
+    /// <summary>Saves the status and the zone on as a card that opens the map (targetes-d-inici).</summary>
+    public AppAction SaveMapCard { get; private set; } = null!;
+
+    /// <summary>Saves the status and the zone on as a card that opens the list (targetes-d-inici).</summary>
+    public AppAction SaveListCard { get; private set; } = null!;
+
+    async Task SaveCardAsync(Arca.Application.Home.HomeCardTargetView target)
+    {
+        if (_cards is null)
+        {
+            return;
+        }
+
+        var text = _context.Localizer;
+        var ids = new[] { "status", "zone" };
+        var summary = string.Join(" · ", Lockers.ActiveFilters.Where(t => ids.Contains(t.Id)).Select(t => t.Text));
+        await _context.Forms.ShowAsync(Arca.UI.Home.HomeCardForms.FromScreen(
+            _context, _cards, target, CurrentCardCriteria, summary,
+            Arca.UI.Home.HomeCardForms.SuggestedTitle(text.Get("Shell.Section.Lockers"), summary)));
+    }
+
     Func<Task> OpenNewZone { get; }
 
     // --- Filters and counters ---
@@ -287,13 +323,25 @@ public sealed class LockersViewModel : ObservableObject
 
     void ApplyFilters()
     {
+        var filter = CurrentFilter;
         Lockers.List.SetPredicate(row =>
             (IncludeRetired || row.Status != LockerStatusView.Retired)
-            && (ZoneFilter.Length == 0 || row.ZoneId.ToString() == ZoneFilter)
-            && (StatusFilter.Length == 0 || row.Status.ToString() == StatusFilter)
+            && filter.MatchesCriteria(row)
             && (NumberFilter.Length == 0 || (int.TryParse(NumberFilter, NumberStyles.None, CultureInfo.InvariantCulture, out var number) && row.Number == number)));
         Lockers.RefreshFilters();
+        SaveMapCard?.Refresh();
+        SaveListCard?.Refresh();
     }
+
+    /// <summary>The status and the zone on, as the one rule that also counts the cards of the start screen.</summary>
+    LockerCardFilter CurrentFilter => new(
+        Enum.TryParse<LockerStatusView>(StatusFilter, out var status) ? status : null, Guid.TryParse(ZoneFilter, out var zone) ? zone : null);
+
+    /// <summary>
+    /// What the status and the zone on come to as the criteria of a card (targetes-d-inici), or nothing when none is on: the inverse of
+    /// <see cref="ApplyRequest"/>. The map and the list share it, so a card saved from either is the same.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> CurrentCardCriteria => CurrentFilter.ToCriteria();
 
     /// <summary>The filters that are on, each with what removes it, for the labels under the search.</summary>
     IReadOnlyList<ListFilterTag> ActiveFilterTags()

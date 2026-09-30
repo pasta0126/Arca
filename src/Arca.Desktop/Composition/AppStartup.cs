@@ -61,7 +61,7 @@ public static class AppStartup
 
         progress?.Report(new StartupProgress("Startup.Stage.Ready", 1, 1));
         var session = opened.Value!;
-        var info = session.Info(ApplicationVersion());
+        var info = session.Info(ApplicationVersion(log: log));
         var windows = new MainWindowAccessor();
         var clock = new SystemClock();
         var delay = new SystemDelay();
@@ -85,7 +85,7 @@ public static class AppStartup
             .AddSingleton(preferences)
             .AddSingleton(globalState)
             .AddSingleton(LockerHomeComposition.Create(inventory, clock, localizer))
-            .AddSingleton(LockerHomeComposition.HomeSummary(inventory))
+            .AddSingleton(HomeCardsComposition.Create(inventory, clock, localizer))
             .AddSingleton(CourseComposition.Create(inventory, clock, localizer))
             .AddSingleton(LockersComposition.Create(inventory, clock, localizer))
             .AddSingleton(ChargesComposition.Create(inventory, clock, localizer))
@@ -117,12 +117,20 @@ public static class AppStartup
     static Task<Result<bool>> CreateDatabase(string path, NewAccess access, IReadOnlyList<string?> groups, CancellationToken ct) =>
         DatabaseCreator.CreateAsync(path, access, groups, ct);
 
-    static string ApplicationVersion()
+    /// <summary>The version of the application, from the assembly built with the one version of the project; if it cannot be read it says so and carries on.</summary>
+    internal static string ApplicationVersion(Func<string?>? read = null, IErrorLog? log = null)
     {
-        var text = Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
-            ?? typeof(AppStartup).Assembly.GetName().Version?.ToString()
-            ?? "?";
-        var plus = text.IndexOf('+', StringComparison.Ordinal);
-        return plus < 0 ? text : text[..plus];
+        try
+        {
+            var raw = read is not null ? read()
+                : Assembly.GetEntryAssembly()?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                    ?? typeof(AppStartup).Assembly.GetName().Version?.ToString();
+            return AppVersionText.Clean(raw);
+        }
+        catch (Exception e)
+        {
+            log?.LogUnexpected(e, "ReadVersion");
+            return AppVersionText.Unknown;
+        }
     }
 }

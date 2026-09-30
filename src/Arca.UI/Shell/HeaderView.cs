@@ -28,6 +28,12 @@ public sealed class HeaderView : UserControl
         Logo = new ContentControl { VerticalAlignment = VerticalAlignment.Center };
         Name = ThemedText.Title(centreName);
         Name.VerticalAlignment = VerticalAlignment.Center;
+        Name.TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis; // when room is short the name gives way, never the version
+        Name.MaxWidth = 420;
+        Version = new TextBlock { VerticalAlignment = VerticalAlignment.Bottom, IsVisible = false }
+            .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.TextSecondary)
+            .Themed(TextBlock.FontSizeProperty, ArcaResourceKeys.FontSizeSmall);
+        ToolTip.SetTip(Version, localizer.Get("App.Label.VersionTooltip"));
         Year = new TextBlock { VerticalAlignment = VerticalAlignment.Center }
             .Themed(TextBlock.ForegroundProperty, ArcaResourceKeys.TextSecondary)
             .Themed(TextBlock.FontSizeProperty, ArcaResourceKeys.FontSizeBody);
@@ -35,6 +41,7 @@ public sealed class HeaderView : UserControl
         var left = new StackPanel { Orientation = Orientation.Horizontal }.Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
         left.Children.Add(Logo);
         left.Children.Add(Name);
+        left.Children.Add(Version);
         var bar = new DockPanel();
         DockPanel.SetDock(Year, Dock.Right);
         bar.Children.Add(Year);
@@ -77,6 +84,16 @@ public sealed class HeaderView : UserControl
 
         identity.Changed += (_, _) => Update();
         Update();
+    }
+
+    /// <summary>The version of the application, small and next to the title (versio-de-l-aplicacio, Versión visible en la cabecera).</summary>
+    public TextBlock Version { get; }
+
+    /// <summary>Shows the version of the application next to the title, whatever the identity of the centre says.</summary>
+    public void ShowVersion(string version)
+    {
+        Version.Text = version;
+        Version.IsVisible = version.Length > 0;
     }
 
     /// <summary>The indicator of long work, shown while any action takes more than 300 ms.</summary>

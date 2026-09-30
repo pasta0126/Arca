@@ -225,6 +225,56 @@ namespace Arca.Infrastructure.Storage.Migrations
                     b.ToTable("Enrollments", (string)null);
                 });
 
+            modelBuilder.Entity("Arca.Domain.Home.HomeCard", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CriteriaText")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SeedKey")
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Target")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Position");
+
+                    b.HasIndex("SeedKey")
+                        .IsUnique();
+
+                    b.ToTable("HomeCards", (string)null);
+                });
+
+            modelBuilder.Entity("Arca.Domain.Home.HomeCardsState", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("DefaultsCreatedAtUtc")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HomeCardsState", (string)null);
+                });
+
             modelBuilder.Entity("Arca.Domain.Identity.CentreIdentity", b =>
                 {
                     b.Property<Guid>("Id")

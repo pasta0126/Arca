@@ -21,12 +21,16 @@ Estado: **redactado** (specs listas para revisar), **pendiente** (sin redactar) 
 | 14 | `ui-shell` | Navegación, búsqueda global, pantalla principal, tema e identidad del centro | implementado y archivado (`2026-09-29-ui-shell`); el mapa pasó a Taquillas y Inicio a un resumen mínimo con `ui-llistats-i-detall` |
 | 15 | `pantalles-de-domini` | Pantallas de dominio (curso e importes, zonas, taquillas, alumnos, cargos, y después el resto), solo las del hito 1 (Curso, Taquillas, Alumnos, Cobros); sin maquetas, interfaz decidida en las specs y a iterar | implementado y archivado (`2026-09-29-pantalles-de-domini`) |
 | 16 | `acces-i-xifrat` | Contraseña compartida del centro, clave de recuperación obligatoria, fichero de claves y copias (sustituye la clave interna de `arquitectura-base`) | redactado; va con `arquitectura-base` |
+| 17 | `ui-llistats-i-detall` | Patrón común de lista y detalle, ficha del alumno en una columna, sección Cobros retirada, mapa dentro de Taquillas e Inicio mínimo | implementado y archivado (`2026-09-30-ui-llistats-i-detall`) |
+| 18 | `filtres-i-targetes` | Inicio como panel de tarjetas: filtros guardados y personalizables con recuento, tarjetas de serie, crear desde una pantalla filtrada o desde Inicio | implementado |
+| 19 | `icona-d-aplicacio` | Icono sencillo y provisional de la aplicación, sustituible con un fichero y un script | redactado |
+| 20 | `versio-visible` | Número de versión `x.y.z` en pequeño junto al título y en Ajustes | implementado y archivado (`2026-09-30-versio-visible`) |
 
 ## Fuera de este repositorio
 - Servidor de registro y avisos de versión: otro proyecto. Aquí solo el cliente y su contrato público (`docs/registro-de-instalaciones.md`).
 
 ## Decisiones abiertas
-- Pantalla principal: el mapa está en Taquillas y Inicio es un resumen provisional (después, tarjetas de filtros en `filtres-i-targetes`); validar con los conserjes.
+- Pantalla principal: el mapa está en Taquillas e Inicio es un panel de tarjetas de filtros guardados (`filtres-i-targetes`); validar con los conserjes.
 - Alojamiento, dominio y correos del servidor de registro.
 
 ## Backlog v2 o posterior (fuera de v1)
