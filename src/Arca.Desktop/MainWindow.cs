@@ -57,7 +57,6 @@ public sealed class MainWindow : Window
                     new StudentsViewModel(runtime.StudentServices, screenContext, assignments, runtime.Actions[StandardActions.New],
                         () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)),
                         new StudentChargesViewModel(runtime.ChargeServices, screenContext, () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)))), localizer, runtime.Preferences),
-                [ShellCatalog.Payments] = () => PaymentsSection.Create(runtime.ChargeServices, screenContext, () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course))),
                 [ShellCatalog.Course] = () => CourseView.Create(
                     new CourseViewModel(runtime.CourseServices, screenContext, runtime.Actions[StandardActions.New]), localizer),
             },

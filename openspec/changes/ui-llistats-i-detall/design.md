@@ -35,7 +35,7 @@ Ver `proposal.md` (Why). Estado actual relevante:
 
 **D7. Espacio entre zonas del mapa** con un margen de tema (clave de espaciado existente, nivel grande) entre secciones de zona; no es un literal.
 
-**D8. Se retira la sección Cobros.** Se elimina la entrada de la barra y su pantalla; el indicador de pendientes pasa a Alumnos (D5). La búsqueda global que lleve a un alumno abre su ficha; no existe ninguna ruta que abra Cobros. La spec `pantalles-cobraments` conserva las reglas de operaciones; `Fianza` se ve como un cargo más en los pendientes y el historial de pagos.
+**D8. Se retira la sección Cobros.** Se elimina la entrada de la barra y su pantalla (interfaz solamente: la consulta de morosos de `cobraments` sigue en Application porque la especificación de dominio la exige y la usarán los informes y el cierre de curso); el indicador de pendientes pasa a Alumnos (D5). La búsqueda global que lleve a un alumno abre su ficha; no existe ninguna ruta que abra Cobros. La spec `pantalles-cobraments` conserva las reglas de operaciones; `Fianza` se ve como un cargo más en los pendientes y el historial de pagos.
 
 **UX transversal:** todas las operaciones conservan su feedback, confirmación y doble ejecución previos; el reinicio no pide confirmación porque no destruye datos; los bloques colapsables tienen estado de carga y vacío con guía; `Esc` y el reinicio son accesibles por teclado (el reinicio tiene atajo visible en su descripción emergente).
 

@@ -47,7 +47,7 @@ public sealed class ShellStateTests
 
     NavigationViewModel Navigation(Func<int>? payments = null)
     {
-        var attention = payments is null ? null : new Dictionary<string, Func<int>> { [ShellCatalog.Payments] = payments };
+        var attention = payments is null ? null : new Dictionary<string, Func<int>> { [ShellCatalog.Students] = payments };
         var registry = SectionRegistry.Compose(new Dictionary<string, Func<Control>>(), attention);
         return new NavigationViewModel(registry, new UiPreferencesSession(new MemoryStore()), s => SectionPlaceholder.Create(s, registry, _localizer));
     }
@@ -178,7 +178,7 @@ public sealed class ShellStateTests
 
     [AvaloniaFact]
     [Trait("spec", Spec + ": Indicadores de sección (Nada que atender)")]
-    public void The_payments_section_shows_a_badge_with_the_pending_count_only_when_there_is_something_to_attend_to()
+    public void The_students_section_shows_a_badge_with_the_count_of_students_with_pending_payments_only_when_there_is_something_to_attend_to()
     {
         var pending = 0;
         var navigation = Navigation(() => pending);
@@ -187,27 +187,27 @@ public sealed class ShellStateTests
         window.Show();
         Dispatcher.UIThread.RunJobs();
         Border Badge(string id) => sidebar.ButtonOf(id).GetVisualDescendants().OfType<Border>().Single(b => b.CornerRadius.TopLeft > 0);
-        Assert.False(Badge("Payments").IsVisible);
+        Assert.False(Badge("Students").IsVisible);
 
         pending = 3;
         navigation.RefreshAttention();
         Dispatcher.UIThread.RunJobs();
 
-        Assert.True(Badge("Payments").IsVisible);
-        Assert.Contains(sidebar.ButtonOf("Payments").GetVisualDescendants().OfType<TextBlock>(), t => t.Text == "3");
-        Assert.Equal("Cobraments · 3 pendents", ToolTip.GetTip(sidebar.ButtonOf("Payments")));
-        Assert.False(Badge("Students").IsVisible); // the others have nothing to show
+        Assert.True(Badge("Students").IsVisible);
+        Assert.Contains(sidebar.ButtonOf("Students").GetVisualDescendants().OfType<TextBlock>(), t => t.Text == "3");
+        Assert.Equal("Alumnes · 3 pendents", ToolTip.GetTip(sidebar.ButtonOf("Students")));
+        Assert.False(Badge("Lockers").IsVisible); // the others have nothing to show
 
         pending = 0;
         navigation.RefreshAttention();
-        Assert.False(Badge("Payments").IsVisible);
+        Assert.False(Badge("Students").IsVisible);
     }
 
     [Fact]
     [Trait("spec", Spec + ": Indicadores de sección (Nada que atender)")]
     public void A_count_that_makes_no_sense_shows_no_indicator()
     {
-        Assert.Equal(0, Navigation(() => -5).AttentionOf("Payments"));
+        Assert.Equal(0, Navigation(() => -5).AttentionOf("Students"));
         Assert.Equal(0, Navigation().AttentionOf("Students"));
         Assert.Equal(0, Navigation().AttentionOf("Nowhere"));
     }

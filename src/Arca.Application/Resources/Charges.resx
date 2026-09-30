@@ -183,12 +183,6 @@
   <data name="Charges.Empty.NoCharges" xml:space="preserve">
     <value>Aquest alumne encara no té càrrecs. Es generen en assignar-li una taquilla.</value>
   </data>
-  <data name="Charges.Empty.NoDebt" xml:space="preserve">
-    <value>Cap alumne té pagaments pendents. Tot està al corrent.</value>
-  </data>
-  <data name="Charges.Empty.NoDebtResults" xml:space="preserve">
-    <value>Cap alumne amb pagaments pendents coincideix amb els filtres.</value>
-  </data>
   <data name="Charges.Empty.NoDepositsDue" xml:space="preserve">
     <value>No hi ha cap dipòsit per retornar. Apareixen quan un alumne amb el dipòsit pagat causa baixa.</value>
   </data>
@@ -234,17 +228,14 @@
   <data name="Charges.Label.Reason" xml:space="preserve">
     <value>Motiu</value>
   </data>
+  <data name="Charges.Empty.NoDebt" xml:space="preserve">
+    <value>Cap alumne té pagaments pendents. Tot està al corrent.</value>
+  </data>
+  <data name="Charges.Empty.NoDebtResults" xml:space="preserve">
+    <value>Cap alumne amb pagaments pendents coincideix amb els filtres.</value>
+  </data>
   <data name="Charges.Label.Pending" xml:space="preserve">
     <value>Pendent</value>
-  </data>
-  <data name="Charges.Label.AllConcepts" xml:space="preserve">
-    <value>Tots els conceptes</value>
-  </data>
-  <data name="Charges.Label.AllYears" xml:space="preserve">
-    <value>Tots els cursos</value>
-  </data>
-  <data name="Charges.Label.Totals" xml:space="preserve">
-    <value>{0} alumnes · {1} pendents de pagament</value>
   </data>
   <data name="Charges.Label.SummaryUpToDate" xml:space="preserve">
     <value>Està al corrent de pagament.</value>
@@ -294,16 +285,7 @@
   <data name="Charges.Action.KeyReplacement" xml:space="preserve">
     <value>Cobra la reposició de clau</value>
   </data>
-  <data name="Charges.Action.OpenCharges" xml:space="preserve">
-    <value>Veure els càrrecs</value>
-  </data>
   <data name="Charges.Note.ReasonRequired" xml:space="preserve">
     <value>El motiu és obligatori i pot tenir com a màxim 500 caràcters.</value>
-  </data>
-  <data name="Charges.Reason.PickStudent" xml:space="preserve">
-    <value>Tria un alumne de la llista.</value>
-  </data>
-  <data name="Charges.Empty.PickDebtor" xml:space="preserve">
-    <value>Tria un alumne de la llista per veure'n el desglossament del que deu.</value>
   </data>
 </root>

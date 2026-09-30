@@ -188,7 +188,7 @@ public sealed class ScreenshotTests
     public void Shell_with_the_state_of_the_application()
     {
         var registry = SectionRegistry.Compose(
-            new Dictionary<string, Func<Control>>(), new Dictionary<string, Func<int>> { [ShellCatalog.Payments] = () => 12 });
+            new Dictionary<string, Func<Control>>(), new Dictionary<string, Func<int>> { [ShellCatalog.Students] = () => 12 });
         var navigation = new NavigationViewModel(registry, new Arca.UI.Preferences.UiPreferencesSession(new EmptyPreferences()), s => SectionPlaceholder.Create(s, registry, _localizer));
         var state = new GlobalStateService(_ => Task.FromResult(Arca.Domain.Common.Result<GlobalState>.Success(new GlobalState(null, 12))),
             new Arca.UI.Notifications.ResultNotifier(new Arca.Testing.RecordingNotifications(), _localizer, new Arca.Testing.RecordingErrorLog()));

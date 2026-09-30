@@ -7,7 +7,6 @@ using Arca.Application.Charges.AdjustChargeAmount;
 using Arca.Application.Charges.ChargeKeyReplacement;
 using Arca.Application.Charges.GetChargeHistory;
 using Arca.Application.Charges.GetStudentChargesScreen;
-using Arca.Application.Charges.ListDebtors;
 using Arca.Application.Charges.MarkChargeExempt;
 using Arca.Application.Charges.MarkChargePaid;
 using Arca.Application.Charges.RevertCharge;
@@ -28,14 +27,13 @@ using Arca.UI.Charges;
 namespace Arca.Desktop.Composition;
 
 /// <summary>
-/// Joins the Payments section to its use cases (the composition root is the only place of the desktop project that knows them): each
+/// Joins the charges of the record of a student to their use cases (the composition root is the only place of the desktop project that knows them): each
 /// operation answers with the sentence that says what was done, made from the same result texts the rest of the application uses.
 /// </summary>
 static class ChargesComposition
 {
     public static ChargeServices Create(EfInventory store, IClock clock, ILocalizer localizer)
     {
-        var occupancy = new AssignmentOccupancy(store.Assignments, store.Lockers);
         var texts = new ChargeResultTexts(localizer);
         var paid = new MarkChargePaidHandler(store.Charges, store.ChargeEvents, store.Students, store.Years, store, clock);
         var exempt = new MarkChargeExemptHandler(store.Charges, store.ChargeEvents, store.Students, store.Years, store, clock);
@@ -44,8 +42,6 @@ static class ChargesComposition
         var revert = new RevertChargeHandler(store.Charges, store.ChargeEvents, store.Students, store.Years, store, clock);
         var adjust = new AdjustChargeAmountHandler(store.Charges, store.ChargeEvents, store.Students, store.Years, store, clock);
         var key = new ChargeKeyReplacementHandler(store.Students, store.Years, store.ConceptAmounts, store.Charges, store.ChargeEvents, store, clock);
-        var debtors = new ListDebtorsHandler(store.Charges, store.Students, store.Enrollments, store.Catalog, store.Years, occupancy, store.Lockers);
-        var search = new SearchStudentsHandler(store.Students, store.Enrollments, store.Catalog, store.Years, occupancy);
 
         static async Task<Result<string>> Said<T>(Task<Result<T>> run, Func<T, string> say)
         {
@@ -54,11 +50,6 @@ static class ChargesComposition
         }
 
         return new ChargeServices(
-            (year, concept, zone, ct) => debtors.HandleAsync(
-                new ListDebtorsRequest(new DebtorFilter(year, concept is null ? null : Enum.Parse<ChargeConcept>(concept), null, null, zone)), ct),
-            new ListAcademicYearsHandler(store.Years).HandleAsync,
-            new ListZoneRowsHandler(store.Zones, store.Lockers).HandleAsync,
-            new ListStudentRowsHandler(search, store.Charges).HandleAsync,
             (id, ct) => Screen(store, clock).HandleAsync(new GetStudentChargesScreenRequest(id), ct),
             async (id, ct) =>
             {

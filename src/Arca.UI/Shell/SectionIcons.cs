@@ -18,7 +18,6 @@ public static class SectionIcons
         [ShellCatalog.Home] = MaterialIconKind.Home,
         [ShellCatalog.Lockers] = MaterialIconKind.LockerMultiple,
         [ShellCatalog.Students] = MaterialIconKind.AccountGroupOutline,
-        [ShellCatalog.Payments] = MaterialIconKind.CashMultiple,
         [ShellCatalog.KeysAndIncidents] = MaterialIconKind.KeyVariant,
         [ShellCatalog.Reports] = MaterialIconKind.ChartBar,
         [ShellCatalog.Course] = MaterialIconKind.CalendarMonthOutline,

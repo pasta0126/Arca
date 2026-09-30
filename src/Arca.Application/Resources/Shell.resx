@@ -13,9 +13,6 @@
   <data name="Shell.Section.Students" xml:space="preserve">
     <value>Alumnes</value>
   </data>
-  <data name="Shell.Section.Payments" xml:space="preserve">
-    <value>Cobraments</value>
-  </data>
   <data name="Shell.Section.KeysAndIncidents" xml:space="preserve">
     <value>Claus i incidències</value>
   </data>
@@ -48,12 +45,6 @@
   </data>
   <data name="Shell.Screen.Assignments" xml:space="preserve">
     <value>Assignacions</value>
-  </data>
-  <data name="Shell.Screen.Charges" xml:space="preserve">
-    <value>Càrrecs</value>
-  </data>
-  <data name="Shell.Screen.Debtors" xml:space="preserve">
-    <value>Pendents de pagament</value>
   </data>
   <data name="Shell.Screen.Deposits" xml:space="preserve">
     <value>Dipòsits per retornar</value>

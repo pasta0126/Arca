@@ -23,10 +23,10 @@
 
 ## 4. Retirar la sección Cobros
 
-- [ ] 4.1 Quitar la entrada Cobros de la barra, de las definiciones de sección y de la búsqueda global (D8)
-- [ ] 4.2 Eliminar `PaymentsSection`, la consulta de morosos y su composición, conservando las operaciones sobre cargos y el aviso de deuda al asignar
-- [ ] 4.3 Sustituir las claves i18n obsoletas y comprobar que «Pendents de pagament» sigue en el filtro, la ficha y el indicador
-- [ ] 4.4 Pruebas: ninguna ruta abre Cobros, el aviso de deuda al asignar sigue funcionando y la reposición de llave se cobra desde la ficha
+- [x] 4.1 Quitar la entrada Cobros de la barra, de las definiciones de sección y de la búsqueda global (D8)
+- [x] 4.2 Eliminar `PaymentsSection`, la vista de morosos y su composición (la consulta de Application se conserva), conservando las operaciones sobre cargos y el aviso de deuda al asignar
+- [x] 4.3 Sustituir las claves i18n obsoletas y comprobar que «Pendents de pagament» sigue en el filtro, la ficha y el indicador
+- [x] 4.4 Pruebas: ninguna ruta abre Cobros, el aviso de deuda al asignar sigue funcionando y la reposición de llave se cobra desde la ficha
 
 ## 5. El mapa en la sección Taquillas
 

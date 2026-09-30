@@ -321,7 +321,7 @@ public sealed class LockerMapUiTests
 
         Assert.Equal("Home", navigation.CurrentSectionId);
         Assert.Equal("un altre inici", Assert.IsType<TextBlock>(shell.Current).Text);
-        Assert.Equal(8, registry.Sections.Count); // the sections did not change
+        Assert.Equal(7, registry.Sections.Count); // the sections did not change
     }
 
     [AvaloniaFact]
