@@ -105,3 +105,19 @@ El sistema SHALL informar del resultado de la copia, mostrar el progreso en copi
 #### Scenario: Error comprensible
 - **WHEN** falla la copia
 - **THEN** el sistema muestra un mensaje claro en el idioma activo, sin detalles técnicos, y el registro técnico no contiene datos de alumnos
+
+### Requirement: Copia y restauración siempre disponibles en Ajustes
+El sistema SHALL ofrecer en Ajustes un bloque de copia de seguridad con las acciones Fer una còpia y Restaurar una còpia, disponibles siempre, con o sin curso activo y con o sin datos, y accesibles con teclado.
+
+#### Scenario: Bloque de Ajustes
+- **WHEN** el usuario abre Ajustes
+- **THEN** ve el bloque de copia de seguridad con sus dos acciones
+
+#### Scenario: Sin curso activo ni datos
+- **WHEN** la base de datos está recién creada y no hay curso activo
+- **THEN** ambas acciones están disponibles
+
+#### Scenario: Selector de fichero
+- **WHEN** el usuario elige Fer una còpia
+- **THEN** se abre el selector de ficheros del sistema con el nombre propuesto y la última carpeta usada
+

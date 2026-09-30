@@ -135,3 +135,15 @@ El sistema SHALL informar en cada paso, mostrar el progreso sin bloquear la inte
 #### Scenario: Error comprensible
 - **WHEN** falla una restauración
 - **THEN** el sistema muestra un mensaje claro sin detalles técnicos y el registro técnico no contiene datos de alumnos
+
+### Requirement: Reinicio tras restaurar
+El sistema SHALL, tras una restauración correcta, cerrar la base de datos y volver a abrirse sola para cargar los datos restaurados, y si no puede hacerlo SHALL informar de que los datos ya están restaurados y de que hay que abrir ARCA de nuevo.
+
+#### Scenario: Reinicio automático
+- **WHEN** termina una restauración correcta
+- **THEN** la aplicación se cierra y se abre de nuevo pidiendo la contraseña de la copia
+
+#### Scenario: No se puede reiniciar
+- **WHEN** la aplicación no consigue volver a abrirse sola
+- **THEN** muestra que los datos ya están restaurados, indica dónde está la copia previa y pide abrir ARCA otra vez
+

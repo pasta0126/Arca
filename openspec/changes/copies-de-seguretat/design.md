@@ -52,6 +52,18 @@ Antes de empezar: el destino no es el fichero de la base, la carpeta existe y ad
 ### D10. Feedback
 Resultado estructurado con ubicación y tamaño, progreso con etapas reales (verificando, copiando, migrando, recargando), confirmaciones con su consecuencia y protección contra doble ejecución, según los principios de UX transversal.
 
+### D11. Reutiliza lo que ya hay de `acces-i-xifrat`
+El contenedor (`.arcabackup`: base cifrada más fichero de claves), la copia en línea, la verificación, la sesión de restauración con su desbloqueo por contraseña o por clave de recuperación y la copia previa ya existen en `Arca.Infrastructure/Backup` con sus pruebas. Este cambio **no los reescribe**: los completa (validación del destino, nombre propuesto, vista previa y clasificación de versión, migración en un temporal, retención de las 3 copias previas, recuentos) y los expone a la interfaz detrás de un servicio de Application (la interfaz no conoce Infrastructure).
+
+### D12. Migrar al restaurar, sobre el temporal
+La restauración copia la base elegida a un temporal junto a la base actual y, si es de una versión anterior, la migra allí con el migrador existente antes del intercambio atómico. La base actual no se toca hasta ese momento y el fichero de la copia nunca se modifica. Si la migración falla, se descarta el temporal y se informa sin cambiar nada.
+
+### D13. Reinicio tras restaurar
+La aplicación construye todos sus servicios sobre la sesión de base de datos abierta; recargar «en caliente» dejaría referencias a los datos anteriores. Tras una restauración correcta se guarda lo pendiente, se cierra la base y la aplicación **se lanza de nuevo a sí misma y termina**. Así no hay caché de los datos anteriores y el arranque normal pide la contraseña (que ahora es la de la copia). Si no se puede lanzar de nuevo, se informa de que los datos ya están restaurados y hay que abrir ARCA otra vez.
+
+### D14. Pantalla de Ajustes
+Un bloque plegable «Còpia de seguretat» en Ajustes con dos acciones: Fer una còpia y Restaurar una còpia. Usa el selector de ficheros del sistema (guardar y abrir), el `IConfirmationService` para el aviso de datos de menores, la sobrescritura y la confirmación final con el resumen de la vista previa como detalle, y los formularios de contraseña existentes (con la opción de la clave de recuperación). El bloque no depende del curso ni de los datos.
+
 ## Risks / Trade-offs
 
 - **Restaurar una copia hecha con otra contraseña cambia la del centro** → aviso antes de confirmar y copia previa conservada; las copias antiguas siguen abriéndose con la contraseña que tenían.

@@ -10,6 +10,8 @@ Toda la información del centro vive en un único fichero en un solo PC: si el e
 - Si la restauración falla a mitad, los datos actuales se recuperan automáticamente.
 - Copia y restauración funcionan sin conexión, y la restauración se ofrece también cuando la base actual está dañada.
 - Sin copias automáticas, programadas ni recordatorios, y sin mostrar la fecha de la última copia.
+- **Bloque «Còpia de seguretat» en Ajustes** con las dos acciones, siempre disponible (con o sin curso activo, con o sin datos), que reutiliza las ventanas de contraseña y de confirmación existentes y los selectores de fichero del sistema.
+- Tras restaurar, la aplicación se **reinicia sola** para cargar los datos restaurados sin arrastrar nada de los anteriores.
 
 ## Capabilities
 
@@ -28,7 +30,8 @@ Toda la información del centro vive en un único fichero en un solo PC: si el e
 - Una contraseña distinta para la copia: la copia usa las mismas llaves que la base (`acces-i-xifrat`).
 - Restauración parcial (solo alumnos, solo un curso) y fusión de copias.
 - Copiar los ajustes locales (ruta de la base de datos, modo portable).
-- Exportar datos en CSV (`informes-csv`) y pantallas (`ui-shell`, `ux-fonaments`).
+- Exportar datos en CSV (`informes-csv`).
+- Restaurar desde el primer arranque sin base de datos y desde el mensaje de fichero dañado (`configuracio-inicial` y el arranque): aquí se deja el servicio listo para ellos; la pantalla de Ajustes cubre la restauración con la aplicación abierta.
 
 ## Impacto
 
