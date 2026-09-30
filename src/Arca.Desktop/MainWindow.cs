@@ -69,6 +69,7 @@ public sealed class MainWindow : Window
         var header = new StackPanel();
         var headerView = new HeaderView(state, localizer, localizer.Get("App.Label.Title"));
         headerView.ShowIdentity(runtime.Identity);
+        headerView.ShowVersion(runtime.Info.ApplicationVersion);
         var search = new GlobalSearchViewModel(
             runtime.Search.HandleAsync, runtime.Delay, notifier,
             navigator, localizer);

@@ -61,6 +61,7 @@ Reglas:
 
 ## 2. Estilo general
 
+- **Versión de la aplicación**: se define **una sola vez**, en `<Version>` de `Directory.Build.props` (`MAYOR.MENOR.PARCHE`, con un sufijo como `-dev` en las compilaciones que no son una versión publicada). De ahí salen el número que se ve en pequeño junto al título y en Ajustes y el nombre de los paquetes (`build/package.sh`); no se escribe a mano en ningún otro sitio y una prueba de arquitectura lo comprueba.
 - **Licencia en cada fichero**: todo fichero de código lleva al inicio `// SPDX-License-Identifier: GPL-3.0-or-later` y `// Copyright (c) 2026 Guillermo Garcia Carballo`, para que la licencia conste sin ambigüedad. Los ficheros de documentación y de especificación siguen cubiertos por el `LICENSE` del repositorio.
 - **Idioma**: identificadores, comentarios de código, pruebas y commits en inglés. Specs y documentación en castellano. Textos de interfaz en catalán, siempre por clave.
 - **Nombres**: `PascalCase` para tipos y miembros, `camelCase` para parámetros y variables locales, `_camelCase` para campos privados. Los métodos asíncronos terminan en `Async`. Las interfaces empiezan por `I`.

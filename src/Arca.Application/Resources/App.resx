@@ -7,6 +7,9 @@
   <data name="App.Label.Title" xml:space="preserve">
     <value>ARCA</value>
   </data>
+  <data name="App.Label.VersionTooltip" xml:space="preserve">
+    <value>Versió de l'aplicació</value>
+  </data>
   <data name="App.Label.InfoTitle" xml:space="preserve">
     <value>Informació d'ARCA</value>
   </data>
