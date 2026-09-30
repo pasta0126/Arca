@@ -65,6 +65,7 @@ public sealed class LockersViewModel : ObservableObject
             r => r.Id, LoadRowsAsync, text, context.Notifications, context.Log,
             () => LockerEmptyStates.Describe(_emptyState, text)?.Message, emptyActions: EmptyActions);
         Lockers.List.SortBy("number");
+        Lockers.UseFilters(ActiveFilterTags, ResetFilterFields);
         ApplyFilters();
         Detail = new DetailViewModel<Guid, LockerScreenDetail>(LoadDetailAsync, BuildActions, text, context.Notifications, context.Log, services.History);
         Lockers.CurrentChanged += (_, _) => _ = ShowCurrentAsync();
@@ -157,14 +158,50 @@ public sealed class LockersViewModel : ObservableObject
     public string CountersText => _context.Localizer.Get(
         "Lockers.Label.Counters", _counters.Active, _counters.Free, _counters.Occupied, _counters.Reserved, _counters.Broken, _counters.Maintenance);
 
-    void ApplyFilters() => Lockers.List.SetPredicate(row =>
-        (IncludeRetired || row.Status != LockerStatusView.Retired)
-        && (ZoneFilter.Length == 0 || row.ZoneId.ToString() == ZoneFilter)
-        && (StatusFilter.Length == 0 || row.Status.ToString() == StatusFilter)
-        && (NumberFilter.Length == 0 || (int.TryParse(NumberFilter, NumberStyles.None, CultureInfo.InvariantCulture, out var number) && row.Number == number)));
+    void ApplyFilters()
+    {
+        Lockers.List.SetPredicate(row =>
+            (IncludeRetired || row.Status != LockerStatusView.Retired)
+            && (ZoneFilter.Length == 0 || row.ZoneId.ToString() == ZoneFilter)
+            && (StatusFilter.Length == 0 || row.Status.ToString() == StatusFilter)
+            && (NumberFilter.Length == 0 || (int.TryParse(NumberFilter, NumberStyles.None, CultureInfo.InvariantCulture, out var number) && row.Number == number)));
+        Lockers.RefreshFilters();
+    }
 
-    /// <summary>Removes every filter, the search and the number, which is what the state of a list without results offers.</summary>
-    public void ClearFilters()
+    /// <summary>The filters that are on, each with what removes it, for the labels under the search.</summary>
+    IReadOnlyList<ListFilterTag> ActiveFilterTags()
+    {
+        var text = _context.Localizer;
+        var tags = new List<ListFilterTag>();
+        if (ZoneFilter.Length > 0)
+        {
+            var zone = ZoneOptions.FirstOrDefault(o => o.Id == ZoneFilter)?.Label ?? ZoneFilter;
+            tags.Add(new ListFilterTag("zone", text.Get("Common.Label.FilterTag", text.Get("Lockers.Label.Zone"), zone), () => ZoneFilter = string.Empty));
+        }
+
+        if (StatusFilter.Length > 0)
+        {
+            var status = StatusOptions.FirstOrDefault(o => o.Id == StatusFilter)?.Label ?? StatusFilter;
+            tags.Add(new ListFilterTag("status", text.Get("Common.Label.FilterTag", text.Get("Lockers.Label.Status"), status), () => StatusFilter = string.Empty));
+        }
+
+        if (NumberFilter.Length > 0)
+        {
+            tags.Add(new ListFilterTag("number", text.Get("Common.Label.FilterTag", text.Get("Lockers.Label.Number"), NumberFilter), () => NumberFilter = string.Empty));
+        }
+
+        if (IncludeRetired)
+        {
+            tags.Add(new ListFilterTag("retired", text.Get("Lockers.Label.IncludeRetired"), () => IncludeRetired = false));
+        }
+
+        return tags;
+    }
+
+    /// <summary>Removes every filter, the search and the number, which is what the state of a list without results and the Reset button offer.</summary>
+    public void ClearFilters() => Lockers.ClearFilter();
+
+    void ResetFilterFields()
     {
         _zoneFilter = _statusFilter = _numberFilter = string.Empty;
         _includeRetired = false;
@@ -172,7 +209,6 @@ public sealed class LockersViewModel : ObservableObject
         Raise(nameof(StatusFilter));
         Raise(nameof(NumberFilter));
         Raise(nameof(IncludeRetired));
-        Lockers.ClearFilter();
         ApplyFilters();
     }
 

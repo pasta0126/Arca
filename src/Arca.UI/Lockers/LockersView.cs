@@ -20,6 +20,8 @@ public static class LockersView
 {
     public static ScreenView Create(LockersViewModel model, ILocalizer localizer)
     {
+        var retired = new CheckBox { Content = localizer.Get("Lockers.Label.IncludeRetired") };
+        var number = new TextBox { PlaceholderText = localizer.Get("Lockers.Label.Number"), Width = 90 };
         var zone = Filter(model.ZoneOptions, () => model.ZoneFilter, v => model.ZoneFilter = v);
         var status = Filter(model.StatusOptions, () => model.StatusFilter, v => model.StatusFilter = v);
         model.PropertyChanged += (_, e) =>
@@ -35,14 +37,22 @@ public static class LockersView
                 zone.SelectedItem = model.ZoneOptions.FirstOrDefault(o => o.Id == model.ZoneFilter);
             }
 
+            if (e.PropertyName == nameof(LockersViewModel.IncludeRetired))
+            {
+                retired.IsChecked = model.IncludeRetired;
+            }
+
+            if (e.PropertyName == nameof(LockersViewModel.NumberFilter) && number.Text != model.NumberFilter)
+            {
+                number.Text = model.NumberFilter;
+            }
+
             if (e.PropertyName == nameof(LockersViewModel.StatusFilter))
             {
                 status.SelectedItem = model.StatusOptions.FirstOrDefault(o => o.Id == model.StatusFilter);
             }
         };
-        var number = new TextBox { PlaceholderText = localizer.Get("Lockers.Label.Number"), Width = 90 };
         number.TextChanged += (_, _) => model.NumberFilter = number.Text ?? string.Empty;
-        var retired = new CheckBox { Content = localizer.Get("Lockers.Label.IncludeRetired") };
         retired.IsCheckedChanged += (_, _) => model.IncludeRetired = retired.IsChecked == true;
         var filters = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         filters.Children.Add(zone);
@@ -59,7 +69,7 @@ public static class LockersView
         left.Children.Add(counters);
         left.Children.Add(list);
 
-        var screen = new ScreenView(localizer.Get("Shell.Screen.Lockers"), model.MainActions, left, new LockerDetailPanel(model, localizer));
+        var screen = new ScreenView(localizer.Get("Shell.Screen.Lockers"), model.MainActions, left, new LockerDetailPanel(model, localizer), selection: model.Lockers);
         IDisposable? shortcut = null;
         screen.AttachedToVisualTree += (_, _) =>
         {

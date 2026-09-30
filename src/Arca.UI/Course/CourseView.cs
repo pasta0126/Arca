@@ -40,7 +40,7 @@ public static class CourseView
         DockPanel.SetDock(notice, Dock.Top);
         left.Children.Add(notice);
         left.Children.Add(list);
-        var screen = new ScreenView(localizer.Get("Shell.Section.Course"), model.MainActions, left, new CourseDetailView(model, localizer));
+        var screen = new ScreenView(localizer.Get("Shell.Section.Course"), model.MainActions, left, new CourseDetailView(model, localizer), selection: model.Years);
         IDisposable? shortcut = null;
         screen.AttachedToVisualTree += (_, _) =>
         {

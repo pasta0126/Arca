@@ -7,7 +7,9 @@ using Arca.UI.Layout;
 using Arca.UI.Lists;
 using Arca.UI.Theme;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Interactivity;
 
 namespace Arca.UI.Shell;
 
@@ -24,8 +26,11 @@ public sealed class ScreenView : UserControl
     /// <param name="list">The list, with whatever search and filters it has.</param>
     /// <param name="detail">The detail of the selected element, or null when the screen has none.</param>
     /// <param name="state">The loading and empty states of the list, or null when it has none.</param>
-    public ScreenView(string title, IReadOnlyList<AppAction> actions, Control list, Control? detail = null, ListStateViewModel? state = null)
+    /// <param name="selection">What Esc clears when it reaches the screen: the row chosen. Null when the screen has none.</param>
+    public ScreenView(string title, IReadOnlyList<AppAction> actions, Control list, Control? detail = null, ListStateViewModel? state = null, ISelectionOwner? selection = null)
     {
+        _selection = selection;
+        Focusable = true; // so the focus can rest on the screen itself when Esc lets go of the control that had it
         Title = ThemedText.Title(title);
         Buttons = [.. actions.Select(ActionControls.Button)];
 
@@ -38,7 +43,9 @@ public sealed class ScreenView : UserControl
         bar.Children.Add(Title);
 
         var body = new Grid().ThemedThickness(MarginProperty, ArcaResourceKeys.SpacingMedium);
-        body.Children.Add(detail is null ? list : new AdaptivePanels(list, detail));
+        // A screen without a detail is a page of blocks, which scrolls when it is taller than the window; one with a list and a
+        // detail keeps the scroll of each (a scrolling frame around a virtualized list would make it draw every row).
+        body.Children.Add(detail is null ? new ScrollViewer { Content = list, VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto } : new AdaptivePanels(list, detail));
         if (state is not null)
         {
             body.Children.Add(new ListStateView(state));
@@ -50,6 +57,41 @@ public sealed class ScreenView : UserControl
         layout.Children.Add(body);
         Content = layout;
         this.ThemedThickness(PaddingProperty, ArcaResourceKeys.SpacingLarge);
+        AddHandler(KeyDownEvent, OnEscape, RoutingStrategies.Tunnel);
+    }
+
+    readonly ISelectionOwner? _selection;
+
+    /// <summary>
+    /// What Esc does inside a screen, in this order (navegacio-i-cerca, Patrón común de pantalla): a dialog closes first, by itself, as
+    /// it is a window of its own; a dropdown that is open closes; a box with text is emptied; and then the row chosen is let go
+    /// together with the focus, leaving nothing active.
+    /// </summary>
+    void OnEscape(object? sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape || e.Handled || e.KeyModifiers != KeyModifiers.None)
+        {
+            return;
+        }
+
+        if (e.Source is ComboBox { IsDropDownOpen: true })
+        {
+            return; // the dropdown takes this Esc to close itself
+        }
+
+        if (e.Source is TextBox { Text.Length: > 0 } box)
+        {
+            box.Text = string.Empty;
+            e.Handled = true;
+            return;
+        }
+
+        if (_selection is { HasSelection: true })
+        {
+            _selection.ClearSelection();
+            Focus(); // the screen itself takes the focus: no list, box or button stays active
+            e.Handled = true;
+        }
     }
 
     /// <summary>The title, so a test or the header can read it.</summary>

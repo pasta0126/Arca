@@ -77,6 +77,7 @@ public sealed class StudentsViewModel : ObservableObject
             () => NoActiveYear ? text.Get("Students.Empty.NoYear")
                 : _emptyState == StudentEmptyState.NoStudents ? text.Get("Students.Empty.NoStudentsList") : StudentEmptyStates.Describe(_emptyState, text)?.Message, emptyActions: EmptyActions);
         Students.List.SortBy("last");
+        Students.UseFilters(ActiveFilterTags, ResetFilterFields);
         ApplyFilters();
         Detail = new DetailViewModel<Guid, StudentScreenDetail>(LoadDetailAsync, BuildActions, text, context.Notifications, context.Log, services.History);
         Students.CurrentChanged += (_, _) => _ = ShowCurrentAsync();
@@ -195,14 +196,49 @@ public sealed class StudentsViewModel : ObservableObject
     /// <summary>How many active students there are and how many have a locker, whatever the filters hide.</summary>
     public string CountersText => _context.Localizer.Get("Students.Label.Counters", _counters.Active, _counters.WithLocker, _counters.WithoutLocker);
 
-    void ApplyFilters() => Students.List.SetPredicate(s =>
-        (IncludeRetired || !s.IsRetired)
-        && (LevelFilter.Length == 0 || s.LevelName == LevelFilter)
-        && (GroupFilter.Length == 0 || s.GroupName == GroupFilter)
-        && (LockerFilter switch { "with" => s.LockerNumber is not null, "without" => s.LockerNumber is null && !s.IsRetired, _ => true }));
+    void ApplyFilters()
+    {
+        Students.List.SetPredicate(s =>
+            (IncludeRetired || !s.IsRetired)
+            && (LevelFilter.Length == 0 || s.LevelName == LevelFilter)
+            && (GroupFilter.Length == 0 || s.GroupName == GroupFilter)
+            && (LockerFilter switch { "with" => s.LockerNumber is not null, "without" => s.LockerNumber is null && !s.IsRetired, _ => true }));
+        Students.RefreshFilters();
+    }
 
-    /// <summary>Removes the search and every filter, which is what the state of a list without results offers.</summary>
-    public void ClearFilters()
+    /// <summary>The filters that are on, each with what removes it, for the labels under the search.</summary>
+    IReadOnlyList<ListFilterTag> ActiveFilterTags()
+    {
+        var text = _context.Localizer;
+        var tags = new List<ListFilterTag>();
+        if (LevelFilter.Length > 0)
+        {
+            tags.Add(new ListFilterTag("level", text.Get("Common.Label.FilterTag", text.Get("Students.Label.Level"), LevelFilter), () => LevelFilter = string.Empty));
+        }
+
+        if (GroupFilter.Length > 0)
+        {
+            tags.Add(new ListFilterTag("group", text.Get("Common.Label.FilterTag", text.Get("Students.Label.Group"), GroupFilter), () => GroupFilter = string.Empty));
+        }
+
+        if (LockerFilter.Length > 0)
+        {
+            var label = LockerOptions.FirstOrDefault(o => o.Id == LockerFilter)?.Label ?? LockerFilter;
+            tags.Add(new ListFilterTag("locker", label, () => LockerFilter = string.Empty));
+        }
+
+        if (IncludeRetired)
+        {
+            tags.Add(new ListFilterTag("retired", text.Get("Students.Label.IncludeRetired"), () => IncludeRetired = false));
+        }
+
+        return tags;
+    }
+
+    /// <summary>Removes the search and every filter, which is what the state of a list without results and the Reset button offer.</summary>
+    public void ClearFilters() => Students.ClearFilter();
+
+    void ResetFilterFields()
     {
         _levelFilter = _groupFilter = _lockerFilter = string.Empty;
         _includeRetired = false;
@@ -210,7 +246,6 @@ public sealed class StudentsViewModel : ObservableObject
         Raise(nameof(GroupFilter));
         Raise(nameof(LockerFilter));
         Raise(nameof(IncludeRetired));
-        Students.ClearFilter();
         ApplyFilters();
     }
 

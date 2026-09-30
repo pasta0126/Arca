@@ -1,10 +1,10 @@
 ## 1. Marco común de lista y pantalla
 
-- [ ] 1.1 Ampliar el modelo de lista con recuento, comando Reiniciar (limpia búsqueda y filtros) y colección de filtros activos quitables (D1)
-- [ ] 1.2 Vista de la barra de lista: cuadro de búsqueda, botón Reiniciar (deshabilitado sin nada que reiniciar), etiquetas de filtro y recuento, con claves i18n en catalán
-- [ ] 1.3 Manejo de `Esc` en el marco con la prioridad del diseño (diálogo, búsqueda con texto, selección y foco) (D2)
-- [ ] 1.4 `ScrollViewer` en `ScreenView` para pantallas sin lista virtualizada y en los paneles de detalle; corregir Ajustes (D3)
-- [ ] 1.5 Pruebas: reinicio con búsqueda y dos filtros, reinicio deshabilitado, quitar un filtro, `Esc` con selección, con diálogo abierto y con búsqueda enfocada, Ajustes que desplaza hasta el último bloque, tamaño mínimo de ventana y DPI alto
+- [x] 1.1 Ampliar el modelo de lista con recuento, comando Reiniciar (limpia búsqueda y filtros) y colección de filtros activos quitables (D1)
+- [x] 1.2 Vista de la barra de lista: cuadro de búsqueda, botón Reiniciar (deshabilitado sin nada que reiniciar), etiquetas de filtro y recuento, con claves i18n en catalán
+- [x] 1.3 Manejo de `Esc` en el marco con la prioridad del diseño (diálogo, búsqueda con texto, selección y foco) (D2)
+- [x] 1.4 `ScrollViewer` en `ScreenView` para pantallas sin lista virtualizada y en los paneles de detalle; corregir Ajustes (D3)
+- [x] 1.5 Pruebas: reinicio con búsqueda y dos filtros, reinicio deshabilitado, quitar un filtro, `Esc` con selección, con diálogo abierto y con búsqueda enfocada, Ajustes que desplaza hasta el último bloque, tamaño mínimo de ventana y DPI alto
 
 ## 2. Filtro de pendientes de pago
 

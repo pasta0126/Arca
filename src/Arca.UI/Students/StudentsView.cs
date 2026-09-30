@@ -19,6 +19,7 @@ public static class StudentsView
 {
     public static ScreenView Create(StudentsViewModel model, ILocalizer localizer)
     {
+        var retired = new CheckBox { Content = localizer.Get("Students.Label.IncludeRetired") };
         var level = Filter(model.LevelOptions, () => model.LevelFilter, v => model.LevelFilter = v);
         var group = Filter(model.GroupOptions, () => model.GroupFilter, v => model.GroupFilter = v);
         var locker = Filter(model.LockerOptions, () => model.LockerFilter, v => model.LockerFilter = v);
@@ -43,11 +44,13 @@ public static class StudentsView
                 case nameof(StudentsViewModel.LockerFilter):
                     locker.SelectedItem = model.LockerOptions.FirstOrDefault(o => o.Id == model.LockerFilter);
                     break;
+                case nameof(StudentsViewModel.IncludeRetired):
+                    retired.IsChecked = model.IncludeRetired;
+                    break;
                 default:
                     break;
             }
         };
-        var retired = new CheckBox { Content = localizer.Get("Students.Label.IncludeRetired") };
         retired.IsCheckedChanged += (_, _) => model.IncludeRetired = retired.IsChecked == true;
         var filters = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
         filters.Children.Add(level);
@@ -63,7 +66,7 @@ public static class StudentsView
         left.Children.Add(counters);
         left.Children.Add(list);
 
-        var screen = new ScreenView(localizer.Get("Shell.Screen.Students"), model.MainActions, left, new StudentDetailPanel(model, localizer));
+        var screen = new ScreenView(localizer.Get("Shell.Screen.Students"), model.MainActions, left, new StudentDetailPanel(model, localizer), selection: model.Students);
         IDisposable? shortcut = null;
         screen.AttachedToVisualTree += (_, _) =>
         {

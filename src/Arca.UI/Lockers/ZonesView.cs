@@ -19,7 +19,7 @@ public static class ZonesView
     public static ScreenView Create(ZonesViewModel model, ILocalizer localizer)
     {
         var list = new ScreenListView<ZoneRow, Guid>(model.Zones, localizer);
-        var screen = new ScreenView(localizer.Get("Shell.Screen.Zones"), model.MainActions, list, new ZoneDetailPanel(model, localizer));
+        var screen = new ScreenView(localizer.Get("Shell.Screen.Zones"), model.MainActions, list, new ZoneDetailPanel(model, localizer), selection: model.Zones);
         screen.AttachedToVisualTree += (_, _) => _ = model.LoadAsync();
         return screen;
     }

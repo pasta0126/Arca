@@ -284,6 +284,90 @@ public sealed class StudentsScreenTests
         Assert.Equal(ListViewState.Content, model.Students.State.State);
     }
 
+    const string PatternSpec = "ui-llistats-i-detall/navegacio-i-cerca";
+
+    [Fact]
+    [Trait("spec", PatternSpec + ": Patrón común de pantalla (Reiniciar la búsqueda)")]
+    public async Task Reset_empties_the_search_and_takes_every_filter_off_and_the_list_goes_back_to_its_start()
+    {
+        AddStudent("Marta", "Puig", "1r ESO", "A", locker: 5);
+        AddStudent("Pau", "Alsina", "2n ESO", "B");
+        AddStudent("Oriol", "Zamora", "1r ESO", "B", retired: true);
+        var model = Model();
+        await model.LoadAsync();
+        var start = model.Students.List.Rows.Select(s => s.LastName).ToList();
+        Assert.False(model.Students.Reset.IsAvailable);
+
+        model.Students.List.FilterText = "p";
+        model.LevelFilter = "2n ESO";
+        model.LockerFilter = "without";
+        model.IncludeRetired = true;
+        Assert.True(model.Students.Reset.IsAvailable);
+        Assert.Equal(["level", "locker", "retired"], model.Students.ActiveFilters.Select(t => t.Id));
+
+        model.Students.Reset.Execute(null);
+
+        Assert.Equal(string.Empty, model.Students.List.FilterText);
+        Assert.Equal(string.Empty, model.LevelFilter);
+        Assert.Equal(string.Empty, model.LockerFilter);
+        Assert.False(model.IncludeRetired);
+        Assert.Empty(model.Students.ActiveFilters);
+        Assert.Equal(start, model.Students.List.Rows.Select(s => s.LastName));
+        Assert.Equal("2 de 3", model.Students.CountText);
+    }
+
+    [Fact]
+    [Trait("spec", PatternSpec + ": Patrón común de pantalla (Nada que reiniciar)")]
+    public async Task Reset_is_disabled_with_its_reason_when_there_is_no_search_and_no_filter()
+    {
+        AddStudent("Marta", "Puig");
+        var model = Model();
+        await model.LoadAsync();
+
+        Assert.False(model.Students.Reset.IsAvailable);
+        Assert.Contains("per reiniciar", model.Students.Reset.UnavailableReason, StringComparison.Ordinal);
+        model.Students.List.FilterText = "m";
+        Assert.True(model.Students.Reset.IsAvailable);
+    }
+
+    [Fact]
+    [Trait("spec", PatternSpec + ": Patrón común de pantalla (Quitar un filtro)")]
+    public async Task Removing_the_label_of_one_filter_takes_only_that_filter_off()
+    {
+        AddStudent("Marta", "Puig", "1r ESO", "A", locker: 5);
+        AddStudent("Pau", "Alsina", "2n ESO", "B");
+        var model = Model();
+        await model.LoadAsync();
+        model.LevelFilter = "2n ESO";
+        model.GroupFilter = "B";
+        Assert.Equal(["Nivell: 2n ESO", "Grup: B"], model.Students.ActiveFilters.Select(t => t.Text));
+
+        model.Students.ActiveFilters.Single(t => t.Id == "level").Remove();
+
+        Assert.Equal(string.Empty, model.LevelFilter);
+        Assert.Equal("B", model.GroupFilter);
+        Assert.Equal(["group"], model.Students.ActiveFilters.Select(t => t.Id));
+    }
+
+    [Fact]
+    [Trait("spec", PatternSpec + ": Patrón común de pantalla (Quitar la selección con Esc)")]
+    public async Task Clearing_the_selection_leaves_the_detail_on_its_choose_one_state()
+    {
+        var marta = AddStudent("Marta", "Puig");
+        var model = Model();
+        await model.LoadAsync();
+        model.Students.Select(marta);
+        await model.Detail.ShowAsync(true, marta.Id);
+        Assert.True(model.Students.HasSelection);
+
+        model.Students.ClearSelection();
+        await model.Detail.ShowAsync(false, default);
+
+        Assert.False(model.Students.HasSelection);
+        Assert.Null(model.Students.Current);
+        Assert.Null(model.Detail.Detail);
+    }
+
     [Fact]
     [Trait("spec", Spec + ": Alumnos sin curso activo (Sin curso activo)")]
     public async Task Without_an_active_year_the_section_says_so_offers_the_course_and_disables_adding_with_the_reason()
