@@ -16,4 +16,5 @@ public sealed record HomeCardServices(
     Func<EditHomeCardRequest, CancellationToken, Task<Result<HomeCardSaved>>> Edit,
     Func<MoveHomeCardRequest, CancellationToken, Task<Result<bool>>> Move,
     Func<DeleteHomeCardRequest, CancellationToken, Task<Result<string>>> Delete,
-    Func<CancellationToken, Task<Result<CardOptions>>> Options);
+    Func<CancellationToken, Task<Result<CardOptions>>> Options,
+    Func<PreviewHomeCardRequest, CancellationToken, Task<Result<int?>>> Preview);

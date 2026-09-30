@@ -77,6 +77,7 @@ public sealed class StudentsScreenTests
     readonly List<StudentListRow> _students = [];
     readonly List<LockerListRow> _lockers = [];
     readonly FakeChargeWorld _chargeWorld = new();
+    readonly FakeHomeCards _homeCards = new();
     readonly List<string> _calls = [];
     readonly Dictionary<Guid, StudentScreenDetail> _details = [];
     RecordingConfirmations _confirmations = new(true);
@@ -220,7 +221,8 @@ public sealed class StudentsScreenTests
             _courseOpened++;
             return Task.CompletedTask;
         },
-        new Arca.UI.Charges.StudentChargesViewModel(_chargeWorld.Services(), Context(), () => Task.CompletedTask));
+        new Arca.UI.Charges.StudentChargesViewModel(_chargeWorld.Services(), Context(), () => Task.CompletedTask),
+        _homeCards.Services());
 
     // --- The list ---
 
@@ -601,6 +603,53 @@ public sealed class StudentsScreenTests
 
             Assert.Equal(counted, model.Students.List.Rows.Count);
         }
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Crear una tarjeta desde una pantalla filtrada (Sin filtros)")]
+    public async Task Save_as_a_card_is_unavailable_without_filters_and_says_to_filter_first()
+    {
+        AddStudent("Marta", "Puig");
+        var model = Model();
+        await model.LoadAsync();
+
+        Assert.Contains(model.SaveAsCard, model.MainActions);
+        Assert.False(model.SaveAsCard.IsAvailable);
+        Assert.Equal("Primer cal posar algun filtre.", model.SaveAsCard.UnavailableReason);
+
+        model.LockerFilter = "without";
+        Assert.True(model.SaveAsCard.IsAvailable);
+        model.Students.Reset.Execute(null);
+        Assert.False(model.SaveAsCard.IsAvailable); // resetting the filters does not touch any card and leaves nothing to save
+        Assert.Empty(_homeCards.Created);
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Crear una tarjeta desde una pantalla filtrada (Guardar el filtro actual)")]
+    public async Task Saving_the_filters_as_a_card_asks_only_for_a_title_and_creates_a_card_with_those_criteria()
+    {
+        AddStudent("Marta", "Puig", "1r ESO", "A");
+        var model = Model();
+        await model.LoadAsync();
+        model.LockerFilter = "without";
+        model.LevelFilter = "1r ESO";
+
+        model.SaveAsCard.Execute(null);
+        await Task.Delay(50);
+        var form = (FormViewModel<Arca.Application.Home.HomeCardSaved>)_forms.Last;
+
+        Assert.Equal(["Title"], form.Fields.Select(f => f.Id));
+        Assert.Equal("Alumnes: Nivell: 1r ESO · Sense taquilla", form.Fields[0].Text);
+        Assert.Contains("Es desarà el filtre: Nivell: 1r ESO · Sense taquilla.", form.Note, StringComparison.Ordinal);
+        Assert.Contains("No escriguis noms d'alumnes al títol.", form.Note, StringComparison.Ordinal);
+
+        form.Fields[0].Text = "Sense taquilla de 1r";
+        await form.Save.RunAsync();
+
+        var request = Assert.Single(_homeCards.Created);
+        Assert.Equal(("Sense taquilla de 1r", Arca.Application.Home.HomeCardTargetView.Students), (request.Title, request.Target));
+        Assert.Equal(model.CurrentCardCriteria.OrderBy(c => c.Key), request.Criteria.OrderBy(c => c.Key));
+        Assert.Contains(_notifications.Published, n => n.Text == "S'ha creat la targeta «Sense taquilla de 1r».");
     }
 
     [Fact]

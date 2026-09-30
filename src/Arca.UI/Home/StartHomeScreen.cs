@@ -87,6 +87,7 @@ public sealed class StartHomeScreen(StartHomeModel model, GlobalStateService sta
         }
 
         var actions = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
+        actions.Children.Add(ActionControls.Button(model.NewCard));
         actions.Children.Add(ActionControls.Button(model.RestoreDefaults));
         body.Children.Add(actions);
         OpenButtons = open;
@@ -115,6 +116,7 @@ public sealed class StartHomeScreen(StartHomeModel model, GlobalStateService sta
 
         var tools = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right }
             .Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingSmall);
+        tools.Children.Add(Tool(card.Edit, MaterialIconKind.PencilOutline));
         tools.Children.Add(Tool(card.MoveEarlier, MaterialIconKind.ChevronLeft));
         tools.Children.Add(Tool(card.MoveLater, MaterialIconKind.ChevronRight));
         tools.Children.Add(Tool(card.Delete, MaterialIconKind.TrashCanOutline));

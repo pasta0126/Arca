@@ -140,3 +140,44 @@ public sealed class GetCardOptionsHandler(IZoneRepository zones, ICatalogReposit
         [.. (await catalog.ListLevelsAsync(ct)).Select(l => l.Name).OrderBy(n => n, TextComparer.Comparer)],
         [.. (await catalog.ListGroupsAsync(ct)).Select(g => g.Name).OrderBy(n => n, TextComparer.Comparer)]));
 }
+
+public sealed record PreviewHomeCardRequest(HomeCardTargetView Target, IReadOnlyDictionary<string, string> Criteria);
+
+/// <summary>
+/// How many elements a filter that is not yet a card would count (targetes-d-inici, Crear una tarjeta desde Inicio, Vista previa del
+/// recuento), with the same rule the cards and the screens use. Nothing is saved. A count of nothing means the students of a centre
+/// without an active year.
+/// </summary>
+public sealed class PreviewHomeCardHandler(Func<CancellationToken, Task<Result<LockerRowsListing>>> lockerRows, Func<CancellationToken, Task<Result<StudentRowsListing>>> studentRows)
+{
+    public async Task<Result<int?>> HandleAsync(PreviewHomeCardRequest request, CancellationToken ct)
+    {
+        var target = Enum.Parse<HomeCardTarget>(request.Target.ToString());
+        var checkedCriteria = HomeCardCriteria.Check(target, request.Criteria);
+        if (!checkedCriteria.IsSuccess)
+        {
+            return Result<int?>.Failure(checkedCriteria.Error!);
+        }
+
+        if (target == HomeCardTarget.Students)
+        {
+            var students = await studentRows(ct);
+            if (!students.IsSuccess)
+            {
+                return students.Error!.Code == "SchoolYears.NoActiveYear" ? Result<int?>.Success(null) : Result<int?>.Failure(students.Error);
+            }
+
+            var filter = StudentCardFilter.From(checkedCriteria.Value!);
+            return Result<int?>.Success(students.Value!.Rows.Count(filter.Matches));
+        }
+
+        var lockers = await lockerRows(ct);
+        if (!lockers.IsSuccess)
+        {
+            return Result<int?>.Failure(lockers.Error!);
+        }
+
+        var lockerFilter = LockerCardFilter.From(checkedCriteria.Value!);
+        return Result<int?>.Success(lockers.Value!.Rows.Count(lockerFilter.Matches));
+    }
+}

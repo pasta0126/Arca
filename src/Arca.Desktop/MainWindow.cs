@@ -51,11 +51,11 @@ public sealed class MainWindow : Window
             {
                 [ShellCatalog.Settings] = () => SettingsRoot(runtime, themeSettings, screenContext),
                 [ShellCatalog.Lockers] = () => LockersSection.Create(
-                    runtime.LockerServices, runtime.AssignmentServices, screenContext, runtime.Actions[StandardActions.New], assignments, runtime.Preferences, navigator, notifier, router),
+                    runtime.LockerServices, runtime.AssignmentServices, screenContext, runtime.Actions[StandardActions.New], assignments, runtime.Preferences, navigator, notifier, router, runtime.HomeCards),
                 [ShellCatalog.Students] = () => StudentsView.Create(
                     new StudentsViewModel(runtime.StudentServices, screenContext, assignments, runtime.Actions[StandardActions.New],
                         () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)),
-                        new StudentChargesViewModel(runtime.ChargeServices, screenContext, () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course)))), localizer, runtime.Preferences, router),
+                        new StudentChargesViewModel(runtime.ChargeServices, screenContext, () => Task.FromResult(navigation!.Navigate(ShellCatalog.Course))), runtime.HomeCards), localizer, runtime.Preferences, router),
                 [ShellCatalog.Course] = () => CourseView.Create(
                     new CourseViewModel(runtime.CourseServices, screenContext, runtime.Actions[StandardActions.New]), localizer),
             },

@@ -58,3 +58,13 @@ public enum HomeCardMove
     Earlier,
     Later,
 }
+
+/// <summary>The limits of the cards, as the screens show them, taken from the domain so they are said once.</summary>
+public static class HomeCardLimits
+{
+    /// <summary>The most cards a centre can have.</summary>
+    public const int MaximumCards = Arca.Domain.Home.HomeCard.MaximumCards;
+
+    /// <summary>The longest title of a card, in characters.</summary>
+    public const int MaximumTitleLength = Arca.Domain.Home.HomeCard.MaximumTitleLength;
+}

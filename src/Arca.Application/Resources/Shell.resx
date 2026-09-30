@@ -427,4 +427,106 @@
   <data name="Shell.Home.Notify.NothingToRestore" xml:space="preserve">
     <value>Ja hi són totes les targetes de sèrie.</value>
   </data>
+  <data name="Shell.Home.Form.NewTitle" xml:space="preserve">
+    <value>Nova targeta</value>
+  </data>
+  <data name="Shell.Home.Form.EditTitle" xml:space="preserve">
+    <value>Edita la targeta</value>
+  </data>
+  <data name="Shell.Home.Form.SaveLabel" xml:space="preserve">
+    <value>Desa la targeta</value>
+  </data>
+  <data name="Shell.Home.Form.FieldTitle" xml:space="preserve">
+    <value>Títol</value>
+  </data>
+  <data name="Shell.Home.Form.FieldTarget" xml:space="preserve">
+    <value>Pantalla que obre</value>
+  </data>
+  <data name="Shell.Home.Form.FieldStatus" xml:space="preserve">
+    <value>Estat de la taquilla</value>
+  </data>
+  <data name="Shell.Home.Form.FieldZone" xml:space="preserve">
+    <value>Zona</value>
+  </data>
+  <data name="Shell.Home.Form.FieldLocker" xml:space="preserve">
+    <value>Taquilla de l'alumne</value>
+  </data>
+  <data name="Shell.Home.Form.FieldPayment" xml:space="preserve">
+    <value>Pagaments</value>
+  </data>
+  <data name="Shell.Home.Form.FieldLevel" xml:space="preserve">
+    <value>Nivell</value>
+  </data>
+  <data name="Shell.Home.Form.FieldGroup" xml:space="preserve">
+    <value>Grup</value>
+  </data>
+  <data name="Shell.Home.Form.FieldRetired" xml:space="preserve">
+    <value>Alumnes de baixa</value>
+  </data>
+  <data name="Shell.Home.Form.Any" xml:space="preserve">
+    <value>Qualsevol</value>
+  </data>
+  <data name="Shell.Home.Form.TargetMap" xml:space="preserve">
+    <value>Mapa de taquilles</value>
+  </data>
+  <data name="Shell.Home.Form.TargetLockers" xml:space="preserve">
+    <value>Llista de taquilles</value>
+  </data>
+  <data name="Shell.Home.Form.TargetStudents" xml:space="preserve">
+    <value>Alumnes</value>
+  </data>
+  <data name="Shell.Home.Form.LockerWith" xml:space="preserve">
+    <value>Amb taquilla</value>
+  </data>
+  <data name="Shell.Home.Form.LockerWithout" xml:space="preserve">
+    <value>Sense taquilla</value>
+  </data>
+  <data name="Shell.Home.Form.RetiredNo" xml:space="preserve">
+    <value>No els incloguis</value>
+  </data>
+  <data name="Shell.Home.Form.RetiredYes" xml:space="preserve">
+    <value>Inclou-los</value>
+  </data>
+  <data name="Shell.Home.Form.NoteSummary" xml:space="preserve">
+    <value>Es desarà el filtre: {0}.</value>
+  </data>
+  <data name="Shell.Home.Form.NoteNames" xml:space="preserve">
+    <value>No escriguis noms d'alumnes al títol.</value>
+  </data>
+  <data name="Shell.Home.Form.NoteOnlyScreen" xml:space="preserve">
+    <value>Només s'apliquen els filtres de la pantalla triada.</value>
+  </data>
+  <data name="Shell.Home.Form.NotePreview" xml:space="preserve">
+    <value>Amb aquest filtre ara hi ha {0} {1}.</value>
+  </data>
+  <data name="Shell.Home.Form.NotePreviewNoYear" xml:space="preserve">
+    <value>No es pot comptar sense un curs actiu.</value>
+  </data>
+  <data name="Shell.Home.Notify.Created" xml:space="preserve">
+    <value>S'ha creat la targeta «{0}».</value>
+  </data>
+  <data name="Shell.Home.Notify.Edited" xml:space="preserve">
+    <value>S'ha desat la targeta «{0}».</value>
+  </data>
+  <data name="Shell.Home.Action.New" xml:space="preserve">
+    <value>Nova targeta</value>
+  </data>
+  <data name="Shell.Home.Action.Edit" xml:space="preserve">
+    <value>Edita la targeta «{0}»</value>
+  </data>
+  <data name="Shell.Home.Action.SaveAsCard" xml:space="preserve">
+    <value>Desa com a targeta</value>
+  </data>
+  <data name="Shell.Home.Reason.NeedFilter" xml:space="preserve">
+    <value>Primer cal posar algun filtre.</value>
+  </data>
+  <data name="Shell.Home.Reason.TooMany" xml:space="preserve">
+    <value>Ja hi ha {0} targetes, que és el màxim. Esborra'n alguna.</value>
+  </data>
+  <data name="Shell.Home.Form.NounStudents" xml:space="preserve">
+    <value>alumnes</value>
+  </data>
+  <data name="Shell.Home.Form.NounLockers" xml:space="preserve">
+    <value>taquilles</value>
+  </data>
 </root>

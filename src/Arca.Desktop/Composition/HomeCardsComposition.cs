@@ -34,6 +34,7 @@ static class HomeCardsComposition
             new EditHomeCardHandler(store.HomeCards, store).HandleAsync,
             new MoveHomeCardHandler(store.HomeCards, store).HandleAsync,
             new DeleteHomeCardHandler(store.HomeCards, store).HandleAsync,
-            new GetCardOptionsHandler(store.Zones, store.Catalog).HandleAsync);
+            new GetCardOptionsHandler(store.Zones, store.Catalog).HandleAsync,
+            new PreviewHomeCardHandler(lockerRows.HandleAsync, studentRows.HandleAsync).HandleAsync);
     }
 }

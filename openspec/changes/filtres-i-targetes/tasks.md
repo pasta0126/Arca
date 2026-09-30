@@ -32,11 +32,11 @@
 
 ## 5. Crear tarjetas
 
-- [ ] 5.1 Formulario de tarjeta (título, resumen de criterios, aviso de no poner nombres) con el `FormViewModel` existente y errores en el campo, y la acción Editar de cada tarjeta de Inicio que lo abre (D7)
-- [ ] 5.2 Acción `Desa com a targeta` en Taquillas (mapa y lista) y Alumnos, disponible solo con filtros y con su motivo (D7)
-- [ ] 5.3 Nova targeta desde Inicio con listas desplegables y vista previa del recuento (D8)
-- [ ] 5.4 Notificaciones, doble ejecución y límite de 24
-- [ ] 5.5 Pruebas: guardar desde Alumnos, desde el mapa y desde la lista con los mismos criterios, sin filtros, título vacío o largo, doble clic, vista previa y límite
+- [x] 5.1 Formulario de tarjeta (título, resumen de criterios, aviso de no poner nombres) con el `FormViewModel` existente y errores en el campo, y la acción Editar de cada tarjeta de Inicio que lo abre (D7)
+- [x] 5.2 Acción `Desa com a targeta` en Taquillas (mapa y lista) y Alumnos, disponible solo con filtros y con su motivo (D7)
+- [x] 5.3 Nova targeta desde Inicio con listas desplegables y vista previa del recuento (D8)
+- [x] 5.4 Notificaciones, doble ejecución y límite de 24
+- [x] 5.5 Pruebas: guardar desde Alumnos, desde el mapa y desde la lista con los mismos criterios, sin filtros, título vacío o largo, doble clic, vista previa y límite
 
 ## 6. Datos de demostración, documentación y cierre
 

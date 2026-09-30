@@ -33,6 +33,7 @@ namespace Arca.UI.Students;
 public sealed class StudentsViewModel : ObservableObject
 {
     readonly StudentServices _services;
+    readonly Arca.UI.Home.HomeCardServices? _cards;
     readonly ScreenContext _context;
     readonly AssignmentDialogs _assign;
     readonly StudentResultTexts _texts;
@@ -50,8 +51,10 @@ public sealed class StudentsViewModel : ObservableObject
     IReadOnlyList<StudentListRow> _all = [];
 
     public StudentsViewModel(
-        StudentServices services, ScreenContext context, AssignmentDialogs assign, AppAction standardNew, Func<Task> openCourse, StudentChargesViewModel charges)
+        StudentServices services, ScreenContext context, AssignmentDialogs assign, AppAction standardNew, Func<Task> openCourse, StudentChargesViewModel charges,
+        Arca.UI.Home.HomeCardServices? cards = null)
     {
+        _cards = cards;
         Charges = charges;
         charges.Changed += (_, _) => _ = RefreshAfterChargesAsync();
         _services = services;
@@ -77,6 +80,8 @@ public sealed class StudentsViewModel : ObservableObject
             () => NoActiveYear ? text.Get("Students.Empty.NoYear")
                 : _emptyState == StudentEmptyState.NoStudents ? text.Get("Students.Empty.NoStudentsList") : StudentEmptyStates.Describe(_emptyState, text)?.Message, emptyActions: EmptyActions);
         Students.List.SortBy("last");
+        SaveAsCard = new AppAction("SaveAsCard", text.Get("Shell.Home.Action.SaveAsCard"));
+        SaveAsCard.Attach(() => _ = SaveCardAsync(), () => CurrentCardCriteria.Count > 0 ? Availability.Available : Availability.Unavailable(text.Get("Shell.Home.Reason.NeedFilter")));
         Students.UseFilters(ActiveFilterTags, ResetFilterFields);
         Students.NoResultsMessage = () => PaymentFilter == "pending" && Students.List.FilterText.Length == 0 && LevelFilter.Length == 0 && GroupFilter.Length == 0 && LockerFilter.Length == 0
             ? text.Get("Students.Empty.NobodyPending") : null;
@@ -106,7 +111,7 @@ public sealed class StudentsViewModel : ObservableObject
     }
 
 
-    public IReadOnlyList<AppAction> MainActions => [NewStudent];
+    public IReadOnlyList<AppAction> MainActions => _cards is null ? [NewStudent] : [NewStudent, SaveAsCard];
 
     /// <summary>True while no school year is active: the students cannot be listed, added or assigned, and the screen says how to fix it.</summary>
     public bool NoActiveYear
@@ -217,6 +222,7 @@ public sealed class StudentsViewModel : ObservableObject
         var filter = CurrentFilter;
         Students.List.SetPredicate(filter.Matches);
         Students.RefreshFilters();
+        SaveAsCard?.Refresh();
     }
 
     /// <summary>The filters that are on as the one rule that also counts the cards of the start screen.</summary>
@@ -228,6 +234,24 @@ public sealed class StudentsViewModel : ObservableObject
     /// <see cref="ApplyRequest"/>, which is what lets a screen already filtered be saved as a card.
     /// </summary>
     public IReadOnlyDictionary<string, string> CurrentCardCriteria => CurrentFilter.ToCriteria();
+
+    /// <summary>Saves the filters that are on as a card of the start screen (targetes-d-inici): the form asks only for the title.</summary>
+    public AppAction SaveAsCard { get; private set; } = null!;
+
+    async Task SaveCardAsync()
+    {
+        if (_cards is null)
+        {
+            return;
+        }
+
+        var text = _context.Localizer;
+        var ids = new[] { "level", "group", "locker", "payment", "retired" };
+        var summary = string.Join(" · ", Students.ActiveFilters.Where(t => ids.Contains(t.Id)).Select(t => t.Text));
+        await _context.Forms.ShowAsync(Arca.UI.Home.HomeCardForms.FromScreen(
+            _context, _cards, Arca.Application.Home.HomeCardTargetView.Students, CurrentCardCriteria, summary,
+            Arca.UI.Home.HomeCardForms.SuggestedTitle(text.Get("Shell.Section.Students"), summary)));
+    }
 
     static string? NullIfEmpty(string value) => value.Length == 0 ? null : value;
 

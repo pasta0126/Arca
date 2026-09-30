@@ -48,6 +48,8 @@ public sealed class StartHomeTests
     int _restored = 1;
     ResolvedHomeCard? _resolved;
     List<HomeCardView> _cards = [];
+    readonly CapturingForms _forms = new();
+    readonly FakeHomeCards _fake = new();
 
     public StartHomeTests()
     {
@@ -89,8 +91,8 @@ public sealed class StartHomeTests
             var card = _cards.Single(c => c.Id == id);
             return Task.FromResult(Result<ResolvedHomeCard>.Success(_resolved ?? new ResolvedHomeCard(card.Id, card.Title, card.Target, card.Criteria, [])));
         },
-        (_, _) => Task.FromResult(Result<HomeCardSaved>.Failure(new Error("Test.NotUsedYet"))),
-        (_, _) => Task.FromResult(Result<HomeCardSaved>.Failure(new Error("Test.NotUsedYet"))),
+        (request, ct) => _fake.Services().Create(request, ct),
+        (request, ct) => _fake.Services().Edit(request, ct),
         (request, _) =>
         {
             _calls.Add($"move {request.Move} {_cards.Single(c => c.Id == request.Id).Title}");
@@ -106,9 +108,10 @@ public sealed class StartHomeTests
             _cards.Remove(card);
             return Task.FromResult(Result<string>.Success(card.Title));
         },
-        _ => Task.FromResult(Result<CardOptions>.Success(new CardOptions([], [], []))));
+        _ => Task.FromResult(Result<CardOptions>.Success(_fake.Options)),
+        (request, ct) => _fake.Services().Preview(request, ct));
 
-    ScreenContext Context() => new(_localizer, _notifications, _log, new ManualDelay(), _confirmations, null!, () => Task.CompletedTask);
+    ScreenContext Context() => new(_localizer, _notifications, _log, new ManualDelay(), _confirmations, _forms, () => Task.CompletedTask);
 
     StartHomeModel Model() => new(Services(), _router, _navigation.Navigate, Context());
 
@@ -220,6 +223,139 @@ public sealed class StartHomeTests
         await Task.Delay(50);
 
         Assert.Contains(_notifications.Published, n => n.Text == "Ja hi són totes les targetes de sèrie.");
+    }
+
+    // --- Creating and editing ---
+
+    static string Title(FormViewModel<HomeCardSaved> form, string id) => form.Fields.Single(f => f.Id == id).Text;
+
+    static FormFieldModel Field(FormViewModel<HomeCardSaved> form, string id) => form.Fields.Single(f => f.Id == id);
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Crear una tarjeta desde Inicio (Nueva tarjeta de taquillas averiadas de una zona)")]
+    public async Task A_new_card_of_lockers_keeps_only_the_filters_of_the_lockers_and_the_panel_reads_again()
+    {
+        var model = Model();
+        await model.LoadAsync();
+        var zone = _fake.Options.Zones[0].Id.ToString();
+
+        model.NewCard.Execute(null);
+        await Task.Delay(50);
+        var form = (FormViewModel<HomeCardSaved>)_forms.Last;
+        Field(form, "Title").Text = "Avariades de Planta 1";
+        Field(form, "Target").Text = "Lockers";
+        Field(form, "Status").Text = "Broken";
+        Field(form, "Zone").Text = zone;
+        Field(form, "Payment").Text = "pending"; // a criterion of the students: the screen chosen does not have it, so it is not kept
+        await form.Save.RunAsync();
+
+        var request = Assert.Single(_fake.Created);
+        Assert.Equal(("Avariades de Planta 1", HomeCardTargetView.Lockers), (request.Title, request.Target));
+        Assert.Equal(new Dictionary<string, string> { ["Status"] = "Broken", ["Zone"] = zone }, request.Criteria);
+        Assert.Contains(_notifications.Published, n => n.Text == "S'ha creat la targeta «Avariades de Planta 1».");
+        Assert.Equal(2, _ensures + 1); // read at the start and again after saving (the defaults are ensured once)
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Crear una tarjeta desde Inicio (Vista previa del recuento)")]
+    public async Task The_form_shows_the_count_the_filter_would_give_and_follows_the_changes_of_the_person()
+    {
+        var model = Model();
+        await model.LoadAsync();
+        _fake.Preview = 912;
+
+        model.NewCard.Execute(null);
+        await Task.Delay(50);
+        var form = (FormViewModel<HomeCardSaved>)_forms.Last;
+        Field(form, "Target").Text = "Students";
+        Field(form, "Locker").Text = "without";
+        await Task.Delay(80);
+
+        Assert.Contains("Amb aquest filtre ara hi ha 912 alumnes.", form.Note, StringComparison.Ordinal);
+        Assert.Contains("No escriguis noms d'alumnes al títol.", form.Note, StringComparison.Ordinal);
+
+        _fake.Preview = null; // no active year
+        Field(form, "Level").Text = "1r ESO";
+        await Task.Delay(80);
+
+        Assert.Contains("No es pot comptar sense un curs actiu.", form.Note, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Crear una tarjeta desde una pantalla filtrada (Título vacío)")]
+    public async Task An_empty_or_a_too_long_title_is_marked_in_the_field_and_nothing_is_created()
+    {
+        var model = Model();
+        await model.LoadAsync();
+        model.NewCard.Execute(null);
+        await Task.Delay(50);
+        var form = (FormViewModel<HomeCardSaved>)_forms.Last;
+
+        await form.Save.RunAsync();
+        Assert.Equal("Escriu el títol de la targeta.", Field(form, "Title").Error);
+
+        Field(form, "Title").Text = new string('x', 61);
+        await form.Save.RunAsync();
+        Assert.Contains("60", Field(form, "Title").Error, StringComparison.Ordinal);
+        Assert.Empty(_fake.Created);
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Crear una tarjeta desde una pantalla filtrada (Doble clic)")]
+    public async Task A_double_click_on_save_creates_one_card()
+    {
+        var model = Model();
+        await model.LoadAsync();
+        model.NewCard.Execute(null);
+        await Task.Delay(50);
+        var form = (FormViewModel<HomeCardSaved>)_forms.Last;
+        Field(form, "Title").Text = "Una";
+
+        var first = form.Save.RunAsync();
+        var second = form.Save.RunAsync();
+        await Task.WhenAll(first, second);
+
+        Assert.Single(_fake.Created);
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Crear una tarjeta desde Inicio (Límite de tarjetas)")]
+    public async Task With_24_cards_a_new_one_is_unavailable_and_says_why()
+    {
+        while (_cards.Count < 24)
+        {
+            Add("Targeta " + _cards.Count, HomeCardTargetView.Students, 1, []);
+        }
+
+        var model = Model();
+        await model.LoadAsync();
+
+        Assert.False(model.NewCard.IsAvailable);
+        Assert.Equal("Ja hi ha 24 targetes, que és el màxim. Esborra'n alguna.", model.NewCard.UnavailableReason);
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Editar, ordenar y borrar tarjetas (Editar)")]
+    public async Task Editing_opens_the_form_with_what_the_card_has_and_saves_the_changes_to_that_card()
+    {
+        var model = Model();
+        await model.LoadAsync();
+        var card = model.Cards[2]; // students without a locker
+
+        card.Edit.Execute(null);
+        await Task.Delay(50);
+        var form = (FormViewModel<HomeCardSaved>)_forms.Last;
+        Assert.Equal("Edita la targeta", form.Title);
+        Assert.Equal(("Alumnes sense taquilla", "Students", "without"), (Title(form, "Title"), Title(form, "Target"), Title(form, "Locker")));
+
+        Field(form, "Title").Text = "Alumnes de 2n sense taquilla";
+        Field(form, "Level").Text = "2n ESO";
+        await form.Save.RunAsync();
+
+        var edit = Assert.Single(_fake.Edited);
+        Assert.Equal((card.View.Id, HomeCardTargetView.Students), (edit.Id, edit.Target));
+        Assert.Equal(new Dictionary<string, string> { ["Locker"] = "without", ["Level"] = "2n ESO" }, edit.Criteria);
+        Assert.Contains(_notifications.Published, n => n.Text == "S'ha desat la targeta «Alumnes de 2n sense taquilla».");
     }
 
     // --- Obsolete cards ---
@@ -369,9 +505,9 @@ public sealed class StartHomeTests
         Assert.Contains("Alumnes sense taquilla", texts);
         Assert.DoesNotContain(texts, t => t.Contains('€', StringComparison.Ordinal));
         var buttons = screen.GetVisualDescendants().OfType<Button>().ToList();
-        Assert.Equal(4 + 4 * 3 + 1, buttons.Count); // open, three tools each and the restore button
+        Assert.Equal(4 + 4 * 4 + 2, buttons.Count); // open, four tools each, and the new and restore buttons
         Assert.All(buttons, b => Assert.True(b.Focusable && b.IsTabStop));
-        Assert.All(buttons.Take(4 + 12), b => Assert.False(string.IsNullOrEmpty(Avalonia.Automation.AutomationProperties.GetName(b))));
+        Assert.All(buttons.Take(4 + 16), b => Assert.False(string.IsNullOrEmpty(Avalonia.Automation.AutomationProperties.GetName(b))));
 
         home.OpenButtons[2].Command!.Execute(null);
         await Task.Delay(50);

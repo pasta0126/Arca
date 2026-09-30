@@ -20,9 +20,10 @@ namespace Arca.UI.Home;
 /// <param name="MoveEarlier">Moves the card one place earlier; unavailable for the first, with its reason.</param>
 /// <param name="MoveLater">Moves the card one place later; unavailable for the last, with its reason.</param>
 /// <param name="Delete">Deletes the card after asking.</param>
+/// <param name="Edit">Opens the form to change the title, the screen and the filters of the card.</param>
 /// <param name="CountText">The count in words or a dash when there is nothing to count.</param>
 /// <param name="StateText">What is wrong with the card, in words, or empty.</param>
-public sealed record StartHomeCard(HomeCardView View, AppAction Open, AppAction MoveEarlier, AppAction MoveLater, AppAction Delete, string CountText, string StateText);
+public sealed record StartHomeCard(HomeCardView View, AppAction Open, AppAction MoveEarlier, AppAction MoveLater, AppAction Delete, AppAction Edit, string CountText, string StateText);
 
 /// <summary>
 /// The start screen as a panel of cards (targetes-d-inici, Inicio como panel de tarjetas): the active year and the cards of the centre in
@@ -57,6 +58,8 @@ public sealed class StartHomeModel : ObservableObject
         AddStudents.Attach(() => _router.Open(new ScreenFilterRequest(ShellCatalog.Students, null, new Dictionary<string, string>())));
         RestoreDefaults = new AppAction("RestoreDefaults", text.Get("Shell.Home.Action.RestoreDefaults"));
         RestoreDefaults.Attach(() => _ = RestoreAsync());
+        NewCard = new AppAction("NewCard", text.Get("Shell.Home.Action.New"));
+        NewCard.Attach(() => _ = EditAsync(null), () => _cards.Count >= HomeCardLimits.MaximumCards ? Availability.Unavailable(text.Get("Shell.Home.Reason.TooMany", HomeCardLimits.MaximumCards)) : Availability.Available);
     }
 
     /// <summary>True until the first read has answered: the cards are drawn with a loading indicator and not as empty.</summary>
@@ -80,6 +83,9 @@ public sealed class StartHomeModel : ObservableObject
     public AppAction SetUpLockers { get; }
 
     public AppAction AddStudents { get; }
+
+    /// <summary>Opens the form of a new card; unavailable, with its reason, when there are already as many cards as there can be.</summary>
+    public AppAction NewCard { get; }
 
     /// <summary>Adds the default cards that are missing, leaving the others as they are.</summary>
     public AppAction RestoreDefaults { get; }
@@ -116,6 +122,7 @@ public sealed class StartHomeModel : ObservableObject
             Raise(nameof(NoActiveYear));
             Raise(nameof(NotSetUp));
             Raise(nameof(NoCards));
+            NewCard.Refresh();
         }
         catch (OperationCanceledException)
         {
@@ -138,8 +145,10 @@ public sealed class StartHomeModel : ObservableObject
         later.Attach(() => _ = MoveAsync(view, HomeCardMove.Later), () => view.IsLast ? Availability.Unavailable(text.Get("Shell.Home.Reason.Last")) : Availability.Available);
         var delete = new AppAction("DeleteCard", text.Get("Shell.Home.Card.Delete", view.Title));
         delete.Attach(() => _ = DeleteAsync(view));
+        var edit = new AppAction("EditCard", text.Get("Shell.Home.Action.Edit", view.Title));
+        edit.Attach(() => _ = EditAsync(view));
         var countText = view.Count is { } count ? count.ToString(System.Globalization.CultureInfo.CurrentCulture) : "—";
-        return new StartHomeCard(view, open, earlier, later, delete, countText, StateTextOf(view));
+        return new StartHomeCard(view, open, earlier, later, delete, edit, countText, StateTextOf(view));
     }
 
     /// <summary>The name of a criterion in words, each from its own key.</summary>
@@ -217,6 +226,26 @@ public sealed class StartHomeModel : ObservableObject
         await _once.RunAsync("DeleteCard", () => new RunOnceCommand<string>(
             (ct, _) => _services.Delete(new DeleteHomeCardRequest(view.Id), ct), title => _context.Localizer.Get("Shell.Home.Notify.Deleted", title), "DeleteHomeCard",
             _context.Notifications, _context.Localizer, _context.Log, _context.Delay, () => LoadAsync()).RunAsync());
+    }
+
+    /// <summary>Opens the form of a card: a new one when there is none given, or the edition of that one. Whatever it saves, the panel is read again.</summary>
+    async Task EditAsync(HomeCardView? existing)
+    {
+        try
+        {
+            var options = await _services.Options(default);
+            if (!options.IsSuccess)
+            {
+                _notifier.Error(options.Error!);
+                return;
+            }
+
+            await _context.Forms.ShowAsync(HomeCardForms.Full(_context, _services, options.Value!, existing, () => LoadAsync()));
+        }
+        catch (Exception e)
+        {
+            _notifier.Unexpected(e, "EditCard");
+        }
     }
 
     Task RestoreAsync() => _once.RunAsync("RestoreCards", () => new RunOnceCommand<int>(
