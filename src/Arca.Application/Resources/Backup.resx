@@ -37,4 +37,13 @@
   <data name="Backup.Stage.Finishing" xml:space="preserve">
     <value>Acabant…</value>
   </data>
+  <data name="Backup.Stage.PreviousCopy" xml:space="preserve">
+    <value>Guardant una còpia prèvia de les dades actuals…</value>
+  </data>
+  <data name="Backup.Stage.Migrating" xml:space="preserve">
+    <value>Actualitzant la còpia a la versió actual…</value>
+  </data>
+  <data name="Backup.Stage.Replacing" xml:space="preserve">
+    <value>Substituint les dades…</value>
+  </data>
 </root>

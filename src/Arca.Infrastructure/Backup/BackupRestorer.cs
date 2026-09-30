@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
+using Arca.Application.Backup;
 using Arca.Application.Security;
 using Arca.Application.Storage;
 using Arca.Domain.Common;
 using Arca.Infrastructure.Security;
+using Arca.Infrastructure.Storage;
 using Microsoft.Data.Sqlite;
 
 namespace Arca.Infrastructure.Backup;
@@ -117,6 +119,145 @@ public sealed class BackupRestorer(AccessService access, TimeProvider? timeProvi
         {
             PutBack(databasePath, keyFile, previous, hadDatabase, hadKeys);
             return Result<string>.Failure(KeyErrors.RestoreFailed);
+        }
+    }
+
+    /// <summary>The most recent copies of the data kept from before a restoration (copies-de-seguretat, Retención).</summary>
+    public const int PreviousCopiesToKeep = 3;
+
+    /// <summary>
+    /// Restores the backup over the database with every guarantee of copies-de-seguretat, in this order and with nothing replaced until the
+    /// last step: the version of the backup is checked (one of a newer version is refused); the current data and key file are kept as a
+    /// previous copy, checked when the current key is given; the backup is copied to a temporary file next to the database and, if it is
+    /// of an older version, brought up to date there, so the file of the backup is never changed; and only then does the temporary file
+    /// take the place of the database. If anything fails the current data are put back. Afterwards only the three most recent previous
+    /// copies are kept. The database must be closed by the caller.
+    /// </summary>
+    /// <param name="currentKey">The key of the current data, to check the previous copy; null when the current data cannot be opened (a damaged file is kept as it is, unchecked).</param>
+    /// <param name="steps">Told the stage it is in, by its resource key.</param>
+    public async Task<Result<RestoreOutcome>> CompleteAsync(
+        RestoreSession session, string databasePath, DatabaseKey? currentKey = null, IProgress<string>? steps = null, CancellationToken ct = default)
+    {
+        if (!session.IsUnlocked)
+        {
+            return Result<RestoreOutcome>.Failure(KeyErrors.WrongCredentials);
+        }
+
+        var relation = await DatabaseInspector.ClassifyAsync(session.DatabasePath, session.Key!, ct);
+        if (relation == SchemaRelation.Newer)
+        {
+            return Result<RestoreOutcome>.Failure(BackupErrors.VersionNewer);
+        }
+
+        SqliteConnection.ClearAllPools();
+        var keyFile = KeyFileStore.PathFor(databasePath);
+        var previous = PreviousPathFor(databasePath);
+        var hadDatabase = File.Exists(databasePath);
+        var hadKeys = File.Exists(keyFile);
+        var staging = databasePath + ".restoring";
+        try
+        {
+            steps?.Report("Backup.Stage.PreviousCopy");
+            if (hadDatabase)
+            {
+                File.Copy(databasePath, previous, overwrite: false);
+            }
+
+            if (hadKeys)
+            {
+                File.Copy(keyFile, previous + KeyFileStore.Extension, overwrite: false);
+            }
+
+            if (hadDatabase && currentKey is not null && await DatabaseVerifier.VerifyAsync(previous, currentKey, ct) is not null)
+            {
+                DiscardPrevious(previous);
+                return Result<RestoreOutcome>.Failure(BackupErrors.PreviousCopyFailed);
+            }
+
+            ct.ThrowIfCancellationRequested();
+            File.Copy(session.DatabasePath, staging, overwrite: true);
+            var migrated = false;
+            if (relation == SchemaRelation.Older)
+            {
+                steps?.Report("Backup.Stage.Migrating");
+                var outcome = await new SchemaMigrator(() => new ArcaDbContext(staging, session.Key!)).MigrateAsync(staging, session.Key!, null, ct);
+                DeleteMigrationCopies(staging);
+                if (!outcome.IsSuccess)
+                {
+                    DeleteQuietly(staging);
+                    DiscardPrevious(previous); // nothing was replaced: the current data are untouched, and so is the backup
+                    return Result<RestoreOutcome>.Failure(BackupErrors.MigrationFailed);
+                }
+
+                migrated = true;
+            }
+
+            ct.ThrowIfCancellationRequested(); // the last point where giving up leaves everything as it was
+            steps?.Report("Backup.Stage.Replacing");
+            File.Move(staging, databasePath, overwrite: true);
+            File.Copy(KeyFileStore.PathFor(session.DatabasePath), keyFile + ".restoring", overwrite: true);
+            File.Move(keyFile + ".restoring", keyFile, overwrite: true);
+            DiscardPreviousKeyFile(databasePath); // it belonged to the data that was replaced
+            PruneOldCopies(databasePath);
+            return Result<RestoreOutcome>.Success(new RestoreOutcome(previous, migrated));
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            PutBack(databasePath, keyFile, previous, hadDatabase, hadKeys);
+            return Result<RestoreOutcome>.Failure(KeyErrors.RestoreFailed);
+        }
+        catch (OperationCanceledException)
+        {
+            DeleteQuietly(staging);
+            DiscardPrevious(previous);
+            throw;
+        }
+    }
+
+    /// <summary>Removes what an interrupted backup or restoration left next to the database: work folders and temporary files. Never a previous copy.</summary>
+    public static void CleanLeftovers(string databasePath)
+    {
+        try
+        {
+            var folder = Path.GetDirectoryName(Path.GetFullPath(databasePath))!;
+            foreach (var entry in Directory.GetFileSystemEntries(folder))
+            {
+                var name = Path.GetFileName(entry);
+                if (name.StartsWith(".arca-restore-", StringComparison.Ordinal) || name.StartsWith(".arca-backup-", StringComparison.Ordinal)
+                    || name.StartsWith(".arca-write-check-", StringComparison.Ordinal)
+                    || name == Path.GetFileName(databasePath) + ".restoring" || name == Path.GetFileName(KeyFileStore.PathFor(databasePath)) + ".restoring")
+                {
+                    DeleteQuietly(entry);
+                }
+            }
+        }
+        catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+        {
+            // A leftover is harmless and is tried again at the next start.
+        }
+    }
+
+    static void DiscardPrevious(string previous)
+    {
+        DeleteQuietly(previous);
+        DeleteQuietly(previous + KeyFileStore.Extension);
+    }
+
+    static void DeleteMigrationCopies(string staging)
+    {
+        foreach (var copy in SchemaMigrator.CopiesOf(staging))
+        {
+            DeleteQuietly(copy);
+            DeleteQuietly(SchemaMigrator.KeyFileCopyOf(copy));
+        }
+    }
+
+    static void PruneOldCopies(string databasePath)
+    {
+        var copies = PreviousCopiesOf(databasePath);
+        foreach (var old in copies.Take(Math.Max(0, copies.Count - PreviousCopiesToKeep)))
+        {
+            DiscardPrevious(old);
         }
     }
 

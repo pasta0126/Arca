@@ -15,14 +15,14 @@
 ## 3. Restauración
 
 - [ ] 3.1 Caso de uso de análisis que verifica el fichero y devuelve la vista previa con la comparación de recuentos (D3, D4)
-- [ ] 3.1b Pedir la contraseña o la clave de recuperación de la copia antes de la vista previa y adoptar su llave al restaurar (`acces-i-xifrat`)
-- [ ] 3.2 Secuencia de restauración: cerrar, copia previa verificada, temporal, migración, sustitución atómica y reapertura (D5)
-- [ ] 3.3 Recuperación automática desde la copia previa ante fallo en cualquier punto, e información de rutas si también fallara
-- [ ] 3.4 Copia previa de una base dañada sin verificar (ofrecer la restauración desde el error de fichero dañado y desde el primer arranque queda para `configuracio-inicial`; aquí el servicio ya lo permite)
-- [ ] 3.5 Retención de las 3 copias previas a restauración, separada de las de migración (D6)
-- [ ] 3.6 Limpieza de temporales huérfanos al arrancar
+- [x] 3.1b Pedir la contraseña o la clave de recuperación de la copia antes de la vista previa y adoptar su llave al restaurar (`acces-i-xifrat`)
+- [x] 3.2 Secuencia de restauración: cerrar, copia previa verificada, temporal, migración, sustitución atómica y reapertura (D5)
+- [x] 3.3 Recuperación automática desde la copia previa ante fallo en cualquier punto, e información de rutas si también fallara
+- [x] 3.4 Copia previa de una base dañada sin verificar (ofrecer la restauración desde el error de fichero dañado y desde el primer arranque queda para `configuracio-inicial`; aquí el servicio ya lo permite)
+- [x] 3.5 Retención de las 3 copias previas a restauración, separada de las de migración (D6)
+- [x] 3.6 Limpieza de temporales huérfanos al arrancar
 - [ ] 3.7 Reinicio de la aplicación tras restaurar, sin caches de los datos anteriores, y aviso si no puede hacerse (D7, D13)
-- [ ] 3.8 Pruebas de integración: restauración correcta, copia antigua migrada con la original intacta, copia más nueva rechazada, fallo al migrar con recuperación, fallo al sustituir, base dañada, instalación nueva, corte simulado y retención
+- [x] 3.8 Pruebas de integración: restauración correcta, copia antigua migrada con la original intacta, copia más nueva rechazada, fallo al migrar con recuperación, fallo al sustituir, base dañada, instalación nueva, corte simulado y retención
 
 ## 4. Feedback y guía al usuario
 

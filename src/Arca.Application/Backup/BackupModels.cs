@@ -28,6 +28,9 @@ public sealed record ContentCounts(int Years, int Students, int Lockers, int Ass
 /// <summary>A backup that was made: where it is and how big, in bytes.</summary>
 public sealed record BackupResult(string Path, long SizeBytes);
 
+/// <summary>A restoration that was done: where the copy of the data that was replaced is, and whether the backup had to be brought up to date.</summary>
+public sealed record RestoreOutcome(string PreviousCopyPath, bool Migrated);
+
 /// <summary>What is refused about a backup file or its destination, with the reason in words (copia-de-seguretat, Destino no válido).</summary>
 public static class BackupErrors
 {

@@ -57,6 +57,11 @@ public sealed class StorageStartup(
             {
                 var taken = InstanceLock.TryAcquire(path);
                 instance = taken.Value;
+                if (taken.IsSuccess)
+                {
+                    Arca.Infrastructure.Backup.BackupRestorer.CleanLeftovers(path); // what an interrupted backup or restoration left behind
+                }
+
                 return Task.FromResult(taken.Error);
             }),
             new StartupStage("Startup.Stage.Key", async token =>
