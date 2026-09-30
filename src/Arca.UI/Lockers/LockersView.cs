@@ -77,7 +77,7 @@ public static class LockersView
         left.Children.Add(counters);
         left.Children.Add(list);
 
-        var screen = new ScreenView(localizer.Get("Shell.Screen.Lockers"), model.MainActions, left, new LockerDetailPanel(model, localizer), selection: model.Lockers);
+        var screen = new ScreenView(localizer.Get("Shell.Screen.Lockers"), model.ListActions, left, new LockerDetailPanel(model, localizer), selection: model.Lockers);
         IDisposable? shortcut = null;
         screen.AttachedToVisualTree += (_, _) =>
         {
@@ -102,7 +102,7 @@ public static class LockersView
         side.Children.Add(detail);
         side.Children.Add(students);
 
-        var screen = new ScreenView(localizer.Get("Shell.Screen.LockerMap"), model.MainActions, view, side, selection: model.Lockers);
+        var screen = new ScreenView(localizer.Get("Shell.Screen.LockerMap"), model.MapActions, view, side, selection: model.Lockers);
         IDisposable? shortcut = null;
         screen.AttachedToVisualTree += (_, _) =>
         {

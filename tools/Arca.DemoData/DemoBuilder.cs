@@ -69,6 +69,9 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
         // Identity of the centre, as the screens show it.
         await new SaveCentreIdentityHandler(store.Identity, store).HandleAsync(new SaveCentreIdentityRequest("Ins. Monturiol", LogoChange.Keep, null, "#A9C4D3"), default);
 
+        // The cards of the start screen every centre starts with, so the panel is ready when the application opens.
+        await new Arca.Application.Home.EnsureDefaultCardsHandler(store.HomeCards, store, clock, new Arca.Application.Localization.ResxLocalizer()).HandleAsync(default);
+
         // Years and amounts: the active year, and the previous one, already finished.
         say("Cursos i imports…");
         var year = (await new CreateAcademicYearHandler(store.Years, store).HandleAsync(new CreateAcademicYearRequest(new DateOnly(2026, 9, 1), new DateOnly(2027, 6, 30)), default)).Value!;
@@ -223,7 +226,7 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
         var state = (await new Arca.Application.GlobalState.GetGlobalStateHandler(store.Years, store.Charges).HandleAsync(default)).Value!;
         var withDebt = map.Rows.Count(r => r.HasDebt);
         say($"Fet: {map.Counters.Active} taquilles ({map.Counters.Free} lliures, {map.Counters.Occupied} ocupades, {map.Counters.Reserved} reservades, {map.Counters.Broken} avariades, {map.Counters.Maintenance} en manteniment), " +
-            $"{withDebt} amb deute, {state.PendingCharges} càrrecs pendents, curs {state.ActiveYear!.Name}.");
+            $"{withDebt} amb deute, {state.PendingCharges} càrrecs pendents, curs {state.ActiveYear!.Name}, {(await store.HomeCards.ListAsync(default)).Count} targetes a Inici.");
     }
 
     /// <summary>The new year at its start: nobody has a locker yet, but some students still owe the year before, so the warning shows when they are assigned.</summary>
@@ -244,7 +247,7 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
         var map = (await new Arca.Application.Lockers.ListLockerRows.ListLockerRowsHandler(store.Lockers, store.Zones, store.Assignments, store.Students, store.Charges).HandleAsync(default)).Value!;
         var state = (await new Arca.Application.GlobalState.GetGlobalStateHandler(store.Years, store.Charges).HandleAsync(default)).Value!;
         say($"Fet: curs {state.ActiveYear!.Name} nou, {map.Counters.Active} taquilles ({map.Counters.Free} lliures, {map.Counters.Reserved} reservades, {map.Counters.Broken} avariades, " +
-            $"{map.Counters.Maintenance} en manteniment), {students.Count} alumnes matriculats sense taquilla, {state.PendingCharges} càrrecs pendents del curs anterior.");
+            $"{map.Counters.Maintenance} en manteniment), {students.Count} alumnes matriculats sense taquilla, {state.PendingCharges} càrrecs pendents del curs anterior, {(await store.HomeCards.ListAsync(default)).Count} targetes a Inici.");
     }
 
     static string Slug(string text) =>

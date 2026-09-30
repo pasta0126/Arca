@@ -77,6 +77,7 @@ public sealed class StudentsScreenTests
     readonly List<StudentListRow> _students = [];
     readonly List<LockerListRow> _lockers = [];
     readonly FakeChargeWorld _chargeWorld = new();
+    readonly FakeHomeCards _homeCards = new();
     readonly List<string> _calls = [];
     readonly Dictionary<Guid, StudentScreenDetail> _details = [];
     RecordingConfirmations _confirmations = new(true);
@@ -220,7 +221,8 @@ public sealed class StudentsScreenTests
             _courseOpened++;
             return Task.CompletedTask;
         },
-        new Arca.UI.Charges.StudentChargesViewModel(_chargeWorld.Services(), Context(), () => Task.CompletedTask));
+        new Arca.UI.Charges.StudentChargesViewModel(_chargeWorld.Services(), Context(), () => Task.CompletedTask),
+        _homeCards.Services());
 
     // --- The list ---
 
@@ -552,6 +554,102 @@ public sealed class StudentsScreenTests
         Assert.Equal(["Puig", "Roca"], model.Students.List.Rows.Select(s => s.LastName));
         router.Open(new Arca.UI.Shell.ScreenFilterRequest("Students", null, new Dictionary<string, string> { ["Payment"] = "pending" })); // and once it is built
         Assert.Equal((string.Empty, "pending"), (model.LockerFilter, model.PaymentFilter));
+    }
+
+    const string CardSpec = "filtres-i-targetes/targetes-d-inici";
+
+    [Fact]
+    [Trait("spec", CardSpec + ": Una tarjeta es un filtro guardado (Criterios combinados)")]
+    public async Task A_request_with_level_group_and_retired_puts_them_on_and_the_filters_on_come_back_as_the_same_criteria()
+    {
+        AddStudent("Marta", "Puig", "1r ESO", "A", locker: 5);
+        AddStudent("Pau", "Alsina", "2n ESO", "B");
+        AddStudent("Oriol", "Zamora", "2n ESO", "B", retired: true);
+        AddStudent("Jana", "Roca", "2n ESO", "A");
+        var model = Model();
+        await model.LoadAsync();
+        Assert.Empty(model.CurrentCardCriteria); // nothing on, nothing to save
+        var request = new Dictionary<string, string> { ["Payment"] = "upToDate", ["Level"] = "2n ESO", ["Group"] = "B", ["IncludeRetired"] = "true" };
+
+        model.ApplyRequest(request);
+
+        Assert.Equal(["Alsina", "Zamora"], model.Students.List.Rows.Select(s => s.LastName));
+        Assert.Equal(request.OrderBy(r => r.Key), model.CurrentCardCriteria.OrderBy(r => r.Key));
+    }
+
+    [Fact]
+    [Trait("spec", CardSpec + ": Recuento en vivo de la tarjeta (Recuento coherente con la pantalla)")]
+    public async Task What_a_card_counts_is_what_the_list_shows_for_the_same_criteria()
+    {
+        AddStudent("Marta", "Puig", "1r ESO", "A", locker: 5, debt: true);
+        AddStudent("Pau", "Alsina", "2n ESO", "B", debt: true);
+        AddStudent("Oriol", "Zamora", "2n ESO", "B", retired: true, debt: true);
+        AddStudent("Jana", "Roca", "2n ESO", "A");
+        var model = Model();
+        await model.LoadAsync();
+        var all = model.Students.List.AllRows;
+
+        foreach (var criteria in new[]
+        {
+            new Dictionary<string, string> { ["Payment"] = "pending" },
+            new Dictionary<string, string> { ["Locker"] = "without" },
+            new Dictionary<string, string> { ["Level"] = "2n ESO", ["Payment"] = "upToDate" },
+            new Dictionary<string, string> { ["IncludeRetired"] = "true" },
+        })
+        {
+            model.ApplyRequest(criteria);
+
+            var counted = all.Count(Arca.Application.Home.StudentCardFilter.From(criteria).Matches);
+
+            Assert.Equal(counted, model.Students.List.Rows.Count);
+        }
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Crear una tarjeta desde una pantalla filtrada (Sin filtros)")]
+    public async Task Save_as_a_card_is_unavailable_without_filters_and_says_to_filter_first()
+    {
+        AddStudent("Marta", "Puig");
+        var model = Model();
+        await model.LoadAsync();
+
+        Assert.Contains(model.SaveAsCard, model.MainActions);
+        Assert.False(model.SaveAsCard.IsAvailable);
+        Assert.Equal("Primer cal posar algun filtre.", model.SaveAsCard.UnavailableReason);
+
+        model.LockerFilter = "without";
+        Assert.True(model.SaveAsCard.IsAvailable);
+        model.Students.Reset.Execute(null);
+        Assert.False(model.SaveAsCard.IsAvailable); // resetting the filters does not touch any card and leaves nothing to save
+        Assert.Empty(_homeCards.Created);
+    }
+
+    [Fact]
+    [Trait("spec", "filtres-i-targetes/targetes-d-inici: Crear una tarjeta desde una pantalla filtrada (Guardar el filtro actual)")]
+    public async Task Saving_the_filters_as_a_card_asks_only_for_a_title_and_creates_a_card_with_those_criteria()
+    {
+        AddStudent("Marta", "Puig", "1r ESO", "A");
+        var model = Model();
+        await model.LoadAsync();
+        model.LockerFilter = "without";
+        model.LevelFilter = "1r ESO";
+
+        model.SaveAsCard.Execute(null);
+        await Task.Delay(50);
+        var form = (FormViewModel<Arca.Application.Home.HomeCardSaved>)_forms.Last;
+
+        Assert.Equal(["Title"], form.Fields.Select(f => f.Id));
+        Assert.Equal("Alumnes: Nivell: 1r ESO · Sense taquilla", form.Fields[0].Text);
+        Assert.Contains("Es desarà el filtre: Nivell: 1r ESO · Sense taquilla.", form.Note, StringComparison.Ordinal);
+        Assert.Contains("No escriguis noms d'alumnes al títol.", form.Note, StringComparison.Ordinal);
+
+        form.Fields[0].Text = "Sense taquilla de 1r";
+        await form.Save.RunAsync();
+
+        var request = Assert.Single(_homeCards.Created);
+        Assert.Equal(("Sense taquilla de 1r", Arca.Application.Home.HomeCardTargetView.Students), (request.Title, request.Target));
+        Assert.Equal(model.CurrentCardCriteria.OrderBy(c => c.Key), request.Criteria.OrderBy(c => c.Key));
+        Assert.Contains(_notifications.Published, n => n.Text == "S'ha creat la targeta «Sense taquilla de 1r».");
     }
 
     [Fact]
