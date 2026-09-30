@@ -56,9 +56,12 @@ public sealed class EfInventory : IUnitOfWork
         Charges = new EfChargeRepository(this);
         ChargeEvents = new EfChargeEventRepository(this);
         Identity = new Arca.Infrastructure.Identity.EfCentreIdentityRepository(this);
+        HomeCards = new Arca.Infrastructure.Home.EfHomeCardRepository(this);
     }
 
     public Arca.Application.Identity.ICentreIdentityRepository Identity { get; }
+
+    public Arca.Application.Home.IHomeCardRepository HomeCards { get; }
 
     public IZoneRepository Zones { get; }
 

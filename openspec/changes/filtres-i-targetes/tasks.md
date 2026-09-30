@@ -8,9 +8,9 @@
 
 ## 2. Persistencia
 
-- [ ] 2.1 Repositorio de tarjetas y de la marca de serie en Application y su implementación EF (`HomeCards`, `HomeCardsState`) (D4)
-- [ ] 2.2 Migración que solo crea las tablas y prueba de migración desde el esquema anterior con datos
-- [ ] 2.3 Pruebas de persistencia: guardar, leer en orden, mover en una transacción, borrar, y copia y restauración con las tarjetas (con las pruebas de copia existentes)
+- [x] 2.1 Repositorio de tarjetas y de la marca de serie en Application y su implementación EF (`HomeCards`, `HomeCardsState`) (D4)
+- [x] 2.2 Migración que solo crea las tablas y prueba de migración desde el esquema anterior con datos
+- [x] 2.3 Pruebas de persistencia: guardar, leer en orden, mover en una transacción, borrar, y copia y restauración con las tarjetas (con las pruebas de copia existentes)
 
 ## 3. Casos de uso
 
