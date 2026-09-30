@@ -17,7 +17,8 @@ public sealed record YearSummary(Guid Id, string Name);
 /// </summary>
 /// <param name="ActiveYear">The active year, or null when there is none.</param>
 /// <param name="PendingCharges">How many charges are pending, of any year: what the Payments section shows as needing attention.</param>
-public sealed record GlobalState(YearSummary? ActiveYear, int PendingCharges)
+/// <param name="StudentsWithPending">How many different students have a pending charge, of any year: what the Students section shows as needing attention. A count of people, never an amount.</param>
+public sealed record GlobalState(YearSummary? ActiveYear, int PendingCharges, int StudentsWithPending = 0)
 {
     public bool HasActiveYear => ActiveYear is not null;
 }
@@ -32,6 +33,6 @@ public sealed class GetGlobalStateHandler(IAcademicYearRepository years, ICharge
     {
         var active = await years.GetActiveAsync(ct);
         var pending = await charges.ListPendingAsync(ct);
-        return Result<GlobalState>.Success(new GlobalState(active is null ? null : new YearSummary(active.Id, active.Name), pending.Count));
+        return Result<GlobalState>.Success(new GlobalState(active is null ? null : new YearSummary(active.Id, active.Name), pending.Count, pending.Select(c => c.StudentId).Distinct().Count()));
     }
 }

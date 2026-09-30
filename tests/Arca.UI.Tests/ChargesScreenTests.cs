@@ -2,7 +2,6 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using Arca.Application.Charges.GetStudentChargesScreen;
-using Arca.Application.Charges.ListDebtors;
 using Arca.Application.Feedback;
 using Arca.Application.Localization;
 using Arca.Application.SchoolYears;
@@ -26,11 +25,9 @@ internal sealed class FakeChargeWorld
     public readonly Guid YearNow = Guid.NewGuid();
     public readonly Guid YearBefore = Guid.NewGuid();
     public readonly List<ChargeLine> Lines = [];
-    public readonly List<DebtorRow> Debtors = [];
     public readonly List<string> Calls = [];
     public decimal? KeyAmount = 10m;
     public Error? KeyBlocked;
-    public string? LastConcept = "unset";
     public DateOnly Today = new(2026, 9, 29);
     public TaskCompletionSource? Gate;
 
@@ -48,18 +45,6 @@ internal sealed class FakeChargeWorld
     }
 
     public ChargeServices Services() => new(
-        (year, concept, zone, _) =>
-        {
-            LastConcept = concept;
-            return Task.FromResult(Result<DebtorsListing>.Success(new DebtorsListing(
-                [.. Debtors], Debtors.Count, Debtors.Sum(d => d.PendingTotal), Debtors.Count, Debtors.Sum(d => d.PendingTotal),
-                Debtors.Count == 0 ? DebtorsEmptyState.NoDebt : DebtorsEmptyState.None)));
-        },
-        _ => Task.FromResult(Result<IReadOnlyList<AcademicYearSummary>>.Success([
-            new AcademicYearSummary(YearNow, "2026-2027", new DateOnly(2026, 9, 1), new DateOnly(2027, 6, 30), true),
-            new AcademicYearSummary(YearBefore, "2025-2026", new DateOnly(2025, 9, 1), new DateOnly(2026, 6, 30), false)])),
-        _ => Task.FromResult(Result<IReadOnlyList<ZoneRow>>.Success([])),
-        _ => Task.FromResult(Result<StudentRowsListing>.Success(new StudentRowsListing([], new StudentCounters(0, 0, 0), StudentEmptyState.None))),
         async (id, _) =>
         {
             if (Gate is not null)
@@ -163,63 +148,6 @@ public sealed class ChargesScreenTests
         _courseOpened++;
         return Task.CompletedTask;
     });
-
-    DebtorRow Debtor(string first, string last, decimal owed, string level = "1r ESO", bool retired = false) => new(
-        Guid.NewGuid(), first, last, level, "A", retired, null, owed, [new DebtLine(Arca.Domain.ConceptAmounts.ChargeConcept.Fee, _world.YearBefore, false, owed)]);
-
-    // --- Pending payments ---
-
-    [Fact]
-    [Trait("spec", Spec + ": Consulta de morosos (Lista por defecto, Alumno de baja con deuda)")]
-    public async Task The_pending_payments_list_students_by_surname_with_totals_and_marks_the_retired_and_never_says_morosos()
-    {
-        _world.Debtors.AddRange([Debtor("Pau", "Alsina", 50m), Debtor("Marta", "Puig", 70m), Debtor("Oriol", "Zamora", 20m, retired: true)]);
-        var model = new DebtorsViewModel(_world.Services(), Context(), _ => Task.CompletedTask);
-
-        await model.LoadAsync();
-
-        Assert.Equal(["Alsina", "Puig", "Zamora"], model.Debtors.List.Rows.Select(d => d.LastName));
-        Assert.Contains("3 alumnes", model.TotalsText, StringComparison.Ordinal);
-        Assert.Contains("140", model.TotalsText, StringComparison.Ordinal);
-        Assert.Equal("De baixa", model.Debtors.List.Columns.Single(c => c.Id == "state").Text(model.Debtors.List.Rows[2]));
-        Assert.DoesNotContain("moros", _localizer.Get("Shell.Screen.Debtors"), StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain(model.Debtors.List.Columns, c => c.Header.Contains("mail", StringComparison.OrdinalIgnoreCase));
-    }
-
-    [Fact]
-    [Trait("spec", Spec + ": Consulta de morosos (Desglose, filtros)")]
-    public async Task Choosing_a_debtor_shows_the_breakdown_by_concept_and_year_and_the_filters_narrow_the_totals()
-    {
-        _world.Debtors.AddRange([Debtor("Pau", "Alsina", 50m, "2n ESO"), Debtor("Marta", "Puig", 70m)]);
-        var model = new DebtorsViewModel(_world.Services(), Context(), _ => Task.CompletedTask);
-        await model.LoadAsync();
-        Assert.False(model.OpenCharges.IsAvailable);
-
-        model.Debtors.Select(model.Debtors.List.Rows.Single(d => d.LastName == "Puig"));
-        var line = Assert.Single(model.Breakdown);
-        Assert.Contains("2025-2026", line, StringComparison.Ordinal);
-        Assert.Contains("70", line, StringComparison.Ordinal);
-        Assert.True(model.OpenCharges.IsAvailable);
-
-        model.LevelFilter = "1r ESO";
-        Assert.Contains("1 alumnes", model.TotalsText, StringComparison.Ordinal);
-
-        model.ConceptFilter = "Deposit";
-        await Task.Delay(50);
-        Assert.Equal("Deposit", _world.LastConcept);
-    }
-
-    [Fact]
-    [Trait("spec", Spec + ": Consulta de morosos (Sin morosos)")]
-    public async Task With_nothing_pending_the_view_says_so_as_good_news_and_not_as_an_empty_list()
-    {
-        var model = new DebtorsViewModel(_world.Services(), Context(), _ => Task.CompletedTask);
-
-        await model.LoadAsync();
-
-        Assert.Equal(ListViewState.Empty, model.Debtors.State.State);
-        Assert.Contains("Tot està al corrent", model.Debtors.State.Message, StringComparison.Ordinal);
-    }
 
     // --- Charges of a student ---
 
@@ -450,21 +378,6 @@ public sealed class ChargesScreenTests
 
         Assert.False(model.KeyReplacement.IsAvailable);
         Assert.Contains("curs actiu", model.KeyReplacement.UnavailableReason, StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Avalonia.Headless.XUnit.AvaloniaFact]
-    public async Task Screenshot_of_the_payments_section()
-    {
-        _world.Debtors.AddRange([Debtor("Pau", "Alsina", 50m), Debtor("Marta", "Puig", 70m), Debtor("Oriol", "Zamora", 20m, retired: true)]);
-        _world.Line("Fee", "Paid", 50m);
-        _world.Line("Deposit", "Pending", 20m, current: false);
-        var section = PaymentsSection.Create(_world.Services(), Context(), () => Task.CompletedTask);
-        var window = new Avalonia.Controls.Window { Content = section, Width = 1200, Height = 700 };
-        window.Show();
-        await Task.Delay(300);
-        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-        ScreenshotTests.Take(window, "payments");
-        window.Close();
     }
 
     [Fact]

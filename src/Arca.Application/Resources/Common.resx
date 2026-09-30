@@ -61,6 +61,20 @@
   <data name="Common.Action.ClearFilter" xml:space="preserve">
     <value>Neteja els filtres</value>
   </data>
+  <data name="Common.Label.FilterTag" xml:space="preserve">
+    <value>{0}: {1}</value>
+    <comment>{0} what is filtered (level, zone…), {1} the value chosen</comment>
+  </data>
+  <data name="Common.Action.ResetList" xml:space="preserve">
+    <value>Reinicia</value>
+  </data>
+  <data name="Common.Reason.NothingToReset" xml:space="preserve">
+    <value>No hi ha cap cerca ni cap filtre per reiniciar.</value>
+  </data>
+  <data name="Common.Action.RemoveFilter" xml:space="preserve">
+    <value>Treu el filtre «{0}»</value>
+    <comment>{0} the text of the filter</comment>
+  </data>
   <data name="Common.Action.Save" xml:space="preserve">
     <value>Desa</value>
   </data>

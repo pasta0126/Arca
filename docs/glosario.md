@@ -72,6 +72,8 @@ Estado de cada término: **fijado** (decidido) o **validar** (propuesta a confir
 
 ## Cobros
 
+La interfaz no tiene una sección Cobros: los cobros se hacen desde la ficha del alumno y el estado de deuda es el filtro «Amb pendents de pagament» de Alumnos.
+
 | Castellano | Catalán | Inglés | Estado | Notas |
 |------------|---------|--------|--------|-------|
 | cargo | càrrec | `Charge` | fijado | Un cobro de un alumno y concepto |
@@ -183,7 +185,7 @@ Estado de cada término: **fijado** (decidido) o **validar** (propuesta a confir
 | Inicio | Inici | `Home` |
 | Taquillas | Taquilles | `Lockers` |
 | Alumnos | Alumnes | `Students` |
-| Cobros | Cobraments | `Payments` |
+| ~~Cobros~~ | ~~Cobraments~~ | ~~`Payments`~~ | Sección retirada (2026-09-30): se cobra desde la ficha del alumno. El concepto «cobro» sigue en el dominio |
 | Llaves e incidencias | Claus i incidències | `KeysAndIncidents` |
 | Informes | Informes | `Reports` |
 | Curso | Curs | `SchoolYear` |

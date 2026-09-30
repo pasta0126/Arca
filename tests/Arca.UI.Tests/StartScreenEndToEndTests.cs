@@ -4,7 +4,6 @@
 using Arca.Application.Assignments;
 using Arca.Application.ConceptAmounts.SetConceptAmounts;
 using Arca.Application.GlobalState;
-using Arca.Application.LockerMap;
 using Arca.Application.Localization;
 using Arca.Application.Lockers.AddLocker;
 using Arca.Application.SchoolYears.CreateAcademicYear;
@@ -88,16 +87,20 @@ public sealed class StartScreenEndToEndTests : IDisposable
         var notifier = new ResultNotifier(_notifications, _localizer, _log);
         var state = new GlobalStateService(new GetGlobalStateHandler(store.Years, store.Charges).HandleAsync, notifier);
         var confirmations = new RecordingConfirmations(true);
-        var home = new LockerHomeModel(
-            LockerHomeComposition.Create(store, clock, _localizer), new UiPreferencesSession(new NoPreferences()), notifier, confirmations, _localizer, _notifications, _log, _delay, state);
+        var context = new Arca.UI.Screens.ScreenContext(_localizer, _notifications, _log, _delay, confirmations, null!, () => state.RefreshAsync(), null);
+        var lockers = new Arca.UI.Lockers.LockersViewModel(
+            LockersComposition.Create(store, clock, _localizer), context, new Arca.UI.Actions.ActionRegistry(_localizer, Arca.UI.Actions.UiPlatform.Windows)[Arca.UI.Actions.StandardActions.New],
+            () => Task.CompletedTask, new Arca.UI.Assigning.AssignmentDialogs(null!, context));
+        var map = new Arca.UI.Lockers.LockersMapModel(lockers, LockerHomeComposition.Create(store, clock, _localizer), notifier, confirmations, _localizer, _notifications, _log, _delay);
         var search = new GlobalSearchViewModel(
             new GlobalSearchHandler(store.Students, store.Enrollments, store.Catalog, store.Years, store.Lockers, store.Zones, store.Assignments, store.Charges).HandleAsync,
             _delay, notifier, new SearchNavigator(), _localizer);
-        await home.LoadAsync();
+        await lockers.LoadAsync();
+        await map.LoadAsync();
         await state.RefreshAsync();
 
-        Assert.Equal((2, 0), (home.Map.Counters.Free, home.Map.Counters.Occupied));
-        Assert.Equal(2, home.Students.Count);
+        Assert.Equal((2, 0), (lockers.Counters.Free, lockers.Counters.Occupied));
+        Assert.Equal(2, map.Students.Count);
         Assert.Equal(("2026-2027", 0), (state.Current!.ActiveYear!.Name, state.Current.PendingCharges));
 
         // A search finds the student.
@@ -108,15 +111,15 @@ public sealed class StartScreenEndToEndTests : IDisposable
         Assert.Contains(search.Items, i => i.Text.StartsWith("Puig, Marta", StringComparison.Ordinal));
 
         // Dragging the student onto the free locker assigns it, through the same checks as everything else.
-        home.Drop.BeginDrag(marta.Id);
-        Assert.True(await home.Drop.DropAsync(locker.Id));
-        await WaitAsync(() => home.Map.Find(locker.Id)?.Status == LockerStatusView.Occupied);
+        map.Drop.BeginDrag(marta.Id);
+        Assert.True(await map.Drop.DropAsync(locker.Id));
+        await WaitAsync(() => lockers.Find(locker.Id)?.Status == LockerStatusView.Occupied);
         await WaitAsync(() => state.Current!.PendingCharges == 2);
 
-        var placed = home.Map.Find(locker.Id)!;
+        var placed = lockers.Find(locker.Id)!;
         Assert.Equal(("Marta Puig", true), (placed.StudentName, placed.HasDebt)); // the fee and the deposit are pending
-        Assert.Equal((1, 1), (home.Map.Counters.Free, home.Map.Counters.Occupied));
-        Assert.Equal(1, home.Students.Count);
+        Assert.Equal((1, 1), (lockers.Counters.Free, lockers.Counters.Occupied));
+        await WaitAsync(() => map.Students.Count == 1);
         Assert.Contains(_notifications.Published, n => n.Text.Contains("Marta Puig", StringComparison.Ordinal));
 
         // The search now finds the locker; choosing it opens its detail.
@@ -124,22 +127,22 @@ public sealed class StartScreenEndToEndTests : IDisposable
         await Task.Delay(20);
         _delay.Elapse(GlobalSearchViewModel.Pause + TimeSpan.FromMilliseconds(1));
         await WaitAsync(() => search.Items.Any(i => i.Target?.Kind == SearchTargetKind.Locker));
-        home.Map.Reveal(search.Items.First(i => i.Target?.Kind == SearchTargetKind.Locker).Target!.Id);
-        await WaitAsync(() => home.Detail.Detail?.StudentName == "Marta Puig");
-        Assert.Equal((true, 70m), (home.Detail.Detail!.HasDebt, home.Detail.Detail.PendingTotal));
-        Assert.True(home.Detail.Actions.Single(a => a.Id == "Release").IsAvailable);
+        lockers.Reveal(search.Items.First(i => i.Target?.Kind == SearchTargetKind.Locker).Target!.Id);
+        await WaitAsync(() => lockers.Detail.Detail?.Row.StudentName == "Marta Puig");
+        Assert.True(lockers.Detail.Detail!.Row.HasDebt);
+        Assert.True(lockers.Detail.Actions.Single(a => a.Id == "Release").IsAvailable);
 
         // Releasing it asks first and frees the locker.
-        home.Detail.Actions.Single(a => a.Id == "Release").Execute(null);
-        await WaitAsync(() => home.Map.Find(locker.Id)?.Status == LockerStatusView.Free);
+        lockers.Detail.Actions.Single(a => a.Id == "Release").Execute(null);
+        await WaitAsync(() => lockers.Find(locker.Id)?.Status == LockerStatusView.Free);
         Assert.Single(confirmations.Asked);
-        Assert.Equal(2, home.Students.Count);
+        await WaitAsync(() => map.Students.Count == 2);
 
         // And all of it is really in the database.
         SqliteConnection.ClearAllPools();
         var reopened = Open();
-        var map = (await new GetLockerMapHandler(reopened.Zones, reopened.Lockers, reopened.Assignments, reopened.Students, reopened.Charges).HandleAsync(default)).Value!;
-        Assert.Equal((2, 0), (map.Counters.Free, map.Counters.Occupied));
+        var stored = (await new Arca.Application.Lockers.ListLockerRows.ListLockerRowsHandler(reopened.Lockers, reopened.Zones, reopened.Assignments, reopened.Students, reopened.Charges).HandleAsync(default)).Value!;
+        Assert.Equal((2, 0), (stored.Counters.Free, stored.Counters.Occupied));
         Assert.Equal(2, (await reopened.Charges.ListPendingAsync(default)).Count); // releasing a locker does not cancel what is owed
         Assert.Empty(_log.Entries); // and nothing went wrong on the way
     }

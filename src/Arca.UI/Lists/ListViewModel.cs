@@ -28,7 +28,7 @@ public sealed class ListViewModel<TRow, TKey>(
     where TKey : notnull
 {
     readonly HashSet<TKey> _selected = [];
-    IReadOnlyList<TRow> _all = [];
+    List<TRow> _all = [];
     IReadOnlyList<TRow> _rows = [];
     string _filterText = string.Empty;
     Func<TRow, bool>? _predicate;
@@ -43,6 +43,9 @@ public sealed class ListViewModel<TRow, TKey>(
         get => _rows;
         private set => Set(ref _rows, value);
     }
+
+    /// <summary>Every row the list has, whatever the filter hides.</summary>
+    public IReadOnlyList<TRow> AllRows => _all;
 
     /// <summary>How many rows there are in all, whatever the filter hides.</summary>
     public int TotalCount => _all.Count;
@@ -80,6 +83,25 @@ public sealed class ListViewModel<TRow, TKey>(
         Raise(nameof(TotalCount));
         Refresh();
         RaiseSelection();
+    }
+
+    /// <summary>Puts a row in place of the one with the same identity, or adds it, without touching the others: what a change to one row costs.</summary>
+    public void ReplaceItem(TRow item)
+    {
+        var all = _all.ToList();
+        var at = all.FindIndex(r => EqualityComparer<TKey>.Default.Equals(key(r), key(item)));
+        if (at >= 0)
+        {
+            all[at] = item;
+        }
+        else
+        {
+            all.Add(item);
+        }
+
+        _all = all;
+        Raise(nameof(TotalCount));
+        Refresh();
     }
 
     /// <summary>What a click on a header does: order by that column, and ordering by it again reverses the order.</summary>

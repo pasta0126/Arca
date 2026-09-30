@@ -92,7 +92,7 @@ arrastre, menú y teclado (mismo caso de uso, misma confirmación ante avisos, u
 
 ## La pantalla de inicio y cómo sustituirla
 
-La sección Inicio muestra lo que dé un `IHomeScreen` (un solo método, `Create`). La propuesta es `LockerMapHomeScreen`: el mapa de taquillas por zona con, al lado, el detalle de la taquilla elegida y el panel de alumnos sin taquilla. Está pendiente de validar con los conserjes (decisión D7 de `docs/riesgos.md`), y cambiarla no exige tocar nada más:
+La sección Inicio muestra lo que dé un `IHomeScreen` (un solo método, `Create`). La implementación actual es `StartHomeScreen`: el curso activo y unos recuentos (taquillas por estado, alumnos sin taquilla y con pendientes de pago), cada uno un acceso que abre Taquillas o Alumnos con el filtro ya puesto (mediante `ScreenFilterRouter`). Es provisional hasta el cambio `filtres-i-targetes`, que la convertirá en un panel de tarjetas de filtros guardados. El mapa de taquillas ya no está en Inicio: es la vista Mapa de la sección Taquillas, sobre el mismo modelo que la lista. Sustituir Inicio no exige tocar nada más:
 
 ```csharp
 var registry = SectionRegistry.Compose(roots, attention, home: new MiOtroInicio());   // implementa IHomeScreen

@@ -20,7 +20,7 @@ using Xunit;
 
 namespace Arca.UI.Tests;
 
-public sealed class LockersScreenTests
+public sealed partial class LockersScreenTests
 {
     const string Spec = "pantalles-de-domini/pantalles-taquilles-i-zones";
 
@@ -65,6 +65,11 @@ public sealed class LockersScreenTests
     Guid _planZone;
     TaskCompletionSource? _gate;
     bool _zoneFails;
+    int _listLoads;
+    Exception? _listCrash;
+    Exception? _detailCrash;
+    readonly List<Guid> _detailReads = [];
+    readonly Dictionary<Guid, Guid> _holders = [];
 
     ZoneRow AddZone(string name, bool active = true, int lockers = 0, Error? deactivation = null, Error? deletion = null)
     {
@@ -73,9 +78,14 @@ public sealed class LockersScreenTests
         return zone;
     }
 
-    LockerListRow AddLocker(int number, ZoneRow zone, LockerStatusView status = LockerStatusView.Free, string? student = null, bool debt = false)
+    LockerListRow AddLocker(int number, ZoneRow zone, LockerStatusView status = LockerStatusView.Free, string? student = null, bool debt = false, Guid? studentId = null)
     {
         var row = new LockerListRow(Guid.NewGuid(), number, zone.Id, zone.Name, status, student, debt, null, null);
+        if (student is not null)
+        {
+            _holders[row.Id] = studentId ?? Guid.NewGuid();
+        }
+
         _rows.Add(row);
         return row;
     }
@@ -83,15 +93,25 @@ public sealed class LockersScreenTests
     static Error Refusal(string code) => new(code);
 
     LockerServices Services() => new(
-        _ => Task.FromResult(Result<LockerRowsListing>.Success(new LockerRowsListing(
-            [.. _rows.OrderBy(r => r.Number)],
-            new LockerCounters(
-                _rows.Count(r => r.Status != LockerStatusView.Retired), _rows.Count(r => r.Status == LockerStatusView.Free),
-                _rows.Count(r => r.Status == LockerStatusView.Occupied), _rows.Count(r => r.Status == LockerStatusView.Broken),
-                _rows.Count(r => r.Status == LockerStatusView.Maintenance), _rows.Count(r => r.Status == LockerStatusView.Reserved)),
-            _emptyState))),
+        _ =>
+        {
+            _listLoads++;
+            return _listCrash is not null ? throw _listCrash : Task.FromResult(Result<LockerRowsListing>.Success(new LockerRowsListing(
+                [.. _rows.OrderBy(r => r.Number)],
+                new LockerCounters(
+                    _rows.Count(r => r.Status != LockerStatusView.Retired), _rows.Count(r => r.Status == LockerStatusView.Free),
+                    _rows.Count(r => r.Status == LockerStatusView.Occupied), _rows.Count(r => r.Status == LockerStatusView.Broken),
+                    _rows.Count(r => r.Status == LockerStatusView.Maintenance), _rows.Count(r => r.Status == LockerStatusView.Reserved)),
+                _emptyState)));
+        },
         (id, _) =>
         {
+            if (_detailCrash is not null)
+            {
+                throw _detailCrash;
+            }
+
+            _detailReads.Add(id);
             var row = _rows.Single(r => r.Id == id);
             var occupied = row.Status == LockerStatusView.Occupied;
             var retired = row.Status == LockerStatusView.Retired;
@@ -100,7 +120,7 @@ public sealed class LockersScreenTests
                 row.Status == LockerStatusView.Reserved ? null : Refusal("Lockers.NotReserved"),
                 row.Status == LockerStatusView.Broken ? Refusal("Lockers.AlreadyOutOfService") : null, null,
                 row.Status is LockerStatusView.Broken or LockerStatusView.Maintenance ? null : Refusal("Lockers.NotOutOfService"),
-                occupied ? Refusal("Lockers.HasAssignment") : null)));
+                occupied ? Refusal("Lockers.HasAssignment") : null, _holders.TryGetValue(row.Id, out var holder) ? holder : null)));
         },
         (_, _) => Task.FromResult(Result<IReadOnlyList<string>>.Success(["alta"])),
         _ => Task.FromResult(Result<IReadOnlyList<ZoneRow>>.Success([.. _zones.OrderBy(z => z.Name)])),
@@ -195,6 +215,19 @@ public sealed class LockersScreenTests
             _calls.Add("delete zone");
             _zones.RemoveAll(z => z.Id == id);
             return Task.FromResult(Result<string>.Success("Zona eliminada."));
+        },
+        (student, _) =>
+        {
+            _calls.Add($"release {student}");
+            var held = _holders.FirstOrDefault(h => h.Value == student).Key;
+            var at = _rows.FindIndex(r => r.Id == held);
+            if (at >= 0)
+            {
+                _rows[at] = _rows[at] with { Status = LockerStatusView.Free, StudentName = null, HasDebt = false }; // what the use case will have done
+                _holders.Remove(held);
+            }
+
+            return Task.FromResult(Result<string>.Success("Taquilla alliberada."));
         });
 
     CreateLockerRangePlan Plan(CreateLockerRangeRequest request)
@@ -329,7 +362,7 @@ public sealed class LockersScreenTests
         await model.LoadAsync();
 
         await model.Detail.ShowAsync(true, free.Id);
-        Assert.Equal(["Assign", "Edit", "Reserve", "RemoveReservation", "MarkBroken", "MarkMaintenance", "Restore", "Retire"], model.Detail.Actions.Select(a => a.Id));
+        Assert.Equal(["Assign", "Change", "Release", "Edit", "Reserve", "RemoveReservation", "MarkBroken", "MarkMaintenance", "Restore", "Retire"], model.Detail.Actions.Select(a => a.Id));
         Assert.True(model.Detail.Actions.Single(a => a.Id == "Reserve").IsAvailable);
         Assert.False(model.Detail.Actions.Single(a => a.Id == "Restore").IsAvailable);
 

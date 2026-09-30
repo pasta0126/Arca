@@ -190,7 +190,7 @@ public sealed class GlobalSearchUiTests
 
     [Fact]
     [Trait("spec", Spec + ": Navegación de resultados (Abrir la ficha)")]
-    public async Task Opening_a_locker_shows_the_map_with_that_locker_highlighted()
+    public async Task Opening_a_locker_shows_the_map_of_the_lockers_section_with_that_locker_highlighted()
     {
         var (model, navigation, navigator) = Build();
         navigation.Navigate("Students");
@@ -200,7 +200,7 @@ public sealed class GlobalSearchUiTests
 
         model.OpenSelected();
 
-        Assert.Equal("Home", navigation.CurrentSectionId);
+        Assert.Equal("Lockers", navigation.CurrentSectionId); // the locker opens on the map of the Lockers section
         Assert.Equal(_locker, navigator.HighlightedLocker);
         Assert.Equal(_locker, navigator.TakePending()!.Id);
         Assert.Null(navigator.TakePending()); // handed over once
@@ -329,7 +329,7 @@ public sealed class GlobalSearchUiTests
         window.KeyPress(Key.Enter, RawInputModifiers.None, PhysicalKey.Enter, null);
         Dispatcher.UIThread.RunJobs();
 
-        Assert.Equal("Home", navigation.CurrentSectionId); // the second result is the locker, which lives on the map
+        Assert.Equal("Lockers", navigation.CurrentSectionId); // the second result is the locker, which opens on the map
         Assert.Equal(SearchTargetKind.Locker, navigator.Pending!.Kind);
         Assert.False(box.IsPanelOpen);
     }

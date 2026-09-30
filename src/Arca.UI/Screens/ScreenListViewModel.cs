@@ -9,6 +9,7 @@ using Arca.UI.Actions;
 using Arca.UI.Common;
 using Arca.UI.Lists;
 using Arca.UI.Notifications;
+using Arca.UI.Shell;
 
 namespace Arca.UI.Screens;
 
@@ -20,7 +21,7 @@ namespace Arca.UI.Screens;
 /// </summary>
 /// <typeparam name="TRow">The kind of row, a transfer object without email or identifier.</typeparam>
 /// <typeparam name="TKey">What identifies a row.</typeparam>
-public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject
+public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject, ISelectionOwner
     where TRow : class
     where TKey : notnull
 {
@@ -31,6 +32,8 @@ public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject
     readonly Func<string?>? _emptyMessage;
     readonly ResultNotifier _notifier;
     readonly ILocalizer _localizer;
+    Func<IReadOnlyList<ListFilterTag>>? _filterTags;
+    Action? _resetFilters;
     int _request;
     bool _hasKey;
     TKey? _selectedKey;
@@ -54,13 +57,67 @@ public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject
         _notifier = new ResultNotifier(notifications, localizer, log);
         List = new ListViewModel<TRow, TKey>(columns, key, localizer);
         State = new ListStateViewModel(localizer);
+        Reset = new AppAction("ResetList", localizer.Get("Common.Action.ResetList"));
+        Reset.Attach(ClearFilter, () => HasActiveFilters ? Availability.Available : Availability.Unavailable(localizer.Get("Common.Reason.NothingToReset")));
         List.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(ListViewModel<TRow, TKey>.Rows))
             {
                 ShowState();
             }
+
+            if (e.PropertyName is nameof(ListViewModel<TRow, TKey>.Rows) or nameof(ListViewModel<TRow, TKey>.FilterText) or nameof(ListViewModel<TRow, TKey>.TotalCount))
+            {
+                RefreshFilters();
+            }
         };
+    }
+
+    /// <summary>Puts the search and every filter back as the list starts: the action of the Reset button, available only when there is something to put back.</summary>
+    public AppAction Reset { get; }
+
+    /// <summary>What to say when a filter leaves no rows, if the general text does not do; such as a positive message when nobody has a pending payment.</summary>
+    public Func<string?>? NoResultsMessage { get; set; }
+
+    /// <summary>The filters that are on, other than the search text, each one removable on its own.</summary>
+    public IReadOnlyList<ListFilterTag> ActiveFilters => _filterTags?.Invoke() ?? [];
+
+    /// <summary>True when there is search text or any filter on, so there is something to reset.</summary>
+    public bool HasActiveFilters => List.FilterText.Length > 0 || ActiveFilters.Count > 0;
+
+    /// <summary>"12 de 600": the rows shown out of all the rows the list has.</summary>
+    public string CountText => _localizer.Get("Common.Label.ProgressOf", List.Rows.Count, List.TotalCount);
+
+    /// <summary>
+    /// Tells the list which filters the screen has: the labels of those that are on, and how to put all of them back. The screen
+    /// calls <see cref="RefreshFilters"/> whenever one of them changes.
+    /// </summary>
+    public void UseFilters(Func<IReadOnlyList<ListFilterTag>> tags, Action reset)
+    {
+        _filterTags = tags;
+        _resetFilters = reset;
+        RefreshFilters();
+    }
+
+    /// <summary>Tells the views that the filters or the rows shown changed, so the labels, the count and the Reset button redraw.</summary>
+    public void RefreshFilters()
+    {
+        Raise(nameof(ActiveFilters));
+        Raise(nameof(HasActiveFilters));
+        Raise(nameof(CountText));
+        Reset.Refresh();
+    }
+
+    /// <summary>True while a row is chosen.</summary>
+    public bool HasSelection => _hasKey;
+
+    /// <summary>Chooses no row, which leaves the detail on its "choose one" state. What Esc does on a list.</summary>
+    public void ClearSelection()
+    {
+        if (_hasKey)
+        {
+            Select(null);
+        }
     }
 
     public ListViewModel<TRow, TKey> List { get; }
@@ -93,11 +150,35 @@ public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject
         CurrentChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Shows a row that changed in place of its old one, leaving the rest of the list as it is. The row chosen, if it is this one,
+    /// stays chosen with its new data.
+    /// </summary>
+    public void ReplaceRow(TRow row)
+    {
+        List.ReplaceItem(row);
+        if (_hasKey && _key(row).Equals(_selectedKey))
+        {
+            Current = row;
+        }
+
+        ShowState();
+    }
+
     /// <summary>Removes the text and the other condition of the filter, what the state of a filter without results offers.</summary>
     public void ClearFilter()
     {
-        List.SetPredicate(null);
         List.FilterText = string.Empty;
+        if (_resetFilters is not null)
+        {
+            _resetFilters(); // the screen knows its own filters and their controls
+        }
+        else
+        {
+            List.SetPredicate(null);
+        }
+
+        RefreshFilters();
     }
 
     /// <summary>Fetches the rows. Only the answer to the latest request is used, so a slow older one never overwrites a newer one.</summary>
@@ -172,7 +253,7 @@ public sealed class ScreenListViewModel<TRow, TKey> : ObservableObject
         {
             var clear = new AppAction("ClearFilter", _localizer.Get("Common.Action.ClearFilter"));
             clear.Attach(ClearFilter);
-            State.ShowNoResults(new EmptyStateAction(clear.Label, clear));
+            State.ShowNoResults(new EmptyStateAction(clear.Label, clear), NoResultsMessage?.Invoke());
         }
     }
 }

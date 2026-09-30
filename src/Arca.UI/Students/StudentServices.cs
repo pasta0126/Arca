@@ -19,7 +19,6 @@ public sealed record StudentServices(
     Func<CancellationToken, Task<Result<CatalogListing>>> ListCatalog,
     Func<Guid, CancellationToken, Task<Result<StudentScreenDetail>>> Detail,
     Func<Guid, CancellationToken, Task<Result<IReadOnlyList<string>>>> History,
-    Func<Guid, CancellationToken, Task<Result<IReadOnlyList<string>>>> LockerHistory,
     Func<AddStudentRequest, CancellationToken, Task<Result<StudentChangeResult>>> Add,
     Func<EditStudentRequest, CancellationToken, Task<Result<StudentDetail>>> Edit,
     Func<ChangeStudentEnrollmentRequest, CancellationToken, Task<Result<StudentChangeResult>>> ChangeEnrollment,

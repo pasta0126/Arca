@@ -65,7 +65,7 @@ public sealed class SearchNavigator : ObservableObject
     {
         var section = target.Kind switch
         {
-            SearchTargetKind.Locker => ShellCatalog.Home,
+            SearchTargetKind.Locker => ShellCatalog.Lockers,
             SearchTargetKind.LockerList => ShellCatalog.Lockers,
             _ => ShellCatalog.Students,
         };

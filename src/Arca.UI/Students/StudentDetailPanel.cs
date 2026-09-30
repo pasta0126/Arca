@@ -3,41 +3,79 @@
 
 using Arca.Application.Localization;
 using Arca.UI.Actions;
+using Arca.UI.Charges;
 using Arca.UI.Common;
+using Arca.UI.Layout;
+using Arca.UI.Preferences;
 using Arca.UI.Theme;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Styling;
 using Avalonia.Layout;
 
 namespace Arca.UI.Students;
 
 /// <summary>
-/// The record of the student chosen (pantalles-alumnes-i-assignacions, Ficha del alumno): a header that always shows their
-/// state (locker and payment), the actions that apply, each disabled with its reason when it does not, and the tabs Data, Locker
-/// and History, which load only when opened.
+/// The record of the student chosen (pantalles-alumnes-i-assignacions, Ficha del alumno), in one column and without tabs: a header that
+/// always shows their state (locker and payment) and the actions that apply, each disabled with its reason when it does not, the pending
+/// charges open with their operations in the same row (or that the student is up to date), and three blocks that fold and start
+/// folded: the history of payments, the data and the history of activity. Each block remembers whether the person keeps it open, and
+/// the history of activity loads only when it is opened.
 /// </summary>
 public sealed class StudentDetailPanel : UserControl
 {
     readonly StudentsViewModel _model;
     readonly ILocalizer _localizer;
     readonly StackPanel _body = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
-    readonly Arca.UI.Charges.StudentChargesPanel _charges;
-    int _tab;
+    readonly StackPanel _header = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+    readonly StackPanel _pendingTop = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingSmall);
+    readonly StackPanel _dataBody = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingSmall);
+    readonly StackPanel _activityBody = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingSmall);
+    readonly StackPanel _detailArea = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingMedium);
+    readonly TextBlock _empty;
+    Guid? _historyAskedFor;
 
-    public StudentDetailPanel(StudentsViewModel model, ILocalizer localizer)
+    public StudentDetailPanel(StudentsViewModel model, ILocalizer localizer, UiPreferencesSession preferences)
     {
         _model = model;
         _localizer = localizer;
-        _charges = new Arca.UI.Charges.StudentChargesPanel(model.Charges, localizer);
-        model.Detail.PropertyChanged += (_, _) => Rebuild();
-        model.PropertyChanged += (_, e) =>
+        _empty = Line(localizer.Get("Students.Empty.PickStudent"), secondary: true);
+
+        Pending = new ChargeRowsPanel(model.Charges, localizer, pendingOnly: true);
+        Payments = new ChargeRowsPanel(model.Charges, localizer, pendingOnly: false);
+        PaymentsSection = new CollapsibleSectionViewModel(
+            "student.payments", localizer.Get("Students.Section.Payments"), () => localizer.Get("Students.Label.PaymentCount", Payments.Lines.Count), preferences, expandedByDefault: false);
+        DataSection = new CollapsibleSectionViewModel("student.data", localizer.Get("Students.Section.Data"), () => string.Empty, preferences, expandedByDefault: false);
+        ActivitySection = new CollapsibleSectionViewModel("student.activity", localizer.Get("Students.Section.Activity"), () => string.Empty, preferences, expandedByDefault: false);
+        ActivitySection.PropertyChanged += async (_, e) =>
         {
-            if (e.PropertyName is nameof(StudentsViewModel.LockerLines) or nameof(StudentsViewModel.LockerLinesLoaded))
+            if (e.PropertyName == nameof(CollapsibleSectionViewModel.IsExpanded) && ActivitySection.IsExpanded && !_model.Detail.HistoryLoaded && _model.Detail.Detail is { } shown)
             {
-                Rebuild();
+                _historyAskedFor = shown.Student.Id;
+                await _model.Detail.LoadHistoryAsync();
             }
         };
+
+        var keyButton = ActionControls.Button(model.Charges.KeyReplacement);
+        keyButton.HorizontalAlignment = HorizontalAlignment.Left;
+        KeyButton = keyButton;
+        var pendingTitle = ThemedText.Title(localizer.Get("Students.Section.Pending"));
+        var upToDate = Line(string.Empty);
+        _pendingTop.Children.Add(pendingTitle);
+
+        _detailArea.Children.Add(_header);
+        _detailArea.Children.Add(_pendingTop);
+        _detailArea.Children.Add(Pending);
+        _detailArea.Children.Add(new CollapsibleSectionView(PaymentsSection, Payments));
+        _detailArea.Children.Add(new CollapsibleSectionView(DataSection, _dataBody));
+        _detailArea.Children.Add(new CollapsibleSectionView(ActivitySection, _activityBody));
+        _body.Children.Add(_empty);
+        _body.Children.Add(_detailArea);
+        UpToDateText = upToDate;
+        _pendingTop.Children.Add(upToDate);
+        _pendingTop.Children.Add(keyButton);
+
+        model.Detail.PropertyChanged += (_, _) => Rebuild();
+        model.Charges.Charges.List.PropertyChanged += (_, _) => ShowPending();
+        model.Charges.PropertyChanged += (_, _) => ShowPending();
         this.ThemedThickness(PaddingProperty, ArcaResourceKeys.SpacingMedium);
         Content = new ScrollViewer { Content = _body };
         Rebuild();
@@ -46,34 +84,44 @@ public sealed class StudentDetailPanel : UserControl
     /// <summary>The buttons of the actions of the student shown, so a test can press them.</summary>
     public IReadOnlyList<Button> ActionButtons { get; private set; } = [];
 
-    /// <summary>The tab control of the record, when a student is shown.</summary>
-    public TabControl? Tabs { get; private set; }
+    /// <summary>The pending charges, open, each with its operations in its row.</summary>
+    public ChargeRowsPanel Pending { get; }
+
+    /// <summary>Every charge of the student of any year, in the block that folds.</summary>
+    public ChargeRowsPanel Payments { get; }
+
+    public CollapsibleSectionViewModel PaymentsSection { get; }
+
+    public CollapsibleSectionViewModel DataSection { get; }
+
+    public CollapsibleSectionViewModel ActivitySection { get; }
+
+    /// <summary>The key replacement action, which belongs to the student and not to one charge.</summary>
+    public Button KeyButton { get; }
+
+    /// <summary>What the student stands at: up to date, or that they have no charges yet. Empty while there are pending charges.</summary>
+    public TextBlock UpToDateText { get; }
 
     void Rebuild()
     {
-        if (Tabs is not null)
-        {
-            foreach (var old in Tabs.Items.OfType<TabItem>())
-            {
-                old.Content = null; // the charges control is reused, and a control has one parent only
-            }
-        }
-
-        _body.Children.Clear();
+        _header.Children.Clear();
         ActionButtons = [];
-        Tabs = null;
         if (_model.Detail.Detail is not { } detail)
         {
-            _body.Children.Add(Line(_localizer.Get("Students.Empty.PickStudent"), secondary: true));
+            _empty.IsVisible = true;
+            _detailArea.IsVisible = false;
             return;
         }
 
+        _empty.IsVisible = false;
+        _detailArea.IsVisible = true;
         var student = detail.Student;
-        _body.Children.Add(ThemedText.Title(student.FirstName + " " + student.LastName + (student.IsRetired ? " · " + _localizer.Get("Students.State.Retired") : string.Empty)));
-        _body.Children.Add(Line(student.LockerNumber is { } number
+        _header.Children.Add(ThemedText.Title(student.FirstName + " " + student.LastName + (student.IsRetired ? " · " + _localizer.Get("Students.State.Retired") : string.Empty)));
+        _header.Children.Add(Line(_localizer.Get("Students.Label.LevelLine", student.LevelName ?? "—", student.GroupName ?? "—")));
+        _header.Children.Add(Line(student.LockerNumber is { } number
             ? _localizer.Get("Students.Label.LockerLine", number)
             : _localizer.Get("Students.Label.NoLockerLine")));
-        _body.Children.Add(Line(detail.HasDebt
+        _header.Children.Add(Line(detail.HasDebt
             ? _localizer.Get("Students.Label.PaymentLineDebt", _localizer.Format(Arca.Domain.Common.Money.FromCents((long)Math.Round(detail.PendingTotal * 100))))
             : _localizer.Get("Students.Label.PaymentLineUpToDate")));
 
@@ -87,85 +135,51 @@ public sealed class StudentDetailPanel : UserControl
         }
 
         ActionButtons = buttons;
-        _body.Children.Add(actions);
+        _header.Children.Add(actions);
 
-        var tabs = new TabControl { SelectedIndex = _tab };
-        tabs.Styles.Add(new Style(x => x.OfType<TabItem>()) { Setters = { new Setter(TemplatedControl.FontSizeProperty, 14.0) } });
-        tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.Data"), Content = DataTab(detail) });
-        tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.Locker"), Content = ListTab(_model.LockerLines, _model.LockerLinesLoaded) });
-        tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.Payments"), Content = _charges });
-        tabs.Items.Add(new TabItem { Header = _localizer.Get("Students.Tab.History"), Content = ListTab(_model.Detail.History, _model.Detail.HistoryLoaded) });
-        tabs.SelectionChanged += async (_, e) =>
-        {
-            if (e.Source != tabs)
-            {
-                return;
-            }
-
-            _tab = tabs.SelectedIndex;
-            if (_tab == 1 && !_model.LockerLinesLoaded)
-            {
-                await _model.LoadLockerLinesAsync();
-            }
-            else if (_tab == 2)
-            {
-                await _model.LoadChargesAsync();
-            }
-            else if (_tab == 3 && !_model.Detail.HistoryLoaded)
-            {
-                await _model.Detail.LoadHistoryAsync();
-            }
-        };
-        Tabs = tabs;
-        _body.Children.Add(tabs);
-        // A tab that stays open while another student is chosen loads for the new one.
-        if (_tab == 1 && !_model.LockerLinesLoaded)
-        {
-            _ = _model.LoadLockerLinesAsync();
-        }
-        else if (_tab == 2 && _model.Charges.Screen?.StudentId != detail.Student.Id)
-        {
-            _ = _model.LoadChargesAsync();
-        }
-        else if (_tab == 3 && !_model.Detail.HistoryLoaded)
-        {
-            _ = _model.Detail.LoadHistoryAsync();
-        }
-    }
-
-    StackPanel DataTab(Application.Students.GetStudentScreen.StudentScreenDetail detail)
-    {
-        var student = detail.Student;
-        var panel = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingSmall);
-        panel.Children.Add(Line(_localizer.Get("Students.Label.NameLine", student.FirstName, student.LastName)));
-        panel.Children.Add(Line(_localizer.Get("Students.Label.LevelLine", student.LevelName ?? "—", student.GroupName ?? "—")));
-        panel.Children.Add(Line(_localizer.Get("Students.Label.EmailLine", student.Email)));
+        _dataBody.Children.Clear();
+        _dataBody.Children.Add(Line(_localizer.Get("Students.Label.NameLine", student.FirstName, student.LastName)));
+        _dataBody.Children.Add(Line(_localizer.Get("Students.Label.LevelLine", student.LevelName ?? "—", student.GroupName ?? "—")));
+        _dataBody.Children.Add(Line(_localizer.Get("Students.Label.EmailLine", student.Email)));
         if (student.IsRetired && student.RetirementReason is { Length: > 0 } reason)
         {
-            panel.Children.Add(Line(_localizer.Get("Students.Label.RetirementLine", reason)));
+            _dataBody.Children.Add(Line(_localizer.Get("Students.Label.RetirementLine", reason)));
         }
 
-        return panel;
+        _activityBody.Children.Clear();
+        if (!_model.Detail.HistoryLoaded)
+        {
+            _activityBody.Children.Add(Line(_localizer.Get("Common.Loading.Generic"), secondary: true));
+            if (ActivitySection.IsExpanded && _historyAskedFor != student.Id)
+            {
+                _historyAskedFor = student.Id; // once per student: loading it announces a change that rebuilds this record again
+                _ = _model.Detail.LoadHistoryAsync(); // an open block follows the student chosen
+            }
+        }
+        else if (_model.Detail.History.Count == 0)
+        {
+            _activityBody.Children.Add(Line(_localizer.Get("Students.Empty.NoHistory"), secondary: true));
+        }
+        else
+        {
+            foreach (var line in _model.Detail.History)
+            {
+                _activityBody.Children.Add(Line("• " + line));
+            }
+        }
+
+        ShowPending();
     }
 
-    StackPanel ListTab(IReadOnlyList<string> lines, bool loaded)
+    /// <summary>Shows the heading of the pending charges as what it is: the charges themselves, or that the student is up to date, or has none.</summary>
+    void ShowPending()
     {
-        var panel = new StackPanel().Themed(StackPanel.SpacingProperty, ArcaResourceKeys.SpacingSmall);
-        if (!loaded)
-        {
-            panel.Children.Add(Line(_localizer.Get("Common.Loading.Generic"), secondary: true));
-        }
-        else if (lines.Count == 0)
-        {
-            panel.Children.Add(Line(_localizer.Get("Students.Empty.NoHistory"), secondary: true));
-        }
-
-        foreach (var line in lines)
-        {
-            panel.Children.Add(Line("• " + line));
-        }
-
-        return panel;
+        var anyPending = Pending.Lines.Count > 0;
+        var loaded = _model.Charges.Screen is not null;
+        UpToDateText.IsVisible = loaded && !anyPending;
+        UpToDateText.Text = !loaded ? string.Empty
+            : _model.Charges.Charges.List.TotalCount == 0 ? _localizer.Get("Charges.Empty.NoCharges")
+            : _model.Charges.Summary;
     }
 
     static TextBlock Line(string text, bool secondary = false) => new TextBlock { Text = text, TextWrapping = Avalonia.Media.TextWrapping.Wrap }

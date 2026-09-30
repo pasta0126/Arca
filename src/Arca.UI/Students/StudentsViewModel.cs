@@ -44,10 +44,9 @@ public sealed class StudentsViewModel : ObservableObject
     string _levelFilter = string.Empty;
     string _groupFilter = string.Empty;
     string _lockerFilter = string.Empty;
+    string _paymentFilter = string.Empty;
     bool _includeRetired;
     IReadOnlyList<StudentListRow> _all = [];
-    IReadOnlyList<string> _lockerLines = [];
-    bool _lockerLinesLoaded;
 
     public StudentsViewModel(
         StudentServices services, ScreenContext context, AssignmentDialogs assign, AppAction standardNew, Func<Task> openCourse, StudentChargesViewModel charges)
@@ -70,13 +69,16 @@ public sealed class StudentsViewModel : ObservableObject
                 new ListColumn<StudentListRow>("level", text.Get("Students.Label.Level"), s => s.LevelName ?? string.Empty, Width: 2),
                 new ListColumn<StudentListRow>("group", text.Get("Students.Label.Group"), s => s.GroupName ?? string.Empty, Width: 1),
                 new ListColumn<StudentListRow>("locker", text.Get("Students.Label.Locker"), s => s.LockerNumber?.ToString(CultureInfo.InvariantCulture) ?? string.Empty, s => s.LockerNumber ?? int.MaxValue, Width: 1),
-                new ListColumn<StudentListRow>("payment", text.Get("Students.Label.Payment"), s => PaymentOf(s), s => s.PendingTotal, Width: 2),
+                new ListColumn<StudentListRow>("payment", text.Get("Students.Label.Payment"), s => PaymentOf(s), s => s.PendingTotal, Width: 3),
                 new ListColumn<StudentListRow>("state", text.Get("Students.Label.State"), s => text.Get(s.IsRetired ? "Students.State.Retired" : "Students.State.Active"), Width: 1),
             ],
             s => s.Id, LoadRowsAsync, text, context.Notifications, context.Log,
             () => NoActiveYear ? text.Get("Students.Empty.NoYear")
                 : _emptyState == StudentEmptyState.NoStudents ? text.Get("Students.Empty.NoStudentsList") : StudentEmptyStates.Describe(_emptyState, text)?.Message, emptyActions: EmptyActions);
         Students.List.SortBy("last");
+        Students.UseFilters(ActiveFilterTags, ResetFilterFields);
+        Students.NoResultsMessage = () => PaymentFilter == "pending" && Students.List.FilterText.Length == 0 && LevelFilter.Length == 0 && GroupFilter.Length == 0 && LockerFilter.Length == 0
+            ? text.Get("Students.Empty.NobodyPending") : null;
         ApplyFilters();
         Detail = new DetailViewModel<Guid, StudentScreenDetail>(LoadDetailAsync, BuildActions, text, context.Notifications, context.Log, services.History);
         Students.CurrentChanged += (_, _) => _ = ShowCurrentAsync();
@@ -91,7 +93,7 @@ public sealed class StudentsViewModel : ObservableObject
 
     public AppAction StandardNew { get; }
 
-    /// <summary>The charges of the student chosen, shown in the Payments tab of the record with the same model the Payments section uses.</summary>
+    /// <summary>The charges of the student chosen, shown in the record as the pending ones and the history of payments.</summary>
     public StudentChargesViewModel Charges { get; }
 
     async Task RefreshAfterChargesAsync()
@@ -102,12 +104,6 @@ public sealed class StudentsViewModel : ObservableObject
         }
     }
 
-    /// <summary>Fetches the charges of the student, when the person opens the Payments tab.</summary>
-    public async Task LoadChargesAsync()
-    {
-        var has = Students.TryGetSelectedKey(out var id);
-        await Charges.ShowAsync(has ? id : null);
-    }
 
     public IReadOnlyList<AppAction> MainActions => [NewStudent];
 
@@ -142,6 +138,26 @@ public sealed class StudentsViewModel : ObservableObject
         new("with", _context.Localizer.Get("Students.Label.WithLocker")),
         new("without", _context.Localizer.Get("Students.Label.WithoutLocker")),
     ];
+
+    public IReadOnlyList<FormOption> PaymentOptions =>
+    [
+        new(string.Empty, _context.Localizer.Get("Students.Label.AnyPayment")),
+        new("pending", _context.Localizer.Get("Students.Label.WithPendingPayments")),
+        new("upToDate", _context.Localizer.Get("Students.Label.PaymentsUpToDate")),
+    ];
+
+    /// <summary>"pending" for the students with something to pay, "upToDate" for those with nothing, or empty for any.</summary>
+    public string PaymentFilter
+    {
+        get => _paymentFilter;
+        set
+        {
+            if (Set(ref _paymentFilter, value))
+            {
+                ApplyFilters();
+            }
+        }
+    }
 
     public string LevelFilter
     {
@@ -195,28 +211,85 @@ public sealed class StudentsViewModel : ObservableObject
     /// <summary>How many active students there are and how many have a locker, whatever the filters hide.</summary>
     public string CountersText => _context.Localizer.Get("Students.Label.Counters", _counters.Active, _counters.WithLocker, _counters.WithoutLocker);
 
-    void ApplyFilters() => Students.List.SetPredicate(s =>
-        (IncludeRetired || !s.IsRetired)
-        && (LevelFilter.Length == 0 || s.LevelName == LevelFilter)
-        && (GroupFilter.Length == 0 || s.GroupName == GroupFilter)
-        && (LockerFilter switch { "with" => s.LockerNumber is not null, "without" => s.LockerNumber is null && !s.IsRetired, _ => true }));
-
-    /// <summary>Removes the search and every filter, which is what the state of a list without results offers.</summary>
-    public void ClearFilters()
+    void ApplyFilters()
     {
-        _levelFilter = _groupFilter = _lockerFilter = string.Empty;
+        Students.List.SetPredicate(s =>
+            (IncludeRetired || !s.IsRetired || (PaymentFilter == "pending" && s.HasDebt))
+            && (LevelFilter.Length == 0 || s.LevelName == LevelFilter)
+            && (GroupFilter.Length == 0 || s.GroupName == GroupFilter)
+            && (LockerFilter switch { "with" => s.LockerNumber is not null, "without" => s.LockerNumber is null && !s.IsRetired, _ => true })
+            && (PaymentFilter switch { "pending" => s.HasDebt, "upToDate" => !s.HasDebt, _ => true }));
+        Students.RefreshFilters();
+    }
+
+    /// <summary>The filters that are on, each with what removes it, for the labels under the search.</summary>
+    IReadOnlyList<ListFilterTag> ActiveFilterTags()
+    {
+        var text = _context.Localizer;
+        var tags = new List<ListFilterTag>();
+        if (LevelFilter.Length > 0)
+        {
+            tags.Add(new ListFilterTag("level", text.Get("Common.Label.FilterTag", text.Get("Students.Label.Level"), LevelFilter), () => LevelFilter = string.Empty));
+        }
+
+        if (GroupFilter.Length > 0)
+        {
+            tags.Add(new ListFilterTag("group", text.Get("Common.Label.FilterTag", text.Get("Students.Label.Group"), GroupFilter), () => GroupFilter = string.Empty));
+        }
+
+        if (LockerFilter.Length > 0)
+        {
+            var label = LockerOptions.FirstOrDefault(o => o.Id == LockerFilter)?.Label ?? LockerFilter;
+            tags.Add(new ListFilterTag("locker", label, () => LockerFilter = string.Empty));
+        }
+
+        if (PaymentFilter.Length > 0)
+        {
+            tags.Add(new ListFilterTag("payment", PaymentOptions.First(o => o.Id == PaymentFilter).Label, () => PaymentFilter = string.Empty));
+        }
+
+        if (IncludeRetired)
+        {
+            tags.Add(new ListFilterTag("retired", text.Get("Students.Label.IncludeRetired"), () => IncludeRetired = false));
+        }
+
+        return tags;
+    }
+
+    /// <summary>Removes the search and every filter, which is what the state of a list without results and the Reset button offer.</summary>
+    public void ClearFilters() => Students.ClearFilter();
+
+    /// <summary>
+    /// Puts on the filters a card of the start screen asks for (Locker=with|without, Payment=pending|upToDate), after taking off the search
+    /// and every other filter, so the list shows exactly that and nothing else.
+    /// </summary>
+    public void ApplyRequest(IReadOnlyDictionary<string, string> filters)
+    {
+        Students.ClearFilter();
+        if (filters.TryGetValue("Locker", out var locker))
+        {
+            LockerFilter = locker;
+        }
+
+        if (filters.TryGetValue("Payment", out var payment))
+        {
+            PaymentFilter = payment;
+        }
+    }
+
+    void ResetFilterFields()
+    {
+        _levelFilter = _groupFilter = _lockerFilter = _paymentFilter = string.Empty;
         _includeRetired = false;
+        Raise(nameof(PaymentFilter));
         Raise(nameof(LevelFilter));
         Raise(nameof(GroupFilter));
         Raise(nameof(LockerFilter));
         Raise(nameof(IncludeRetired));
-        Students.ClearFilter();
         ApplyFilters();
     }
 
-    string PaymentOf(StudentListRow s) => s.HasDebt
-        ? _context.Localizer.Get("Students.Label.PaymentDebt", _context.Localizer.Format(Money.FromCents((long)Math.Round(s.PendingTotal * 100))))
-        : _context.Localizer.Get("Students.Label.PaymentUpToDate");
+    string PaymentOf(StudentListRow s) => _context.Localizer.Get(s.HasDebt ? "Students.Label.PaymentDebt" : "Students.Label.PaymentUpToDate"); // never an amount: that is in the record
 
     // --- Loading ---
 
@@ -270,39 +343,15 @@ public sealed class StudentsViewModel : ObservableObject
     async Task<Result<StudentScreenDetail?>> LoadDetailAsync(Guid id, CancellationToken ct)
     {
         var detail = await _services.Detail(id, ct);
-        _lockerLines = [];
-        _lockerLinesLoaded = false;
-        Raise(nameof(LockerLines));
         return detail.IsSuccess ? Result<StudentScreenDetail?>.Success(detail.Value) : Result<StudentScreenDetail?>.Failure(detail.Error!);
     }
 
     async Task ShowCurrentAsync()
     {
         var has = Students.TryGetSelectedKey(out var id);
+        var charges = Charges.ShowAsync(has ? id : null); // the pending charges are open in the record, so they load with it
         await Detail.ShowAsync(has, id);
-    }
-
-    /// <summary>The lockers the student has had, the most recent first, once the Locker tab asked for them.</summary>
-    public IReadOnlyList<string> LockerLines => _lockerLines;
-
-    public bool LockerLinesLoaded => _lockerLinesLoaded;
-
-    /// <summary>Fetches the lockers of the student, when the person opens the Locker tab.</summary>
-    public async Task LoadLockerLinesAsync()
-    {
-        if (!Students.TryGetSelectedKey(out var id))
-        {
-            return;
-        }
-
-        var lines = await _services.LockerHistory(id, default);
-        if (lines.IsSuccess)
-        {
-            _lockerLines = lines.Value!;
-            _lockerLinesLoaded = true;
-            Raise(nameof(LockerLines));
-            Raise(nameof(LockerLinesLoaded));
-        }
+        await charges;
     }
 
     async Task RefreshAsync(Guid? select = null)

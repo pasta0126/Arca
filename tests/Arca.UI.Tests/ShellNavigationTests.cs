@@ -45,11 +45,11 @@ public sealed class ShellNavigationTests
 
     [Fact]
     [Trait("spec", Spec + ": Barra lateral de secciones")]
-    public void The_sidebar_has_the_eight_sections_in_order()
+    public void The_sidebar_has_the_seven_sections_in_order_and_no_payments_section()
     {
         var sections = Registry().Sections.Select(s => s.Id);
 
-        Assert.Equal(["Home", "Lockers", "Students", "Payments", "KeysAndIncidents", "Reports", "Course", "Settings"], sections);
+        Assert.Equal(["Home", "Lockers", "Students", "KeysAndIncidents", "Reports", "Course", "Settings"], sections);
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public sealed class ShellNavigationTests
         Assert.Equal("Course", registry.SectionOf("Amounts")!.Id);
         Assert.Equal("Settings", registry.SectionOf("Backup")!.Id);
         Assert.Equal("Students", registry.SectionOf("StudentImport")!.Id);
-        Assert.Equal("Payments", registry.SectionOf("Deposits")!.Id);
+        Assert.Equal("Students", registry.SectionOf("Deposits")!.Id);
     }
 
     [Fact]

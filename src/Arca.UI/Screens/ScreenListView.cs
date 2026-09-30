@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Guillermo Garcia Carballo
 
 using Arca.Application.Localization;
+using Arca.UI.Actions;
 using Arca.UI.Common;
 using Arca.UI.Lists;
 using Arca.UI.Theme;
@@ -24,15 +25,7 @@ public sealed class ScreenListView<TRow, TKey> : UserControl
     public ScreenListView(ScreenListViewModel<TRow, TKey> model, ILocalizer localizer, Control? filters = null)
     {
         _model = model;
-        Search = new TextBox { PlaceholderText = localizer.Get("Common.Action.Search"), MinWidth = 200 };
-        Search.TextChanged += (_, _) => model.List.FilterText = Search.Text ?? string.Empty;
-        model.List.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName == nameof(Lists.ListViewModel<TRow, TKey>.FilterText) && Search.Text != model.List.FilterText)
-            {
-                Search.Text = model.List.FilterText; // cleared from the empty state
-            }
-        };
+        Toolbar = new ListToolbarView<TRow, TKey>(model, localizer, filters);
 
         Rows = new VirtualizedListView<TRow, TKey>(model.List, showMarks: false);
         Rows.List.SelectionChanged += (_, e) =>
@@ -45,34 +38,24 @@ public sealed class ScreenListView<TRow, TKey> : UserControl
         model.PropertyChanged += (_, _) => Show();
         model.List.PropertyChanged += (_, _) => Show();
 
-        // The search and the filters wrap onto a second line when the list is narrow, so none is ever cut off.
-        var bar = new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 8, LineSpacing = 8 };
-        bar.Children.Add(Search);
-        if (filters is Panel panel)
-        {
-            foreach (var child in panel.Children.ToList())
-            {
-                panel.Children.Remove(child);
-                bar.Children.Add(child);
-            }
-        }
-        else if (filters is not null)
-        {
-            bar.Children.Add(filters);
-        }
-
         var body = new Grid();
         body.Children.Add(Rows);
         body.Children.Add(new ListStateView(model.State));
         var layout = new DockPanel();
-        DockPanel.SetDock(bar, Dock.Top);
-        bar.ThemedThickness(MarginProperty, ArcaResourceKeys.SpacingMedium);
-        layout.Children.Add(bar);
+        DockPanel.SetDock(Toolbar, Dock.Top);
+        layout.Children.Add(Toolbar);
         layout.Children.Add(body);
         Content = layout;
     }
 
-    public TextBox Search { get; }
+    /// <summary>The search, filters, Reset button, labels and count above the rows.</summary>
+    public ListToolbarView<TRow, TKey> Toolbar { get; }
+
+    public TextBox Search => Toolbar.Search;
+
+    public Button ResetButton => Toolbar.ResetButton;
+
+    public WrapPanel TagsPanel => Toolbar.TagsPanel;
 
     public VirtualizedListView<TRow, TKey> Rows { get; }
 
@@ -80,6 +63,12 @@ public sealed class ScreenListView<TRow, TKey> : UserControl
     void Show()
     {
         var current = _model.Current;
+        if (current is null && Rows.List.SelectedItem is not null)
+        {
+            Rows.List.SelectedItem = null; // chosen no row (Esc): the list shows none chosen either
+            return;
+        }
+
         if (current is not null && !ReferenceEquals(Rows.List.SelectedItem, current) && _model.List.Rows.Contains(current))
         {
             Rows.List.SelectedItem = current;

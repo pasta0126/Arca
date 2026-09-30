@@ -25,30 +25,29 @@ public static class ShellCatalog
     public const string Home = "Home";
     public const string Lockers = "Lockers";
     public const string Students = "Students";
-    public const string Payments = "Payments";
     public const string KeysAndIncidents = "KeysAndIncidents";
     public const string Reports = "Reports";
     public const string Course = "Course";
     public const string Settings = "Settings";
 
-    /// <summary>The eight sections, in the order of the sidebar. Their roots are supplied by whoever composes the application.</summary>
+    /// <summary>The seven sections, in the order of the sidebar. Their roots are supplied by whoever composes the application.</summary>
     public static IReadOnlyList<SectionDefinition> Sections { get; } =
     [
-        Section(Home, 1), Section(Lockers, 2), Section(Students, 3), Section(Payments, 4),
-        Section(KeysAndIncidents, 5), Section(Reports, 6), Section(Course, 7), Section(Settings, 8),
+        Section(Home, 1), Section(Lockers, 2), Section(Students, 3),
+        Section(KeysAndIncidents, 4), Section(Reports, 5), Section(Course, 6), Section(Settings, 7),
     ];
 
     /// <summary>
-    /// Every screen in its one section: Lockers (lockers, zones and their history), Students (students, import and
-    /// assignments), Payments (charges, debtors and deposits), Keys and incidents, Reports, Course (current year, amounts,
+    /// Every screen in its one section: Lockers (map, list, zones and their history), Students (students, their charges and
+    /// deposit, import and assignments), Keys and incidents, Reports, Course (current year, amounts,
     /// closing and data retention) and Settings (identity, theme, registration, backup, guided setup, incident reasons and data folder).
     /// </summary>
     public static IReadOnlyList<ScreenDefinition> Screens { get; } =
     [
-        Screen("LockerMap", Home),
-        Screen("Lockers", Lockers), Screen("Zones", Lockers), Screen("LockerHistory", Lockers),
+        Screen("Start", Home),
+        Screen("LockerMap", Lockers), Screen("Lockers", Lockers), Screen("Zones", Lockers), Screen("LockerHistory", Lockers),
         Screen("Students", Students), Screen("StudentImport", Students), Screen("Assignments", Students),
-        Screen("Charges", Payments), Screen("Debtors", Payments), Screen("Deposits", Payments),
+        Screen("Deposits", Students),
         Screen("Keys", KeysAndIncidents), Screen("Incidents", KeysAndIncidents), Screen("BulkMaintenance", KeysAndIncidents),
         Screen("Reports", Reports), Screen("Export", Reports),
         Screen("CurrentYear", Course), Screen("Amounts", Course), Screen("YearClosing", Course), Screen("DataRetention", Course),

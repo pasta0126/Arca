@@ -13,9 +13,6 @@
   <data name="Shell.Section.Students" xml:space="preserve">
     <value>Alumnes</value>
   </data>
-  <data name="Shell.Section.Payments" xml:space="preserve">
-    <value>Cobraments</value>
-  </data>
   <data name="Shell.Section.KeysAndIncidents" xml:space="preserve">
     <value>Claus i incidències</value>
   </data>
@@ -29,10 +26,41 @@
     <value>Ajustos</value>
   </data>
   <data name="Shell.Screen.LockerMap" xml:space="preserve">
-    <value>Mapa de taquilles</value>
+    <value>Mapa</value>
+  </data>
+  <data name="Shell.Home.Label.Year" xml:space="preserve">
+    <value>Curs actiu: {0}</value>
+  </data>
+  <data name="Shell.Home.Empty.NoYear" xml:space="preserve">
+    <value>No hi ha cap curs actiu. Activa'n un per poder assignar taquilles.</value>
+  </data>
+  <data name="Shell.Home.Action.GoToCourse" xml:space="preserve">
+    <value>Ves a Curs</value>
+  </data>
+  <data name="Shell.Home.Empty.NotSetUp" xml:space="preserve">
+    <value>Encara no hi ha taquilles ni alumnes. Comença per crear les zones i les taquilles i afegir els alumnes.</value>
+  </data>
+  <data name="Shell.Home.Action.SetUpLockers" xml:space="preserve">
+    <value>Crea zones i taquilles</value>
+  </data>
+  <data name="Shell.Home.Action.AddStudents" xml:space="preserve">
+    <value>Afegeix alumnes</value>
+  </data>
+  <data name="Shell.Home.Link.WithPending" xml:space="preserve">
+    <value>Alumnes amb pendents de pagament</value>
+  </data>
+  <data name="Shell.Home.Link.WithoutLocker" xml:space="preserve">
+    <value>Alumnes sense taquilla</value>
+  </data>
+  <data name="Shell.Home.Link.Open" xml:space="preserve">
+    <value>{0}: {1}. Obre'ls filtrats.</value>
+    <comment>{0} what is counted, {1} how many</comment>
+  </data>
+  <data name="Shell.Screen.Start" xml:space="preserve">
+    <value>Inici</value>
   </data>
   <data name="Shell.Screen.Lockers" xml:space="preserve">
-    <value>Taquilles</value>
+    <value>Llista</value>
   </data>
   <data name="Shell.Screen.Zones" xml:space="preserve">
     <value>Zones</value>
@@ -48,12 +76,6 @@
   </data>
   <data name="Shell.Screen.Assignments" xml:space="preserve">
     <value>Assignacions</value>
-  </data>
-  <data name="Shell.Screen.Charges" xml:space="preserve">
-    <value>Càrrecs</value>
-  </data>
-  <data name="Shell.Screen.Debtors" xml:space="preserve">
-    <value>Pendents de pagament</value>
   </data>
   <data name="Shell.Screen.Deposits" xml:space="preserve">
     <value>Dipòsits per retornar</value>

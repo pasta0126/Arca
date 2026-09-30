@@ -18,9 +18,10 @@ public sealed record GetLockerScreenRequest(Guid LockerId);
 /// <param name="EditBlocked">Why the number and the zone cannot be edited (the locker is retired), or null.</param>
 /// <param name="BrokenBlocked">Why it cannot be marked broken (it already is, or it is retired), or null. An occupied locker is allowed: the decision comes next.</param>
 /// <param name="MaintenanceBlocked">Why it cannot be marked in maintenance, or null.</param>
+/// <param name="StudentId">The student who holds the locker, so the detail can release it or change it. Only the detail carries it, never the list.</param>
 public sealed record LockerScreenDetail(
     LockerListRow Row, Error? EditBlocked, Error? ReserveBlocked, Error? RemoveReservationBlocked, Error? BrokenBlocked,
-    Error? MaintenanceBlocked, Error? RestoreBlocked, Error? RetireBlocked);
+    Error? MaintenanceBlocked, Error? RestoreBlocked, Error? RetireBlocked, Guid? StudentId = null);
 
 /// <summary>
 /// Reads a locker with the reasons of its operations. Each reason is what the domain rule itself answers when it is tried on a
@@ -36,10 +37,10 @@ public sealed class GetLockerScreenHandler(ListLockerRowsHandler rows, ILockerRe
             return Result<LockerScreenDetail>.Failure(LockerErrors.NotFound);
         }
 
-        var listing = await rows.HandleAsync(ct);
-        if (!listing.IsSuccess)
+        var read = await rows.ReadOneAsync(locker.Id, ct);
+        if (read is null)
         {
-            return Result<LockerScreenDetail>.Failure(listing.Error!);
+            return Result<LockerScreenDetail>.Failure(LockerErrors.NotFound);
         }
 
         var occupied = (await occupancy.OccupiedAmongAsync([locker.Id], ct)).Contains(locker.Id);
@@ -49,13 +50,14 @@ public sealed class GetLockerScreenHandler(ListLockerRowsHandler rows, ILockerRe
             locker.RetiredAtUtc, locker.ReservedForStudentId);
 
         return Result<LockerScreenDetail>.Success(new LockerScreenDetail(
-            listing.Value!.Rows.Single(r => r.Id == locker.Id),
+            read.Row,
             locker.IsRetired ? LockerErrors.Retired : null,
             Copy().Reserve(null, occupied, now).Error,
             Copy().RemoveReservation(now).Error,
             Copy().MarkOutOfService(OutOfServiceKind.Broken, null, occupied, now).Error,
             Copy().MarkOutOfService(OutOfServiceKind.Maintenance, null, occupied, now).Error,
             Copy().RestoreService(now).Error,
-            Copy().Retire(occupied, now).Error));
+            Copy().Retire(occupied, now).Error,
+            read.StudentId));
     }
 }
