@@ -8,6 +8,7 @@ using Arca.Application.Charges.MarkChargeExempt;
 using Arca.Application.Charges.MarkChargePaid;
 using Arca.Application.Charges.WaiveCharge;
 using Arca.Application.ConceptAmounts.SetConceptAmounts;
+using Arca.Application.Identity;
 using Arca.Application.Lockers.CreateLockerRange;
 using Arca.Application.Lockers.MarkLockerOutOfService;
 using Arca.Application.Lockers.ReserveLocker;
@@ -64,6 +65,9 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
             store.Assignments, store.Students, store.Lockers, store.Zones, store.Enrollments, store.Years, store.StudentEvents, store.Events,
             [new ChargeGenerationGuard(store.ConceptAmounts, store.Charges)],
             [new ChargeGenerationHandler(store.ConceptAmounts, store.Charges, store.ChargeEvents, clock)], []);
+
+        // Identity of the centre, as the screens show it.
+        await new SaveCentreIdentityHandler(store.Identity, store).HandleAsync(new SaveCentreIdentityRequest("Ins. Monturiol", LogoChange.Keep, null, "#A9C4D3"), default);
 
         // Years and amounts: the active year, and the previous one, already finished.
         say("Cursos i imports…");
