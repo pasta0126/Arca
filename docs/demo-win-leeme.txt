@@ -1,0 +1,18 @@
+ARCA - copia de demostracio per a Windows
+=========================================
+
+Dades inventades. Contrasenya: demo
+
+1. Descomprimiu la carpeta on vulgueu (millor si l'heu rebuda per USB o carpeta de xarxa, no descarregada).
+2. Obriu Arca.exe. No cal instal-lar res.
+
+Si Windows mostra un avis blau (SmartScreen):
+  - "Mes informacio" i despres "Executa igualment".
+  - O be, clic dret al fitxer .zip, Propietats i "Desbloqueja" ABANS de descomprimir.
+
+Perque Windows reconegui l'editor (opcional, necessita un administrador):
+  - Clic dret a Instal-lar-certificat.cmd i "Executa com a administrador".
+  - Aixo accepta el certificat propi d'ARCA (ARCA-certificat.cer) en aquest equip. Es una copia de demostracio:
+    no instal-leu el certificat en equips que no siguin de proves.
+
+Les dades queden a la carpeta "data" del costat del programa. Per tornar a comencar, torneu a copiar la carpeta original.
