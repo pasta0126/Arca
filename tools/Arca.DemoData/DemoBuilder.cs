@@ -42,24 +42,24 @@ enum DemoProfile
     /// <summary>The first day of a new school year: the year active with its amounts, the zones and lockers set up, the students enrolled and nobody assigned yet; some carry debt of the year before.</summary>
     NewYear,
 
-    /// <summary>A small centre with two zones and 200 students in set groups, for trying the screens and the database editor (<see cref="Names.CompactStudents"/>).</summary>
-    Compact,
+    /// <summary>The «montu» centre: a small one with two zones and 200 students in set groups, for trying the screens and the database editor (<see cref="Names.MontuStudents"/>).</summary>
+    Montu,
 }
 
 sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoProfile profile = DemoProfile.Demo)
 {
     const int Namesakes = 6;
 
-    readonly bool _compact = profile == DemoProfile.Compact;
+    readonly bool _montu = profile == DemoProfile.Montu;
 
-    int StudentCount => _compact ? Names.CompactStudents.Length : 900;
-    int InitiallyAssigned => _compact ? 150 : 540;
+    int StudentCount => _montu ? Names.MontuStudents.Length : 900;
+    int InitiallyAssigned => _montu ? 150 : 540;
     const int DebtorsOfTheYearBefore = 60;
-    int Retired => _compact ? 0 : 20;
-    int Reserved => _compact ? 0 : 5;
-    int Broken => _compact ? 0 : 15;
-    int Maintenance => _compact ? 0 : 10;
-    int WithPreviousDebt => _compact ? 10 : 40;
+    int Retired => _montu ? 0 : 20;
+    int Reserved => _montu ? 0 : 5;
+    int Broken => _montu ? 0 : 15;
+    int Maintenance => _montu ? 0 : 10;
+    int WithPreviousDebt => _montu ? 10 : 40;
 
     public async Task BuildAsync(Action<string> say)
     {
@@ -87,7 +87,7 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
         // Zones and lockers.
         say("Zones i taquilles…");
         var zoneHandler = new CreateZoneHandler(store.Zones, store);
-        if (!_compact)
+        if (!_montu)
         {
             var oldStore = (await zoneHandler.HandleAsync(new CreateZoneRequest("Antic magatzem"), default)).Value!; // a zone that is no longer used, to try the filters
             await new Arca.Application.Zones.DeactivateZone.DeactivateZoneHandler(store.Zones, store.Lockers, store)
@@ -97,8 +97,8 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
         var rangeHandler = new CreateLockerRangeHandler(store.Lockers, store.Zones, store.Events, store, clock);
         var lockerIds = new List<Guid>();
         var next = 1;
-        var zoneNames = _compact ? Names.CompactZones : Names.Zones;
-        var zoneSizes = _compact ? Names.CompactZoneSizes : Names.ZoneSizes;
+        var zoneNames = _montu ? Names.MontuZones : Names.Zones;
+        var zoneSizes = _montu ? Names.MontuZoneSizes : Names.ZoneSizes;
         for (var z = 0; z < zoneNames.Length; z++)
         {
             var zone = (await zoneHandler.HandleAsync(new CreateZoneRequest(zoneNames[z]), default)).Value!;
@@ -146,8 +146,8 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
                 continue;
             }
 
-            var (level, group) = _compact
-                ? Names.CompactStudents[i]
+            var (level, group) = _montu
+                ? Names.MontuStudents[i]
                 : (Names.Levels[i % Names.Levels.Length],
                     Names.Groups[i / Names.Levels.Length % (Names.Levels[i % Names.Levels.Length].Contains("Batxillerat", StringComparison.Ordinal) ? 2 : 4)]);
             var added = await add.HandleAsync(new AddStudentRequest(first, last, email, level, group, ConfirmNewValues: true), default);
@@ -155,7 +155,7 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
         }
 
         // Namesakes: the same name and surnames on different people, which a real centre has and the forms warn about.
-        for (var i = 0; i < (_compact ? 0 : Namesakes); i++)
+        for (var i = 0; i < (_montu ? 0 : Namesakes); i++)
         {
             var first = Names.First[i];
             var last = Names.Last[i] + " " + Names.Last[i + 1];

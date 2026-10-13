@@ -31,13 +31,13 @@ static class Names
 
     public static readonly string[] Groups = ["A", "B", "C", "D"];
 
-    // Profile compact: two zones with 95 lockers each (190 lockers, 95 % of the 200 students).
-    public static readonly string[] CompactZones = ["Planta 0", "Planta 1"];
+    // Profile montu: two zones with 95 lockers each (190 lockers, 95 % of the 200 students).
+    public static readonly string[] MontuZones = ["Planta 0", "Planta 1"];
 
-    public static readonly int[] CompactZoneSizes = [95, 95];
+    public static readonly int[] MontuZoneSizes = [95, 95];
 
-    /// <summary>Level and group of every student of the compact centre: 20 in each ESO level, 30 in 1r Batxillerat A and B, 40 in 2n A and 20 in 2n B.</summary>
-    public static readonly (string Level, string Group)[] CompactStudents =
+    /// <summary>Level and group of every student of the montu centre: 20 in each ESO level, 30 in 1r Batxillerat A and B, 40 in 2n A and 20 in 2n B.</summary>
+    public static readonly (string Level, string Group)[] MontuStudents =
     [
         .. Enumerable.Repeat(("1r ESO", "A"), 20),
         .. Enumerable.Repeat(("2n ESO", "A"), 20),

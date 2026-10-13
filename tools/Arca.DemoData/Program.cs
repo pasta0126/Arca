@@ -8,7 +8,10 @@ using Arca.Infrastructure.Storage;
 
 // Creates a database full of invented data for trying ARCA (docs/datos-de-ejemplo.md). Not part of the product.
 //
-//   dotnet run --project tools/Arca.DemoData -- [--folder <folder>] [--password <text>] [--seed <n>] [--force]
+//   dotnet run --project tools/Arca.DemoData -- [--folder <folder>] [--password <text>] [--seed <n>] [--profile demo|new-year|montu] [--force]
+//
+//   --profile demo (default): a full centre in the middle of the year. new-year: a centre that starts the year, nobody assigned.
+//   montu: two zones (Planta 0, Planta 1), 200 students in set groups and 190 lockers.
 //
 // The default folder is the one the portable application uses when it is run from a build (src/Arca.Desktop/bin/Debug/net10.0/data),
 // so `build/run.sh` opens it. Close ARCA before running this: it needs the database to itself.
@@ -52,7 +55,7 @@ if (!created.IsSuccess)
 }
 
 var key = new AccessService(new NSecKeyCrypto(), new FileKeyFileStore()).Unlock(database, password).Value!;
-var profile = options.GetValueOrDefault("--profile") switch { "new-year" => DemoProfile.NewYear, "compact" => DemoProfile.Compact, _ => DemoProfile.Demo };
+var profile = options.GetValueOrDefault("--profile") switch { "new-year" => DemoProfile.NewYear, "montu" => DemoProfile.Montu, _ => DemoProfile.Demo };
 var builder = new DemoBuilder(() => new ArcaDbContext(database, key), new Random(seed), profile);
 await builder.BuildAsync(Console.WriteLine);
 
