@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Arca.DbEditor</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" />
+    <ProjectReference Include="..\..\src\Arca.Application\Arca.Application.csproj" />
+    <ProjectReference Include="..\..\src\Arca.Infrastructure\Arca.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

@@ -63,10 +63,11 @@ están en `build/licenses-reviewed.json`, con su motivo.
 | SQLitePCLRaw.core | 3.0.2 | Apache-2.0 | Copyright 2014-2025 SourceGear, LLC |
 | Tmds.DBus.Protocol | 0.94.1 | MIT | Tom Deseyn |
 
-## Solo para desarrollo y pruebas (no se distribuyen) (38)
+## Solo para desarrollo y pruebas (no se distribuyen) (39)
 
 | Paquete | Versión | Licencia | Titular |
 |---------|---------|----------|---------|
+| Avalonia.Controls.DataGrid | 12.1.2 | MIT | Copyright 2013-2026 © The AvaloniaUI Project |
 | Avalonia.Fonts.Inter | 12.1.3 | MIT | Copyright 2013-2026 © The AvaloniaUI Project |
 | Avalonia.Headless | 12.1.3 | MIT | Copyright 2013-2026 © The AvaloniaUI Project |
 | Avalonia.Headless.XUnit | 12.1.3 | MIT | Copyright 2013-2026 © The AvaloniaUI Project |

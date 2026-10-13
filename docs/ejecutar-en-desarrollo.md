@@ -18,6 +18,20 @@ build/run.sh --demo     # crea antes una base con datos ficticios y la abre (con
 
 La opción `--demo` usa `tools/Arca.DemoData`, que rellena la base llamando a los casos de uso reales: 6 zonas y 600 taquillas (50 libres, 520 ocupadas, 5 reservadas, 15 avariadas y 10 en mantenimiento), 900 alumnos en 20 grupos, cobros pagados, exentos y pendientes, deuda del curso anterior y 20 bajas con la fianza por devolver. Los nombres son inventados y los correos usan `test.cat`. El centro se llama «Ins. Monturiol» con acento `#A9C4D3` y Inicio ya trae las siete tarjetas de serie. `--new-year` crea en su lugar un centro que empieza el curso (curso nuevo activo, 912 alumnos matriculados sin taquilla y 60 con deuda del curso anterior). La misma semilla da siempre los mismos datos (`--seed`). También se puede lanzar suelta: `dotnet run --project tools/Arca.DemoData -- --folder <carpeta> [--password <texto>] [--force]`. **Cierra ARCA antes**: necesita la base para ella sola.
 
+## Editor de bases de datos (`tools/Arca.DbEditor`)
+
+Herramienta de desarrollo, fuera del producto, para ver y corregir a mano cualquier fichero SQLite sin depender de los modelos de ARCA: sirve para la base de ARCA y para cualquier otra. No se incluye en ningún paquete ni instalador.
+
+```bash
+dotnet run --project tools/Arca.DbEditor                       # abre la ventana y eliges el fichero
+dotnet run --project tools/Arca.DbEditor -- <ruta>/arca.db     # con el fichero ya puesto
+```
+
+- **Abrir**: sin nada en el segundo campo, SQLite normal; con la contraseña del centro, una base de ARCA (necesita `arca.keys` al lado); con 64 caracteres hexadecimales, SQLCipher 4 con esa llave.
+- **Ver y editar**: lista de tablas y vistas a la izquierda, rejilla paginada (200 filas) con filtro por cualquier columna. Doble clic en una celda para editarla; `NULL` escrito tal cual es NULL y `x'AB12'` es un blob. Añadir fila (rellena solo lo que la tabla exige) y eliminar las seleccionadas.
+- **SQL**: pestaña aparte para sentencias libres. Las consultas (`SELECT`, `EXPLAIN`) no tocan nada.
+- **Seguridad**: lo que se escribe queda pendiente en una transacción hasta pulsar «Desa els canvis» («Descarta» lo deshace). Antes de la primera escritura de la sesión se hace una copia `<fichero>.<fecha>.bak` junto al original, con el mismo cifrado. Las claves foráneas se comprueban. **Cierra ARCA antes**: edita el fichero directamente, sin pasar por las reglas de negocio, así que un cambio puede dejar datos que ARCA no espera.
+
 Los datos quedan en `src/Arca.Desktop/bin/Debug/net10.0/data`. Es lo mismo que el ejemplo de abajo, en un script.
 
 ## Ejemplo paso a paso (macOS y Linux)
