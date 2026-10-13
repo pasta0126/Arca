@@ -23,7 +23,21 @@ El binario compilado queda en `tools/Arca.DbEditor/bin/Debug/net10.0/Arca.DbEdit
 | Base de ARCA (`arca.db`) | contraseña del centro (necesita `arca.arcakeys` al lado) |
 | SQLCipher 4 | llave de 64 caracteres hexadecimales |
 
-Para probar sin riesgo, genera una base de demo propia (ya ignorada por git): `dotnet run --project tools/Arca.DemoData -c Release -- --folder artifacts/demo-db --force` (contraseña `demo`).
+## Base de demo lista para probar
+
+Genera (o regenera) la base pequeña `montu` en `artifacts/demo-db` (carpeta ignorada por git; contraseña `demo`):
+
+```bash
+dotnet run --project tools/Arca.DemoData -c Release -- --folder artifacts/demo-db --force --profile montu
+```
+
+Contenido: 2 zonas (Planta 0 y Planta 1), 200 alumnos (20 por nivel de ESO, 30 en cada 1r de Batxillerat, 40 en 2n A y 20 en 2n B) y 190 taquillas. Sin `--profile montu` sale el centro grande de siempre (`demo`: 900 alumnos y 600 taquillas); también existe `--profile new-year`.
+
+Y ábrela con el editor, escribiendo `demo` en el segundo campo:
+
+```bash
+dotnet run --project tools/Arca.DbEditor -- artifacts/demo-db/arca.db
+```
 
 La base de desarrollo de ARCA está en `src/Arca.Desktop/bin/Debug/net10.0/data/arca.db`. Con datos ficticios (`build/run.sh --demo`) la contraseña es `demo`.
 
