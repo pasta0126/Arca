@@ -73,7 +73,7 @@ public sealed partial class DbSession : IDisposable
             var unlocked = new AccessService(new NSecKeyCrypto(), new FileKeyFileStore()).Unlock(path, text);
             if (!unlocked.IsSuccess)
             {
-                throw new OpenException($"No s'ha pogut desbloquejar amb la contrasenya ({unlocked.Error!.Code}). Cal el fitxer arca.keys al costat de la base.");
+                throw new OpenException($"No s'ha pogut desbloquejar amb la contrasenya ({unlocked.Error!.Code}). Cal el fitxer arca.arcakeys al costat de la base.");
             }
 
             using var dataKey = unlocked.Value!;

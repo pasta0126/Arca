@@ -27,7 +27,7 @@ dotnet run --project tools/Arca.DbEditor                       # abre la ventana
 dotnet run --project tools/Arca.DbEditor -- <ruta>/arca.db     # con el fichero ya puesto
 ```
 
-- **Abrir**: sin nada en el segundo campo, SQLite normal; con la contraseña del centro, una base de ARCA (necesita `arca.keys` al lado); con 64 caracteres hexadecimales, SQLCipher 4 con esa llave.
+- **Abrir**: sin nada en el segundo campo, SQLite normal; con la contraseña del centro, una base de ARCA (necesita `arca.arcakeys` al lado); con 64 caracteres hexadecimales, SQLCipher 4 con esa llave.
 - **Ver y editar**: lista de tablas y vistas a la izquierda, rejilla paginada (200 filas) con filtro por cualquier columna. Doble clic en una celda para editarla; `NULL` escrito tal cual es NULL y `x'AB12'` es un blob. Añadir fila (rellena solo lo que la tabla exige) y eliminar las seleccionadas.
 - **SQL**: pestaña aparte para sentencias libres. Las consultas (`SELECT`, `EXPLAIN`) no tocan nada.
 - **Seguridad**: lo que se escribe queda pendiente en una transacción hasta pulsar «Desa els canvis» («Descarta» lo deshace). Antes de la primera escritura de la sesión se hace una copia `<fichero>.<fecha>.bak` junto al original, con el mismo cifrado. Las claves foráneas se comprueban. **Cierra ARCA antes**: edita el fichero directamente, sin pasar por las reglas de negocio, así que un cambio puede dejar datos que ARCA no espera.

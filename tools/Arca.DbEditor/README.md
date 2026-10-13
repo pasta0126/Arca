@@ -20,8 +20,10 @@ El binario compilado queda en `tools/Arca.DbEditor/bin/Debug/net10.0/Arca.DbEdit
 | Fichero | Segundo campo |
 |---------|---------------|
 | SQLite normal | vacío |
-| Base de ARCA (`arca.db`) | contraseña del centro (necesita `arca.keys` al lado) |
+| Base de ARCA (`arca.db`) | contraseña del centro (necesita `arca.arcakeys` al lado) |
 | SQLCipher 4 | llave de 64 caracteres hexadecimales |
+
+Para probar sin riesgo, genera una base de demo propia (ya ignorada por git): `dotnet run --project tools/Arca.DemoData -c Release -- --folder artifacts/demo-db --force` (contraseña `demo`).
 
 La base de desarrollo de ARCA está en `src/Arca.Desktop/bin/Debug/net10.0/data/arca.db`. Con datos ficticios (`build/run.sh --demo`) la contraseña es `demo`.
 
