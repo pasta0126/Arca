@@ -41,20 +41,25 @@ enum DemoProfile
 
     /// <summary>The first day of a new school year: the year active with its amounts, the zones and lockers set up, the students enrolled and nobody assigned yet; some carry debt of the year before.</summary>
     NewYear,
+
+    /// <summary>A small centre with two zones and 200 students in set groups, for trying the screens and the database editor (<see cref="Names.CompactStudents"/>).</summary>
+    Compact,
 }
 
 sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoProfile profile = DemoProfile.Demo)
 {
     const int Namesakes = 6;
 
-    const int StudentCount = 900;
-    const int InitiallyAssigned = 540;
+    readonly bool _compact = profile == DemoProfile.Compact;
+
+    int StudentCount => _compact ? Names.CompactStudents.Length : 900;
+    int InitiallyAssigned => _compact ? 150 : 540;
     const int DebtorsOfTheYearBefore = 60;
-    const int Retired = 20;
-    const int Reserved = 5;
-    const int Broken = 15;
-    const int Maintenance = 10;
-    const int WithPreviousDebt = 40;
+    int Retired => _compact ? 0 : 20;
+    int Reserved => _compact ? 0 : 5;
+    int Broken => _compact ? 0 : 15;
+    int Maintenance => _compact ? 0 : 10;
+    int WithPreviousDebt => _compact ? 10 : 40;
 
     public async Task BuildAsync(Action<string> say)
     {
@@ -82,19 +87,25 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
         // Zones and lockers.
         say("Zones i taquilles…");
         var zoneHandler = new CreateZoneHandler(store.Zones, store);
-        var oldStore = (await zoneHandler.HandleAsync(new CreateZoneRequest("Antic magatzem"), default)).Value!; // a zone that is no longer used, to try the filters
-        await new Arca.Application.Zones.DeactivateZone.DeactivateZoneHandler(store.Zones, store.Lockers, store)
-            .HandleAsync(new Arca.Application.Zones.DeactivateZone.DeactivateZoneRequest(oldStore.Id), default);
+        if (!_compact)
+        {
+            var oldStore = (await zoneHandler.HandleAsync(new CreateZoneRequest("Antic magatzem"), default)).Value!; // a zone that is no longer used, to try the filters
+            await new Arca.Application.Zones.DeactivateZone.DeactivateZoneHandler(store.Zones, store.Lockers, store)
+                .HandleAsync(new Arca.Application.Zones.DeactivateZone.DeactivateZoneRequest(oldStore.Id), default);
+        }
+
         var rangeHandler = new CreateLockerRangeHandler(store.Lockers, store.Zones, store.Events, store, clock);
         var lockerIds = new List<Guid>();
         var next = 1;
-        for (var z = 0; z < Names.Zones.Length; z++)
+        var zoneNames = _compact ? Names.CompactZones : Names.Zones;
+        var zoneSizes = _compact ? Names.CompactZoneSizes : Names.ZoneSizes;
+        for (var z = 0; z < zoneNames.Length; z++)
         {
-            var zone = (await zoneHandler.HandleAsync(new CreateZoneRequest(Names.Zones[z]), default)).Value!;
-            var request = new CreateLockerRangeRequest(next, next + Names.ZoneSizes[z] - 1, zone.Id);
+            var zone = (await zoneHandler.HandleAsync(new CreateZoneRequest(zoneNames[z]), default)).Value!;
+            var request = new CreateLockerRangeRequest(next, next + zoneSizes[z] - 1, zone.Id);
             var plan = (await rangeHandler.AnalyzeAsync(request, null, default)).Value!;
             await rangeHandler.ApplyAsync(plan, null, default);
-            next += Names.ZoneSizes[z];
+            next += zoneSizes[z];
         }
 
         var lockers = (await store.Lockers.ListAsync(includeRetired: false, default)).OrderBy(l => l.Number).ToList();
@@ -135,14 +146,16 @@ sealed class DemoBuilder(Func<ArcaDbContext> createContext, Random random, DemoP
                 continue;
             }
 
-            var level = Names.Levels[i % Names.Levels.Length];
-            var group = Names.Groups[i / Names.Levels.Length % (level.Contains("Batxillerat", StringComparison.Ordinal) ? 2 : 4)];
+            var (level, group) = _compact
+                ? Names.CompactStudents[i]
+                : (Names.Levels[i % Names.Levels.Length],
+                    Names.Groups[i / Names.Levels.Length % (Names.Levels[i % Names.Levels.Length].Contains("Batxillerat", StringComparison.Ordinal) ? 2 : 4)]);
             var added = await add.HandleAsync(new AddStudentRequest(first, last, email, level, group, ConfirmNewValues: true), default);
             students.Add(added.Value!.Student!.Id);
         }
 
         // Namesakes: the same name and surnames on different people, which a real centre has and the forms warn about.
-        for (var i = 0; i < Namesakes; i++)
+        for (var i = 0; i < (_compact ? 0 : Namesakes); i++)
         {
             var first = Names.First[i];
             var last = Names.Last[i] + " " + Names.Last[i + 1];

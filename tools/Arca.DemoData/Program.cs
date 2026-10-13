@@ -52,7 +52,7 @@ if (!created.IsSuccess)
 }
 
 var key = new AccessService(new NSecKeyCrypto(), new FileKeyFileStore()).Unlock(database, password).Value!;
-var profile = options.GetValueOrDefault("--profile") switch { "new-year" => DemoProfile.NewYear, _ => DemoProfile.Demo };
+var profile = options.GetValueOrDefault("--profile") switch { "new-year" => DemoProfile.NewYear, "compact" => DemoProfile.Compact, _ => DemoProfile.Demo };
 var builder = new DemoBuilder(() => new ArcaDbContext(database, key), new Random(seed), profile);
 await builder.BuildAsync(Console.WriteLine);
 
